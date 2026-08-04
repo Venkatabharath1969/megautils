@@ -9,7 +9,7 @@ This version has breaking changes — APIs, conventions, and file structure may 
 ## Quick Facts
 | Key | Value |
 |-----|-------|
-| Domain | megautils.com |
+| Domain | megautils.xyz (purchased on Namecheap, 2026-08-04) |
 | Framework | Next.js 16.2.12 (Turbopack), App Router |
 | Language | TypeScript (strict) |
 | Styling | Tailwind CSS v4 (`@theme inline` in globals.css, NO tailwind.config.js) |
@@ -22,6 +22,10 @@ This version has breaking changes — APIs, conventions, and file structure may 
 | Blog | File-based (src/lib/blog-data.ts), date-gated, PostgreSQL-ready |
 | Build | `npm run build` — last verified PASSING, zero errors |
 | Dev | `npm run dev` — runs on localhost:3000 (or next available port) |
+| Server | KVM VPS at `200.141.2.221` (Ubuntu 24.04) |
+| Deployment | PM2 + Nginx + Certbot (Let's Encrypt SSL) |
+| Git Repo | https://github.com/Venkatabharath1969/megautils.git |
+| Project Path | `/root/megautils/` on KVM |
 
 ---
 
@@ -51,7 +55,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 ## Project Structure
 
 ```
-C:\Users\sbhara3\projects\toolnova\
+/root/megautils/                    # KVM server path
+C:\Users\sbhara3\projects\toolnova\ # Local dev path
 ├── public/
 │   └── llms.txt                    # AI search visibility file
 ├── src/
@@ -330,38 +335,54 @@ yaml-formatter, yaml-to-json
 - PM2 for process management
 - Certbot for SSL (Let's Encrypt)
 
-### Step-by-step deployment
+### What was deployed (2026-08-04)
+
+All steps below were completed on the KVM VPS at `200.141.2.221`:
+
 ```bash
-# 1. Install Node.js 20 LTS
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-sudo apt install -y nodejs
+# 1. Installed Node.js 20 LTS (v20.20.2)
+curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+apt install -y nodejs
 
-# 2. Install PM2 globally
-sudo npm install -g pm2
+# 2. Cloned project from GitHub
+git clone https://github.com/Venkatabharath1969/megautils.git /root/megautils
+cd /root/megautils
+npm install          # 394 packages
 
-# 3. Upload project files (from local machine)
-# scp -r C:\Users\sbhara3\projects\toolnova user@your-vps-ip:/home/user/megautils
+# 3. Built project (zero errors, Turbopack)
+npm run build        # ✓ Compiled successfully
 
-# 4. On VPS: Install dependencies and build
-cd /home/user/megautils
-npm install --production=false
-npm run build
-
-# 5. Start with PM2
+# 4. Installed PM2 and started app
+npm install -g pm2
 pm2 start npm --name "megautils" -- start
 pm2 save
-pm2 startup  # auto-start on reboot
+pm2 startup          # auto-start on reboot via systemd (pm2-root.service)
 
-# 6. Install and configure Nginx
-sudo apt install -y nginx
-sudo nano /etc/nginx/sites-available/megautils
+# 5. Installed Nginx + Certbot
+apt install -y nginx certbot python3-certbot-nginx
+
+# 6. Configured Nginx reverse proxy
+# Config at: /etc/nginx/sites-available/megautils
+ln -sf /etc/nginx/sites-available/megautils /etc/nginx/sites-enabled/
+rm -f /etc/nginx/sites-enabled/default
+nginx -t && systemctl reload nginx
+
+# 7. SSL with Let's Encrypt (runs automatically once DNS propagates)
+certbot --nginx -d megautils.xyz -d www.megautils.xyz --non-interactive --agree-tos --email admin@megautils.xyz
+# Auto-renew: certbot systemd timer runs twice daily
+
+# 8. Firewall configured
+ufw allow 22/tcp && ufw allow 80/tcp && ufw allow 443/tcp && ufw enable
+
+# 9. SSH keepalive configured
+# ClientAliveInterval 60, ClientAliveCountMax 10 in /etc/ssh/sshd_config
 ```
 
 ### Nginx config (`/etc/nginx/sites-available/megautils`)
 ```nginx
 server {
     listen 80;
-    server_name megautils.com www.megautils.com;
+    server_name megautils.xyz www.megautils.xyz;
 
     location / {
         proxy_pass http://127.0.0.1:3000;
@@ -384,29 +405,17 @@ server {
 }
 ```
 
-```bash
-# 7. Enable site and SSL
-sudo ln -s /etc/nginx/sites-available/megautils /etc/nginx/sites-enabled/
-sudo nginx -t
-sudo systemctl reload nginx
-
-# 8. SSL with Let's Encrypt (auto-renews for 2 years)
-sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d megautils.com -d www.megautils.com
-# Certbot auto-renew is set up via systemd timer — runs twice daily, no manual intervention needed
-
-# 9. Setup firewall
-sudo ufw allow 22/tcp
-sudo ufw allow 80/tcp
-sudo ufw allow 443/tcp
-sudo ufw enable
-```
+### DNS Setup (Namecheap)
+- **Domain:** megautils.xyz (purchased 2026-08-04 on Namecheap, ~$1.78)
+- **Nameservers:** Namecheap BasicDNS (dns1.registrar-servers.com, dns2.registrar-servers.com)
+- **A Record:** `@` → `200.141.2.221`
+- **A Record:** `www` → `200.141.2.221`
 
 ### Verify deployment
 ```bash
-pm2 status                    # Should show "megautils" as "online"
-curl -I https://megautils.com # Should return 200
-pm2 logs megautils --lines 20 # Check for errors
+pm2 status                        # Should show "megautils" as "online"
+curl -I https://megautils.xyz     # Should return 200
+pm2 logs megautils --lines 20     # Check for errors
 ```
 
 ---
@@ -440,7 +449,7 @@ pm2 logs megautils --lines 20 # Check for errors
 
 ### AdSense setup (do once after deployment):
 1. Go to https://adsense.google.com
-2. Add site: megautils.com
+2. Add site: megautils.xyz
 3. Paste the AdSense verification meta tag in `src/app/layout.tsx` `<head>`
 4. Wait for approval (few days to 2 weeks)
 5. Once approved, enable **Auto Ads** — Google places ads automatically, no manual code changes
@@ -448,9 +457,9 @@ pm2 logs megautils --lines 20 # Check for errors
 
 ### Google Search Console setup (do once):
 1. Go to https://search.google.com/search-console
-2. Add property: megautils.com
+2. Add property: megautils.xyz
 3. Verify via DNS TXT record or HTML file
-4. Submit sitemap: https://megautils.com/sitemap.xml
+4. Submit sitemap: https://megautils.xyz/sitemap.xml
 5. Google will start indexing all 177 tools + blog posts
 
 ### Optional: Upgrade to Mediavine (at 50K sessions/month):
@@ -470,22 +479,53 @@ pm2 restart megautils
 # Check logs for errors
 pm2 logs megautils --lines 50
 
-# If Node.js needs updating
-nvm install 20 --lts
+# If Node.js needs updating (on KVM, not using nvm)
+curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+apt install -y nodejs
 pm2 restart megautils
 
 # If disk fills up (logs)
 pm2 flush
-sudo journalctl --vacuum-time=7d
+journalctl --vacuum-time=7d
+
+# Re-deploy after code changes
+cd /root/megautils
+git pull
+npm install
+npm run build
+pm2 restart megautils
 ```
 
 ### Security (set and forget):
 - UFW firewall: only ports 22, 80, 443 open
-- SSL: auto-renewed by certbot
+- SSL: auto-renewed by certbot (systemd timer, twice daily)
 - No database: no SQL injection possible
 - No user accounts: no auth vulnerabilities
 - No file uploads stored: tools process client-side
-- PM2: runs as non-root user
+- SSH keepalive configured (ClientAliveInterval 60)
+
+---
+
+## Deployment Log
+
+### 2026-08-04 — Initial KVM Deployment
+- **Server:** KVM VPS at `200.141.2.221` (Ubuntu 24.04, Linux 6.8.0)
+- **Domain:** `megautils.xyz` purchased on Namecheap ($1.78 total)
+- **Previous domain attempt:** `megautils.com` was already taken (registered by someone else on GoDaddy)
+- **DNS:** Namecheap BasicDNS, A records pointing to `200.141.2.221`
+- **Stack installed:** Node.js 20.20.2, PM2 6.x, Nginx 1.24, Certbot
+- **Project cloned from:** https://github.com/Venkatabharath1969/megautils.git
+- **Build:** `npm run build` — zero errors, Turbopack, 11 static pages, 3 dynamic routes
+- **SSL:** Certbot auto-setup script at `/root/setup-ssl.sh` (runs once DNS propagates)
+- **PM2:** Process `megautils` running, auto-restart on crash, systemd startup service `pm2-root`
+- **Firewall:** UFW active — ports 22, 80, 443 only
+
+### Remaining post-deployment tasks:
+- [ ] Verify SSL certificate is active (`curl -I https://megautils.xyz`)
+- [ ] Set up Google Search Console and submit sitemap
+- [ ] Apply for Google AdSense
+- [ ] Update `src/app/sitemap.ts` and `src/app/robots.ts` with `megautils.xyz` domain
+- [ ] Update `public/llms.txt` with `megautils.xyz` domain
 
 ---
 
@@ -495,3 +535,4 @@ sudo journalctl --vacuum-time=7d
 - [ ] Upgrade to Mediavine at 50K sessions/month (higher RPM)
 - [ ] Chrome extension linking to tools (growth channel)
 - [ ] Open-source core tool logic on GitHub (backlinks + trust)
+- [ ] Register `megautils.eu.org` as free backup domain
