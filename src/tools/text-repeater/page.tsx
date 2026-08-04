@@ -1,0 +1,69 @@
+'use client'
+
+import { useState, useMemo } from 'react'
+import { ToolPage, ToolTextarea, CopyButton, ClearButton } from '@/components/tool-page'
+
+export default function TextRepeaterTool() {
+  const [input, setInput] = useState('')
+  const [count, setCount] = useState(3)
+  const [separatorType, setSeparatorType] = useState<'newline' | 'space' | 'comma' | 'custom'>('newline')
+  const [customSep, setCustomSep] = useState('')
+
+  const separator = useMemo(() => {
+    switch (separatorType) {
+      case 'newline': return '\n'
+      case 'space': return ' '
+      case 'comma': return ', '
+      case 'custom': return customSep
+    }
+  }, [separatorType, customSep])
+
+  const output = useMemo(() => {
+    if (!input || count < 1) return ''
+    const safeCount = Math.min(count, 10000)
+    return Array(safeCount).fill(input).join(separator)
+  }, [input, count, separator])
+
+  return (
+    <ToolPage title="Text Repeater" description="Repeat text N times with a configurable separator." category="text" categoryLabel="Text Tools">
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium">Input Text</span>
+          <ClearButton onClear={() => { setInput(''); setCount(3) }} />
+        </div>
+        <ToolTextarea value={input} onChange={setInput} placeholder="Enter text to repeat..." rows={4} />
+
+        <div className="flex flex-wrap items-end gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">Repeat Count</label>
+            <input type="number" min={1} max={10000} value={count} onChange={e => setCount(parseInt(e.target.value) || 1)} className="w-28 rounded-lg border border-input bg-tool-bg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Separator</label>
+            <div className="flex gap-2">
+              {(['newline', 'space', 'comma', 'custom'] as const).map(s => (
+                <button key={s} onClick={() => setSeparatorType(s)} className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors capitalize ${separatorType === s ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>
+                  {s === 'newline' ? 'New Line' : s}
+                </button>
+              ))}
+            </div>
+          </div>
+          {separatorType === 'custom' && (
+            <div>
+              <label className="block text-sm font-medium mb-1">Custom Separator</label>
+              <input type="text" value={customSep} onChange={e => setCustomSep(e.target.value)} placeholder=" | " className="w-32 rounded-lg border border-input bg-tool-bg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+            </div>
+          )}
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium">Output ({output.length} chars)</span>
+            {output && <CopyButton text={output} />}
+          </div>
+          <ToolTextarea value={output} readOnly placeholder="Repeated text will appear here..." rows={8} />
+        </div>
+      </div>
+    </ToolPage>
+  )
+}

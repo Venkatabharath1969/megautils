@@ -1,0 +1,112 @@
+'use client'
+
+import { useState, useMemo } from 'react'
+import { ToolPage, ToolTextarea, CopyButton, ClearButton } from '@/components/tool-page'
+
+interface ReplacePair {
+  id: number
+  find: string
+  replace: string
+}
+
+let nextId = 1
+
+export default function FindAndReplaceTool() {
+  const [input, setInput] = useState('')
+  const [pairs, setPairs] = useState<ReplacePair[]>([{ id: nextId++, find: '', replace: '' }])
+  const [caseSensitive, setCaseSensitive] = useState(true)
+  const [useRegex, setUseRegex] = useState(false)
+
+  const addPair = () => setPairs([...pairs, { id: nextId++, find: '', replace: '' }])
+  const removePair = (id: number) => {
+    if (pairs.length > 1) setPairs(pairs.filter((p) => p.id !== id))
+  }
+  const updatePair = (id: number, field: 'find' | 'replace', value: string) => {
+    setPairs(pairs.map((p) => (p.id === id ? { ...p, [field]: value } : p)))
+  }
+
+  const { output, totalReplacements } = useMemo(() => {
+    if (!input) return { output: '', totalReplacements: 0 }
+    let result = input
+    let total = 0
+    for (const pair of pairs) {
+      if (!pair.find) continue
+      try {
+        const flags = 'g' + (caseSensitive ? '' : 'i')
+        const pattern = useRegex ? new RegExp(pair.find, flags) : new RegExp(pair.find.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), flags)
+        const matches = result.match(pattern)
+        if (matches) total += matches.length
+        result = result.replace(pattern, pair.replace)
+      } catch {
+        // Invalid regex, skip
+      }
+    }
+    return { output: result, totalReplacements: total }
+  }, [input, pairs, caseSensitive, useRegex])
+
+  return (
+    <ToolPage title="Find and Replace" description="Bulk find and replace with multiple pairs. Supports case sensitivity and regex." category="text" categoryLabel="Text Tools">
+      <div className="flex flex-wrap items-center gap-4 mb-4">
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" checked={caseSensitive} onChange={(e) => setCaseSensitive(e.target.checked)} className="rounded border-border" />
+          Case-sensitive
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" checked={useRegex} onChange={(e) => setUseRegex(e.target.checked)} className="rounded border-border" />
+          Use Regex
+        </label>
+        {totalReplacements > 0 && (
+          <span className="text-xs text-muted-foreground">{totalReplacements} replacement{totalReplacements !== 1 ? 's' : ''} made</span>
+        )}
+      </div>
+
+      <div className="mb-4 space-y-2">
+        <span className="text-sm font-medium">Find & Replace Pairs</span>
+        {pairs.map((pair) => (
+          <div key={pair.id} className="flex gap-2 items-center">
+            <input
+              type="text"
+              value={pair.find}
+              onChange={(e) => updatePair(pair.id, 'find', e.target.value)}
+              placeholder="Find..."
+              className="flex-1 px-3 py-2 text-sm rounded-md border border-input bg-tool-bg focus:outline-none focus:ring-2 focus:ring-ring"
+            />
+            <span className="text-muted-foreground text-sm">&rarr;</span>
+            <input
+              type="text"
+              value={pair.replace}
+              onChange={(e) => updatePair(pair.id, 'replace', e.target.value)}
+              placeholder="Replace with..."
+              className="flex-1 px-3 py-2 text-sm rounded-md border border-input bg-tool-bg focus:outline-none focus:ring-2 focus:ring-ring"
+            />
+            {pairs.length > 1 && (
+              <button onClick={() => removePair(pair.id)} className="px-2 py-1.5 text-sm rounded-md border border-border bg-card hover:bg-muted transition-colors text-red-500">
+                &times;
+              </button>
+            )}
+          </div>
+        ))}
+        <button onClick={addPair} className="px-3 py-1.5 text-xs font-medium rounded-md border border-border bg-card hover:bg-muted transition-colors">
+          + Add Pair
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium">Input</span>
+            <ClearButton onClear={() => setInput('')} />
+          </div>
+          <ToolTextarea value={input} onChange={setInput} placeholder="Enter your text..." rows={10} />
+        </div>
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium">Result</span>
+            {output && <CopyButton text={output} />}
+          </div>
+          <ToolTextarea value={output} readOnly placeholder="Result will appear here..." rows={10} />
+        </div>
+      </div>
+    </ToolPage>
+  )
+}

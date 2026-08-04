@@ -1,0 +1,132 @@
+'use client'
+
+import { useState, useMemo } from 'react'
+import { ToolPage, CopyButton } from '@/components/tool-page'
+
+export default function CssFlexboxGeneratorTool() {
+  const [direction, setDirection] = useState('row')
+  const [wrap, setWrap] = useState('nowrap')
+  const [justifyContent, setJustifyContent] = useState('flex-start')
+  const [alignItems, setAlignItems] = useState('stretch')
+  const [gap, setGap] = useState(10)
+  const [childCount, setChildCount] = useState(5)
+
+  const directions = ['row', 'row-reverse', 'column', 'column-reverse']
+  const wraps = ['nowrap', 'wrap', 'wrap-reverse']
+  const justifyOptions = ['flex-start', 'flex-end', 'center', 'space-between', 'space-around', 'space-evenly']
+  const alignOptions = ['stretch', 'flex-start', 'flex-end', 'center', 'baseline']
+
+  const cssCode = useMemo(() => {
+    return [
+      'display: flex;',
+      `flex-direction: ${direction};`,
+      `flex-wrap: ${wrap};`,
+      `justify-content: ${justifyContent};`,
+      `align-items: ${alignItems};`,
+      `gap: ${gap}px;`,
+    ].join('\n')
+  }, [direction, wrap, justifyContent, alignItems, gap])
+
+  const containerStyle: React.CSSProperties = {
+    display: 'flex',
+    flexDirection: direction as React.CSSProperties['flexDirection'],
+    flexWrap: wrap as React.CSSProperties['flexWrap'],
+    justifyContent,
+    alignItems,
+    gap: `${gap}px`,
+    minHeight: 250,
+    padding: 16,
+    border: '2px dashed',
+    borderColor: 'var(--border)',
+    borderRadius: 8,
+    backgroundColor: 'var(--muted)',
+  }
+
+  const childColors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#6366f1']
+
+  return (
+    <ToolPage title="CSS Flexbox Generator" description="Visual flexbox playground with live preview and generated CSS." category="css" categoryLabel="CSS Tools">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Controls */}
+        <div className="space-y-4">
+          <div>
+            <label className="text-sm font-medium mb-2 block">flex-direction</label>
+            <div className="flex gap-2 flex-wrap">
+              {directions.map(d => (
+                <button key={d} onClick={() => setDirection(d)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${direction === d ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>{d}</button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium mb-2 block">flex-wrap</label>
+            <div className="flex gap-2 flex-wrap">
+              {wraps.map(w => (
+                <button key={w} onClick={() => setWrap(w)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${wrap === w ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>{w}</button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium mb-2 block">justify-content</label>
+            <div className="flex gap-2 flex-wrap">
+              {justifyOptions.map(j => (
+                <button key={j} onClick={() => setJustifyContent(j)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${justifyContent === j ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>{j}</button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium mb-2 block">align-items</label>
+            <div className="flex gap-2 flex-wrap">
+              {alignOptions.map(a => (
+                <button key={a} onClick={() => setAlignItems(a)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${alignItems === a ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>{a}</button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium mb-2 block">gap: {gap}px</label>
+            <input type="range" min={0} max={50} value={gap} onChange={e => setGap(+e.target.value)} className="w-full" />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium mb-2 block">Child Items: {childCount}</label>
+            <input type="range" min={1} max={10} value={childCount} onChange={e => setChildCount(+e.target.value)} className="w-full" />
+          </div>
+        </div>
+
+        {/* Preview & Code */}
+        <div className="space-y-4">
+          <div>
+            <label className="text-sm font-medium mb-2 block">Preview</label>
+            <div style={containerStyle}>
+              {Array.from({ length: childCount }, (_, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-center text-white text-sm font-bold rounded"
+                  style={{
+                    backgroundColor: childColors[i % childColors.length],
+                    padding: '12px 20px',
+                    minWidth: 50,
+                    minHeight: 50,
+                  }}
+                >
+                  {i + 1}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-sm font-medium">CSS Code</label>
+              <CopyButton text={cssCode} />
+            </div>
+            <pre className="p-3 rounded-lg bg-muted text-sm font-mono whitespace-pre">{cssCode}</pre>
+          </div>
+        </div>
+      </div>
+    </ToolPage>
+  )
+}

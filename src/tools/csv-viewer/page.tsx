@@ -1,0 +1,176 @@
+'use client'
+
+import { useState, useMemo, useCallback } from 'react'
+import { ToolPage, ToolTextarea, ClearButton } from '@/components/tool-page'
+
+function parseCSV(text: string, delimiter: string): string[][] {
+  const rows: string[][] = []
+  let current = ''
+  let inQuotes = false
+  let row: string[] = []
+
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i]
+    const next = text[i + 1]
+
+    if (inQuotes) {
+      if (ch === '"' && next === '"') {
+        current += '"'
+        i++
+      } else if (ch === '"') {
+        inQuotes = false
+      } else {
+        current += ch
+      }
+    } else {
+      if (ch === '"') {
+        inQuotes = true
+      } else if (ch === delimiter) {
+        row.push(current)
+        current = ''
+      } else if (ch === '\n' || (ch === '\r' && next === '\n')) {
+        row.push(current)
+        current = ''
+        if (row.some((cell) => cell.trim() !== '')) {
+          rows.push(row)
+        }
+        row = []
+        if (ch === '\r') i++
+      } else {
+        current += ch
+      }
+    }
+  }
+
+  // Last field/row
+  row.push(current)
+  if (row.some((cell) => cell.trim() !== '')) {
+    rows.push(row)
+  }
+
+  return rows
+}
+
+export default function CsvViewerTool() {
+  const [input, setInput] = useState('')
+  const [delimiter, setDelimiter] = useState(',')
+  const [sortCol, setSortCol] = useState<number | null>(null)
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
+  const [hasHeader, setHasHeader] = useState(true)
+
+  const parsed = useMemo(() => {
+    if (!input.trim()) return { headers: [], rows: [] }
+    const allRows = parseCSV(input, delimiter)
+    if (allRows.length === 0) return { headers: [], rows: [] }
+
+    if (hasHeader) {
+      return { headers: allRows[0], rows: allRows.slice(1) }
+    }
+    const maxCols = Math.max(...allRows.map((r) => r.length))
+    const headers = Array.from({ length: maxCols }, (_, i) => `Column ${i + 1}`)
+    return { headers, rows: allRows }
+  }, [input, delimiter, hasHeader])
+
+  const sortedRows = useMemo(() => {
+    if (sortCol === null) return parsed.rows
+    return [...parsed.rows].sort((a, b) => {
+      const aVal = a[sortCol] || ''
+      const bVal = b[sortCol] || ''
+      const aNum = parseFloat(aVal)
+      const bNum = parseFloat(bVal)
+      if (!isNaN(aNum) && !isNaN(bNum)) {
+        return sortDir === 'asc' ? aNum - bNum : bNum - aNum
+      }
+      const cmp = aVal.localeCompare(bVal)
+      return sortDir === 'asc' ? cmp : -cmp
+    })
+  }, [parsed.rows, sortCol, sortDir])
+
+  const handleSort = useCallback((colIdx: number) => {
+    if (sortCol === colIdx) {
+      setSortDir((d) => d === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortCol(colIdx)
+      setSortDir('asc')
+    }
+  }, [sortCol])
+
+  const clear = () => { setInput(''); setSortCol(null) }
+
+  return (
+    <ToolPage title="CSV Viewer" description="Paste CSV data and view it as a formatted, sortable table" category="developer" categoryLabel="Developer Tools">
+      <div className="space-y-4">
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium">CSV Input</span>
+            <div className="flex items-center gap-3">
+              <label className="flex items-center gap-1.5 text-sm">
+                <input type="checkbox" checked={hasHeader} onChange={(e) => setHasHeader(e.target.checked)} className="rounded" />
+                First row is header
+              </label>
+              <select value={delimiter} onChange={(e) => setDelimiter(e.target.value)} className="px-2 py-1 rounded border border-input bg-tool-bg text-xs">
+                <option value=",">Comma (,)</option>
+                <option value="	">Tab</option>
+                <option value=";">Semicolon (;)</option>
+                <option value="|">Pipe (|)</option>
+              </select>
+              <ClearButton onClear={clear} />
+            </div>
+          </div>
+          <ToolTextarea value={input} onChange={setInput} placeholder={'name,age,city\nJohn,30,New York\nJane,25,London\nBob,35,Tokyo'} rows={6} />
+        </div>
+
+        {/* Stats */}
+        {parsed.rows.length > 0 && (
+          <div className="flex gap-4 text-sm">
+            <span className="px-3 py-1 rounded-full bg-muted text-muted-foreground">
+              {sortedRows.length} rows
+            </span>
+            <span className="px-3 py-1 rounded-full bg-muted text-muted-foreground">
+              {parsed.headers.length} columns
+            </span>
+          </div>
+        )}
+
+        {/* Table */}
+        {parsed.headers.length > 0 && (
+          <div className="overflow-x-auto rounded-lg border border-border">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-muted">
+                  <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground border-r border-border w-10">#</th>
+                  {parsed.headers.map((h, i) => (
+                    <th
+                      key={i}
+                      onClick={() => handleSort(i)}
+                      className="px-3 py-2 text-left text-xs font-medium cursor-pointer hover:bg-primary/10 transition-colors border-r border-border last:border-r-0 select-none"
+                    >
+                      <div className="flex items-center gap-1">
+                        {h}
+                        {sortCol === i && (
+                          <span className="text-primary">{sortDir === 'asc' ? '\u2191' : '\u2193'}</span>
+                        )}
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {sortedRows.map((row, ri) => (
+                  <tr key={ri} className="border-t border-border hover:bg-muted/50 transition-colors">
+                    <td className="px-3 py-1.5 text-xs text-muted-foreground border-r border-border">{ri + 1}</td>
+                    {parsed.headers.map((_, ci) => (
+                      <td key={ci} className="px-3 py-1.5 border-r border-border last:border-r-0 font-mono text-xs">
+                        {row[ci] || ''}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </ToolPage>
+  )
+}

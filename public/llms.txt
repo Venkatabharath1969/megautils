@@ -1,0 +1,29 @@
+# MegaUtils
+
+## About
+Free online utility tools website with 100+ tools for developers, designers, and everyone. All processing happens in your browser. No data stored. No login required.
+
+## Categories
+- Developer Tools: JSON formatter, XML/HTML/CSS/SQL/JS formatters, data converters (JSON↔YAML, JSON↔CSV), TypeScript generator, text diff
+- Encoders & Decoders: Base64, URL, HTML entities, JWT, binary, hex, Morse code, ROT13
+- SEO Tools: Meta tag generator, robots.txt, sitemap, SERP preview, keyword density, readability score
+- Financial Calculators: Compound interest, EMI, mortgage, SIP, salary, ROI, GST, CAGR, margin
+- Text Tools: Word counter, case converter, sorter, reverser, find & replace, slug generator
+- Color Tools: Color picker, converter, palette generator, contrast checker, tint & shade
+- CSS Tools: Gradient, box shadow, border radius, flexbox, grid, glassmorphism generators
+- Markdown Tools: Editor with preview, MD↔HTML converter, table generator
+- Unit Converters: Length, weight, temperature, data storage, speed, area, volume
+- Math & Science: Scientific calculator, BMI, number to words
+- Date & Time: Unix timestamp, date calculator, age calculator, cron builder
+
+## Key Pages
+- /tools/json-formatter - Format and validate JSON
+- /tools/base64-encoder - Encode/decode Base64
+- /tools/mortgage-calculator - Calculate mortgage payments
+- /tools/color-picker - Pick colors with HEX/RGB/HSL
+- /tools/regex-tester - Test regex with highlighting
+- /tools/css-gradient-generator - Build CSS gradients visually
+- /blog - How-to guides and comparisons
+
+## Privacy
+All tool processing happens client-side in the user's browser. No data is uploaded, stored, or transmitted to any server.

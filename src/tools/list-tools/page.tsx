@@ -1,0 +1,116 @@
+'use client'
+
+import { useState, useMemo } from 'react'
+import { ToolPage, ToolTextarea, CopyButton, ClearButton } from '@/components/tool-page'
+
+type ListMode = 'split' | 'join' | 'dedupe' | 'sort' | 'number'
+
+export default function ListToolsPage() {
+  const [input, setInput] = useState('')
+  const [mode, setMode] = useState<ListMode>('split')
+  const [delimiter, setDelimiter] = useState(',')
+  const [joinDelimiter, setJoinDelimiter] = useState(', ')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
+  const [numberPrefix, setNumberPrefix] = useState('')
+  const [numberSuffix, setNumberSuffix] = useState('. ')
+
+  const output = useMemo(() => {
+    if (!input) return ''
+    switch (mode) {
+      case 'split': {
+        return input.split(delimiter).map(s => s.trim()).filter(Boolean).join('\n')
+      }
+      case 'join': {
+        return input.split('\n').map(s => s.trim()).filter(Boolean).join(joinDelimiter)
+      }
+      case 'dedupe': {
+        const lines = input.split('\n').map(s => s.trim()).filter(Boolean)
+        return [...new Set(lines)].join('\n')
+      }
+      case 'sort': {
+        const lines = input.split('\n').map(s => s.trim()).filter(Boolean)
+        const sorted = lines.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }))
+        if (sortOrder === 'desc') sorted.reverse()
+        return sorted.join('\n')
+      }
+      case 'number': {
+        const lines = input.split('\n').filter(s => s.trim())
+        return lines.map((line, i) => `${numberPrefix}${i + 1}${numberSuffix}${line}`).join('\n')
+      }
+    }
+  }, [input, mode, delimiter, joinDelimiter, sortOrder, numberPrefix, numberSuffix])
+
+  const modes: { key: ListMode; label: string }[] = [
+    { key: 'split', label: 'Split to Lines' },
+    { key: 'join', label: 'Join Lines' },
+    { key: 'dedupe', label: 'Remove Duplicates' },
+    { key: 'sort', label: 'Sort' },
+    { key: 'number', label: 'Number Items' },
+  ]
+
+  return (
+    <ToolPage title="List Tools" description="Split, join, deduplicate, sort, and number list items." category="text" categoryLabel="Text Tools">
+      <div className="flex flex-wrap gap-2 mb-4">
+        {modes.map(m => (
+          <button key={m.key} onClick={() => setMode(m.key)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === m.key ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>
+            {m.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Mode-specific options */}
+      <div className="flex flex-wrap gap-3 mb-4">
+        {mode === 'split' && (
+          <div>
+            <label className="block text-xs font-medium mb-1">Split Delimiter</label>
+            <input type="text" value={delimiter} onChange={e => setDelimiter(e.target.value)} placeholder="," className="w-24 rounded-lg border border-input bg-tool-bg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+          </div>
+        )}
+        {mode === 'join' && (
+          <div>
+            <label className="block text-xs font-medium mb-1">Join With</label>
+            <input type="text" value={joinDelimiter} onChange={e => setJoinDelimiter(e.target.value)} placeholder=", " className="w-24 rounded-lg border border-input bg-tool-bg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+          </div>
+        )}
+        {mode === 'sort' && (
+          <div>
+            <label className="block text-xs font-medium mb-1">Order</label>
+            <div className="flex gap-1">
+              <button onClick={() => setSortOrder('asc')} className={`px-3 py-1.5 rounded-md text-xs font-medium ${sortOrder === 'asc' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>A-Z</button>
+              <button onClick={() => setSortOrder('desc')} className={`px-3 py-1.5 rounded-md text-xs font-medium ${sortOrder === 'desc' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Z-A</button>
+            </div>
+          </div>
+        )}
+        {mode === 'number' && (
+          <>
+            <div>
+              <label className="block text-xs font-medium mb-1">Prefix</label>
+              <input type="text" value={numberPrefix} onChange={e => setNumberPrefix(e.target.value)} placeholder="" className="w-16 rounded-lg border border-input bg-tool-bg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium mb-1">Suffix</label>
+              <input type="text" value={numberSuffix} onChange={e => setNumberSuffix(e.target.value)} placeholder=". " className="w-16 rounded-lg border border-input bg-tool-bg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+            </div>
+          </>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium">Input</span>
+            <ClearButton onClear={() => setInput('')} />
+          </div>
+          <ToolTextarea value={input} onChange={setInput} placeholder={mode === 'split' ? 'apple, banana, cherry, date' : 'apple\nbanana\ncherry\ndate'} rows={12} />
+        </div>
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium">Output</span>
+            {output && <CopyButton text={output} />}
+          </div>
+          <ToolTextarea value={output} readOnly placeholder="Result will appear here..." rows={12} />
+        </div>
+      </div>
+    </ToolPage>
+  )
+}
