@@ -83,7 +83,18 @@ export default function CaseConverterTool() {
   }, [input])
 
   return (
-    <ToolPage title="Case Converter" description="Convert text between UPPERCASE, lowercase, Title Case, camelCase, snake_case, kebab-case, and more." category="text" categoryLabel="Text Tools">
+    <ToolPage
+      title="Case Converter"
+      description="Convert text between UPPERCASE, lowercase, Title Case, camelCase, snake_case, kebab-case, and more."
+      category="text"
+      categoryLabel="Text Tools"
+      faqs={[
+        { question: 'What is the difference between camelCase and PascalCase?', answer: 'In camelCase the first word is lowercase and subsequent words are capitalized (e.g., myVariableName), while in PascalCase every word starts with a capital letter (e.g., MyVariableName). camelCase is typical for variables, PascalCase for class names.' },
+        { question: 'When should I use snake_case vs kebab-case?', answer: 'snake_case (words separated by underscores) is standard in Python and database column names, while kebab-case (words separated by hyphens) is used in URLs, CSS class names, and file names.' },
+        { question: 'What is Sentence case vs Title Case?', answer: 'Sentence case capitalizes only the first letter of the first word (like a normal sentence), while Title Case capitalizes the first letter of every word (commonly used in headings and titles).' },
+        { question: 'What is CONSTANT_CASE used for?', answer: 'CONSTANT_CASE (all uppercase with underscores) is the convention for constant values and environment variables in most programming languages, such as MAX_RETRY_COUNT or API_BASE_URL.' },
+      ]}
+    >
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium">Input Text</span>
         <ClearButton onClear={() => setInput('')} />

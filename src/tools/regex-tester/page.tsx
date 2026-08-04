@@ -62,7 +62,18 @@ export default function RegexTesterTool() {
   }, [pattern, testString, flagG, flagI, flagM, flagS])
 
   return (
-    <ToolPage title="Regex Tester" description="Test regular expressions with real-time matching, capture groups, and flag options." category="developer" categoryLabel="Developer Tools">
+    <ToolPage
+      title="Regex Tester"
+      description="Test regular expressions with real-time matching, capture groups, and flag options."
+      category="developer"
+      categoryLabel="Developer Tools"
+      faqs={[
+        { question: 'What do the regex flags (g, i, m, s) mean?', answer: 'g (global) finds all matches, i (case insensitive) ignores letter casing, m (multiline) makes ^ and $ match line starts/ends, and s (dotall) makes the dot (.) match newline characters as well.' },
+        { question: 'What are capture groups in regex?', answer: 'Capture groups are parts of a pattern enclosed in parentheses, e.g., (\\d+). They let you extract specific portions of a match, which this tool displays in the Match Details panel.' },
+        { question: 'Why does my regex cause an infinite loop?', answer: 'This usually happens when a global regex matches an empty string (e.g., pattern "a*"). This tool automatically advances past empty matches to prevent infinite loops.' },
+        { question: 'Does this regex tester work with all programming languages?', answer: 'This tool uses JavaScript regular expression syntax. Most basic patterns work across languages, but advanced features like lookbehinds or named groups may differ in Python, Java, or other languages.' },
+      ]}
+    >
       <div className="space-y-4">
         {/* Pattern input */}
         <div>

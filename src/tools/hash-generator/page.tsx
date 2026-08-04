@@ -133,7 +133,18 @@ export default function HashGeneratorTool() {
   ]
 
   return (
-    <ToolPage title="Hash Generator" description="Generate MD5, SHA-1, SHA-256, and SHA-512 hashes from text input." category="encoders" categoryLabel="Encoders & Decoders">
+    <ToolPage
+      title="Hash Generator"
+      description="Generate MD5, SHA-1, SHA-256, and SHA-512 hashes from text input."
+      category="encoders"
+      categoryLabel="Encoders & Decoders"
+      faqs={[
+        { question: 'What is the difference between MD5 and SHA-256?', answer: 'MD5 produces a 128-bit hash and is fast but considered cryptographically broken. SHA-256 produces a 256-bit hash and is currently the standard for security-sensitive applications like SSL certificates and blockchain.' },
+        { question: 'Can you reverse a hash back to the original text?', answer: 'No. Hashing is a one-way function by design. You cannot mathematically reverse a hash, though weak hashes like MD5 can be attacked with precomputed lookup tables.' },
+        { question: 'Which hashing algorithm should I use?', answer: 'Use SHA-256 or SHA-512 for security purposes. MD5 and SHA-1 are fine for checksums and non-security uses like cache keys or file integrity checks.' },
+        { question: 'Is my input text stored or sent anywhere?', answer: 'No. All hashing is performed locally in your browser using the Web Crypto API and a client-side MD5 implementation. Nothing leaves your device.' },
+      ]}
+    >
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium">Input Text</span>
         <ClearButton onClear={() => setInput('')} />

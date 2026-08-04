@@ -60,6 +60,12 @@ export default function MortgageCalculator() {
       description="Calculate monthly mortgage payments, total interest, and view a complete amortization schedule."
       category="financial"
       categoryLabel="Financial Calculators"
+      faqs={[
+        { question: 'How is the monthly mortgage payment calculated?', answer: 'It uses the standard amortization formula: M = P[r(1+r)^n]/[(1+r)^n-1], where P is the loan principal, r is the monthly interest rate, and n is the total number of monthly payments.' },
+        { question: 'What is an amortization schedule?', answer: 'An amortization schedule shows how each payment is split between principal and interest over the life of the loan. Early payments are mostly interest, while later payments go primarily toward principal.' },
+        { question: 'Does this calculator include taxes and insurance?', answer: 'No. This calculator shows principal and interest only. Your actual monthly payment may be higher when property taxes, homeowners insurance, and PMI are included.' },
+        { question: 'How does the down payment affect my mortgage?', answer: 'A larger down payment reduces your loan amount, resulting in lower monthly payments and less total interest paid. Putting down 20% or more also typically eliminates the need for private mortgage insurance (PMI).' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Inputs */}

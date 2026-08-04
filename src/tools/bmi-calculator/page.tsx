@@ -63,6 +63,12 @@ export default function BMICalculatorTool() {
       description="Calculate your Body Mass Index. Supports metric (cm/kg) and imperial (ft-in/lb) units."
       category="math"
       categoryLabel="Math & Science"
+      faqs={[
+        { question: 'What is a healthy BMI range?', answer: 'A BMI between 18.5 and 24.9 is considered normal weight. Below 18.5 is underweight, 25-29.9 is overweight, and 30 or above is classified as obese.' },
+        { question: 'How accurate is BMI as a health indicator?', answer: 'BMI is a useful screening tool but does not account for muscle mass, bone density, age, or body fat distribution. Athletes with high muscle mass may have a high BMI despite being healthy.' },
+        { question: 'How is BMI calculated?', answer: 'BMI is calculated by dividing your weight in kilograms by your height in meters squared: BMI = kg / m². For imperial units, the formula is (weight in pounds × 703) / (height in inches)².' },
+        { question: 'Does BMI apply the same way to all age groups?', answer: 'Standard BMI categories apply to adults 20 and older. For children and teens, BMI is interpreted using age- and sex-specific percentile charts from the CDC.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Inputs */}

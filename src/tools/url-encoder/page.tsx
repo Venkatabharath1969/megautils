@@ -35,7 +35,18 @@ export default function UrlEncoderTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="URL Encoder / Decoder" description="Encode or decode URLs and URL components" category="encoders" categoryLabel="Encoders & Decoders">
+    <ToolPage
+      title="URL Encoder / Decoder"
+      description="Encode or decode URLs and URL components"
+      category="encoders"
+      categoryLabel="Encoders & Decoders"
+      faqs={[
+        { question: 'What is URL encoding and why is it needed?', answer: 'URL encoding replaces unsafe characters like spaces, ampersands, and equals signs with percent-encoded values (e.g., %20) so they can be safely transmitted in a URL.' },
+        { question: 'What is the difference between encodeURI and encodeURIComponent?', answer: 'encodeURI encodes a full URL but preserves characters like ://?#, while encodeURIComponent encodes everything including those characters — use it for query parameter values.' },
+        { question: 'Which characters need to be URL encoded?', answer: 'Characters outside the unreserved set (A-Z, a-z, 0-9, -, _, ., ~) should be encoded. Common examples include spaces (%20), ampersands (%26), and plus signs (%2B).' },
+        { question: 'Is my data safe when encoding or decoding URLs here?', answer: 'Yes. All encoding and decoding runs entirely in your browser using built-in JavaScript functions. No data is sent to any server.' },
+      ]}
+    >
       <div className="flex flex-wrap gap-2 mb-4">
         <button
           onClick={() => setMode('encode')}

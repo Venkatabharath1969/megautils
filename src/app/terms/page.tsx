@@ -23,7 +23,7 @@ export default function TermsPage() {
       <div className="prose prose-sm dark:prose-invert max-w-none">
         <h2>1. Acceptance of Terms</h2>
         <p>
-          By accessing and using MegaUtils (megautils.com), you accept and agree to be bound by these
+          By accessing and using MegaUtils (megautils.xyz), you accept and agree to be bound by these
           Terms of Service. If you do not agree to these terms, please do not use our website.
         </p>
 

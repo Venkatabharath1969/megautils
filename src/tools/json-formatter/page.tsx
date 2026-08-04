@@ -39,6 +39,12 @@ export default function JsonFormatterTool() {
       description="Format, validate, beautify, and minify JSON data. Supports tree view."
       category="developer"
       categoryLabel="Developer Tools"
+      faqs={[
+        { question: 'What is JSON formatting?', answer: 'JSON formatting (or beautifying) adds proper indentation and line breaks to minified JSON data, making it easier to read and debug.' },
+        { question: 'Is my JSON data safe?', answer: 'Yes. All processing happens entirely in your browser. Your JSON data never leaves your device.' },
+        { question: 'What JSON errors can this tool detect?', answer: 'This tool detects syntax errors like missing commas, unclosed brackets, invalid strings, and trailing commas that are not permitted in standard JSON.' },
+        { question: 'What is the difference between formatting and minifying JSON?', answer: 'Formatting adds whitespace and indentation for readability, while minifying removes all unnecessary whitespace to reduce file size for production use.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>

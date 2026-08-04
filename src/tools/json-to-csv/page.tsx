@@ -57,7 +57,18 @@ export default function JsonToCsvTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="JSON to CSV Converter" description="Convert a JSON array of objects to CSV format" category="developer" categoryLabel="Developer Tools">
+    <ToolPage
+      title="JSON to CSV Converter"
+      description="Convert a JSON array of objects to CSV format"
+      category="developer"
+      categoryLabel="Developer Tools"
+      faqs={[
+        { question: 'What JSON format does this converter expect?', answer: 'It expects a JSON array of flat objects, e.g., [{"name": "Alice", "age": 30}]. Each object becomes a row, and all unique keys become CSV column headers.' },
+        { question: 'How does the converter handle nested JSON objects?', answer: 'Nested objects and arrays are serialized as JSON strings within the CSV cell. For deeply nested data, consider flattening your JSON first for a cleaner CSV output.' },
+        { question: 'Are special characters like commas and quotes handled correctly?', answer: 'Yes. Fields containing commas, double quotes, or newlines are automatically wrapped in quotes and escaped according to the RFC 4180 CSV standard.' },
+        { question: 'Can I open the downloaded CSV in Excel or Google Sheets?', answer: 'Yes. The output is a standard CSV file that opens correctly in Microsoft Excel, Google Sheets, LibreOffice Calc, and any other spreadsheet application.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <div className="flex items-center justify-between mb-2">

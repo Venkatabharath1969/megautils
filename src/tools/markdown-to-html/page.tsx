@@ -122,7 +122,18 @@ export default function MarkdownToHtmlTool() {
   }, [output])
 
   return (
-    <ToolPage title="Markdown to HTML Converter" description="Convert Markdown to clean HTML. Copy or download the generated HTML file." category="markdown" categoryLabel="Markdown Tools">
+    <ToolPage
+      title="Markdown to HTML Converter"
+      description="Convert Markdown to clean HTML. Copy or download the generated HTML file."
+      category="markdown"
+      categoryLabel="Markdown Tools"
+      faqs={[
+        { question: 'What Markdown syntax is supported?', answer: 'This converter supports headings, bold, italic, strikethrough, links, images, code blocks, blockquotes, ordered and unordered lists, tables, and horizontal rules.' },
+        { question: 'Can I use the generated HTML directly on my website?', answer: 'Yes. The output is clean, semantic HTML that can be pasted into any web page, CMS, or email template. You can also download a complete HTML file with proper doctype and meta tags.' },
+        { question: 'Does this tool support GitHub Flavored Markdown?', answer: 'It supports the most commonly used GFM features including tables, strikethrough (~~text~~), and fenced code blocks with language hints.' },
+        { question: 'Is the conversion done on a server?', answer: 'No. All Markdown-to-HTML conversion happens entirely in your browser using client-side JavaScript. Nothing is uploaded or stored.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <div className="flex items-center justify-between mb-2">

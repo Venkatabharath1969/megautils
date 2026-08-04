@@ -116,7 +116,18 @@ export default function HtmlFormatterTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="HTML Formatter" description="Format, beautify, and minify HTML markup" category="developer" categoryLabel="Developer Tools">
+    <ToolPage
+      title="HTML Formatter"
+      description="Format, beautify, and minify HTML markup"
+      category="developer"
+      categoryLabel="Developer Tools"
+      faqs={[
+        { question: 'What does an HTML formatter do?', answer: 'An HTML formatter adds proper indentation and line breaks to your HTML code, making it easier to read, debug, and maintain without changing how it renders in the browser.' },
+        { question: 'Will formatting change how my HTML looks in the browser?', answer: 'No. Formatting only adjusts whitespace and indentation — the visual output in the browser stays identical.' },
+        { question: 'What is the difference between beautifying and minifying HTML?', answer: 'Beautifying adds indentation and line breaks for readability, while minifying strips all unnecessary whitespace to reduce file size for faster page loads.' },
+        { question: 'Is my HTML data safe when using this tool?', answer: 'Yes. All processing happens locally in your browser. Nothing is uploaded to any server.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <div className="flex items-center justify-between mb-2">

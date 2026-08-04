@@ -11,21 +11,22 @@ const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin']
 
 export const metadata: Metadata = {
   title: {
-    default: 'MegaUtils - 400+ Free Online Tools for Developers & Everyone',
+    default: 'MegaUtils - 177+ Free Online Tools for Developers & Everyone',
     template: '%s | MegaUtils',
   },
   description: 'Free online developer tools, financial calculators, SEO tools, converters, and more. All processing happens in your browser. No login required. No data stored.',
   keywords: ['online tools', 'developer tools', 'json formatter', 'base64 encoder', 'calculator', 'converter', 'seo tools', 'css generator'],
-  metadataBase: new URL('https://megautils.com'),
+  metadataBase: new URL('https://megautils.xyz'),
   openGraph: {
-    title: 'MegaUtils - 400+ Free Online Tools',
+    title: 'MegaUtils - 177+ Free Online Tools',
     description: 'Free online developer tools, calculators, converters, and more. No login. No data stored.',
-    url: 'https://megautils.com',
+    url: 'https://megautils.xyz',
     siteName: 'MegaUtils',
     type: 'website',
   },
-  twitter: { card: 'summary_large_image', title: 'MegaUtils - 400+ Free Online Tools', description: 'Free online developer tools, calculators, converters, and more.' },
-  robots: { index: true, follow: true },
+  twitter: { card: 'summary_large_image', title: 'MegaUtils - 177+ Free Online Tools', description: 'Free online developer tools, calculators, converters, and more.' },
+  robots: { index: true, follow: true, 'max-image-preview': 'large' as const, 'max-snippet': -1, 'max-video-preview': -1 },
+  other: { 'google-site-verification': '' },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

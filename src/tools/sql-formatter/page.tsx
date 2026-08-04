@@ -157,7 +157,18 @@ export default function SqlFormatterTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="SQL Formatter" description="Format and beautify SQL queries with keyword capitalization and indentation" category="developer" categoryLabel="Developer Tools">
+    <ToolPage
+      title="SQL Formatter"
+      description="Format and beautify SQL queries with keyword capitalization and indentation"
+      category="developer"
+      categoryLabel="Developer Tools"
+      faqs={[
+        { question: 'What does a SQL formatter do?', answer: 'It restructures your SQL query with proper indentation, line breaks before major clauses, and uppercased keywords so the logic is easy to follow.' },
+        { question: 'Does this SQL formatter support different SQL dialects?', answer: 'Yes. The formatter handles standard SQL syntax used across MySQL, PostgreSQL, SQLite, SQL Server, and Oracle, including JOINs, subqueries, and CTEs.' },
+        { question: 'Will formatting change my SQL query results?', answer: 'No. Formatting only changes whitespace and keyword casing — the query logic and results remain identical.' },
+        { question: 'Why should I capitalize SQL keywords?', answer: 'Capitalizing keywords like SELECT, FROM, and WHERE is a widely adopted convention that visually separates SQL commands from table and column names, improving readability.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <div className="flex items-center justify-between mb-2">

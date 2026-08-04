@@ -30,7 +30,18 @@ export default function UuidGeneratorTool() {
   const allText = uuids.join('\n')
 
   return (
-    <ToolPage title="UUID Generator" description="Generate random UUID v4 identifiers. Bulk generate up to 100 at once." category="generators" categoryLabel="Generators">
+    <ToolPage
+      title="UUID Generator"
+      description="Generate random UUID v4 identifiers. Bulk generate up to 100 at once."
+      category="generators"
+      categoryLabel="Generators"
+      faqs={[
+        { question: 'What is a UUID and what is it used for?', answer: 'A UUID (Universally Unique Identifier) is a 128-bit identifier used to uniquely identify resources in databases, APIs, and distributed systems without requiring a central authority.' },
+        { question: 'Can two UUIDs ever be the same?', answer: 'While theoretically possible, the probability of a collision with UUID v4 is astronomically low — you would need to generate about 2.71 quintillion UUIDs to have a 50% chance of a single duplicate.' },
+        { question: 'What is the difference between UUID versions?', answer: 'UUID v1 is based on timestamp and MAC address, v4 is fully random (most commonly used), and v5 uses SHA-1 hashing of a namespace and name. This tool generates v4 UUIDs.' },
+        { question: 'Are UUIDs generated here cryptographically secure?', answer: 'Yes. This tool uses the Web Crypto API (crypto.getRandomValues) to generate random bytes, ensuring the UUIDs are suitable for security-sensitive applications.' },
+      ]}
+    >
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium">Count:</label>

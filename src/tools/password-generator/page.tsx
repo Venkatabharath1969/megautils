@@ -59,7 +59,18 @@ export default function PasswordGeneratorTool() {
   const allText = passwords.join('\n')
 
   return (
-    <ToolPage title="Password Generator" description="Generate secure random passwords with customizable length and character sets." category="generators" categoryLabel="Generators">
+    <ToolPage
+      title="Password Generator"
+      description="Generate secure random passwords with customizable length and character sets."
+      category="generators"
+      categoryLabel="Generators"
+      faqs={[
+        { question: 'How long should a strong password be?', answer: 'Security experts recommend at least 12-16 characters. Longer passwords with a mix of uppercase, lowercase, numbers, and symbols are exponentially harder to crack.' },
+        { question: 'Are the generated passwords truly random?', answer: 'Yes. This tool uses the Web Crypto API (crypto.getRandomValues), which provides cryptographically secure random number generation built into your browser.' },
+        { question: 'Are my generated passwords stored anywhere?', answer: 'No. Passwords are generated entirely in your browser and are never sent to any server. Once you close or refresh the page, they are gone unless you save them.' },
+        { question: 'Why should I include symbols in my password?', answer: 'Adding symbols dramatically increases the number of possible combinations, making brute-force attacks much slower. A 12-character password with symbols is far stronger than one with only letters.' },
+      ]}
+    >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div className="space-y-4">
           <div>

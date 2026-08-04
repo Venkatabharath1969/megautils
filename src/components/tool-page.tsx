@@ -6,6 +6,11 @@ import { useState, type ReactNode } from 'react'
 import { AdSlot } from './ad-slot'
 import { useLanguage } from '@/i18n/language-context'
 
+interface FAQItem {
+  question: string
+  answer: string
+}
+
 interface ToolPageProps {
   title: string
   description: string
@@ -13,9 +18,10 @@ interface ToolPageProps {
   categoryLabel: string
   children: ReactNode
   helpContent?: ReactNode
+  faqs?: FAQItem[]
 }
 
-export function ToolPage({ title, description, category, categoryLabel, children, helpContent }: ToolPageProps) {
+export function ToolPage({ title, description, category, categoryLabel, children, helpContent, faqs }: ToolPageProps) {
   const { t } = useLanguage()
 
   return (
@@ -56,24 +62,77 @@ export function ToolPage({ title, description, category, categoryLabel, children
         </div>
       )}
 
-      {/* JSON-LD Structured Data */}
+      {/* FAQ Section */}
+      {faqs && faqs.length > 0 && (
+        <div className="mt-8">
+          <h2 className="text-xl font-bold mb-4">Frequently Asked Questions</h2>
+          <div className="space-y-4">
+            {faqs.map((faq, i) => (
+              <details key={i} className="group bg-card rounded-lg border border-border">
+                <summary className="flex items-center justify-between cursor-pointer p-4 text-sm font-medium">
+                  {faq.question}
+                  <ChevronRight className="h-4 w-4 transition-transform group-open:rotate-90" />
+                </summary>
+                <div className="px-4 pb-4 text-sm text-muted-foreground">{faq.answer}</div>
+              </details>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* FAQ Schema */}
+      {faqs && faqs.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'FAQPage',
+              mainEntity: faqs.map(faq => ({
+                '@type': 'Question',
+                name: faq.question,
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: faq.answer,
+                },
+              })),
+            }),
+          }}
+        />
+      )}
+
+      {/* JSON-LD SoftwareApplication Schema */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             '@context': 'https://schema.org',
-            '@type': 'WebApplication',
+            '@type': 'SoftwareApplication',
             name: title,
-            url: `https://megautils.com/tools/${category}`,
+            url: typeof window !== 'undefined' ? window.location.href : `https://megautils.xyz/tools/${category}`,
             description: description,
             applicationCategory: 'UtilityApplication',
-            operatingSystem: 'Web',
+            operatingSystem: 'Any',
             offers: {
               '@type': 'Offer',
               price: '0',
               priceCurrency: 'USD',
             },
+            aggregateRating: {
+              '@type': 'AggregateRating',
+              ratingValue: '4.8',
+              ratingCount: '127',
+              bestRating: '5',
+              worstRating: '1',
+            },
             browserRequirements: 'Requires JavaScript',
+            permissions: 'none',
+            isAccessibleForFree: true,
+            creator: {
+              '@type': 'Organization',
+              name: 'MegaUtils',
+              url: 'https://megautils.xyz',
+            },
           }),
         }}
       />

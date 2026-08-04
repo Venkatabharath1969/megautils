@@ -52,7 +52,18 @@ export default function CssGradientGeneratorTool() {
   const cssCode = `background: ${gradientCSS};`
 
   return (
-    <ToolPage title="CSS Gradient Generator" description="Build beautiful CSS gradients with live preview. Supports linear and radial gradients." category="css" categoryLabel="CSS Tools">
+    <ToolPage
+      title="CSS Gradient Generator"
+      description="Build beautiful CSS gradients with live preview. Supports linear and radial gradients."
+      category="css"
+      categoryLabel="CSS Tools"
+      faqs={[
+        { question: 'What is the difference between linear and radial gradients?', answer: 'A linear gradient transitions colors along a straight line at a specified angle, while a radial gradient radiates colors outward from a center point in a circular or elliptical shape.' },
+        { question: 'Are CSS gradients supported in all browsers?', answer: 'Yes. CSS gradients are supported in all modern browsers including Chrome, Firefox, Safari, and Edge. No vendor prefixes are needed for current browser versions.' },
+        { question: 'How many color stops can I add to a gradient?', answer: 'There is no practical limit. You can add as many color stops as you need, and each stop can be positioned at a specific percentage along the gradient to create complex color transitions.' },
+        { question: 'Can I use a CSS gradient as a background image?', answer: 'Yes. CSS gradients are treated as background images, so you can use them with background-size, combine them with other backgrounds, and even layer multiple gradients together.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Controls */}
         <div className="space-y-4">

@@ -20,7 +20,18 @@ export default function WordCounterTool() {
   }, [text])
 
   return (
-    <ToolPage title="Word Counter" description="Count words, characters, sentences, paragraphs, and estimate reading time." category="text" categoryLabel="Text Tools">
+    <ToolPage
+      title="Word Counter"
+      description="Count words, characters, sentences, paragraphs, and estimate reading time."
+      category="text"
+      categoryLabel="Text Tools"
+      faqs={[
+        { question: 'How is reading time calculated?', answer: 'Reading time is estimated based on an average reading speed of 200 words per minute, which is the standard rate for adult readers processing online content.' },
+        { question: 'Does the character count include spaces?', answer: 'Both counts are provided — total characters (with spaces) and characters without spaces — so you can use whichever is needed for your platform or assignment.' },
+        { question: 'What counts as a sentence?', answer: 'A sentence is detected by terminal punctuation marks (period, exclamation mark, or question mark). Abbreviations with periods may slightly affect the count.' },
+        { question: 'Can I use this for Twitter/X or Instagram character limits?', answer: 'Yes. Use the character count to check against platform limits such as 280 characters for X (Twitter) posts or 2,200 characters for Instagram captions.' },
+      ]}
+    >
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
         {[
           { label: 'Words', value: stats.words },

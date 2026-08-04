@@ -106,6 +106,12 @@ export default function ImageResizerTool() {
       description="Resize images to any dimension while maintaining quality"
       category="image"
       categoryLabel="Image Tools"
+      faqs={[
+        { question: 'Does resizing an image reduce its quality?', answer: 'Enlarging an image beyond its original dimensions can reduce sharpness because new pixels must be interpolated. Downscaling generally preserves quality well.' },
+        { question: 'What does locking the aspect ratio do?', answer: 'Locking the aspect ratio ensures that when you change the width, the height adjusts proportionally (and vice versa), preventing the image from appearing stretched or squished.' },
+        { question: 'Is my image uploaded to a server?', answer: 'No. All resizing is done locally in your browser using the HTML Canvas API. Your image never leaves your device.' },
+        { question: 'What image formats are supported?', answer: 'You can upload any format your browser supports, including PNG, JPEG, WebP, GIF, and SVG. The resized output is downloaded as a PNG file.' },
+      ]}
     >
       <div className="space-y-6">
         {/* Upload */}

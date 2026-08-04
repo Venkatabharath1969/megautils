@@ -1,29 +1,80 @@
-# MegaUtils
+# MegaUtils — Free Online Tools
+
+> https://megautils.xyz — 177 free browser-based utility tools. No signup. No data uploaded. 100% client-side processing.
 
 ## About
-Free online utility tools website with 100+ tools for developers, designers, and everyone. All processing happens in your browser. No data stored. No login required.
+MegaUtils is a free online tools website with 177 utilities across 17 categories for developers, designers, students, and professionals. Every tool runs entirely in your browser — no data leaves your device. No login required.
 
-## Categories
-- Developer Tools: JSON formatter, XML/HTML/CSS/SQL/JS formatters, data converters (JSON↔YAML, JSON↔CSV), TypeScript generator, text diff
-- Encoders & Decoders: Base64, URL, HTML entities, JWT, binary, hex, Morse code, ROT13
-- SEO Tools: Meta tag generator, robots.txt, sitemap, SERP preview, keyword density, readability score
-- Financial Calculators: Compound interest, EMI, mortgage, SIP, salary, ROI, GST, CAGR, margin
-- Text Tools: Word counter, case converter, sorter, reverser, find & replace, slug generator
-- Color Tools: Color picker, converter, palette generator, contrast checker, tint & shade
-- CSS Tools: Gradient, box shadow, border radius, flexbox, grid, glassmorphism generators
-- Markdown Tools: Editor with preview, MD↔HTML converter, table generator
-- Unit Converters: Length, weight, temperature, data storage, speed, area, volume
-- Math & Science: Scientific calculator, BMI, number to words
-- Date & Time: Unix timestamp, date calculator, age calculator, cron builder
+## Categories & Tools
+
+### Developer Tools (24)
+JSON Formatter, JSON Validator, JSON to TypeScript, JSON to Go, JSON to Python, JSON to CSV, JSON to XML, JSON to YAML, JSON Escape, JSON Path Finder, JavaScript Formatter, HTML Formatter, CSS Formatter, SQL Formatter, YAML Formatter, YAML to JSON, XML Formatter, XML to JSON, TOML Formatter, Diff Checker, Regex Tester, CSV Viewer, CSV to JSON, Code to Image
+
+### Encoders & Decoders (14)
+Base64 Encoder, Base32 Encoder, URL Encoder, HTML Entity Encoder, JWT Decoder, Punycode Converter, ROT13 Encoder, Text to Binary, Text to Hex, Morse Code Translator, Caesar Cipher, CSV Escape, SQL Escape, XML Escape
+
+### Crypto & Hash (3)
+Hash Generator (MD5/SHA-1/SHA-256/SHA-512), UUID Generator, Password Generator
+
+### SEO Tools (18)
+Meta Tag Generator, SERP Preview, Open Graph Preview, Robots.txt Generator, Sitemap Generator, Schema generators (FAQ, Article, Product, Recipe, Event, HowTo, Organization, Local Business, Breadcrumb, Job Posting), Keyword Density Checker, Headline Analyzer, HTAccess Generator, Privacy Policy Generator, Terms Generator
+
+### Text Tools (18)
+Word Counter, Case Converter, Text Sorter, Text Reverser, Find and Replace, Text Diff, Blank Line Remover, Duplicate Line Remover, Line Number Adder, Text Repeater, Small Text Generator, Text to Slug, Text to ASCII Art, Text to Speech, String Length Calculator, Social Media Counter, Lorem Ipsum Generator, Reading Time Calculator
+
+### String Utilities (6)
+Number to Words, Number Base Converter, Unicode Text Formatter, NATO Alphabet, Braille Converter, Emoji Picker
+
+### Color Tools (8)
+Color Picker, Color Converter, Hex to RGB, Color Palette Generator, Color Name Finder, Random Color Generator, Contrast Checker, Tint Shade Generator
+
+### CSS Tools (14)
+CSS Gradient Generator, CSS Box Shadow Generator, CSS Border Radius Generator, CSS Flexbox Generator, CSS Grid Generator, CSS Animation Generator, CSS Text Shadow Generator, CSS Transform Generator, CSS Filter Generator, CSS Columns Generator, CSS Unit Converter, Glassmorphism Generator, Neumorphism Generator, Tailwind Color Picker
+
+### Financial Calculators (23)
+Mortgage Calculator, EMI Calculator, Compound Interest Calculator, SIP Calculator, PPF Calculator, FD Calculator, RD Calculator, Loan Comparison Calculator, ROI Calculator, NPV Calculator, IRR Calculator, CAGR Calculator, Salary Calculator, Hourly to Salary, Tax Calculator, GST Calculator, Discount Calculator, Margin Calculator, Tip Calculator, Break Even Calculator, Stock Profit Calculator, Inflation Calculator, Percentage Calculator
+
+### Unit Converters (14)
+Length, Weight, Temperature, Area, Volume, Speed, Data Storage, Energy, Power, Pressure, Angle, Frequency, Fuel Economy, Cooking Converter
+
+### Math & Science (4)
+Scientific Calculator, BMI Calculator, Age Calculator, Aspect Ratio Calculator
+
+### Image Tools (8)
+Image Resizer, Image Cropper, Image Format Converter, Image to Base64, Favicon Generator, Placeholder Image Generator, SVG Optimizer, Barcode Generator
+
+### Date & Time (5)
+Unix Timestamp Converter, Date Calculator, Cron Expression Builder, Crontab Reference, QR Code Generator
+
+### Network & API (4)
+IP Address Info, HTTP Status Codes, User Agent Parser, URL Parser
+
+### Content & Writing (3)
+Markdown Editor, Readability Score, List Tools
+
+### Markdown Tools (4)
+Markdown to HTML, Markdown to Text, HTML to Markdown, Markdown Table Generator
+
+### Generators (8)
+Fake Data Generator, .gitignore Generator, UTM Link Builder, Placeholder Image Generator, Code to Image, Privacy Policy Generator, Terms Generator, Robots.txt Generator
 
 ## Key Pages
-- /tools/json-formatter - Format and validate JSON
-- /tools/base64-encoder - Encode/decode Base64
-- /tools/mortgage-calculator - Calculate mortgage payments
-- /tools/color-picker - Pick colors with HEX/RGB/HSL
-- /tools/regex-tester - Test regex with highlighting
-- /tools/css-gradient-generator - Build CSS gradients visually
-- /blog - How-to guides and comparisons
+- https://megautils.xyz/ — Homepage with all 17 category cards
+- https://megautils.xyz/tools/json-formatter — Format, validate, and beautify JSON
+- https://megautils.xyz/tools/base64-encoder — Encode and decode Base64 strings
+- https://megautils.xyz/tools/mortgage-calculator — Calculate mortgage payments and amortization
+- https://megautils.xyz/tools/color-picker — Pick colors with HEX/RGB/HSL values
+- https://megautils.xyz/tools/regex-tester — Test regular expressions with live highlighting
+- https://megautils.xyz/tools/css-gradient-generator — Build CSS gradients visually
+- https://megautils.xyz/tools/word-counter — Count words, characters, sentences, paragraphs
+- https://megautils.xyz/tools/password-generator — Generate secure random passwords
+- https://megautils.xyz/blog — How-to guides, tutorials, and tool comparisons
 
-## Privacy
-All tool processing happens client-side in the user's browser. No data is uploaded, stored, or transmitted to any server.
+## Privacy & Security
+All tool processing happens 100% client-side in the user's browser. No data is uploaded, stored, or transmitted to any server. No cookies for tracking. No login or account required. HTTPS enforced.
+
+## Technical Details
+- Framework: Next.js 16 (Turbopack, App Router)
+- Language: TypeScript
+- Styling: Tailwind CSS v4
+- 10 UI languages: English, German, French, Spanish, Japanese, Korean, Portuguese, Italian, Dutch, Turkish

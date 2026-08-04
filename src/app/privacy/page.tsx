@@ -25,7 +25,7 @@ export default function PrivacyPage() {
         <p>
           MegaUtils (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) is committed to protecting your privacy.
           This Privacy Policy explains how we collect, use, and safeguard your information when you visit our
-          website at megautils.com.
+          website at megautils.xyz.
         </p>
 
         <h2>Client-Side Processing</h2>

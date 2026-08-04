@@ -155,7 +155,18 @@ export default function CssFormatterTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="CSS Formatter" description="Format, beautify, and minify CSS stylesheets" category="developer" categoryLabel="Developer Tools">
+    <ToolPage
+      title="CSS Formatter"
+      description="Format, beautify, and minify CSS stylesheets"
+      category="developer"
+      categoryLabel="Developer Tools"
+      faqs={[
+        { question: 'What does a CSS formatter do?', answer: 'A CSS formatter restructures your stylesheet with consistent indentation, spacing, and line breaks so properties and selectors are easy to scan and edit.' },
+        { question: 'Does minifying CSS affect how my website looks?', answer: 'No. Minifying only removes whitespace and comments — the styles applied to your page remain exactly the same.' },
+        { question: 'Should I use 2-space or 4-space indentation for CSS?', answer: 'Both are widely used. Two spaces is the most common convention in modern front-end projects, but four spaces can improve readability in deeply nested selectors.' },
+        { question: 'Can I format CSS with vendor prefixes and media queries?', answer: 'Yes. This formatter handles all standard CSS syntax including vendor prefixes, media queries, keyframes, and nested rules.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <div className="flex items-center justify-between mb-2">

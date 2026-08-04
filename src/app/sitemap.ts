@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next'
 import { getVisiblePosts } from '@/lib/blog-data'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://megautils.com'
+  const baseUrl = 'https://megautils.xyz'
 
   // All 177 tool slugs (alphabetical)
   const tools = [

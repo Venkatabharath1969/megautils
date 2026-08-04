@@ -87,7 +87,17 @@ export default function ColorPickerTool() {
   }
 
   return (
-    <ToolPage title="Color Picker" description="Pick a color and get HEX, RGB, and HSL values. Copy any format." category="color" categoryLabel="Color Tools">
+    <ToolPage
+      title="Color Picker"
+      description="Pick a color and get HEX, RGB, and HSL values. Copy any format."
+      category="color"
+      categoryLabel="Color Tools"
+      faqs={[
+        { question: 'What is the difference between HEX, RGB, and HSL?', answer: 'HEX uses a 6-digit hexadecimal code (e.g., #3B82F6), RGB defines color by red/green/blue intensity (0-255), and HSL describes color by hue, saturation, and lightness — all represent the same color in different formats.' },
+        { question: 'Which color format should I use in CSS?', answer: 'HEX is most common for solid colors, RGB/RGBA is best when you need transparency, and HSL is ideal when you want to programmatically adjust hue, saturation, or lightness.' },
+        { question: 'Can I enter a color code manually instead of using the picker?', answer: 'Yes. Use the manual input field to type any HEX, RGB, or HSL value and click Apply (or press Enter) to convert it to all formats instantly.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Picker */}
         <div className="space-y-4">

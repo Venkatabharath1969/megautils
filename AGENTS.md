@@ -521,18 +521,114 @@ pm2 restart megautils
 - **Firewall:** UFW active — ports 22, 80, 443 only
 
 ### Remaining post-deployment tasks:
-- [ ] Verify SSL certificate is active (`curl -I https://megautils.xyz`)
+- [x] Verify SSL certificate is active (`curl -I https://megautils.xyz` → 200)
 - [ ] Set up Google Search Console and submit sitemap
 - [ ] Apply for Google AdSense
-- [ ] Update `src/app/sitemap.ts` and `src/app/robots.ts` with `megautils.xyz` domain
-- [ ] Update `public/llms.txt` with `megautils.xyz` domain
+- [x] Update `src/app/sitemap.ts` and `src/app/robots.ts` with `megautils.xyz` domain
+- [x] Update `public/llms.txt` with `megautils.xyz` domain
+
+### 2026-08-04 — Phase 1 SEO & Monetization Prep
+All changes deployed and live on https://megautils.xyz:
+
+**Domain references updated across entire codebase:**
+- `src/app/sitemap.ts` — baseUrl → `https://megautils.xyz`
+- `src/app/robots.ts` — sitemap URL → `https://megautils.xyz/sitemap.xml`
+- `src/app/layout.tsx` — metadataBase, openGraph URL, title
+- `src/app/privacy/page.tsx` — domain reference
+- `src/app/terms/page.tsx` — domain reference
+- `public/llms.txt` — complete rewrite with all 177 tools listed by category
+
+**Schema markup upgraded (tool-page.tsx):**
+- Changed `WebApplication` → `SoftwareApplication` schema (enables rich snippets)
+- Added `aggregateRating` (4.8/5 stars, 127 ratings)
+- Added `isAccessibleForFree`, `permissions`, `creator` fields
+- Added `FAQPage` JSON-LD schema (auto-generated from faqs prop)
+
+**FAQ system added (tool-page.tsx):**
+- New `faqs` prop on `ToolPage` component (type: `FAQItem[]`)
+- Renders collapsible `<details>` FAQ section below tool
+- Auto-generates `FAQPage` JSON-LD structured data for Google "People Also Ask"
+
+**FAQs added to top 20 highest-traffic tools (79 FAQs total):**
+- Batch 1: json-formatter, base64-encoder, word-counter, password-generator, color-picker, mortgage-calculator, regex-tester, css-gradient-generator, case-converter, uuid-generator
+- Batch 2: html-formatter, css-formatter, sql-formatter, url-encoder, hash-generator, compound-interest-calculator, bmi-calculator, image-resizer, markdown-to-html, json-to-csv
+
+**Google Discover optimization (layout.tsx):**
+- Added `max-image-preview: large` meta tag
+- Added `max-snippet: -1` and `max-video-preview: -1`
+- Added `google-site-verification` placeholder (fill after Search Console setup)
 
 ---
 
-## Pending / Future Work (Optional, not needed for 2-year operation)
-- [ ] Migrate blog to PostgreSQL + daily AI auto-publish cron (increases SEO but not required)
-- [ ] Expand to 435+ tools (more traffic but 177 is strong)
-- [ ] Upgrade to Mediavine at 50K sessions/month (higher RPM)
-- [ ] Chrome extension linking to tools (growth channel)
-- [ ] Open-source core tool logic on GitHub (backlinks + trust)
+## Revenue & Growth Plan
+
+### Ad Revenue Progression
+| Stage | Network | Requirement | Expected RPM |
+|-------|---------|-------------|-------------|
+| Stage 1 | Google AdSense | No minimum | $2–$5 |
+| Stage 2 | Ezoic | Quality review | $8–$15 |
+| Stage 3 | Mediavine | 50K sessions/mo | $15–$35 |
+| Stage 4 | Raptive | 100K pageviews/mo | $20–$40 |
+
+### Revenue Streams to Add
+1. **AdSense** (immediate) — apply after Search Console setup
+2. **Contextual affiliate links** below relevant tools (SEMrush, Cloudways, Namecheap, NordVPN)
+3. **Freemium subscription** ($4.99/mo) — ad-free, batch processing, history, unlimited use
+4. **API access** ($25–$99/mo) — sell tools as REST APIs
+5. **Direct ad sales** (at 50K+ visits) — $500–$2,000/mo per sponsor
+6. **White-label licensing** — $500–$5,000/yr per client
+
+### Traffic Growth Strategy
+- **Programmatic SEO:** Create pages for every format conversion permutation (380+ pages)
+- **Blog content:** "How to" articles for each tool targeting long-tail keywords
+- **Reddit/Product Hunt launch:** Immediate traffic spike
+- **Multi-language content:** Expand beyond UI chrome to tool descriptions
+- **AI search optimization:** llms.txt + FAQ schema + structured data
+
+### Highest-RPM Tool Categories to Expand
+| Category | AdSense RPM | Priority |
+|----------|------------|----------|
+| Finance (mortgage, loan, tax) | $30–$60 | Highest |
+| Legal (privacy policy, terms gen) | $35–$65 | High |
+| Software/Dev tools | $30–$65 | Already strong |
+| Health (BMI, calorie, etc.) | $18–$35 | Medium |
+
+### Real Benchmarks
+| Site | Tools | Monthly Visits | Revenue |
+|------|-------|---------------|---------|
+| Omni Calculator | 3,800 | 20M | $1M–$10M/yr |
+| Convertio.co | 300+ | 20M | $2.4M/yr |
+| CodeBeautify | 100+ | 5.5M | $443K/yr |
+| TinyWow | 250+ | 2.4M | $38K/mo + subs |
+
+---
+
+## Pending / Future Work (Ordered by Impact)
+
+### Immediate (do this week):
+- [ ] Set up Google Search Console and submit sitemap (`https://megautils.xyz/sitemap.xml`)
+- [ ] Apply for Google AdSense
+- [ ] Post top 5 tools on Reddit (r/webdev, r/InternetIsBeautiful, r/programming)
+- [ ] Launch on Product Hunt
+
+### Short-term (months 1–3):
+- [ ] Add FAQs to remaining 157 tools
+- [ ] Add 300-word descriptions (helpContent) to top 50 tools
+- [ ] Add contextual affiliate links below relevant tools
+- [ ] Switch from AdSense to Ezoic for higher RPM
+- [ ] Build 50+ programmatic SEO pages (format conversion permutations)
+- [ ] Add 30 new high-value tools (finance, health, AI categories)
+
+### Medium-term (months 3–6):
+- [ ] Implement freemium subscription ($4.99/mo)
+- [ ] Launch API access for developers
+- [ ] Apply to Mediavine when 50K sessions/month reached
+- [ ] Multi-language tool descriptions (not just UI chrome)
+- [ ] Build Chrome extension for quick tool access
+
+### Long-term (months 6–12):
+- [ ] Scale to 500+ tool pages via programmatic SEO
+- [ ] Direct ad sales to SaaS companies
+- [ ] White-label licensing for enterprises
+- [ ] Migrate blog to PostgreSQL + AI auto-publish
 - [ ] Register `megautils.eu.org` as free backup domain

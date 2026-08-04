@@ -11,6 +11,6 @@ export default function robots(): MetadataRoute.Robots {
       { userAgent: 'PerplexityBot', allow: '/' },
       { userAgent: 'Google-Extended', allow: '/' },
     ],
-    sitemap: 'https://megautils.com/sitemap.xml',
+    sitemap: 'https://megautils.xyz/sitemap.xml',
   }
 }

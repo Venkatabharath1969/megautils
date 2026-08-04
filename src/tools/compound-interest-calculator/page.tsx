@@ -48,6 +48,12 @@ export default function CompoundInterestCalculator() {
       description="Calculate compound interest with different compounding frequencies and view a year-by-year breakdown."
       category="financial"
       categoryLabel="Financial Calculators"
+      faqs={[
+        { question: 'What is the compound interest formula?', answer: 'The formula is A = P(1 + r/n)^(nt), where P is the principal, r is the annual interest rate, n is the number of times interest compounds per year, and t is the number of years.' },
+        { question: 'What is the difference between simple and compound interest?', answer: 'Simple interest is calculated only on the principal, while compound interest is calculated on the principal plus all previously earned interest — causing your money to grow exponentially over time.' },
+        { question: 'How does compounding frequency affect returns?', answer: 'More frequent compounding (e.g., daily vs. annually) yields slightly higher returns because interest is reinvested sooner. However, the difference shrinks as frequency increases.' },
+        { question: 'Why is compound interest called the eighth wonder of the world?', answer: 'This quote, often attributed to Einstein, highlights how compound interest accelerates wealth growth over long periods — small, consistent returns can produce dramatically large results given enough time.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Inputs */}
