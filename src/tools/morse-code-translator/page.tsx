@@ -55,7 +55,17 @@ export default function MorseCodeTranslatorTool() {
   }, [input, mode])
 
   return (
-    <ToolPage title="Morse Code Translator" description="Convert text to Morse code and Morse code back to text." category="encoders" categoryLabel="Encoders & Decoders">
+    <ToolPage
+      title="Morse Code Translator"
+      description="Convert text to Morse code and Morse code back to text."
+      category="encoders"
+      categoryLabel="Encoders & Decoders"
+      faqs={[
+        { question: 'How do I translate text to Morse code?', answer: 'Enter your text in the input field and it is instantly converted to dots and dashes. Spaces between letters and "/" between words separate the Morse symbols.' },
+        { question: 'How do I read Morse code?', answer: 'Each letter is represented by a unique combination of dots (.) and dashes (-). Switch to "Morse to Text" mode and paste the Morse code to decode it.' },
+        { question: 'What characters does Morse code support?', answer: 'Morse code covers the English alphabet (A-Z), numbers (0-9), and common punctuation marks like periods, commas, and question marks.' },
+      ]}
+    >
       <div className="flex gap-2 mb-4">
         <button onClick={() => { setMode('encode'); setInput('') }} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'encode' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>
           Text &rarr; Morse

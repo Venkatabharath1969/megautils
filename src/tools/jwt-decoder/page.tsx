@@ -103,7 +103,18 @@ export default function JwtDecoderTool() {
   const clear = () => { setInput(''); setResult(null); setError('') }
 
   return (
-    <ToolPage title="JWT Decoder" description="Decode and inspect JSON Web Tokens (JWT) - view header, payload, and expiry" category="developer" categoryLabel="Developer Tools">
+    <ToolPage
+      title="JWT Decoder"
+      description="Decode and inspect JSON Web Tokens (JWT) - view header, payload, and expiry"
+      category="developer"
+      categoryLabel="Developer Tools"
+      faqs={[
+        { question: 'Is it safe to decode a JWT in the browser?', answer: 'Yes, JWT payloads are only Base64-encoded, not encrypted, so anyone with the token can read them. This tool decodes entirely client-side and never sends your token to any server.' },
+        { question: 'Can this tool verify the JWT signature?', answer: 'No, signature verification requires the secret key or public key used to sign the token, which should never be shared publicly. This tool only decodes and inspects the header and payload.' },
+        { question: 'What do the exp, iat, and nbf claims mean in a JWT?', answer: 'The "exp" (expiration) is when the token expires, "iat" (issued at) is when it was created, and "nbf" (not before) is the earliest time the token should be accepted. All are Unix timestamps.' },
+        { question: 'How can I tell if my JWT token has expired?', answer: 'Paste your token into the decoder and it will automatically compare the "exp" claim against the current time and display whether the token is expired or still valid.' },
+      ]}
+    >
       <div>
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-medium">JWT Token</span>

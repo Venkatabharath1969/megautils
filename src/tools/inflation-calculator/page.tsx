@@ -35,6 +35,11 @@ export default function InflationCalculator() {
       description="Calculate the impact of inflation on your money. See future costs and purchasing power erosion over time."
       category="financial"
       categoryLabel="Financial Calculators"
+      faqs={[
+        { question: 'How does inflation affect purchasing power?', answer: 'Inflation erodes purchasing power over time, meaning the same amount of money buys fewer goods and services in the future. At 3% inflation, prices roughly double every 24 years.' },
+        { question: 'What is a normal inflation rate?', answer: 'Most central banks target an annual inflation rate of about 2-3%. The long-term historical average in the US is around 3.2% per year.' },
+        { question: 'How do I protect my money from inflation?', answer: 'Invest in assets that historically outpace inflation, such as stocks, real estate, TIPS (Treasury Inflation-Protected Securities), or I-Bonds. Keeping cash loses value over time.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Inputs */}

@@ -65,7 +65,18 @@ export default function ContrastCheckerTool() {
   const swapColors = () => { setFg(bg); setBg(fg) }
 
   return (
-    <ToolPage title="Contrast Checker" description="Check WCAG color contrast ratio between foreground and background colors." category="color" categoryLabel="Color Tools">
+    <ToolPage
+      title="Contrast Checker"
+      description="Check WCAG color contrast ratio between foreground and background colors."
+      category="color"
+      categoryLabel="Color Tools"
+      faqs={[
+        { question: 'What is WCAG contrast ratio?', answer: 'WCAG contrast ratio measures the luminance difference between text and background colors. A higher ratio means better readability and accessibility.' },
+        { question: 'What contrast ratio do I need for WCAG AA compliance?', answer: 'WCAG AA requires a minimum contrast ratio of 4.5:1 for normal text and 3:1 for large text (18px+ bold or 24px+ regular).' },
+        { question: 'What is the difference between WCAG AA and AAA?', answer: 'AA is the standard accessibility level requiring 4.5:1 for normal text, while AAA is the enhanced level requiring 7:1 for normal text and 4.5:1 for large text.' },
+        { question: 'Why is color contrast important for web design?', answer: 'Sufficient contrast ensures that text is readable for users with low vision or color blindness, and is a legal requirement under many accessibility laws.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Controls */}
         <div className="space-y-4">

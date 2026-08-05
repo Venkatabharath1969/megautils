@@ -77,7 +77,7 @@ export default function TextDiffTool() {
   const clear = () => { setLeft(''); setRight(''); setShowDiff(false) }
 
   return (
-    <ToolPage title="Text Diff Checker" description="Compare two texts side by side and highlight differences" category="developer" categoryLabel="Developer Tools">
+    <ToolPage title="Text Diff Checker" description="Compare two texts side by side and highlight differences" category="developer" categoryLabel="Developer Tools" faqs={[{ question: 'What is a text diff checker?', answer: 'A diff checker compares two pieces of text and highlights the exact lines and words that differ between them, making it easy to spot changes.' }, { question: 'How does the diff algorithm work?', answer: 'It uses a longest common subsequence (LCS) algorithm to find the minimal set of additions, deletions, and modifications between two texts.' }, { question: 'Can I compare code with this tool?', answer: 'Yes. This diff checker works with any text including source code, configuration files, and documents. It preserves whitespace and indentation for accurate code comparison.' }, { question: 'Is my text data safe?', answer: 'Yes. All comparison happens locally in your browser. Your text is never uploaded to any server.' }]}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <div className="flex items-center justify-between mb-2">

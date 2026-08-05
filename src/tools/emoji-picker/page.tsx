@@ -285,6 +285,11 @@ export default function EmojiPickerTool() {
       description="Search and copy emojis to your clipboard instantly"
       category="generators"
       categoryLabel="Generators"
+      faqs={[
+        { question: 'How do I copy an emoji from this picker?', answer: 'Simply click on any emoji and it will be instantly copied to your clipboard. A confirmation notification appears at the bottom of the screen.' },
+        { question: 'Can I search for emojis by name or description?', answer: 'Yes, use the search bar to type keywords like "heart", "fire", or "thumbs up" to filter emojis by their official Unicode names.' },
+        { question: 'Will these emojis work on all devices and platforms?', answer: 'Yes, all emojis listed are standard Unicode characters supported across iOS, Android, Windows, macOS, and all modern web browsers, though their visual style may differ slightly by platform.' },
+      ]}
     >
       <div className="space-y-4">
         {/* Search */}

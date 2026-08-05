@@ -133,6 +133,12 @@ export default function ScientificCalculatorTool() {
       description="A full-featured scientific calculator with trigonometric, logarithmic, and power functions."
       category="math"
       categoryLabel="Math & Science"
+      faqs={[
+        { question: 'What functions does this scientific calculator support?', answer: 'It supports sin, cos, tan and their inverses, log (base 10), ln (natural log), square root, exponents, factorials, absolute value, and constants like pi and e.' },
+        { question: 'Are trigonometric functions calculated in degrees or radians?', answer: 'The calculator uses radians by default, which is the standard for JavaScript math functions. To use degrees, multiply your angle by (pi/180) before applying the trig function.' },
+        { question: 'What does the ANS button do?', answer: 'The ANS button inserts the result of your most recent calculation into the current expression, allowing you to chain calculations without retyping previous results.' },
+        { question: 'Does the calculator keep a history of my calculations?', answer: 'Yes, the last 10 calculations are shown in the history section below the calculator. You can click any previous result to reuse it in a new expression.' },
+      ]}
     >
       <div className="max-w-md mx-auto">
         {/* Display */}

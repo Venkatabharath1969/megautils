@@ -160,7 +160,12 @@ function hello() {
   const renderedHtml = useMemo(() => markdownToHtml(markdown), [markdown])
 
   return (
-    <ToolPage title="Markdown Editor" description="Write Markdown with a live side-by-side preview. Supports headings, bold, italic, code, links, tables, and more." category="markdown" categoryLabel="Markdown Tools">
+    <ToolPage title="Markdown Editor" description="Write Markdown with a live side-by-side preview. Supports headings, bold, italic, code, links, tables, and more." category="markdown" categoryLabel="Markdown Tools" faqs={[
+        { question: 'What is Markdown?', answer: 'Markdown is a lightweight markup language that uses simple syntax like # for headings, ** for bold, and * for italic to format plain text into structured documents.' },
+        { question: 'What Markdown features does this editor support?', answer: 'This editor supports headings, bold, italic, strikethrough, links, images, code blocks, inline code, blockquotes, ordered and unordered lists, tables, and horizontal rules.' },
+        { question: 'Where is Markdown commonly used?', answer: 'Markdown is widely used on GitHub, GitLab, Reddit, Stack Overflow, documentation platforms, static site generators, and note-taking apps like Obsidian and Notion.' },
+        { question: 'Is my content saved in this editor?', answer: 'No, all processing happens in your browser and nothing is saved to a server. Use the download button to save your Markdown file locally before leaving the page.' },
+      ]}>
       <div className="flex items-center justify-between mb-3">
         <div className="flex gap-2">
           <CopyButton text={markdown} />

@@ -42,7 +42,17 @@ export default function CssBorderRadiusGeneratorTool() {
   ].join('\n')
 
   return (
-    <ToolPage title="CSS Border Radius Generator" description="Visually design border radius with individual corner controls and live preview." category="css" categoryLabel="CSS Tools">
+    <ToolPage
+      title="CSS Border Radius Generator"
+      description="Visually design border radius with individual corner controls and live preview."
+      category="css"
+      categoryLabel="CSS Tools"
+      faqs={[
+        { question: 'How does CSS border-radius work?', answer: 'The border-radius property rounds the corners of an element. You can set a single value for all corners or specify each corner individually using the shorthand syntax.' },
+        { question: 'Can I set different border-radius for each corner?', answer: 'Yes, you can set individual values for each corner using the shorthand border-radius: top-left top-right bottom-right bottom-left, or the longhand properties like border-top-left-radius.' },
+        { question: 'How do I make a perfect circle with border-radius?', answer: 'Set border-radius to 50% on a square element (equal width and height) to create a perfect circle.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Controls */}
         <div className="space-y-4">

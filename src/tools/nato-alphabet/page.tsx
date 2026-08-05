@@ -58,7 +58,18 @@ export default function NatoAlphabetTool() {
   const clear = () => setInput('')
 
   return (
-    <ToolPage title="NATO Phonetic Alphabet" description="Convert text to/from NATO phonetic alphabet (Alfa, Bravo, Charlie...)" category="encoders" categoryLabel="Encoders & Decoders">
+    <ToolPage
+      title="NATO Phonetic Alphabet"
+      description="Convert text to/from NATO phonetic alphabet (Alfa, Bravo, Charlie...)"
+      category="encoders"
+      categoryLabel="Encoders & Decoders"
+      faqs={[
+        { question: 'What is the NATO phonetic alphabet?', answer: 'It is a standardized set of code words (Alfa, Bravo, Charlie, etc.) used to spell out letters clearly over radio or phone to avoid miscommunication.' },
+        { question: 'How do I spell a word using the NATO alphabet?', answer: 'Enter your text in the input field and each letter is automatically converted to its NATO code word, such as A = Alfa, B = Bravo.' },
+        { question: 'Can I convert NATO phonetic words back to regular text?', answer: 'Yes, switch to "NATO to Text" mode and enter the NATO code words separated by spaces to decode them back to plain text.' },
+        { question: 'Why is it spelled "Alfa" instead of "Alpha"?', answer: 'The NATO alphabet uses "Alfa" to ensure correct pronunciation across all languages, since "ph" is not universally pronounced as "f."' },
+      ]}
+    >
       <div className="flex gap-2 mb-4">
         <button onClick={() => { setMode('toNato'); setInput('') }} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'toNato' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Text → NATO</button>
         <button onClick={() => { setMode('fromNato'); setInput('') }} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'fromNato' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>NATO → Text</button>

@@ -28,6 +28,12 @@ export default function ROICalculator() {
       description="Calculate Return on Investment, annualized ROI, and total profit or loss on your investments."
       category="financial"
       categoryLabel="Financial Calculators"
+      faqs={[
+        { question: 'What is ROI and how is it calculated?', answer: 'ROI (Return on Investment) measures the percentage gain or loss relative to your initial investment. It is calculated as: ROI = ((Final Value - Initial Investment) / Initial Investment) x 100.' },
+        { question: 'What is annualized ROI?', answer: 'Annualized ROI converts total returns into a yearly rate, allowing fair comparison between investments held for different time periods. It uses the formula: ((Final/Initial)^(1/years) - 1) x 100.' },
+        { question: 'What is a good ROI percentage?', answer: 'A good ROI depends on the investment type. Stock markets historically average 10-12% annually, while real estate averages 8-10%. Any ROI above the inflation rate is generally considered positive.' },
+        { question: 'Does ROI account for risk?', answer: 'No, basic ROI only measures returns and does not factor in risk. Two investments with the same ROI may carry very different levels of risk, so always consider risk-adjusted metrics as well.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Inputs */}

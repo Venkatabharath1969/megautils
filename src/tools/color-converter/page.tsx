@@ -134,7 +134,18 @@ export default function ColorConverterTool() {
   }, [rgb])
 
   return (
-    <ToolPage title="Color Converter" description="Convert colors between HEX, RGB, HSL, and HSV formats with live preview." category="color" categoryLabel="Color Tools">
+    <ToolPage
+      title="Color Converter"
+      description="Convert colors between HEX, RGB, HSL, and HSV formats with live preview."
+      category="color"
+      categoryLabel="Color Tools"
+      faqs={[
+        { question: 'How do I convert HEX to RGB?', answer: 'Select HEX as the input format, enter your hex color code (e.g., #3b82f6), and the RGB equivalent is displayed instantly along with HSL and HSV values.' },
+        { question: 'What is the difference between RGB, HSL, and HSV?', answer: 'RGB defines colors by red, green, and blue intensity. HSL uses hue, saturation, and lightness. HSV uses hue, saturation, and value (brightness). They are different ways to represent the same color.' },
+        { question: 'Can I convert RGB to HEX?', answer: 'Yes, select RGB as the input format, enter values like "59, 130, 246", and the HEX code is shown automatically.' },
+        { question: 'Does this tool support shorthand hex codes?', answer: 'Yes, both 3-digit shorthand (#f00) and 6-digit full (#ff0000) hex codes are accepted and converted correctly.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-4">
           <div>

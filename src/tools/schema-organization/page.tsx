@@ -47,7 +47,18 @@ export default function SchemaOrganizationTool() {
   const inputClass = 'w-full rounded-lg border border-input bg-tool-bg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring'
 
   return (
-    <ToolPage title="Organization Schema Generator" description="Generate Organization JSON-LD structured data for SEO." category="seo" categoryLabel="SEO Tools">
+    <ToolPage
+      title="Organization Schema Generator"
+      description="Generate Organization JSON-LD structured data for SEO."
+      category="seo"
+      categoryLabel="SEO Tools"
+      faqs={[
+        { question: 'What is Organization schema?', answer: 'Organization schema is JSON-LD structured data that describes a company or organization, including its name, logo, website, social profiles, and founding date. It helps Google build a Knowledge Panel for your brand.' },
+        { question: 'Where should I place Organization schema?', answer: 'Place Organization schema on your homepage or About page. You only need it on one page since it describes your entire organization, not a specific page.' },
+        { question: 'Does Organization schema help with Knowledge Panels?', answer: 'Yes. Properly implemented Organization schema with a logo, description, and social profiles increases the chances of Google generating a Knowledge Panel for your brand in search results.' },
+        { question: 'Why should I include social profiles in Organization schema?', answer: 'Adding social profile URLs via the sameAs property helps Google verify your brand identity across platforms and can link your social accounts to your Knowledge Panel.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-4">
           <div className="flex items-center justify-between">

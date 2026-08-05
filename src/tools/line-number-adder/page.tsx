@@ -19,7 +19,17 @@ export default function LineNumberAdderTool() {
   }, [input, startNumber, separator])
 
   return (
-    <ToolPage title="Line Number Adder" description="Add line numbers to text with configurable start number and separator." category="text" categoryLabel="Text Tools">
+    <ToolPage
+      title="Line Number Adder"
+      description="Add line numbers to text with configurable start number and separator."
+      category="text"
+      categoryLabel="Text Tools"
+      faqs={[
+        { question: 'How do I add line numbers to text?', answer: 'Paste your text into the input field and line numbers are automatically added to the beginning of each line in the output.' },
+        { question: 'Can I start line numbering from a number other than 1?', answer: 'Yes, use the "Start at" field to set any starting number, such as 0 or 100.' },
+        { question: 'Can I customize the separator between the number and text?', answer: 'Yes, you can change the separator to any string like a period, colon, tab, or custom characters using the separator field.' },
+      ]}
+    >
       <div className="flex flex-wrap items-center gap-4 mb-4">
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium">Start at:</label>

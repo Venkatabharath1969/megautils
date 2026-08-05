@@ -138,6 +138,12 @@ export default function PrivacyPolicyGeneratorTool() {
       description="Generate a privacy policy for your website or app"
       category="generators"
       categoryLabel="Generators"
+      faqs={[
+        { question: 'Does my website need a privacy policy?', answer: 'Yes, if your website collects any personal data (including through cookies or analytics), most privacy laws like GDPR, CCPA, and CalOPPA require you to have a privacy policy.' },
+        { question: 'Is a generated privacy policy legally binding?', answer: 'A generated privacy policy provides a solid starting template, but you should have it reviewed by a legal professional to ensure it meets the specific requirements of your jurisdiction and business.' },
+        { question: 'What should a privacy policy include?', answer: 'A privacy policy should cover what data you collect, how you use it, third-party sharing, cookie usage, user rights, data security measures, and contact information.' },
+        { question: 'How often should I update my privacy policy?', answer: 'Update your privacy policy whenever you change your data collection practices, add new third-party services, or when privacy laws in your jurisdiction change.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Form */}

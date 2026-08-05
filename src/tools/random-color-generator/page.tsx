@@ -51,7 +51,18 @@ export default function RandomColorGeneratorTool() {
   }, [])
 
   return (
-    <ToolPage title="Random Color Generator" description="Generate random colors with HEX, RGB, and HSL values." category="color" categoryLabel="Color Tools">
+    <ToolPage
+      title="Random Color Generator"
+      description="Generate random colors with HEX, RGB, and HSL values."
+      category="color"
+      categoryLabel="Color Tools"
+      faqs={[
+        { question: 'How do I generate a random color?', answer: 'Click the "Generate" button and a random color is created instantly with its HEX, RGB, and HSL values ready to copy.' },
+        { question: 'Can I generate multiple random colors at once?', answer: 'Yes, use the bulk generate buttons to create 5, 10, or 20 random colors simultaneously for palette inspiration.' },
+        { question: 'Are the generated colors truly random?', answer: 'Yes, each color is generated using a random number across the full 16.7 million color spectrum (0x000000 to 0xFFFFFF).' },
+        { question: 'How do I copy a generated color code?', answer: 'Click the copy button next to any HEX, RGB, or HSL value to copy it to your clipboard for use in your design or code.' },
+      ]}
+    >
       <div className="space-y-6">
         {/* Single Color */}
         <div>

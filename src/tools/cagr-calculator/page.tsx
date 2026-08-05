@@ -38,6 +38,11 @@ export default function CAGRCalculator() {
       description="Calculate the Compound Annual Growth Rate (CAGR) of your investments. Measure smooth annual growth over time."
       category="financial"
       categoryLabel="Financial Calculators"
+      faqs={[
+        { question: 'What is CAGR and how is it calculated?', answer: 'CAGR (Compound Annual Growth Rate) measures the mean annual growth rate of an investment over a period. It is calculated as (Ending Value / Beginning Value)^(1/Years) - 1.' },
+        { question: 'What is the difference between CAGR and average return?', answer: 'CAGR represents a smoothed annual growth rate assuming reinvestment, while average return is a simple arithmetic mean that ignores compounding effects.' },
+        { question: 'What is a good CAGR for investments?', answer: 'Historical stock market CAGR is around 7-10% annually after inflation. A good CAGR depends on your investment type, risk tolerance, and market conditions.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Inputs */}

@@ -39,6 +39,11 @@ export default function AngleConverterTool() {
       description="Convert between degrees, radians, gradians, turns, arc minutes, and arc seconds."
       category="converters"
       categoryLabel="Unit Converters"
+      faqs={[
+        { question: 'How many radians are in 180 degrees?', answer: '180 degrees equals exactly pi radians, which is approximately 3.14159 radians. This is one of the most fundamental angle conversions in mathematics.' },
+        { question: 'What is a gradian?', answer: 'A gradian (also called a gon) divides a right angle into 100 equal parts, so a full circle is 400 gradians. It is primarily used in surveying and some European countries.' },
+        { question: 'How do you convert degrees to arc minutes?', answer: 'Multiply the degree value by 60 to get arc minutes. Each degree contains 60 arc minutes, and each arc minute contains 60 arc seconds.' },
+      ]}
     >
       <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-end">
         <div className="space-y-3">

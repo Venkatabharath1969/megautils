@@ -49,6 +49,11 @@ export default function TemperatureConverterTool() {
       description="Convert between Celsius, Fahrenheit, and Kelvin. See all three values simultaneously."
       category="converters"
       categoryLabel="Unit Converters"
+      faqs={[
+        { question: 'What is the formula to convert Celsius to Fahrenheit?', answer: 'Multiply the Celsius temperature by 9/5 and add 32. For example, 100°C equals (100 × 9/5) + 32 = 212°F.' },
+        { question: 'What is absolute zero in each temperature scale?', answer: 'Absolute zero is 0 K (Kelvin), which equals -273.15°C and -459.67°F. It is the lowest theoretically possible temperature where molecular motion stops.' },
+        { question: 'When should I use Kelvin instead of Celsius?', answer: 'Kelvin is used in scientific calculations, especially in physics and chemistry, because it starts at absolute zero and has no negative values, simplifying thermodynamic equations.' },
+      ]}
     >
       <div className="max-w-xl mx-auto space-y-6">
         {/* Input */}

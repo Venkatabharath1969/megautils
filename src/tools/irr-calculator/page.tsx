@@ -74,6 +74,12 @@ export default function IRRCalculator() {
       description="Calculate Internal Rate of Return for your investment. Uses the bisection method to find the discount rate that makes NPV zero."
       category="financial"
       categoryLabel="Financial Calculators"
+      faqs={[
+        { question: 'What is Internal Rate of Return (IRR)?', answer: 'IRR is the discount rate that makes the net present value (NPV) of all cash flows from an investment equal to zero. It represents the annualized expected rate of return.' },
+        { question: 'What is a good IRR?', answer: 'A good IRR depends on the industry and risk level, but generally an IRR above 10-15% is considered attractive. The IRR should exceed your cost of capital for the investment to be worthwhile.' },
+        { question: 'What is the difference between IRR and ROI?', answer: 'ROI measures total return as a simple percentage, while IRR accounts for the time value of money and gives an annualized rate of return across multiple periods.' },
+        { question: 'Can IRR be negative?', answer: 'Yes, a negative IRR means the total cash flows are less than the initial investment, indicating the project loses money on a present-value basis.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Inputs */}

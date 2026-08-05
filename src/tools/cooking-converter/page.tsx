@@ -41,6 +41,12 @@ export default function CookingConverterTool() {
       description="Convert between cups, tablespoons, teaspoons, mL, fluid ounces, liters, pints, quarts, and gallons."
       category="converters"
       categoryLabel="Unit Converters"
+      faqs={[
+        { question: 'How many tablespoons are in a cup?', answer: 'There are 16 tablespoons in one US cup. This is one of the most common cooking measurement conversions.' },
+        { question: 'How many mL is one cup?', answer: 'One US cup equals approximately 236.6 milliliters. Note that metric, US, and imperial cups differ slightly in volume.' },
+        { question: 'How many teaspoons are in a tablespoon?', answer: 'There are 3 teaspoons in one tablespoon. So one tablespoon equals approximately 14.8 mL.' },
+        { question: 'How do I convert fluid ounces to mL?', answer: 'Multiply the number of US fluid ounces by 29.574 to get milliliters. For example, 8 fl oz equals approximately 236.6 mL, which is one cup.' },
+      ]}
     >
       <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-end">
         <div className="space-y-3">

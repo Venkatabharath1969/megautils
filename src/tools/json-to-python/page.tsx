@@ -129,7 +129,12 @@ export default function JsonToPythonTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="JSON to Python Dataclass" description="Generate Python dataclass definitions from JSON with proper type annotations" category="developer" categoryLabel="Developer Tools">
+    <ToolPage title="JSON to Python Dataclass" description="Generate Python dataclass definitions from JSON with proper type annotations" category="developer" categoryLabel="Developer Tools" faqs={[
+        { question: 'How do I convert JSON to Python dataclasses?', answer: 'Paste a JSON object into the input, set a class name, and click Generate to get Python dataclass definitions with proper type annotations and imports.' },
+        { question: 'Does the tool generate Python type hints?', answer: 'Yes, all fields include type annotations such as str, int, float, bool, List[], and Optional[] based on the JSON values.' },
+        { question: 'Are nested JSON objects supported?', answer: 'Yes, nested objects are converted into separate dataclass definitions with proper cross-references and snake_case field naming.' },
+        { question: 'What Python imports are included?', answer: 'The tool automatically adds the dataclass import and any needed typing imports like List and Optional based on your JSON structure.' },
+      ]}>
       <div className="mb-4">
         <label className="text-sm font-medium">Class Name</label>
         <input

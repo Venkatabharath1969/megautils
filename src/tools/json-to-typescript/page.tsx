@@ -108,7 +108,12 @@ export default function JsonToTypescriptTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="JSON to TypeScript" description="Generate TypeScript interfaces from JSON data" category="developer" categoryLabel="Developer Tools">
+    <ToolPage title="JSON to TypeScript" description="Generate TypeScript interfaces from JSON data" category="developer" categoryLabel="Developer Tools" faqs={[
+        { question: 'How do I generate TypeScript interfaces from JSON?', answer: 'Paste your JSON data into the input, set a root interface name, and click Generate to get exported TypeScript interfaces with inferred types.' },
+        { question: 'Does this tool handle arrays and nested objects?', answer: 'Yes, arrays are typed as element type arrays (e.g., string[]) and nested objects become separate named interfaces with proper references.' },
+        { question: 'Can I customize the root interface name?', answer: 'Yes, use the Root name field to specify a custom name for the top-level interface instead of the default "Root".' },
+        { question: 'What TypeScript types are inferred from JSON?', answer: 'The tool infers string, number, boolean, null, and unknown types, and generates union types for arrays with mixed element types.' },
+      ]}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <div className="flex items-center justify-between mb-2">

@@ -53,6 +53,12 @@ export default function DataStorageConverterTool() {
       description="Convert between bits, bytes, KB, MB, GB, TB, PB and their binary equivalents (KiB, MiB, GiB, etc.)."
       category="converters"
       categoryLabel="Unit Converters"
+      faqs={[
+        { question: 'What is the difference between GB and GiB?', answer: 'A gigabyte (GB) uses the SI standard of 1,000 MB (1 billion bytes), while a gibibyte (GiB) uses the binary standard of 1,024 MiB (1,073,741,824 bytes). This is why a 500 GB drive shows about 465 GiB.' },
+        { question: 'How many MB are in a GB?', answer: 'There are 1,000 megabytes (MB) in one gigabyte (GB) using the SI decimal standard. Using binary units, there are 1,024 mebibytes (MiB) in one gibibyte (GiB).' },
+        { question: 'How many GB is a TB?', answer: 'One terabyte (TB) equals 1,000 gigabytes (GB) in decimal notation. In binary notation, one tebibyte (TiB) equals 1,024 gibibytes (GiB).' },
+        { question: 'Why does my hard drive show less space than advertised?', answer: 'Drive manufacturers use decimal units (1 GB = 1 billion bytes), while operating systems use binary units (1 GiB = 1,073,741,824 bytes). This difference makes drives appear about 7% smaller.' },
+      ]}
     >
       <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-end">
         <div className="space-y-3">

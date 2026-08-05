@@ -149,6 +149,12 @@ export default function GitignoreGeneratorTool() {
       description="Generate .gitignore files from common presets for any project type"
       category="generators"
       categoryLabel="Generators"
+      faqs={[
+        { question: 'What is a .gitignore file?', answer: 'A .gitignore file tells Git which files and directories to exclude from version control. It prevents build artifacts, dependencies, environment files, and OS-specific files from being committed to your repository.' },
+        { question: 'Can I combine multiple presets?', answer: 'Yes. Select as many presets as you need, and they will be combined into a single .gitignore file with labeled sections. This is useful for projects that use multiple technologies or target multiple operating systems.' },
+        { question: 'Where should I place the .gitignore file?', answer: 'Place it in the root directory of your Git repository. Git reads the .gitignore file from the project root and applies the patterns to all files and subdirectories.' },
+        { question: 'Does .gitignore remove files already tracked by Git?', answer: 'No. The .gitignore file only prevents untracked files from being added. To stop tracking a file that is already committed, run "git rm --cached filename" and then commit the change.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Presets */}

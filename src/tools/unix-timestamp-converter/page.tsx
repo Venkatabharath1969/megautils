@@ -74,6 +74,12 @@ export default function UnixTimestampConverterTool() {
       description="Convert Unix timestamps to human-readable dates and vice versa. Auto-detects seconds vs milliseconds."
       category="datetime"
       categoryLabel="Date & Time"
+      faqs={[
+        { question: 'What is a Unix timestamp?', answer: 'A Unix timestamp is the number of seconds that have elapsed since January 1, 1970, 00:00:00 UTC (the Unix epoch). It is widely used in programming to represent dates and times.' },
+        { question: 'What is the difference between Unix timestamp in seconds and milliseconds?', answer: 'A Unix timestamp in seconds is typically 10 digits, while milliseconds is 13 digits. JavaScript uses milliseconds (Date.now()), while most Unix systems use seconds.' },
+        { question: 'Will Unix timestamps run out?', answer: 'The 32-bit Unix timestamp will overflow on January 19, 2038 (the "Year 2038 problem"). Most modern systems use 64-bit timestamps, which will last billions of years.' },
+        { question: 'How do I get the current Unix timestamp in code?', answer: 'In JavaScript use Math.floor(Date.now() / 1000), in Python use int(time.time()), and in PHP use time(). All return the current time as seconds since the Unix epoch.' },
+      ]}
     >
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Current timestamp */}

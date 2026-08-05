@@ -114,6 +114,12 @@ export default function NeumorphismGeneratorTool() {
       description="Generate soft UI (neumorphism) CSS with customizable shadows, shapes, and light direction. Live preview included."
       category="css"
       categoryLabel="CSS Tools"
+      faqs={[
+        { question: 'What is neumorphism in UI design?', answer: 'Neumorphism (or soft UI) is a design style that combines background colors with two opposing box shadows (one light, one dark) to create elements that appear to extrude from or press into the background.' },
+        { question: 'How is neumorphism different from flat design?', answer: 'Flat design uses zero depth and bold colors, while neumorphism simulates soft, realistic depth using subtle shadows on a matching background color to create an extruded or pressed effect.' },
+        { question: 'What are the accessibility concerns with neumorphism?', answer: 'Neumorphism can have low contrast between elements and backgrounds, making it harder for visually impaired users to distinguish interactive elements. Always ensure sufficient contrast ratios.' },
+        { question: 'What background color works best for neumorphism?', answer: 'Mid-tone colors like light grays (#e0e0e0) or soft pastels work best because they provide enough range to generate visible light and dark shadows on both sides.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Controls */}

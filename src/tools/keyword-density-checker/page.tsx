@@ -62,7 +62,11 @@ export default function KeywordDensityCheckerTool() {
   const currentData = activeTab === 1 ? analysis.unigrams : activeTab === 2 ? analysis.bigrams : analysis.trigrams
 
   return (
-    <ToolPage title="Keyword Density Checker" description="Analyze 1-word, 2-word, and 3-word phrase frequencies in your text." category="seo" categoryLabel="SEO Tools">
+    <ToolPage title="Keyword Density Checker" description="Analyze 1-word, 2-word, and 3-word phrase frequencies in your text." category="seo" categoryLabel="SEO Tools" faqs={[
+        { question: 'What is keyword density?', answer: 'Keyword density is the percentage of times a keyword or phrase appears in your content compared to the total word count. It helps gauge whether a keyword is used naturally or excessively.' },
+        { question: 'What is the ideal keyword density for SEO?', answer: 'Most SEO experts recommend a keyword density between 1% and 3%. Going above 3% may be seen as keyword stuffing, which can hurt your search rankings.' },
+        { question: 'What is keyword stuffing?', answer: 'Keyword stuffing is the practice of unnaturally overusing keywords in content to manipulate search rankings. Search engines penalize this practice, so focus on writing naturally.' },
+      ]}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-4">
           <div className="flex items-center justify-between">

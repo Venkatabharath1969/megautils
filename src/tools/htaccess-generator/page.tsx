@@ -143,6 +143,12 @@ export default function HtaccessGeneratorTool() {
       description="Generate .htaccess rules for redirects, HTTPS, caching, and more"
       category="generators"
       categoryLabel="Generators"
+      faqs={[
+        { question: 'What is an .htaccess file?', answer: 'An .htaccess file is a configuration file used by Apache web servers to control directory-level settings like URL redirects, access control, HTTPS enforcement, and caching rules.' },
+        { question: 'Where do I put the .htaccess file?', answer: 'Place the .htaccess file in the root directory of your website. It affects that directory and all subdirectories unless overridden by another .htaccess file.' },
+        { question: 'What is the difference between a 301 and 302 redirect?', answer: 'A 301 redirect is permanent and passes SEO link equity to the new URL. A 302 redirect is temporary and tells search engines to keep indexing the original URL.' },
+        { question: 'Does .htaccess work on Nginx servers?', answer: 'No, .htaccess files only work on Apache servers. Nginx uses its own configuration files (nginx.conf) for similar functionality like redirects and caching.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Controls */}

@@ -114,6 +114,12 @@ export default function CSSAnimationGeneratorTool() {
       description="Build CSS keyframe animations with presets and live preview. Customize duration, timing, iterations, and more."
       category="css"
       categoryLabel="CSS Tools"
+      faqs={[
+        { question: 'What is a CSS keyframe animation?', answer: 'A CSS keyframe animation uses @keyframes rules to define intermediate steps in an animation sequence, allowing you to control how an element transitions between styles over time.' },
+        { question: 'What does animation-fill-mode do?', answer: 'animation-fill-mode determines which styles are applied before and after the animation. "forwards" retains the final keyframe styles, while "backwards" applies the first keyframe styles during the delay period.' },
+        { question: 'How do I make a CSS animation loop infinitely?', answer: 'Set animation-iteration-count to "infinite" to make the animation repeat continuously without stopping.' },
+        { question: 'What is the difference between ease and linear timing functions?', answer: '"ease" starts slow, speeds up, then slows down for a natural feel, while "linear" maintains a constant speed throughout the entire animation.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Controls */}

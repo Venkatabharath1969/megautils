@@ -52,7 +52,18 @@ export default function CssBoxShadowGeneratorTool() {
   const cssCode = `box-shadow: ${shadowCSS};`
 
   return (
-    <ToolPage title="CSS Box Shadow Generator" description="Build CSS box shadows visually with multiple layers and live preview." category="css" categoryLabel="CSS Tools">
+    <ToolPage
+      title="CSS Box Shadow Generator"
+      description="Build CSS box shadows visually with multiple layers and live preview."
+      category="css"
+      categoryLabel="CSS Tools"
+      faqs={[
+        { question: 'What is the CSS box-shadow property?', answer: 'The box-shadow property adds shadow effects around an element\'s frame, defined by horizontal and vertical offsets, blur radius, spread radius, and color.' },
+        { question: 'Can I add multiple box shadows to one element?', answer: 'Yes, CSS supports multiple comma-separated box-shadow values on a single element. This generator lets you add and configure multiple shadow layers.' },
+        { question: 'What does the inset keyword do in box-shadow?', answer: 'The inset keyword changes the shadow from an outer shadow (outset) to an inner shadow, making it appear inside the element\'s border.' },
+        { question: 'What is the spread value in box-shadow?', answer: 'The spread value controls the size of the shadow. Positive values make the shadow larger than the element, while negative values shrink it.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Controls */}
         <div className="space-y-4">

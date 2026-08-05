@@ -49,7 +49,17 @@ Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium dolor
   }, [columnCount, columnGap, ruleStyle, ruleWidth, ruleColor, columnWidth])
 
   return (
-    <ToolPage title="CSS Columns Generator" description="Generate multi-column CSS layouts with live preview" category="css" categoryLabel="CSS Tools">
+    <ToolPage
+      title="CSS Columns Generator"
+      description="Generate multi-column CSS layouts with live preview"
+      category="css"
+      categoryLabel="CSS Tools"
+      faqs={[
+        { question: 'What is the CSS multi-column layout?', answer: 'CSS multi-column layout splits content into multiple columns similar to a newspaper, using properties like column-count, column-gap, and column-rule.' },
+        { question: 'What is the difference between column-count and column-width?', answer: 'column-count sets a fixed number of columns, while column-width sets a minimum width and lets the browser create as many columns as fit. Setting column-width overrides column-count.' },
+        { question: 'How do I add dividers between CSS columns?', answer: 'Use the column-rule property (shorthand for column-rule-width, column-rule-style, and column-rule-color) to add a visible line between columns.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Controls */}
         <div className="space-y-4">

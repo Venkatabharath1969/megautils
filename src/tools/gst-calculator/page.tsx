@@ -41,6 +41,11 @@ export default function GSTCalculator() {
       description="Calculate GST (Goods & Services Tax) with CGST, SGST, and IGST breakdown. Supports both inclusive and exclusive modes."
       category="financial"
       categoryLabel="Financial Calculators"
+      faqs={[
+        { question: 'What is GST and how is it calculated?', answer: 'GST (Goods and Services Tax) is an indirect tax levied on the supply of goods and services. It is calculated as a percentage of the base price, with common rates being 5%, 12%, 18%, and 28%.' },
+        { question: 'What is the difference between CGST, SGST, and IGST?', answer: 'CGST (Central GST) and SGST (State GST) are charged equally on intra-state transactions, while IGST (Integrated GST) is charged on inter-state transactions at the full rate.' },
+        { question: 'How do I calculate GST from a GST-inclusive price?', answer: 'To find the base price from a GST-inclusive amount, divide the total by (1 + GST rate/100). For example, a price of 1,180 at 18% GST has a base price of 1,000.' },
+      ]}
     >
       {/* Mode toggle */}
       <div className="flex gap-2 mb-6">

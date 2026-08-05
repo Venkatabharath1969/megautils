@@ -25,7 +25,18 @@ export default function TextRepeaterTool() {
   }, [input, count, separator])
 
   return (
-    <ToolPage title="Text Repeater" description="Repeat text N times with a configurable separator." category="text" categoryLabel="Text Tools">
+    <ToolPage
+      title="Text Repeater"
+      description="Repeat text N times with a configurable separator."
+      category="text"
+      categoryLabel="Text Tools"
+      faqs={[
+        { question: 'How do I repeat text multiple times?', answer: 'Enter your text, set the repeat count (up to 10,000), choose a separator, and the repeated output is generated instantly.' },
+        { question: 'What separators can I use between repeated text?', answer: 'You can separate repeated text with a new line, space, comma, or any custom separator string you define.' },
+        { question: 'Is there a limit to how many times I can repeat text?', answer: 'The tool supports up to 10,000 repetitions to ensure smooth browser performance.' },
+        { question: 'Can I repeat multiple lines of text at once?', answer: 'Yes, paste any multi-line text and the entire block is repeated as a unit with your chosen separator between each copy.' },
+      ]}
+    >
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium">Input Text</span>

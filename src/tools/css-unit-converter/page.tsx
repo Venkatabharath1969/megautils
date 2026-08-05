@@ -79,7 +79,18 @@ export default function CssUnitConverterTool() {
   }, [baseFontSize])
 
   return (
-    <ToolPage title="CSS Unit Converter" description="Convert between px, rem, em, %, pt, vw, and vh with a customizable base font size." category="css" categoryLabel="CSS Tools">
+    <ToolPage
+      title="CSS Unit Converter"
+      description="Convert between px, rem, em, %, pt, vw, and vh with a customizable base font size."
+      category="css"
+      categoryLabel="CSS Tools"
+      faqs={[
+        { question: 'What is the difference between px and rem in CSS?', answer: 'px is an absolute unit fixed at 1/96th of an inch, while rem is relative to the root element\'s font size (typically 16px by default), making rem better for responsive designs.' },
+        { question: 'How do I convert px to rem?', answer: 'Divide the pixel value by the root font size. With the default 16px base, 24px equals 1.5rem (24 / 16 = 1.5).' },
+        { question: 'What is the difference between em and rem?', answer: 'em is relative to the font size of its parent element and can compound, while rem is always relative to the root element font size, making rem more predictable.' },
+        { question: 'When should I use vw and vh units?', answer: 'Use vw (viewport width) and vh (viewport height) for elements that should scale with the browser window size, such as full-screen hero sections or responsive typography.' },
+      ]}
+    >
       <div className="space-y-6">
         {/* Settings */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-3 rounded-lg bg-muted">

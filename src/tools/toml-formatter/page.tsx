@@ -144,7 +144,12 @@ export default function TomlFormatterTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="TOML Formatter" description="Format and beautify TOML configuration files with aligned keys" category="developer" categoryLabel="Developer Tools">
+    <ToolPage title="TOML Formatter" description="Format and beautify TOML configuration files with aligned keys" category="developer" categoryLabel="Developer Tools" faqs={[
+        { question: 'What is TOML?', answer: 'TOML (Tom\'s Obvious Minimal Language) is a configuration file format that is easy to read, with clear semantics for key-value pairs, tables, and arrays commonly used in Rust (Cargo.toml) and Python (pyproject.toml) projects.' },
+        { question: 'How does this TOML formatter work?', answer: 'Paste your TOML content and click Format to get a beautified version with aligned key-value pairs, consistent spacing around equals signs, and proper section separation.' },
+        { question: 'Does the formatter validate TOML syntax?', answer: 'The formatter parses section headers and key-value pairs, so malformed TOML will produce an error. It handles strings, numbers, booleans, arrays, and dates.' },
+        { question: 'Can I format Cargo.toml or pyproject.toml files?', answer: 'Yes, paste any TOML configuration file and the formatter will align keys and clean up spacing while preserving all your values and section structure.' },
+      ]}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <div className="flex items-center justify-between mb-2">

@@ -83,6 +83,11 @@ export default function IpAddressInfoTool() {
       description="View your current public IP address. This tool makes a network request to api.ipify.org to fetch your IP."
       category="network"
       categoryLabel="Network Tools"
+      faqs={[
+        { question: 'What is a public IP address?', answer: 'A public IP address is the address assigned to your network by your internet service provider (ISP). It is visible to websites and services you connect to on the internet.' },
+        { question: 'What is the difference between IPv4 and IPv6?', answer: 'IPv4 uses 32-bit addresses (e.g., 192.168.1.1) supporting about 4.3 billion addresses. IPv6 uses 128-bit addresses (e.g., 2001:db8::1) supporting virtually unlimited addresses.' },
+        { question: 'Is my IP address private or public?', answer: 'Private IP addresses are in the ranges 10.x.x.x, 172.16-31.x.x, and 192.168.x.x. Any address outside these ranges that you see here is your public IP assigned by your ISP.' },
+      ]}
     >
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Notice */}

@@ -40,7 +40,17 @@ export default function SchemaBreadcrumbTool() {
   const inputClass = 'w-full rounded-lg border border-input bg-tool-bg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring'
 
   return (
-    <ToolPage title="Breadcrumb Schema Generator" description="Generate BreadcrumbList JSON-LD structured data for SEO." category="seo" categoryLabel="SEO Tools">
+    <ToolPage
+      title="Breadcrumb Schema Generator"
+      description="Generate BreadcrumbList JSON-LD structured data for SEO."
+      category="seo"
+      categoryLabel="SEO Tools"
+      faqs={[
+        { question: 'What is BreadcrumbList schema?', answer: 'BreadcrumbList schema is JSON-LD structured data that describes the navigational hierarchy of a page within your site. It helps Google display breadcrumb trails in search results instead of raw URLs.' },
+        { question: 'How many breadcrumb items should I include?', answer: 'Include every level from the homepage to the current page. Most sites have 2-5 levels. The last item typically represents the current page and should not include a URL.' },
+        { question: 'Do breadcrumbs improve SEO rankings?', answer: 'Breadcrumbs do not directly boost rankings, but they improve how your pages appear in search results and help Google understand your site structure, which can indirectly benefit SEO.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-4">
           <div className="flex items-center justify-between">

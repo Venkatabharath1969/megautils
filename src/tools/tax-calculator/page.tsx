@@ -106,6 +106,12 @@ export default function TaxCalculator() {
       description="Estimate your US federal income tax. See bracket breakdown, effective tax rate, and tax owed by filing status."
       category="financial"
       categoryLabel="Financial Calculators"
+      faqs={[
+        { question: 'What is the difference between marginal and effective tax rate?', answer: 'Your marginal tax rate is the rate on your last dollar of income, while your effective tax rate is the average rate you pay across all your income after applying bracket thresholds.' },
+        { question: 'What is the standard deduction for 2024?', answer: 'For 2024, the standard deduction is $14,600 for single filers, $29,200 for married filing jointly, and $21,900 for head of household.' },
+        { question: 'How are federal tax brackets calculated?', answer: 'Tax brackets are progressive, meaning only the income within each bracket range is taxed at that rate. Your total tax is the sum of taxes calculated at each bracket level.' },
+        { question: 'Should I itemize or take the standard deduction?', answer: 'Take the standard deduction unless your itemized deductions (mortgage interest, charitable donations, state taxes, etc.) exceed the standard deduction amount for your filing status.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Inputs */}

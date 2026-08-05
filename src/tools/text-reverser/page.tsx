@@ -30,7 +30,17 @@ export default function TextReverserTool() {
   ]
 
   return (
-    <ToolPage title="Text Reverser" description="Reverse text by characters, words, or lines." category="text" categoryLabel="Text Tools">
+    <ToolPage
+      title="Text Reverser"
+      description="Reverse text by characters, words, or lines."
+      category="text"
+      categoryLabel="Text Tools"
+      faqs={[
+        { question: 'How do I reverse text online?', answer: 'Paste your text into the input field and choose a reversal mode (characters, words, or lines). The reversed output appears instantly.' },
+        { question: 'What is the difference between reversing characters, words, and lines?', answer: 'Character reversal flips every character ("hello" becomes "olleh"), word reversal reorders words in each line, and line reversal reorders the lines themselves.' },
+        { question: 'Can I reverse text with emojis or special characters?', answer: 'Yes, this tool correctly handles Unicode characters including emojis, accented letters, and symbols when reversing.' },
+      ]}
+    >
       <div className="flex gap-2 mb-4">
         {modes.map((m) => (
           <button key={m.value} onClick={() => setMode(m.value)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === m.value ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>

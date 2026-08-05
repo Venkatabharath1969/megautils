@@ -53,6 +53,11 @@ export default function SalaryCalculator() {
       description="Convert gross salary to net take-home pay. Factor in taxes, retirement contributions, and deductions."
       category="financial"
       categoryLabel="Financial Calculators"
+      faqs={[
+        { question: 'How do I calculate my net take-home pay?', answer: 'Subtract federal and state taxes, retirement contributions, and other deductions from your gross salary. This calculator automates that process for you.' },
+        { question: 'What is the difference between gross and net salary?', answer: 'Gross salary is your total pay before any deductions, while net salary (take-home pay) is what you actually receive after taxes, retirement contributions, and other deductions.' },
+        { question: 'How much of my salary goes to taxes?', answer: 'Your effective tax rate depends on your income bracket, filing status, and deductions. Most U.S. workers pay between 15-30% of gross income in federal and state taxes combined.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Inputs */}

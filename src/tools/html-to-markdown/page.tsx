@@ -140,7 +140,12 @@ export default function HtmlToMarkdownTool() {
   }, [input])
 
   return (
-    <ToolPage title="HTML to Markdown Converter" description="Convert HTML to Markdown. Handles headings, bold, italic, links, lists, code blocks, tables, and more." category="markdown" categoryLabel="Markdown Tools">
+    <ToolPage title="HTML to Markdown Converter" description="Convert HTML to Markdown. Handles headings, bold, italic, links, lists, code blocks, tables, and more." category="markdown" categoryLabel="Markdown Tools" faqs={[
+        { question: 'How do I convert HTML to Markdown?', answer: 'Paste your HTML into the input field and the tool instantly converts it to clean Markdown syntax, handling headings, bold, italic, links, lists, code blocks, and tables.' },
+        { question: 'Does this tool preserve HTML tables in Markdown?', answer: 'Yes, HTML tables with thead and tbody are converted to proper Markdown table syntax with header separators and aligned columns.' },
+        { question: 'Can I convert HTML emails to Markdown?', answer: 'Yes, paste the HTML source of any email and the converter will strip styling and produce readable Markdown text.' },
+        { question: 'What HTML elements are supported?', answer: 'The converter supports headings (h1-h6), bold, italic, strikethrough, links, images, lists, blockquotes, code blocks, tables, and horizontal rules.' },
+      ]}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <div className="flex items-center justify-between mb-2">

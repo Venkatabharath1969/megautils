@@ -21,7 +21,18 @@ export default function TextToSlugTool() {
   const slug = useMemo(() => toSlug(input), [input])
 
   return (
-    <ToolPage title="Text to Slug" description="Convert text to a URL-friendly slug with lowercase letters, hyphens, and no special characters." category="text" categoryLabel="Text Tools">
+    <ToolPage
+      title="Text to Slug"
+      description="Convert text to a URL-friendly slug with lowercase letters, hyphens, and no special characters."
+      category="text"
+      categoryLabel="Text Tools"
+      faqs={[
+        { question: 'What is a URL slug?', answer: 'A URL slug is the human-readable part of a URL that identifies a page, like "my-blog-post" in example.com/blog/my-blog-post.' },
+        { question: 'How does the text to slug converter work?', answer: 'It converts your text to lowercase, removes special characters and diacritics, and replaces spaces with hyphens to create a URL-friendly string.' },
+        { question: 'Does this tool handle accented characters?', answer: 'Yes, accented characters like e with accent or u with umlaut are automatically converted to their plain ASCII equivalents.' },
+        { question: 'Why are slugs important for SEO?', answer: 'Clean, descriptive slugs help search engines understand page content and improve click-through rates by making URLs readable to users.' },
+      ]}
+    >
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium">Input Text</span>
         <ClearButton onClear={() => setInput('')} />

@@ -59,6 +59,11 @@ export default function HourlyToSalary() {
       description="Convert hourly rate to annual salary and vice versa. See your earnings broken down by hour, day, week, and month."
       category="financial"
       categoryLabel="Financial Calculators"
+      faqs={[
+        { question: 'How do I convert hourly wage to annual salary?', answer: 'Multiply your hourly rate by the number of hours you work per week, then multiply by 52 weeks. For example, $25/hour at 40 hours/week equals $52,000 per year.' },
+        { question: 'How many work hours are in a year?', answer: 'A standard full-time work year is 2,080 hours (40 hours/week x 52 weeks). With two weeks of vacation, it drops to 2,000 hours.' },
+        { question: 'What salary is $20 an hour?', answer: 'At $20 per hour working 40 hours per week for 52 weeks, your annual salary would be $41,600 before taxes.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Inputs */}

@@ -36,6 +36,12 @@ export default function PPFCalculator() {
       description="Calculate Public Provident Fund maturity value. Plan your long-term tax-saving investments with current PPF interest rates."
       category="financial"
       categoryLabel="Financial Calculators"
+      faqs={[
+        { question: 'What is the current PPF interest rate?', answer: 'The current PPF interest rate is 7.1% per annum (FY 2024-25), which is set by the Government of India and revised quarterly.' },
+        { question: 'What is the lock-in period for PPF?', answer: 'PPF has a mandatory lock-in period of 15 years. After maturity, you can extend it in blocks of 5 years with or without contributions.' },
+        { question: 'Is PPF interest taxable?', answer: 'No, PPF enjoys EEE (Exempt-Exempt-Exempt) tax status under Section 80C. The deposits, interest earned, and maturity amount are all completely tax-free.' },
+        { question: 'What is the maximum I can invest in PPF per year?', answer: 'The maximum annual contribution to a PPF account is Rs 1,50,000. The minimum deposit required per year is Rs 500.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Inputs */}

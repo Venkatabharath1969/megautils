@@ -77,7 +77,18 @@ export default function CsvToJsonTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="CSV to JSON Converter" description="Convert CSV data to a JSON array of objects" category="developer" categoryLabel="Developer Tools">
+    <ToolPage
+      title="CSV to JSON Converter"
+      description="Convert CSV data to a JSON array of objects"
+      category="developer"
+      categoryLabel="Developer Tools"
+      faqs={[
+        { question: 'How does CSV to JSON conversion work?', answer: 'The first row of your CSV is used as the keys (field names), and each subsequent row becomes a JSON object with those keys mapped to the corresponding column values.' },
+        { question: 'Does this tool handle quoted CSV fields with commas?', answer: 'Yes, fields enclosed in double quotes are handled correctly, including fields that contain commas, newlines, or escaped quotes within them.' },
+        { question: 'Are numeric values preserved as numbers in the JSON output?', answer: 'Yes, the converter automatically detects integers, decimals, and booleans in your CSV and outputs them as proper JSON types instead of strings.' },
+        { question: 'What if my CSV has empty values?', answer: 'Empty cells in your CSV are converted to null in the JSON output, making it easy to identify missing data in the resulting array of objects.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <div className="flex items-center justify-between mb-2">

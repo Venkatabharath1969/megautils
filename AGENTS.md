@@ -522,8 +522,8 @@ pm2 restart megautils
 
 ### Remaining post-deployment tasks:
 - [x] Verify SSL certificate is active (`curl -I https://megautils.xyz` → 200)
-- [ ] Set up Google Search Console and submit sitemap
-- [ ] Apply for Google AdSense
+- [x] Set up Google Search Console — verified via DNS TXT record
+- [ ] Apply for Google AdSense (after 2-4 weeks of content indexing)
 - [x] Update `src/app/sitemap.ts` and `src/app/robots.ts` with `megautils.xyz` domain
 - [x] Update `public/llms.txt` with `megautils.xyz` domain
 
@@ -603,17 +603,51 @@ All changes deployed and live on https://megautils.xyz:
 
 ---
 
+### 2026-08-05 — Phase 2: Complete SEO + Blog Auto-Publishing System
+
+**FAQs added to ALL 177 tools:**
+- Every tool now has 3-4 FAQ items with collapsible UI + FAQPage JSON-LD schema
+- Targets Google "People Also Ask" rich snippets
+- Total: ~600+ FAQs across all 177 tools (8 parallel subagents used)
+
+**Blog auto-publishing system (PostgreSQL):**
+- PostgreSQL 16 running in Docker container `megautils-postgres` (port 5433)
+- 89 blog posts seeded (15 original + 75 generated, 1 deduped)
+- Date range: Aug 1, 2026 → Nov 13, 2028 (2+ years of auto-publishing)
+- Posts auto-appear on their `publish_date` — no manual intervention needed
+- Blog pages (`/blog`, `/blog/[slug]`) read from PostgreSQL with file-based fallback
+- Seed script: `npx tsx scripts/seed-blog.ts` (idempotent, can re-run anytime)
+- Each post links to 1-2 relevant tools for internal SEO linking
+
+**Nginx optimized:**
+- Gzip compression enabled for all text/JS/CSS/JSON/XML
+- Security headers: X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy
+- Cache headers for ads.txt, robots.txt, sitemap.xml, llms.txt (1 day)
+- Static assets cached 1 year (/_next/static/)
+
+**SEO files created/updated:**
+- `public/ads.txt` — AdSense placeholder (update pub-ID after approval)
+- `public/llms.txt` — Complete rewrite with all 177 tools by category
+- `src/app/sitemap.ts` — Added static pages (about, contact, privacy, terms) + image category
+- `src/app/layout.tsx` — Google Discover meta tags (max-image-preview:large)
+
+**Database connection:**
+- Config: `.env.local` (gitignored)
+- Connection: `src/lib/db.ts` (pg Pool)
+- Blog queries: `src/lib/blog-data.ts` (getVisiblePostsFromDB, getPostBySlugFromDB)
+
+---
+
 ## Pending / Future Work (Ordered by Impact)
 
 ### Immediate (do this week):
-- [ ] Set up Google Search Console and submit sitemap (`https://megautils.xyz/sitemap.xml`)
-- [ ] Apply for Google AdSense
+- [ ] Resubmit sitemap in Google Search Console (was "Couldn't fetch" due to DNS propagation, now resolved)
+- [ ] Apply for Google AdSense (after 2-4 weeks of content indexing)
 - [ ] Post top 5 tools on Reddit (r/webdev, r/InternetIsBeautiful, r/programming)
 - [ ] Launch on Product Hunt
+- [ ] Update `public/ads.txt` with real AdSense publisher ID after approval
 
 ### Short-term (months 1–3):
-- [ ] Add FAQs to remaining 157 tools
-- [ ] Add 300-word descriptions (helpContent) to top 50 tools
 - [ ] Add contextual affiliate links below relevant tools
 - [ ] Switch from AdSense to Ezoic for higher RPM
 - [ ] Build 50+ programmatic SEO pages (format conversion permutations)
@@ -630,5 +664,4 @@ All changes deployed and live on https://megautils.xyz:
 - [ ] Scale to 500+ tool pages via programmatic SEO
 - [ ] Direct ad sales to SaaS companies
 - [ ] White-label licensing for enterprises
-- [ ] Migrate blog to PostgreSQL + AI auto-publish
 - [ ] Register `megautils.eu.org` as free backup domain

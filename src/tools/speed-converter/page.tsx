@@ -37,6 +37,11 @@ export default function SpeedConverterTool() {
       description="Convert between km/h, mph, m/s, knots, and Mach."
       category="converters"
       categoryLabel="Unit Converters"
+      faqs={[
+        { question: 'How do I convert km/h to mph?', answer: 'Multiply kilometers per hour by 0.6214 to get miles per hour. For example, 100 km/h equals approximately 62.14 mph.' },
+        { question: 'What speed is Mach 1?', answer: 'Mach 1 is the speed of sound, approximately 343 m/s (1,235 km/h or 767 mph) at sea level and 20 degrees Celsius.' },
+        { question: 'What are knots and who uses them?', answer: 'A knot is one nautical mile per hour (about 1.852 km/h or 1.151 mph). Knots are used in aviation and maritime navigation worldwide.' },
+      ]}
     >
       <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-end">
         <div className="space-y-3">

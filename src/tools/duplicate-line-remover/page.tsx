@@ -26,7 +26,18 @@ export default function DuplicateLineRemoverTool() {
   }, [input, caseSensitive])
 
   return (
-    <ToolPage title="Duplicate Line Remover" description="Remove duplicate lines from text. Supports case-sensitive and case-insensitive matching." category="text" categoryLabel="Text Tools">
+    <ToolPage
+      title="Duplicate Line Remover"
+      description="Remove duplicate lines from text. Supports case-sensitive and case-insensitive matching."
+      category="text"
+      categoryLabel="Text Tools"
+      faqs={[
+        { question: 'How do I remove duplicate lines from text?', answer: 'Paste your text into the input field and all duplicate lines are automatically removed, keeping only the first occurrence of each unique line.' },
+        { question: 'What is the difference between case-sensitive and case-insensitive duplicate removal?', answer: 'Case-sensitive treats "Hello" and "hello" as different lines, while case-insensitive considers them duplicates and keeps only the first one.' },
+        { question: 'Does this tool preserve the original line order?', answer: 'Yes, the tool keeps lines in their original order and only removes subsequent duplicate occurrences.' },
+        { question: 'Can I remove duplicates from a large text file?', answer: 'Yes, this tool processes text entirely in your browser with no upload limits, so it handles large texts efficiently.' },
+      ]}
+    >
       <div className="flex items-center gap-4 mb-4">
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" checked={caseSensitive} onChange={(e) => setCaseSensitive(e.target.checked)} className="rounded border-border" />

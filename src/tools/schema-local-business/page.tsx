@@ -96,7 +96,18 @@ export default function SchemaLocalBusinessTool() {
   const inputClass = 'w-full rounded-lg border border-input bg-tool-bg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring'
 
   return (
-    <ToolPage title="Local Business Schema Generator" description="Generate LocalBusiness JSON-LD structured data for local SEO." category="seo" categoryLabel="SEO Tools">
+    <ToolPage
+      title="Local Business Schema Generator"
+      description="Generate LocalBusiness JSON-LD structured data for local SEO."
+      category="seo"
+      categoryLabel="SEO Tools"
+      faqs={[
+        { question: 'What is LocalBusiness schema?', answer: 'LocalBusiness schema is JSON-LD structured data that describes a physical business, including its name, address, phone number, hours, and coordinates. It helps Google display your business in local search results and map packs.' },
+        { question: 'Should I use LocalBusiness or a more specific type?', answer: 'Use the most specific type available. For example, use Restaurant instead of LocalBusiness if you run a restaurant. More specific types give Google better context about your business.' },
+        { question: 'Does LocalBusiness schema replace Google Business Profile?', answer: 'No. LocalBusiness schema and Google Business Profile serve different purposes. Use both for the best local SEO results: the schema on your website and the profile in Google Maps.' },
+        { question: 'How do I add opening hours for different days?', answer: 'Add separate OpeningHoursSpecification entries for each schedule. For example, one entry for Monday-Friday 9-5 and another for Saturday 10-2. Each entry specifies the days, opening time, and closing time.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-4 max-h-[80vh] overflow-y-auto pr-2">
           <div className="flex items-center justify-between">

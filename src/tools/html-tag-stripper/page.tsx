@@ -37,7 +37,11 @@ export default function HtmlTagStripperTool() {
   }, [input, preserveBreaks])
 
   return (
-    <ToolPage title="HTML Tag Stripper" description="Strip all HTML tags from text and keep only the text content." category="text" categoryLabel="Text Tools">
+    <ToolPage title="HTML Tag Stripper" description="Strip all HTML tags from text and keep only the text content." category="text" categoryLabel="Text Tools" faqs={[
+        { question: 'How do I remove HTML tags from text?', answer: 'Paste your HTML into the input and this tool instantly strips all tags, leaving only the plain text content with optional line break preservation.' },
+        { question: 'Does stripping HTML tags also remove HTML entities?', answer: 'Yes, common HTML entities like &amp;, &lt;, &gt;, &quot;, and &nbsp; are automatically decoded back to their plain text equivalents.' },
+        { question: 'Can I keep line breaks when removing HTML tags?', answer: 'Yes, enable the "Preserve line breaks" option to convert block-level tags like p, div, br, and headings into newline characters.' },
+      ]}>
       <div className="flex items-center gap-3 mb-4">
         <label className="flex items-center gap-1.5 text-sm cursor-pointer">
           <input type="checkbox" checked={preserveBreaks} onChange={e => setPreserveBreaks(e.target.checked)} className="rounded border-input" />

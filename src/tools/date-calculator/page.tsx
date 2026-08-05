@@ -91,6 +91,11 @@ export default function DateCalculatorTool() {
       description="Add or subtract days, weeks, months, and years from a date. Calculate the difference between two dates."
       category="datetime"
       categoryLabel="Date & Time"
+      faqs={[
+        { question: 'How do I calculate the number of days between two dates?', answer: 'Select the "Days Between" tab, enter your start and end dates, and the calculator instantly shows the exact difference in days, weeks, months, and years.' },
+        { question: 'How do I find a date 90 days from today?', answer: 'Use the "Add / Subtract" tab, set today as the start date, enter 90 in the Days field with the Add operation, and the result date will be displayed immediately.' },
+        { question: 'Does the date calculator account for leap years?', answer: 'Yes. The calculator uses JavaScript Date objects which correctly handle leap years, varying month lengths, and daylight saving time transitions.' },
+      ]}
     >
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Mode tabs */}

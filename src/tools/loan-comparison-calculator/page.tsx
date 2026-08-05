@@ -49,6 +49,11 @@ export default function LoanComparisonCalculator() {
       description="Compare two loan options side by side. See which loan saves you more in interest and total cost."
       category="financial"
       categoryLabel="Financial Calculators"
+      faqs={[
+        { question: 'Is a shorter loan term always better?', answer: 'Shorter terms have higher monthly payments but much lower total interest. A 15-year mortgage typically saves over 50% in interest compared to a 30-year mortgage on the same amount.' },
+        { question: 'How does interest rate affect total loan cost?', answer: 'Even a small rate difference adds up significantly over time. On a $300,000 mortgage, a 0.5% lower rate can save over $30,000 in total interest over 30 years.' },
+        { question: 'What is EMI and how is it calculated?', answer: 'EMI (Equated Monthly Installment) is a fixed monthly payment calculated using the formula: EMI = P x r x (1+r)^n / ((1+r)^n - 1), where P is principal, r is monthly rate, and n is total months.' },
+      ]}
     >
       {/* Two loan inputs side by side */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">

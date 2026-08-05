@@ -46,6 +46,11 @@ export default function BreakEvenCalculator() {
       description="Calculate the break-even point for your business. Find out how many units you need to sell to cover costs."
       category="financial"
       categoryLabel="Financial Calculators"
+      faqs={[
+        { question: 'What is a break-even point?', answer: 'The break-even point is the number of units you must sell so that total revenue equals total costs (fixed + variable). Beyond this point, every additional unit sold generates profit.' },
+        { question: 'How do I calculate break-even units?', answer: 'Divide your total fixed costs by the contribution margin per unit (selling price minus variable cost per unit). For example, $50,000 fixed costs with a $25 margin = 2,000 units.' },
+        { question: 'What is contribution margin?', answer: 'Contribution margin is the selling price per unit minus the variable cost per unit. It represents how much each unit sold contributes toward covering fixed costs and generating profit.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Inputs */}

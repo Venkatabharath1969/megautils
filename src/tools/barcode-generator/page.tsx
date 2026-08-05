@@ -128,7 +128,13 @@ export default function BarcodeGeneratorTool() {
   const clear = () => { setInput(''); setError('') }
 
   return (
-    <ToolPage title="Barcode Generator" description="Generate Code 128 barcodes from text. Download as PNG." category="generators" categoryLabel="Generators">
+    <ToolPage title="Barcode Generator" description="Generate Code 128 barcodes from text. Download as PNG." category="generators" categoryLabel="Generators"
+      faqs={[
+        { question: 'What is Code 128 barcode format?', answer: 'Code 128 is a high-density linear barcode that can encode all 128 ASCII characters. It is widely used in shipping, packaging, and inventory management.' },
+        { question: 'What characters can I encode in a Code 128 barcode?', answer: 'Code 128B supports all standard printable ASCII characters (codes 32-126), including letters, numbers, and common symbols.' },
+        { question: 'How do I scan the generated barcode?', answer: 'Download the barcode as a PNG image and print it or display it on screen. Any standard barcode scanner or smartphone barcode reader app can scan Code 128 barcodes.' },
+      ]}
+    >
       <div className="space-y-4">
         <div className="flex flex-wrap gap-4 items-end">
           <div className="flex-1 min-w-[200px]">

@@ -88,7 +88,18 @@ export default function TextToSpeechTool() {
   }, {})
 
   return (
-    <ToolPage title="Text to Speech" description="Convert text to speech using your browser's built-in speech synthesis. Choose voice, rate, and pitch." category="content" categoryLabel="Content Tools">
+    <ToolPage
+      title="Text to Speech"
+      description="Convert text to speech using your browser's built-in speech synthesis. Choose voice, rate, and pitch."
+      category="content"
+      categoryLabel="Content Tools"
+      faqs={[
+        { question: 'How does the online text to speech tool work?', answer: 'It uses your browser\'s built-in Web Speech API to read text aloud with customizable voice, speed, and pitch settings.' },
+        { question: 'Can I change the voice or language?', answer: 'Yes, you can select from all voices installed on your device, including different languages and regional accents.' },
+        { question: 'Is my text uploaded to a server?', answer: 'No, all speech synthesis happens locally in your browser. Your text is never sent to any server.' },
+        { question: 'Can I adjust the speaking speed?', answer: 'Yes, use the rate slider to slow down to 0.1x or speed up to 2x the normal speaking rate.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Text Input */}
         <div className="lg:col-span-2 space-y-4">

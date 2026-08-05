@@ -61,7 +61,11 @@ export default function JsonEscapeTool() {
   const clear = () => { setInput(''); setOutput('') }
 
   return (
-    <ToolPage title="JSON String Escape / Unescape" description="Escape or unescape strings for use in JSON. Handles quotes, backslashes, newlines, tabs, and Unicode." category="string" categoryLabel="String Utilities">
+    <ToolPage title="JSON String Escape / Unescape" description="Escape or unescape strings for use in JSON. Handles quotes, backslashes, newlines, tabs, and Unicode." category="string" categoryLabel="String Utilities" faqs={[
+        { question: 'What characters need to be escaped in JSON strings?', answer: 'Double quotes, backslashes, newlines, carriage returns, tabs, form feeds, backspaces, and control characters (U+0000 to U+001F) must all be escaped in JSON strings.' },
+        { question: 'How do I escape a JSON string?', answer: 'Paste your text in the input and click Escape to convert special characters to their JSON escape sequences like \\n for newlines and \\" for quotes.' },
+        { question: 'What does JSON unescape do?', answer: 'JSON unescape converts escape sequences like \\n, \\t, \\", and \\uXXXX back to their original characters, making the string human-readable again.' },
+      ]}>
       <div className="flex flex-wrap gap-2 mb-4">
         <button onClick={() => setMode('escape')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'escape' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Escape</button>
         <button onClick={() => setMode('unescape')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'unescape' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Unescape</button>

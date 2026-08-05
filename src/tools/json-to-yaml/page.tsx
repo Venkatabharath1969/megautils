@@ -68,7 +68,17 @@ export default function JsonToYamlTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="JSON to YAML Converter" description="Convert JSON data to YAML format" category="developer" categoryLabel="Developer Tools">
+    <ToolPage
+      title="JSON to YAML Converter"
+      description="Convert JSON data to YAML format"
+      category="developer"
+      categoryLabel="Developer Tools"
+      faqs={[
+        { question: 'Why convert JSON to YAML?', answer: 'YAML is more human-readable than JSON, supports comments, and uses less syntax, making it preferred for configuration files in tools like Docker Compose, Kubernetes, and Ansible.' },
+        { question: 'Does JSON to YAML conversion lose any data?', answer: 'No, YAML is a superset of JSON, so all JSON data types including strings, numbers, booleans, arrays, and nested objects are fully preserved in the YAML output.' },
+        { question: 'How are JSON arrays represented in YAML?', answer: 'JSON arrays are converted to YAML sequences using the dash-space prefix (- item) for each element, with nested objects indented under each dash.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <div className="flex items-center justify-between mb-2">

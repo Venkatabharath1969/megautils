@@ -131,7 +131,11 @@ export default function JsonPathFinderTool() {
   const clear = () => { setInput(''); setSelectedPath(''); setError('') }
 
   return (
-    <ToolPage title="JSON Path Finder" description="Paste JSON, click on any key to find its JSONPath/dot notation path" category="developer" categoryLabel="Developer Tools">
+    <ToolPage title="JSON Path Finder" description="Paste JSON, click on any key to find its JSONPath/dot notation path" category="developer" categoryLabel="Developer Tools" faqs={[
+        { question: 'What is JSONPath?', answer: 'JSONPath is a query language for JSON that uses dot notation and bracket syntax (like $.store.book[0].title) to locate specific values within a JSON document.' },
+        { question: 'How do I find the path to a JSON value?', answer: 'Paste your JSON into the input and click on any key in the interactive tree view to instantly see its full JSONPath and the value at that location.' },
+        { question: 'Does this tool support nested JSON and arrays?', answer: 'Yes, the tree view expands nested objects and arrays, and clicking any node at any depth gives you the correct path using dot and bracket notation.' },
+      ]}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <div className="flex items-center justify-between mb-2">

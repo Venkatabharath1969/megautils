@@ -154,7 +154,11 @@ export default function MarkdownToTextTool() {
   const downloadMime = tab === 'html' ? 'text/html' : 'text/plain'
 
   return (
-    <ToolPage title="Markdown to Text" description="Convert Markdown to plain text, rich text with Unicode formatting, or HTML." category="text" categoryLabel="Text Tools">
+    <ToolPage title="Markdown to Text" description="Convert Markdown to plain text, rich text with Unicode formatting, or HTML." category="text" categoryLabel="Text Tools" faqs={[
+        { question: 'How do I convert Markdown to plain text?', answer: 'This tool strips all Markdown formatting syntax (headings, bold, italic, links, etc.) and returns clean plain text that you can use in emails, documents, or any plain text context.' },
+        { question: 'What is the rich text output option?', answer: 'The rich text output preserves formatting using Unicode characters -- bold text uses mathematical bold symbols and headings are styled with bold Unicode, making it work in platforms that don\'t support Markdown.' },
+        { question: 'Can I convert Markdown to HTML?', answer: 'Yes, this tool includes an HTML output mode that converts Markdown syntax into proper HTML tags like <h1>, <strong>, <em>, <a>, and <ul> for use in web pages.' },
+      ]}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <div className="flex items-center justify-between mb-2">

@@ -88,7 +88,12 @@ export default function HtmlEntityEncoderTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="HTML Entity Encoder / Decoder" description="Encode special characters to HTML entities or decode entities back to text" category="encoders" categoryLabel="Encoders & Decoders">
+    <ToolPage title="HTML Entity Encoder / Decoder" description="Encode special characters to HTML entities or decode entities back to text" category="encoders" categoryLabel="Encoders & Decoders" faqs={[
+        { question: 'What are HTML entities?', answer: 'HTML entities are special codes like &amp; for & and &lt; for < that represent reserved characters in HTML so they display correctly in web pages.' },
+        { question: 'When should I encode HTML entities?', answer: 'Encode HTML entities when displaying user-generated content on web pages to prevent XSS attacks and ensure special characters like <, >, and & render properly.' },
+        { question: 'What is the difference between named and numeric HTML entities?', answer: 'Named entities use readable codes like &amp;amp; while numeric entities use character codes like &amp;#38;. Both produce the same result but named entities are more readable.' },
+        { question: 'Can I decode HTML entities back to plain text?', answer: 'Yes, switch to Decode mode and paste your HTML entities to convert them back to their original characters, supporting named, decimal, and hex entity formats.' },
+      ]}>
       <div className="flex flex-wrap gap-2 mb-4">
         <button
           onClick={() => setMode('encode')}

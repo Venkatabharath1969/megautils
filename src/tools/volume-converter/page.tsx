@@ -41,6 +41,11 @@ export default function VolumeConverterTool() {
       description="Convert between liters, gallons (US/UK), cups, tablespoons, teaspoons, fluid ounces, and barrels."
       category="converters"
       categoryLabel="Unit Converters"
+      faqs={[
+        { question: 'How many cups are in a gallon?', answer: 'There are 16 US cups in one US gallon. A US gallon equals approximately 3.785 liters.' },
+        { question: 'What is the difference between a US gallon and a UK gallon?', answer: 'A US gallon is 3.785 liters while a UK (imperial) gallon is 4.546 liters. The UK gallon is about 20% larger than the US gallon.' },
+        { question: 'How many tablespoons are in a cup?', answer: 'There are 16 US tablespoons in one US cup. Each tablespoon is approximately 14.79 milliliters.' },
+      ]}
     >
       <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-end">
         <div className="space-y-3">

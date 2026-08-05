@@ -98,6 +98,12 @@ export default function SvgOptimizerTool() {
       description="Optimize and minify SVG code by removing unnecessary data"
       category="image"
       categoryLabel="Image Tools"
+      faqs={[
+        { question: 'How much can SVG optimization reduce file size?', answer: 'SVG optimization typically reduces file size by 20-60%, depending on the source. SVGs exported from editors like Illustrator or Inkscape often contain significant metadata and comments that can be safely removed.' },
+        { question: 'Does optimizing SVG affect image quality?', answer: 'No. SVG optimization removes unnecessary metadata, comments, and whitespace without changing the visual appearance of the image.' },
+        { question: 'What does removing XML declarations do?', answer: 'The XML declaration (<?xml ...?>) is optional when SVGs are embedded directly in HTML. Removing it saves a few bytes and is safe for web use.' },
+        { question: 'Is it safe to remove SVG metadata?', answer: 'Yes, for web use. Metadata elements like <title>, <desc>, and editor-specific attributes are not needed for rendering and can be safely stripped.' },
+      ]}
     >
       {/* Options */}
       <div className="flex flex-wrap gap-x-4 gap-y-2 mb-4">

@@ -180,13 +180,59 @@ export const blogPosts: BlogPost[] = [
   },
 ]
 
-// Get posts that should be visible today (publishDate <= today)
+// Import auto-generated posts for 2-year auto-publishing
+import { generatedPosts } from './blog-posts-generated'
+
+// Merge all posts (file-based fallback — PostgreSQL is primary in production)
+const allPosts: BlogPost[] = [...blogPosts, ...generatedPosts]
+
+// PostgreSQL query for production (used by server components)
+export async function getVisiblePostsFromDB(): Promise<BlogPost[]> {
+  try {
+    const pool = (await import('./db')).default
+    const result = await pool.query(
+      `SELECT id, slug, title, excerpt AS description, content, 
+              TO_CHAR(publish_date, 'YYYY-MM-DD') AS "publishDate",
+              category, keywords, reading_time AS "readingTime"
+       FROM blog_posts 
+       WHERE publish_date <= CURRENT_DATE AND is_published = true 
+       ORDER BY publish_date DESC`
+    )
+    return result.rows
+  } catch {
+    // Fallback to file-based posts if DB is unavailable
+    return getVisiblePosts()
+  }
+}
+
+export async function getPostBySlugFromDB(slug: string): Promise<BlogPost | undefined> {
+  try {
+    const pool = (await import('./db')).default
+    const result = await pool.query(
+      `SELECT id, slug, title, excerpt AS description, content,
+              TO_CHAR(publish_date, 'YYYY-MM-DD') AS "publishDate",
+              category, keywords, reading_time AS "readingTime"
+       FROM blog_posts 
+       WHERE slug = $1 AND publish_date <= CURRENT_DATE AND is_published = true`,
+      [slug]
+    )
+    return result.rows[0] || getPostBySlug(slug)
+  } catch {
+    return getPostBySlug(slug)
+  }
+}
+
+// File-based fallback functions (always available)
 export function getVisiblePosts(): BlogPost[] {
   const today = new Date().toISOString().split('T')[0]
-  return blogPosts.filter(p => p.publishDate <= today).sort((a, b) => b.publishDate.localeCompare(a.publishDate))
+  return allPosts.filter(p => p.publishDate <= today).sort((a, b) => b.publishDate.localeCompare(a.publishDate))
 }
 
 export function getPostBySlug(slug: string): BlogPost | undefined {
   const today = new Date().toISOString().split('T')[0]
-  return blogPosts.find(p => p.slug === slug && p.publishDate <= today)
+  return allPosts.find(p => p.slug === slug && p.publishDate <= today)
+}
+
+export function getAllSlugs(): string[] {
+  return allPosts.map(p => p.slug)
 }

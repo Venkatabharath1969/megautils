@@ -47,7 +47,12 @@ export default function SitemapGeneratorTool() {
   }
 
   return (
-    <ToolPage title="XML Sitemap Generator" description="Paste a list of URLs to generate an XML sitemap with lastmod, changefreq, and priority." category="seo" categoryLabel="SEO Tools">
+    <ToolPage title="XML Sitemap Generator" description="Paste a list of URLs to generate an XML sitemap with lastmod, changefreq, and priority." category="seo" categoryLabel="SEO Tools" faqs={[
+        { question: 'What is an XML sitemap?', answer: 'An XML sitemap is a file that lists all the important URLs on your website, helping search engines like Google discover and crawl your pages more efficiently.' },
+        { question: 'How do I submit my sitemap to Google?', answer: 'Submit your sitemap through Google Search Console under the "Sitemaps" section, or add its URL to your robots.txt file using the Sitemap directive.' },
+        { question: 'What do priority and changefreq mean in a sitemap?', answer: 'Priority (0.0-1.0) indicates the relative importance of a page compared to other pages on your site. Changefreq tells search engines how often the page content is likely to change.' },
+        { question: 'How many URLs can a sitemap contain?', answer: 'A single XML sitemap can contain up to 50,000 URLs and must not exceed 50MB in size. For larger sites, use a sitemap index file to reference multiple sitemaps.' },
+      ]}>
       <div className="space-y-4">
         {!generated ? (
           <>

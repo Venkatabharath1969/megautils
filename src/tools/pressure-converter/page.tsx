@@ -40,6 +40,12 @@ export default function PressureConverterTool() {
       description="Convert between Pascal, bar, PSI, atmosphere, mmHg, torr, and more."
       category="converters"
       categoryLabel="Unit Converters"
+      faqs={[
+        { question: 'How many PSI is 1 bar?', answer: 'One bar is approximately 14.5038 PSI. Bar is commonly used in Europe while PSI is the standard unit in the United States.' },
+        { question: 'What is the difference between atm and bar?', answer: 'One standard atmosphere (atm) equals 1.01325 bar. They are very close in value, but atm is defined by the average sea-level atmospheric pressure while bar is a metric unit.' },
+        { question: 'How do you convert mmHg to Pascal?', answer: 'Multiply the mmHg value by 133.322 to get Pascals. For example, standard atmospheric pressure of 760 mmHg equals approximately 101,325 Pa.' },
+        { question: 'What is a Torr vs mmHg?', answer: 'Torr and mmHg are nearly identical units of pressure. One Torr is defined as exactly 1/760 of a standard atmosphere, which is approximately equal to 1 mmHg.' },
+      ]}
     >
       <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-end">
         <div className="space-y-3">

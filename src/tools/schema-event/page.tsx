@@ -74,7 +74,18 @@ export default function SchemaEventTool() {
   const inputClass = 'w-full rounded-lg border border-input bg-tool-bg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring'
 
   return (
-    <ToolPage title="Event Schema Generator" description="Generate Event JSON-LD structured data for SEO and rich results." category="seo" categoryLabel="SEO Tools">
+    <ToolPage
+      title="Event Schema Generator"
+      description="Generate Event JSON-LD structured data for SEO and rich results."
+      category="seo"
+      categoryLabel="SEO Tools"
+      faqs={[
+        { question: 'What is Event schema markup?', answer: 'Event schema is JSON-LD structured data that describes an event, including its name, date, location, and ticket information. It enables Google to show rich event listings directly in search results.' },
+        { question: 'Can I use Event schema for online events?', answer: 'Yes. Set the attendance mode to Online and provide a VirtualLocation URL. Google supports online, offline, and mixed attendance modes in Event structured data.' },
+        { question: 'What fields are required for Event schema?', answer: 'Google requires at minimum the event name, start date, and either a physical location or virtual location. Adding offers, images, and descriptions is strongly recommended for richer results.' },
+        { question: 'Does Event schema support recurring events?', answer: 'Each occurrence should have its own Event markup with unique start and end dates. Schema.org does not have a built-in recurrence field, so list each instance separately.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-4">
           <div className="flex items-center justify-between">

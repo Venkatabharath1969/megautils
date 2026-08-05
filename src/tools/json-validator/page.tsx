@@ -137,7 +137,18 @@ export default function JsonValidatorTool() {
   const clear = () => { setInput(''); setHasValidated(false) }
 
   return (
-    <ToolPage title="JSON Validator" description="Validate JSON with detailed error messages and statistics" category="developer" categoryLabel="Developer Tools">
+    <ToolPage
+      title="JSON Validator"
+      description="Validate JSON with detailed error messages and statistics"
+      category="developer"
+      categoryLabel="Developer Tools"
+      faqs={[
+        { question: 'What are the most common JSON syntax errors?', answer: 'The most common errors are trailing commas after the last item, using single quotes instead of double quotes, missing commas between items, and unquoted keys.' },
+        { question: 'Does this validator show where the JSON error is?', answer: 'Yes, when your JSON is invalid, the validator pinpoints the exact line and column number where the parsing error occurred so you can fix it quickly.' },
+        { question: 'What statistics does the JSON validator provide?', answer: 'For valid JSON, it shows total keys, max nesting depth, counts of objects, arrays, strings, numbers, booleans, and the overall file size in KB.' },
+        { question: 'Can I validate JSON with comments?', answer: 'No, the JSON specification does not allow comments. If your data contains comments, you need to remove them first or use a format like JSONC or JSON5 that supports them.' },
+      ]}
+    >
       <div>
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-medium">JSON Input</span>

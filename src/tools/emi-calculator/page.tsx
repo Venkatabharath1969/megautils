@@ -34,6 +34,12 @@ export default function EMICalculator() {
       description="Calculate your Equated Monthly Installment (EMI) for home loans, car loans, and personal loans."
       category="financial"
       categoryLabel="Financial Calculators"
+      faqs={[
+        { question: 'What is EMI and how is it calculated?', answer: 'EMI (Equated Monthly Installment) is a fixed monthly payment combining principal and interest. It is calculated using the formula: EMI = P x r x (1+r)^n / ((1+r)^n - 1), where P is principal, r is monthly interest rate, and n is total months.' },
+        { question: 'Does a higher tenure reduce EMI?', answer: 'Yes, a longer tenure reduces the monthly EMI amount, but you end up paying significantly more total interest over the life of the loan.' },
+        { question: 'How does prepayment affect my loan EMI?', answer: 'Prepaying part of the principal reduces either your remaining tenure or your EMI amount, saving you money on total interest paid over the loan period.' },
+        { question: 'What is a good EMI-to-income ratio?', answer: 'Financial advisors recommend keeping your total EMI obligations below 40-50% of your monthly income to maintain a healthy financial balance.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Inputs */}

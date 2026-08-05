@@ -82,6 +82,11 @@ export default function PlaceholderImageGeneratorTool() {
       description="Generate placeholder images with custom dimensions, colors, and text"
       category="image"
       categoryLabel="Image Tools"
+      faqs={[
+        { question: 'What are placeholder images used for?', answer: 'Placeholder images are used during web design and development to fill image spaces before final assets are ready. They help visualize layouts and test responsive designs.' },
+        { question: 'Can I customize the text on placeholder images?', answer: 'Yes. By default the image displays its dimensions, but you can enter any custom text. You can also change the background and text colors.' },
+        { question: 'What format are the generated placeholder images?', answer: 'Placeholder images are generated as PNG files, which support transparency and sharp text rendering at any size.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Controls */}

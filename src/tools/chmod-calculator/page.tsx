@@ -87,7 +87,12 @@ export default function ChmodCalculatorTool() {
   }
 
   return (
-    <ToolPage title="Chmod Calculator" description="Unix file permissions calculator. Toggle checkboxes or enter numeric permissions." category="developer" categoryLabel="Developer Tools">
+    <ToolPage title="Chmod Calculator" description="Unix file permissions calculator. Toggle checkboxes or enter numeric permissions." category="developer" categoryLabel="Developer Tools" faqs={[
+        { question: 'What does chmod 755 mean?', answer: 'chmod 755 gives the owner full read, write, and execute permissions (7), while group and others get read and execute only (5). This is the standard permission for directories and executable files.' },
+        { question: 'How do I calculate chmod permissions?', answer: 'Toggle the read (4), write (2), and execute (1) checkboxes for owner, group, and other, and the tool instantly calculates the numeric (e.g., 755) and symbolic (e.g., -rwxr-xr-x) notation.' },
+        { question: 'What is the difference between chmod 644 and 755?', answer: '644 gives the owner read/write and everyone else read-only (typical for files), while 755 adds execute permission for all users (typical for directories and scripts).' },
+        { question: 'Should I ever use chmod 777?', answer: 'Avoid chmod 777 in production as it gives full read, write, and execute access to everyone, creating a significant security risk. Use more restrictive permissions like 755 or 750.' },
+      ]}>
       <div className="space-y-6">
         {/* Checkboxes Grid */}
         <div className="overflow-x-auto">

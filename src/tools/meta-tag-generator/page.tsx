@@ -50,7 +50,12 @@ export default function MetaTagGeneratorTool() {
   }
 
   return (
-    <ToolPage title="Meta Tag Generator" description="Generate HTML meta tags, Open Graph tags, and Twitter Card tags for SEO." category="seo" categoryLabel="SEO Tools">
+    <ToolPage title="Meta Tag Generator" description="Generate HTML meta tags, Open Graph tags, and Twitter Card tags for SEO." category="seo" categoryLabel="SEO Tools" faqs={[
+        { question: 'What are meta tags and why are they important for SEO?', answer: 'Meta tags are HTML elements in the <head> section that provide search engines with information about your page, including title, description, and indexing instructions. They directly influence how your page appears in search results.' },
+        { question: 'What is the ideal length for a meta description?', answer: 'The ideal meta description length is between 120 and 155 characters. Google typically truncates descriptions longer than 155 characters in search results.' },
+        { question: 'What are Open Graph tags?', answer: 'Open Graph tags are meta tags that control how your page appears when shared on social media platforms like Facebook and LinkedIn, including the title, description, and preview image.' },
+        { question: 'Do I need both Open Graph and Twitter Card tags?', answer: 'Twitter can fall back to Open Graph tags, but adding Twitter Card tags gives you more control over how your content appears on Twitter/X, such as choosing between summary and large image card formats.' },
+      ]}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Form */}
         <div className="space-y-4">

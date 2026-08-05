@@ -36,7 +36,12 @@ export default function SerpPreviewTool() {
   const truncatedDesc = description.length > 155 ? description.slice(0, 155) + '...' : (description || 'This is the meta description of your page. It will show up in search engine results. Write a compelling description to improve click-through rates.')
 
   return (
-    <ToolPage title="SERP Preview" description="Preview how your page will appear in Google search results. Check title and description lengths." category="seo" categoryLabel="SEO Tools">
+    <ToolPage title="SERP Preview" description="Preview how your page will appear in Google search results. Check title and description lengths." category="seo" categoryLabel="SEO Tools" faqs={[
+        { question: 'What is a SERP preview?', answer: 'A SERP (Search Engine Results Page) preview shows you exactly how your page title, URL, and meta description will look in Google search results before you publish.' },
+        { question: 'What is the ideal title tag length for Google?', answer: 'Google typically displays the first 50-60 characters of a title tag. Keeping your title within 60 characters ensures it won\'t be truncated in search results.' },
+        { question: 'How long should a meta description be?', answer: 'Meta descriptions should be between 120 and 155 characters. Google may truncate descriptions longer than 155 characters with an ellipsis.' },
+        { question: 'Does Google always use my meta description?', answer: 'No, Google may rewrite your meta description if it determines that a different snippet from your page better matches the user\'s search query.' },
+      ]}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Form */}
         <div className="space-y-4">

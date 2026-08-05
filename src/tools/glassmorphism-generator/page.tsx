@@ -41,7 +41,18 @@ export default function GlassmorphismGeneratorTool() {
   ].join('\n'), [glassBackground, blur, borderRadius, glassBorder])
 
   return (
-    <ToolPage title="Glassmorphism Generator" description="Create beautiful glass-effect CSS with backdrop blur, transparency, and live preview." category="css" categoryLabel="CSS Tools">
+    <ToolPage
+      title="Glassmorphism Generator"
+      description="Create beautiful glass-effect CSS with backdrop blur, transparency, and live preview."
+      category="css"
+      categoryLabel="CSS Tools"
+      faqs={[
+        { question: 'What is glassmorphism in UI design?', answer: 'Glassmorphism is a design trend that creates a frosted glass effect using CSS backdrop-filter blur, semi-transparent backgrounds, and subtle borders to give elements a translucent appearance.' },
+        { question: 'How does CSS backdrop-filter work?', answer: 'backdrop-filter applies graphical effects like blur to the area behind an element, allowing content beneath a semi-transparent background to appear frosted or blurred.' },
+        { question: 'Is glassmorphism supported in all browsers?', answer: 'backdrop-filter is supported in all modern browsers including Chrome, Firefox, Safari, and Edge. Use the -webkit-backdrop-filter prefix for broader Safari compatibility.' },
+        { question: 'What background color works best for glassmorphism?', answer: 'White with low opacity (10-30%) works best for light themes, while dark colors with similar opacity suit dark themes. The effect works best over colorful or image backgrounds.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Controls */}
         <div className="space-y-4">

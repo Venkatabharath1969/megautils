@@ -119,6 +119,12 @@ export default function CronExpressionBuilderTool() {
       description="Build cron expressions visually. See plain English descriptions and next execution times."
       category="datetime"
       categoryLabel="Date & Time"
+      faqs={[
+        { question: 'What does a cron expression look like?', answer: 'A standard cron expression has five fields separated by spaces: minute (0-59), hour (0-23), day of month (1-31), month (1-12), and day of week (0-6). For example, "0 9 * * 1" means every Monday at 9:00 AM.' },
+        { question: 'What does */5 mean in a cron expression?', answer: 'The */5 syntax means "every 5 units." In the minute field, */5 means every 5 minutes. In the hour field, it means every 5 hours.' },
+        { question: 'How do I schedule a cron job to run every weekday?', answer: 'Use 1-5 in the day-of-week field. For example, "0 8 * * 1-5" runs at 8:00 AM Monday through Friday.' },
+        { question: 'What is the difference between * and ? in cron?', answer: 'In standard Unix cron, * means "every value." The ? character is used in some extended cron formats (like Quartz) to mean "no specific value" and is not part of standard Unix cron.' },
+      ]}
     >
       <div className="max-w-3xl mx-auto space-y-6">
         {/* Presets */}

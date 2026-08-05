@@ -43,7 +43,18 @@ export default function HexToRgbTool() {
     : rgbResult
 
   return (
-    <ToolPage title="HEX to RGB Converter" description="Convert HEX color codes to RGB values and vice versa with live preview." category="color" categoryLabel="Color Tools">
+    <ToolPage
+      title="HEX to RGB Converter"
+      description="Convert HEX color codes to RGB values and vice versa with live preview."
+      category="color"
+      categoryLabel="Color Tools"
+      faqs={[
+        { question: 'How do I convert a HEX color to RGB?', answer: 'Enter a hex code like #3b82f6 and the tool instantly shows the RGB values (e.g., rgb(59, 130, 246)) with a live color preview.' },
+        { question: 'What is the difference between HEX and RGB color formats?', answer: 'HEX uses a 6-character hexadecimal string (#RRGGBB), while RGB specifies red, green, and blue as decimal numbers from 0 to 255. Both represent the same colors.' },
+        { question: 'Can I convert RGB back to HEX?', answer: 'Yes, switch to "RGB to HEX" mode, enter R, G, and B values (0-255 each), and the hex code is generated automatically.' },
+        { question: 'Do I need the # symbol when entering a hex code?', answer: 'The # symbol is optional. The tool accepts hex codes with or without it, and also supports 3-digit shorthand like #f00.' },
+      ]}
+    >
       <div className="flex gap-2 mb-6">
         <button onClick={() => setMode('hex2rgb')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'hex2rgb' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>
           HEX to RGB

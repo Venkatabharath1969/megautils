@@ -49,7 +49,18 @@ export default function ListToolsPage() {
   ]
 
   return (
-    <ToolPage title="List Tools" description="Split, join, deduplicate, sort, and number list items." category="text" categoryLabel="Text Tools">
+    <ToolPage
+      title="List Tools"
+      description="Split, join, deduplicate, sort, and number list items."
+      category="text"
+      categoryLabel="Text Tools"
+      faqs={[
+        { question: 'How do I split a comma-separated list into lines?', answer: 'Select the "Split to Lines" mode and enter a comma in the delimiter field. Paste your comma-separated values into the input, and each item will appear on its own line in the output.' },
+        { question: 'Can I remove duplicate items from a list?', answer: 'Yes. Select the "Remove Duplicates" mode and paste your list with one item per line. The tool will keep only unique items while preserving the order of first occurrence.' },
+        { question: 'How does the sorting work?', answer: 'The sort mode arranges lines alphabetically using locale-aware comparison. You can switch between ascending (A-Z) and descending (Z-A) order with the toggle buttons.' },
+        { question: 'Can I add custom numbering to my list?', answer: 'Yes. Use the "Number Items" mode and customize the prefix and suffix fields. For example, set the suffix to ") " to get numbering like "1) Item" or leave the default ". " for "1. Item".' },
+      ]}
+    >
       <div className="flex flex-wrap gap-2 mb-4">
         {modes.map(m => (
           <button key={m.key} onClick={() => setMode(m.key)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === m.key ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>

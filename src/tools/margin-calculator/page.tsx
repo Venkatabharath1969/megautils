@@ -52,6 +52,11 @@ export default function MarginCalculator() {
       description="Calculate profit margin, markup percentage, and gross profit. Supports multiple calculation modes."
       category="financial"
       categoryLabel="Financial Calculators"
+      faqs={[
+        { question: 'What is the difference between margin and markup?', answer: 'Margin is profit as a percentage of the selling price, while markup is profit as a percentage of the cost price. A 50% markup equals a 33.3% margin.' },
+        { question: 'How do I calculate profit margin?', answer: 'Profit margin = (Selling Price - Cost Price) / Selling Price x 100. For example, selling at $100 with a $60 cost gives a 40% margin.' },
+        { question: 'What is a good profit margin?', answer: 'Good margins vary by industry. Retail averages 2-5%, software 70-90%, and restaurants 3-9%. Compare your margin to industry benchmarks for a meaningful assessment.' },
+      ]}
     >
       {/* Mode tabs */}
       <div className="flex flex-wrap gap-2 mb-6">

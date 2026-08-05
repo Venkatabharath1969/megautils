@@ -20,7 +20,12 @@ export default function SocialMediaCounterTool() {
   const charCount = useMemo(() => text.length, [text])
 
   return (
-    <ToolPage title="Social Media Character Counter" description="Check your text against character limits for Twitter/X, LinkedIn, Instagram, Facebook, TikTok, Threads, and YouTube." category="content" categoryLabel="Content Tools">
+    <ToolPage title="Social Media Character Counter" description="Check your text against character limits for Twitter/X, LinkedIn, Instagram, Facebook, TikTok, Threads, and YouTube." category="content" categoryLabel="Content Tools" faqs={[
+        { question: 'What is the character limit for Twitter/X posts?', answer: 'Twitter/X has a 280-character limit for standard posts. Verified subscribers on X Premium may have higher limits up to 25,000 characters.' },
+        { question: 'What is the Instagram caption character limit?', answer: 'Instagram captions have a maximum limit of 2,200 characters. However, captions are truncated after about 125 characters in the feed, so put your most important text first.' },
+        { question: 'What is the LinkedIn post character limit?', answer: 'LinkedIn posts support up to 3,000 characters. Content is truncated after about 140 characters with a "see more" link, so lead with a compelling hook.' },
+        { question: 'Do hashtags count toward character limits?', answer: 'Yes, hashtags count toward the character limit on all social media platforms. Each hashtag uses characters equal to the # symbol plus the tag text.' },
+      ]}>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <span className="text-sm font-semibold">Your Text</span>

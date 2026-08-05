@@ -126,6 +126,11 @@ export default function TermsGeneratorTool() {
       description="Generate terms of service for your website or application"
       category="generators"
       categoryLabel="Generators"
+      faqs={[
+        { question: 'What is the difference between terms of service and a privacy policy?', answer: 'Terms of service govern the rules and conditions for using your website, while a privacy policy specifically explains how you collect, use, and protect user data.' },
+        { question: 'Are terms of service legally enforceable?', answer: 'Yes, terms of service are generally enforceable as a contract when users agree to them, but specific clauses may be challenged in court depending on your jurisdiction.' },
+        { question: 'Does my website legally need terms of service?', answer: 'While not always legally required, having terms of service protects your business by limiting liability, defining acceptable use, and establishing governing law for disputes.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Form */}

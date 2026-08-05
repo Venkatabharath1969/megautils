@@ -40,6 +40,11 @@ export default function NPVCalculator() {
       description="Calculate Net Present Value of an investment. Determine if a project is profitable based on discounted cash flows."
       category="financial"
       categoryLabel="Financial Calculators"
+      faqs={[
+        { question: 'What is Net Present Value (NPV)?', answer: 'NPV is the difference between the present value of future cash inflows and the initial investment. A positive NPV means the investment is expected to be profitable.' },
+        { question: 'What discount rate should I use for NPV?', answer: 'The discount rate typically reflects your required rate of return or the weighted average cost of capital (WACC). Common rates range from 8% to 15% depending on risk.' },
+        { question: 'What does a negative NPV mean?', answer: 'A negative NPV indicates the projected earnings from the investment, discounted to present value, are less than the initial cost, meaning the investment would lose money.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Inputs */}

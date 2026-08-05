@@ -45,7 +45,18 @@ export default function SchemaArticleTool() {
   const inputClass = 'w-full rounded-lg border border-input bg-tool-bg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring'
 
   return (
-    <ToolPage title="Article Schema Generator" description="Generate Article JSON-LD structured data for SEO." category="seo" categoryLabel="SEO Tools">
+    <ToolPage
+      title="Article Schema Generator"
+      description="Generate Article JSON-LD structured data for SEO."
+      category="seo"
+      categoryLabel="SEO Tools"
+      faqs={[
+        { question: 'What is Article schema markup?', answer: 'Article schema is JSON-LD structured data that tells search engines about your article content, including the headline, author, publish date, and publisher. It helps your pages qualify for rich results in Google Search.' },
+        { question: 'Where do I put the Article JSON-LD code?', answer: 'Paste the generated script tag into the <head> section of your HTML page or within the <body>. Google can read JSON-LD regardless of placement, but the <head> is the most common convention.' },
+        { question: 'Is Article schema required for SEO?', answer: 'It is not required, but strongly recommended. Article schema helps Google understand your content better, which can lead to enhanced search appearances like Top Stories carousels and rich snippets.' },
+        { question: 'What is the difference between Article and NewsArticle schema?', answer: 'Article is a general type for any article, while NewsArticle is a subtype specifically for time-sensitive news content. Use NewsArticle only for journalistic news; otherwise, Article is the correct choice.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-4">
           <div className="flex items-center justify-between">

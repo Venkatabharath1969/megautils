@@ -48,6 +48,11 @@ export default function FuelEconomyConverterTool() {
       description="Convert between km/L, mpg (US), mpg (UK), and L/100km fuel consumption units."
       category="converters"
       categoryLabel="Unit Converters"
+      faqs={[
+        { question: 'How do I convert MPG to L/100km?', answer: 'Divide 235.215 by the MPG (US) value to get L/100km. For example, 30 MPG equals approximately 7.84 L/100km.' },
+        { question: 'What is the difference between US MPG and UK MPG?', answer: 'US MPG uses the US gallon (3.785 liters) while UK MPG uses the imperial gallon (4.546 liters). A UK MPG value will always be higher than US MPG for the same vehicle.' },
+        { question: 'What is a good fuel economy in L/100km?', answer: 'A fuel economy of 6-8 L/100km is considered good for a gasoline car. Hybrid vehicles typically achieve 4-5 L/100km, while large SUVs may use 10-15 L/100km.' },
+      ]}
     >
       <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-end">
         <div className="space-y-3">

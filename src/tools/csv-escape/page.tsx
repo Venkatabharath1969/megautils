@@ -38,7 +38,11 @@ export default function CsvEscapeTool() {
   const clear = () => { setInput(''); setOutput('') }
 
   return (
-    <ToolPage title="CSV Field Escape / Unescape" description="Escape or unescape strings for CSV fields. Handles quote wrapping and double-quote escaping." category="string" categoryLabel="String Utilities">
+    <ToolPage title="CSV Field Escape / Unescape" description="Escape or unescape strings for CSV fields. Handles quote wrapping and double-quote escaping." category="string" categoryLabel="String Utilities" faqs={[
+        { question: 'When do CSV fields need to be escaped?', answer: 'CSV fields must be escaped when they contain commas, double quotes, or newline characters. The field is wrapped in double quotes and any existing quotes are doubled.' },
+        { question: 'How do you escape quotes in CSV?', answer: 'In CSV format, double quotes inside a field value are escaped by doubling them (e.g., "She said ""hello"""), and the entire field is wrapped in quotes.' },
+        { question: 'What does CSV unescape do?', answer: 'CSV unescape removes the outer double quotes from a quoted field and converts doubled quotes ("") back to single quotes, restoring the original text.' },
+      ]}>
       <div className="flex flex-wrap gap-2 mb-4">
         <button onClick={() => setMode('escape')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'escape' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Escape</button>
         <button onClick={() => setMode('unescape')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'unescape' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Unescape</button>

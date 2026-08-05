@@ -104,7 +104,18 @@ export default function ColorPaletteGeneratorTool() {
   const paletteHexes = palette.map(p => p.hex.toUpperCase()).join(', ')
 
   return (
-    <ToolPage title="Color Palette Generator" description="Generate complementary, analogous, triadic, tetradic, and monochromatic palettes from a base color." category="color" categoryLabel="Color Tools">
+    <ToolPage
+      title="Color Palette Generator"
+      description="Generate complementary, analogous, triadic, tetradic, and monochromatic palettes from a base color."
+      category="color"
+      categoryLabel="Color Tools"
+      faqs={[
+        { question: 'What is a complementary color palette?', answer: 'A complementary palette uses two colors opposite each other on the color wheel (180 degrees apart), creating high contrast and visual impact.' },
+        { question: 'What is the difference between analogous, triadic, and tetradic palettes?', answer: 'Analogous uses neighboring hues (30 degrees apart), triadic uses three evenly spaced hues (120 degrees), and tetradic uses four hues (90 degrees apart).' },
+        { question: 'How do I generate a color palette from a base color?', answer: 'Pick or enter a base color, then select a palette type. The tool instantly generates harmonious colors based on color theory relationships.' },
+        { question: 'What is a monochromatic color palette?', answer: 'A monochromatic palette uses different shades, tints, and tones of a single hue by varying its lightness while keeping the same base color.' },
+      ]}
+    >
       <div className="space-y-6">
         {/* Controls */}
         <div className="flex flex-col sm:flex-row gap-4">

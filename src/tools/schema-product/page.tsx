@@ -52,7 +52,18 @@ export default function SchemaProductTool() {
   const inputClass = 'w-full rounded-lg border border-input bg-tool-bg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring'
 
   return (
-    <ToolPage title="Product Schema Generator" description="Generate Product JSON-LD structured data for SEO and rich results." category="seo" categoryLabel="SEO Tools">
+    <ToolPage
+      title="Product Schema Generator"
+      description="Generate Product JSON-LD structured data for SEO and rich results."
+      category="seo"
+      categoryLabel="SEO Tools"
+      faqs={[
+        { question: 'What is Product schema markup?', answer: 'Product schema is JSON-LD structured data that describes a product with details like name, price, availability, brand, and reviews. It enables Google to display rich product snippets with price and rating stars in search results.' },
+        { question: 'What fields are required for Product rich results?', answer: 'Google requires the product name and at least one of the following: review, aggregateRating, or offers. Including price, availability, and an image is strongly recommended for the best results.' },
+        { question: 'Does Product schema show star ratings in Google?', answer: 'Yes. When you include aggregateRating with a ratingValue and reviewCount, Google can display star ratings directly in search results, which significantly improves click-through rates.' },
+        { question: 'Can I use Product schema for digital products?', answer: 'Yes. Product schema works for both physical and digital products including software, ebooks, and online courses. Set the availability and price just as you would for a physical item.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-4">
           <div className="flex items-center justify-between">

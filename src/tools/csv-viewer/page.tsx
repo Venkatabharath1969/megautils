@@ -98,7 +98,12 @@ export default function CsvViewerTool() {
   const clear = () => { setInput(''); setSortCol(null) }
 
   return (
-    <ToolPage title="CSV Viewer" description="Paste CSV data and view it as a formatted, sortable table" category="developer" categoryLabel="Developer Tools">
+    <ToolPage title="CSV Viewer" description="Paste CSV data and view it as a formatted, sortable table" category="developer" categoryLabel="Developer Tools" faqs={[
+        { question: 'How do I view a CSV file as a table?', answer: 'Paste your CSV data into the input field and it will instantly render as a formatted, sortable table with row numbers and column headers.' },
+        { question: 'Can I sort CSV data by column?', answer: 'Yes, click any column header to sort the table by that column in ascending or descending order, with automatic detection of numeric vs. text sorting.' },
+        { question: 'What delimiters are supported besides commas?', answer: 'The tool supports comma, tab, semicolon, and pipe (|) delimiters. Select your delimiter from the dropdown to parse your data correctly.' },
+        { question: 'Does the CSV viewer handle quoted fields?', answer: 'Yes, the parser correctly handles quoted fields containing commas, newlines, and escaped double quotes per the CSV standard (RFC 4180).' },
+      ]}>
       <div className="space-y-4">
         <div>
           <div className="flex items-center justify-between mb-2">

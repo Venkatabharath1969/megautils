@@ -155,7 +155,17 @@ export default function PunycodeConverterTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="Punycode Converter" description="Convert international domain names to/from Punycode (xn--) encoding" category="encoders" categoryLabel="Encoders & Decoders">
+    <ToolPage
+      title="Punycode Converter"
+      description="Convert international domain names to/from Punycode (xn--) encoding"
+      category="encoders"
+      categoryLabel="Encoders & Decoders"
+      faqs={[
+        { question: 'What is Punycode?', answer: 'Punycode is an encoding system defined in RFC 3492 that converts Unicode characters (like accented letters, Chinese, or Arabic) into the limited ASCII character set used by the Domain Name System (DNS).' },
+        { question: 'What does the xn-- prefix mean?', answer: 'The "xn--" prefix is the ACE (ASCII Compatible Encoding) label that indicates a domain name contains Punycode-encoded international characters. For example, "muenchen.de" with an umlaut becomes "xn--mnchen-3ya.de".' },
+        { question: 'Why do international domain names need Punycode?', answer: 'DNS only supports ASCII characters (a-z, 0-9, and hyphens). Punycode allows domain names with non-ASCII characters like umlauts, accents, or CJK characters to work within this technical limitation.' },
+      ]}
+    >
       <div className="flex gap-2 mb-4">
         <button onClick={() => setMode('toASCII')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'toASCII' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Unicode → Punycode</button>
         <button onClick={() => setMode('toUnicode')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'toUnicode' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Punycode → Unicode</button>

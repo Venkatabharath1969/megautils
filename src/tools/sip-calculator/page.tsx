@@ -44,6 +44,12 @@ export default function SIPCalculator() {
       description="Calculate returns on your Systematic Investment Plan (SIP). Plan your mutual fund investments with ease."
       category="financial"
       categoryLabel="Financial Calculators"
+      faqs={[
+        { question: 'What is a SIP and how does it work?', answer: 'A SIP (Systematic Investment Plan) lets you invest a fixed amount in mutual funds at regular intervals (usually monthly), benefiting from rupee cost averaging and the power of compounding.' },
+        { question: 'How much can I earn from a SIP of 10,000 per month?', answer: 'A monthly SIP of Rs 10,000 for 10 years at 12% expected returns would grow to approximately Rs 23.2 lakhs, with Rs 12 lakhs invested and Rs 11.2 lakhs in estimated returns.' },
+        { question: 'Is SIP better than lump sum investment?', answer: 'SIP reduces market timing risk through rupee cost averaging, making it ideal for volatile markets. Lump sum can outperform in consistently rising markets, but SIP is generally safer for most investors.' },
+        { question: 'Can I stop or modify my SIP anytime?', answer: 'Yes, most mutual fund SIPs are flexible and can be paused, increased, decreased, or stopped at any time without penalties.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Inputs */}

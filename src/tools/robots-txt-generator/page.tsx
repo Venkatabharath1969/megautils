@@ -62,7 +62,12 @@ export default function RobotsTxtGeneratorTool() {
   }
 
   return (
-    <ToolPage title="Robots.txt Generator" description="Build a robots.txt file with user-agent rules, sitemap URL, and crawl delay." category="seo" categoryLabel="SEO Tools">
+    <ToolPage title="Robots.txt Generator" description="Build a robots.txt file with user-agent rules, sitemap URL, and crawl delay." category="seo" categoryLabel="SEO Tools" faqs={[
+        { question: 'What is a robots.txt file?', answer: 'A robots.txt file is a plain text file placed at the root of your website that tells search engine crawlers which pages or sections they are allowed or disallowed from crawling.' },
+        { question: 'Does robots.txt block pages from appearing in Google?', answer: 'No, robots.txt only prevents crawling, not indexing. Google may still index a URL if other pages link to it. Use a "noindex" meta tag to prevent a page from appearing in search results.' },
+        { question: 'Where should I put my robots.txt file?', answer: 'The robots.txt file must be placed in the root directory of your website (e.g., https://example.com/robots.txt). It won\'t work if placed in a subdirectory.' },
+        { question: 'What does crawl delay do in robots.txt?', answer: 'Crawl delay tells bots to wait a specified number of seconds between requests, which helps reduce server load. Note that Google ignores the crawl-delay directive.' },
+      ]}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Form */}
         <div className="space-y-4">

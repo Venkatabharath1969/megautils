@@ -70,7 +70,18 @@ export default function SchemaRecipeTool() {
   const inputClass = 'w-full rounded-lg border border-input bg-tool-bg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring'
 
   return (
-    <ToolPage title="Recipe Schema Generator" description="Generate Recipe JSON-LD structured data for rich results in Google Search." category="seo" categoryLabel="SEO Tools">
+    <ToolPage
+      title="Recipe Schema Generator"
+      description="Generate Recipe JSON-LD structured data for rich results in Google Search."
+      category="seo"
+      categoryLabel="SEO Tools"
+      faqs={[
+        { question: 'What is Recipe schema markup?', answer: 'Recipe schema is JSON-LD structured data that describes a recipe with its ingredients, instructions, cook time, and nutrition info. It enables Google to display recipe cards with images and ratings in search results.' },
+        { question: 'What time format should I use for prep and cook time?', answer: 'Use ISO 8601 duration format. For example, PT15M means 15 minutes, PT1H means 1 hour, and PT1H30M means 1 hour and 30 minutes.' },
+        { question: 'Does Recipe schema guarantee a recipe carousel in Google?', answer: 'No. Adding Recipe schema makes your page eligible for rich results like recipe carousels, but Google determines which pages to feature based on content quality, images, and other factors.' },
+        { question: 'What fields are required for Recipe rich results?', answer: 'Google requires the recipe name and at least two of the following: image, author, datePublished, description, prepTime, or totalTime. Including all fields maximizes your chances of rich results.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-4 max-h-[80vh] overflow-y-auto pr-2">
           <div className="flex items-center justify-between">

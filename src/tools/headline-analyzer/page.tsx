@@ -110,7 +110,12 @@ export default function HeadlineAnalyzerTool() {
   }
 
   return (
-    <ToolPage title="Headline Analyzer" description="Analyze your headline for word count, power words, emotional impact, and SERP readiness." category="content" categoryLabel="Content Tools">
+    <ToolPage title="Headline Analyzer" description="Analyze your headline for word count, power words, emotional impact, and SERP readiness." category="content" categoryLabel="Content Tools" faqs={[
+        { question: 'What makes a good headline?', answer: 'A good headline is 6-12 words long, includes power or emotional words, fits within Google\'s 60-character display limit, and uses a proven format like a listicle, how-to, or question.' },
+        { question: 'What are power words in headlines?', answer: 'Power words are persuasive terms like "proven," "ultimate," "essential," and "secret" that grab attention and increase click-through rates on your content.' },
+        { question: 'How long should a headline be for SEO?', answer: 'Keep headlines under 60 characters so they display fully in Google search results. For word count, 6-12 words is the ideal range for engagement and readability.' },
+        { question: 'What headline score should I aim for?', answer: 'Aim for a score of 60 or above, which indicates good use of power words, emotional triggers, and proper length. Scores above 80 are considered excellent.' },
+      ]}>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <span className="text-sm font-semibold">Enter Your Headline</span>

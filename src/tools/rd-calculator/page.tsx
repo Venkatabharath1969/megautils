@@ -49,6 +49,12 @@ export default function RDCalculator() {
       description="Calculate Recurring Deposit maturity amount. Plan your monthly savings with estimated returns."
       category="financial"
       categoryLabel="Financial Calculators"
+      faqs={[
+        { question: 'What is a Recurring Deposit (RD)?', answer: 'A Recurring Deposit is a savings scheme where you deposit a fixed amount every month for a set period and earn compound interest, similar to an FD but with monthly installments.' },
+        { question: 'How is RD maturity amount calculated?', answer: 'Each monthly installment earns compound interest (typically quarterly compounding) for its remaining tenure. The maturity amount is the sum of all installments plus their accumulated interest.' },
+        { question: 'What is the minimum tenure for an RD?', answer: 'Most banks offer RD tenures starting from 6 months and going up to 10 years. The most common tenure options are 6 months, 1 year, 2 years, 3 years, and 5 years.' },
+        { question: 'Is RD better than SIP for savings?', answer: 'RD offers guaranteed fixed returns with zero risk, while SIP invests in mutual funds with potentially higher but market-linked returns. RD is better for capital preservation, SIP for wealth creation.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Inputs */}

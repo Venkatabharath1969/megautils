@@ -29,6 +29,11 @@ export default function TipCalculator() {
       description="Calculate tips, split bills between friends, and find the total cost per person."
       category="financial"
       categoryLabel="Financial Calculators"
+      faqs={[
+        { question: 'How much should I tip at a restaurant?', answer: 'In the US, 15-20% is standard for sit-down restaurants. Tip 15% for adequate service, 18% for good service, and 20% or more for excellent service.' },
+        { question: 'How do I calculate a tip quickly?', answer: 'For a quick 20% tip, move the decimal one place left (to get 10%) and double it. For 15%, calculate 10% and add half of that amount.' },
+        { question: 'Should I tip on the pre-tax or post-tax amount?', answer: 'Etiquette experts generally recommend tipping on the pre-tax subtotal, though tipping on the total including tax is also common and more generous.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Inputs */}

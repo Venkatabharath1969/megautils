@@ -78,7 +78,14 @@ export default function CrontabReferenceTool() {
   const filtered = activeCategory === 'All' ? CRON_EXAMPLES : CRON_EXAMPLES.filter((e) => e.category === activeCategory)
 
   return (
-    <ToolPage title="Crontab Reference" description="Interactive cron expression reference with clickable examples and common patterns" category="datetime" categoryLabel="Date & Time">
+    <ToolPage title="Crontab Reference" description="Interactive cron expression reference with clickable examples and common patterns" category="datetime" categoryLabel="Date & Time"
+      faqs={[
+        { question: 'What is a crontab?', answer: 'A crontab (cron table) is a configuration file that specifies shell commands to run on a schedule in Unix-like operating systems. Each line defines a time pattern and the command to execute.' },
+        { question: 'How do I edit my crontab?', answer: 'Run "crontab -e" in your terminal to open the crontab editor. Add one cron expression per line followed by the command to run, then save and exit.' },
+        { question: 'What does 0 0 * * * mean in cron?', answer: 'This cron expression means "at minute 0, hour 0, every day" -- in other words, it runs once daily at midnight (00:00).' },
+        { question: 'How do I run a cron job every 5 minutes?', answer: 'Use the expression "*/5 * * * *". The */5 in the minute field means every 5 minutes, and the asterisks mean every hour, day, month, and day of week.' },
+      ]}
+    >
       <div className="space-y-6">
         {/* Field reference */}
         <div>

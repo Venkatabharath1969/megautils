@@ -49,7 +49,13 @@ export default function AspectRatioCalculatorTool() {
   }, [ratioW, ratioH, calcDim, knownValue])
 
   return (
-    <ToolPage title="Aspect Ratio Calculator" description="Calculate aspect ratios from dimensions or find missing dimensions from a ratio" category="math" categoryLabel="Math & Science">
+    <ToolPage title="Aspect Ratio Calculator" description="Calculate aspect ratios from dimensions or find missing dimensions from a ratio" category="math" categoryLabel="Math & Science"
+      faqs={[
+        { question: 'What is the aspect ratio of 1920x1080?', answer: '1920x1080 has an aspect ratio of 16:9, which is the standard widescreen format used for HD and 4K displays, YouTube videos, and most modern monitors.' },
+        { question: 'What aspect ratio is best for Instagram?', answer: 'Instagram supports 1:1 (square) for feed posts, 4:5 (portrait) for maximum feed visibility, and 9:16 (vertical) for Stories and Reels.' },
+        { question: 'How do I calculate aspect ratio from pixel dimensions?', answer: 'Divide both the width and height by their greatest common divisor (GCD). For example, 1920/120 = 16 and 1080/120 = 9, giving a 16:9 ratio.' },
+      ]}
+    >
       <div className="space-y-8">
         {/* Section 1: Calculate Ratio */}
         <div>

@@ -47,7 +47,11 @@ export default function XmlEscapeTool() {
   const clear = () => { setInput(''); setOutput('') }
 
   return (
-    <ToolPage title="XML Escape / Unescape" description="Escape or unescape XML special characters like ampersand, angle brackets, quotes, and apostrophes." category="string" categoryLabel="String Utilities">
+    <ToolPage title="XML Escape / Unescape" description="Escape or unescape XML special characters like ampersand, angle brackets, quotes, and apostrophes." category="string" categoryLabel="String Utilities" faqs={[
+        { question: 'What characters need to be escaped in XML?', answer: 'The five XML special characters that must be escaped are & (&amp;amp;), < (&amp;lt;), > (&amp;gt;), " (&amp;quot;), and the apostrophe (&amp;apos;).' },
+        { question: 'Why do I need to escape XML characters?', answer: 'Unescaped special characters like < and & break XML parsing because they are reserved for markup syntax. Escaping ensures your text content is treated as data, not structure.' },
+        { question: 'What is the difference between XML and HTML escaping?', answer: 'XML uses the same core five entities as HTML but is stricter. HTML has many more named entities like &amp;nbsp; and &amp;copy; that are not valid in XML.' },
+      ]}>
       <div className="flex flex-wrap gap-2 mb-4">
         <button onClick={() => setMode('escape')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'escape' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Escape</button>
         <button onClick={() => setMode('unescape')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'unescape' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Unescape</button>

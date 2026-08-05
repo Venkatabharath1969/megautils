@@ -172,7 +172,12 @@ export default function YamlToJsonTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="YAML to JSON Converter" description="Convert YAML data to JSON format" category="developer" categoryLabel="Developer Tools">
+    <ToolPage title="YAML to JSON Converter" description="Convert YAML data to JSON format" category="developer" categoryLabel="Developer Tools" faqs={[
+        { question: 'How do I convert YAML to JSON?', answer: 'Paste your YAML content into the input and click Convert to get formatted JSON output. The tool handles nested objects, arrays, and all standard YAML data types.' },
+        { question: 'What YAML features are supported?', answer: 'The converter supports key-value pairs, nested objects, arrays (dash lists), inline arrays/objects, comments, quoted strings, booleans, numbers, and null values.' },
+        { question: 'Why convert YAML to JSON?', answer: 'JSON is more widely supported by APIs and programming languages, so converting YAML config files to JSON is useful for debugging, API testing, and data interchange.' },
+        { question: 'Is my YAML data sent to a server?', answer: 'No, all conversion happens entirely in your browser. Your data never leaves your device, making it safe for sensitive configuration files.' },
+      ]}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <div className="flex items-center justify-between mb-2">

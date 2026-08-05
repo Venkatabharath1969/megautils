@@ -42,6 +42,11 @@ export default function EnergyConverterTool() {
       description="Convert between joule, kilojoule, calorie, kilocalorie, kWh, BTU, electronvolt, and more."
       category="converters"
       categoryLabel="Unit Converters"
+      faqs={[
+        { question: 'How do I convert kilowatt-hours to joules?', answer: 'Multiply kilowatt-hours by 3,600,000 to get joules. One kWh equals 3.6 megajoules (MJ), which is the energy used by a 1,000-watt appliance running for one hour.' },
+        { question: 'What is the difference between a calorie and a kilocalorie?', answer: 'A kilocalorie (kcal) equals 1,000 calories. Food labels list energy in kilocalories, often written as "Calories" with a capital C.' },
+        { question: 'How many BTU are in a kWh?', answer: 'One kilowatt-hour equals approximately 3,412 BTU. BTU (British Thermal Units) are commonly used to measure heating and cooling capacity.' },
+      ]}
     >
       <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-end">
         <div className="space-y-3">

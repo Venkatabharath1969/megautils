@@ -57,6 +57,12 @@ export default function QrCodeGeneratorTool() {
       description="Generate QR codes from text or URLs instantly"
       category="generators"
       categoryLabel="Generators"
+      faqs={[
+        { question: 'What can I encode in a QR code?', answer: 'You can encode any text, including URLs, email addresses, phone numbers, Wi-Fi credentials, or plain text messages up to about 4,000 characters.' },
+        { question: 'What size should I choose for my QR code?', answer: 'Use 200x200 for small digital displays, 300x300 for general web use, and 500x500 if the QR code will be printed on physical materials and scanned from a distance.' },
+        { question: 'Can I download the generated QR code as an image?', answer: 'Yes, click the "Download PNG" button to save the QR code as a PNG image file that you can use in documents, websites, or print materials.' },
+        { question: 'Do QR codes expire or stop working?', answer: 'QR codes themselves never expire since they simply encode static data. However, if the QR code contains a URL, the link destination could go offline independently.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input */}

@@ -40,6 +40,11 @@ export default function PowerConverterTool() {
       description="Convert between watt, kilowatt, megawatt, horsepower, BTU/hour, and more."
       category="converters"
       categoryLabel="Unit Converters"
+      faqs={[
+        { question: 'How many watts are in one horsepower?', answer: 'One mechanical horsepower equals approximately 745.7 watts. This is the standard conversion used in automotive and industrial contexts.' },
+        { question: 'What is the difference between kW and kWh?', answer: 'A kilowatt (kW) measures power, which is the rate of energy use at a given moment. A kilowatt-hour (kWh) measures energy, which is the total amount consumed over time.' },
+        { question: 'How do I convert BTU/hour to watts?', answer: 'Multiply the BTU/hour value by 0.29307 to get the equivalent in watts. For example, 10,000 BTU/hr is approximately 2,930.7 watts.' },
+      ]}
     >
       <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-end">
         <div className="space-y-3">

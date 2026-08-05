@@ -14,7 +14,17 @@ export default function BlankLineRemoverTool() {
   }, [input])
 
   return (
-    <ToolPage title="Blank Line Remover" description="Remove all blank and empty lines from text." category="text" categoryLabel="Text Tools">
+    <ToolPage
+      title="Blank Line Remover"
+      description="Remove all blank and empty lines from text."
+      category="text"
+      categoryLabel="Text Tools"
+      faqs={[
+        { question: 'How do I remove blank lines from text?', answer: 'Paste your text into the input box and all empty or whitespace-only lines are instantly removed from the output.' },
+        { question: 'Does this tool remove lines that only contain spaces or tabs?', answer: 'Yes, lines that contain only whitespace characters (spaces, tabs) are treated as blank and removed.' },
+        { question: 'Will removing blank lines affect my other formatting?', answer: 'No, only completely empty or whitespace-only lines are removed. All other lines remain unchanged with their original content and indentation.' },
+      ]}
+    >
       {input && (
         <div className="mb-4 p-3 rounded-lg bg-muted text-center">
           <span className="text-sm text-muted-foreground">

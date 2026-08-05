@@ -39,6 +39,11 @@ export default function FrequencyConverterTool() {
       description="Convert between Hz, kHz, MHz, GHz, THz, RPM, and radians/second."
       category="converters"
       categoryLabel="Unit Converters"
+      faqs={[
+        { question: 'How many MHz are in 1 GHz?', answer: 'One gigahertz (GHz) equals 1,000 megahertz (MHz). For example, a 2.4 GHz Wi-Fi signal operates at 2,400 MHz.' },
+        { question: 'How do you convert RPM to Hz?', answer: 'Divide the RPM value by 60 to get hertz. For example, a motor spinning at 3,600 RPM has a frequency of 60 Hz.' },
+        { question: 'What is the difference between Hz and radians per second?', answer: 'Hertz measures cycles per second while radians per second measures angular velocity. One Hz equals 2*pi (approximately 6.2832) radians per second.' },
+      ]}
     >
       <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-end">
         <div className="space-y-3">

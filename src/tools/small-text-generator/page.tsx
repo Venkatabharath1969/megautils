@@ -57,7 +57,11 @@ export default function SmallTextGeneratorTool() {
   }, [input])
 
   return (
-    <ToolPage title="Small Text Generator" description="Convert text to small superscript, subscript, and small caps Unicode characters." category="text" categoryLabel="Text Tools">
+    <ToolPage title="Small Text Generator" description="Convert text to small superscript, subscript, and small caps Unicode characters." category="text" categoryLabel="Text Tools" faqs={[
+        { question: 'How does small text work?', answer: 'Small text uses special Unicode characters that visually resemble smaller versions of standard letters. These are real characters, not formatting, so they work anywhere text is supported.' },
+        { question: 'Can I use small text on social media?', answer: 'Yes, small text generated with Unicode characters works on most social media platforms including Twitter/X, Instagram, Facebook, and Discord.' },
+        { question: 'What is the difference between superscript, subscript, and small caps?', answer: 'Superscript characters appear above the text baseline (like exponents), subscript characters appear below it (like chemical formulas), and small caps are uppercase-styled letters at lowercase size.' },
+      ]}>
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium">Input Text</span>
         <ClearButton onClear={() => setInput('')} />

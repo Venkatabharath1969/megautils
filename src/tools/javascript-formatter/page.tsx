@@ -254,7 +254,18 @@ export default function JavascriptFormatterTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="JavaScript Formatter" description="Format, beautify, and minify JavaScript code" category="developer" categoryLabel="Developer Tools">
+    <ToolPage
+      title="JavaScript Formatter"
+      description="Format, beautify, and minify JavaScript code"
+      category="developer"
+      categoryLabel="Developer Tools"
+      faqs={[
+        { question: 'What is the difference between formatting and minifying JavaScript?', answer: 'Formatting (beautifying) adds proper indentation and line breaks to make code readable, while minifying removes all unnecessary whitespace and comments to reduce file size for production.' },
+        { question: 'Does this JavaScript formatter modify my code logic?', answer: 'No, the formatter only changes whitespace, indentation, and line breaks. Your code logic, variables, and functionality remain completely unchanged.' },
+        { question: 'What indent size should I use for JavaScript?', answer: 'Two spaces is the most common convention in the JavaScript community and is used by most popular style guides like Airbnb and StandardJS, though four spaces is also widely accepted.' },
+        { question: 'Can I format minified JavaScript back to readable code?', answer: 'Yes, paste your minified JavaScript into the input and click "Format / Beautify" to restore proper indentation and line breaks for readability.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <div className="flex items-center justify-between mb-2">

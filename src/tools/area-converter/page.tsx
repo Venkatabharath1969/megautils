@@ -38,6 +38,11 @@ export default function AreaConverterTool() {
       description="Convert between square meters, square feet, square kilometers, square miles, acres, and hectares."
       category="converters"
       categoryLabel="Unit Converters"
+      faqs={[
+        { question: 'How many square feet are in an acre?', answer: 'One acre equals 43,560 square feet. An acre is roughly the size of a football field without the end zones.' },
+        { question: 'How do I convert square meters to square feet?', answer: 'Multiply square meters by 10.764 to get square feet. For example, 100 square meters equals approximately 1,076.4 square feet.' },
+        { question: 'What is the difference between a hectare and an acre?', answer: 'A hectare is 10,000 square meters (about 2.471 acres), while an acre is 4,046.86 square meters. One hectare is roughly 2.47 times larger than an acre.' },
+      ]}
     >
       <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-end">
         <div className="space-y-3">

@@ -118,6 +118,12 @@ export default function FakeDataGeneratorTool() {
       description="Generate realistic fake names, emails, phone numbers, addresses, and company names"
       category="generators"
       categoryLabel="Generators"
+      faqs={[
+        { question: 'Is the generated fake data real?', answer: 'No. All names, emails, phone numbers, and addresses are randomly generated and do not correspond to real people or places. The data is suitable for testing and development purposes only.' },
+        { question: 'Can I use this fake data for software testing?', answer: 'Yes. This tool is designed for populating test databases, mocking API responses, creating demo content, and UI prototyping without using real personal information.' },
+        { question: 'How many records can I generate at once?', answer: 'You can generate up to 100 records at a time. The output is available in both JSON and CSV formats for easy import into your application or spreadsheet.' },
+        { question: 'Is the data generated on the server?', answer: 'No. All data is generated entirely in your browser using client-side JavaScript. Nothing is sent to or stored on any server, ensuring complete privacy.' },
+      ]}
     >
       <div className="space-y-4">
         <div className="flex flex-wrap items-end gap-4">

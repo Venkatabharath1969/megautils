@@ -30,7 +30,17 @@ export default function CssTextShadowGeneratorTool() {
   const cssCode = `text-shadow: ${shadowCSS};`
 
   return (
-    <ToolPage title="CSS Text Shadow Generator" description="Design CSS text shadows visually with live preview." category="css" categoryLabel="CSS Tools">
+    <ToolPage
+      title="CSS Text Shadow Generator"
+      description="Design CSS text shadows visually with live preview."
+      category="css"
+      categoryLabel="CSS Tools"
+      faqs={[
+        { question: 'What is the CSS text-shadow property?', answer: 'The text-shadow property adds shadow effects to text, defined by horizontal offset, vertical offset, blur radius, and color values.' },
+        { question: 'Can I add multiple text shadows to one element?', answer: 'Yes, you can apply multiple text shadows by separating each shadow definition with a comma, which is useful for creating glow effects or 3D text.' },
+        { question: 'How do I create a text glow effect with CSS?', answer: 'Set both offsets to 0 and use a large blur radius with a bright color to create a glow effect around your text.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Controls */}
         <div className="space-y-4">

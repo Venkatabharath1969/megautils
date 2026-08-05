@@ -83,7 +83,18 @@ export default function LoremIpsumGeneratorTool() {
   ]
 
   return (
-    <ToolPage title="Lorem Ipsum Generator" description="Generate placeholder Lorem Ipsum text by paragraphs, sentences, or words." category="text" categoryLabel="Text Tools">
+    <ToolPage
+      title="Lorem Ipsum Generator"
+      description="Generate placeholder Lorem Ipsum text by paragraphs, sentences, or words."
+      category="text"
+      categoryLabel="Text Tools"
+      faqs={[
+        { question: 'What is Lorem Ipsum and why is it used?', answer: 'Lorem Ipsum is scrambled Latin-derived placeholder text used by designers and developers to fill layouts, allowing them to focus on visual design without being distracted by readable content.' },
+        { question: 'Can I generate a specific number of words or sentences?', answer: 'Yes, choose between paragraphs, sentences, or words mode and set the exact count you need, from 1 up to 100 units of your chosen type.' },
+        { question: 'Is Lorem Ipsum real Latin?', answer: 'It is derived from a 1st-century BC text by Cicero ("De Finibus Bonorum et Malorum"), but the words have been altered and scrambled so it is not proper Latin.' },
+        { question: 'Why not just use random English text as placeholder?', answer: 'Readable English content draws attention to the words themselves instead of the layout. Lorem Ipsum has a natural distribution of letters and word lengths that mimics real text without being distracting.' },
+      ]}
+    >
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <div className="flex gap-2">
           {types.map((t) => (

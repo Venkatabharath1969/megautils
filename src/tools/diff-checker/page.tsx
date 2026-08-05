@@ -109,7 +109,18 @@ export default function DiffCheckerTool() {
   const hasDiff = textA || textB
 
   return (
-    <ToolPage title="Diff Checker" description="Compare two texts with unified or side-by-side diff view. Line-level and word-level modes." category="developer" categoryLabel="Developer Tools">
+    <ToolPage
+      title="Diff Checker"
+      description="Compare two texts with unified or side-by-side diff view. Line-level and word-level modes."
+      category="developer"
+      categoryLabel="Developer Tools"
+      faqs={[
+        { question: 'What is the difference between unified and side-by-side diff view?', answer: 'Unified view shows changes in a single column with + and - markers, while side-by-side view displays the original and modified text in separate columns for easier visual comparison.' },
+        { question: 'What is the difference between line diff and word diff?', answer: 'Line diff highlights entire lines that changed, while word diff highlights the specific words within each line that are different, making small edits much easier to spot.' },
+        { question: 'Can I use this to compare code files?', answer: 'Yes, paste the contents of any two text files or code snippets and the tool will show all additions, deletions, and unchanged lines with line numbers, just like a Git diff.' },
+        { question: 'How does the diff algorithm work?', answer: 'It uses the Longest Common Subsequence (LCS) algorithm to find the optimal alignment between the two texts, minimizing the number of reported changes.' },
+      ]}
+    >
       <div className="space-y-4">
         {/* Input areas */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

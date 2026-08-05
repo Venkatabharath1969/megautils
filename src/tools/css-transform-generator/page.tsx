@@ -49,6 +49,12 @@ export default function CSSTransformGeneratorTool() {
       description="Build CSS transforms visually. Adjust rotate, scale, skew, and translate with a live preview."
       category="css"
       categoryLabel="CSS Tools"
+      faqs={[
+        { question: 'What does the CSS transform property do?', answer: 'The CSS transform property lets you rotate, scale, skew, or translate an element without affecting the normal document flow or surrounding elements.' },
+        { question: 'Can I combine multiple CSS transforms?', answer: 'Yes, you can chain multiple transform functions in a single declaration like transform: rotate(45deg) scale(1.5) translateX(20px), and they are applied in order from right to left.' },
+        { question: 'Does CSS transform affect page layout?', answer: 'No, transforms are applied in the visual rendering layer only. The element still occupies its original space in the document flow.' },
+        { question: 'What is the difference between translate and position in CSS?', answer: 'translate moves an element visually without changing layout, while position properties (top, left, etc.) can alter document flow and affect other elements.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Controls */}

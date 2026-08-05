@@ -45,7 +45,18 @@ export default function FindAndReplaceTool() {
   }, [input, pairs, caseSensitive, useRegex])
 
   return (
-    <ToolPage title="Find and Replace" description="Bulk find and replace with multiple pairs. Supports case sensitivity and regex." category="text" categoryLabel="Text Tools">
+    <ToolPage
+      title="Find and Replace"
+      description="Bulk find and replace with multiple pairs. Supports case sensitivity and regex."
+      category="text"
+      categoryLabel="Text Tools"
+      faqs={[
+        { question: 'Can I find and replace multiple different strings at once?', answer: 'Yes, click "+ Add Pair" to add as many find/replace pairs as you need. All replacements are applied sequentially to your text in the order listed.' },
+        { question: 'How do I use regex in find and replace?', answer: 'Enable the "Use Regex" checkbox, then enter a valid regular expression in the Find field. For example, use "\\d+" to match all numbers or "\\b\\w+\\b" to match whole words.' },
+        { question: 'What does the case-sensitive option do?', answer: 'When enabled, "Hello" and "hello" are treated as different strings. Disable it to match regardless of uppercase or lowercase letters.' },
+        { question: 'Does this tool show how many replacements were made?', answer: 'Yes, a counter next to the options shows the total number of replacements made across all find/replace pairs, updating in real time as you type.' },
+      ]}
+    >
       <div className="flex flex-wrap items-center gap-4 mb-4">
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" checked={caseSensitive} onChange={(e) => setCaseSensitive(e.target.checked)} className="rounded border-border" />

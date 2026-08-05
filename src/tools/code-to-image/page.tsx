@@ -196,6 +196,12 @@ console.log(results);`)
       description="Create beautiful code screenshots with syntax highlighting"
       category="developer"
       categoryLabel="Developer Tools"
+      faqs={[
+        { question: 'How do I create a code screenshot?', answer: 'Paste your code into the editor, choose a theme and settings, then click Download PNG to generate a high-resolution image of your code with syntax highlighting.' },
+        { question: 'What themes are available for code images?', answer: 'The tool includes Dark (Catppuccin), Light (One Light), Monokai, and Nord themes, each with matching window chrome and syntax highlighting colors.' },
+        { question: 'Can I customize the code image output?', answer: 'Yes, you can adjust the theme, font size, padding, line numbers, window chrome, and file title to create the exact look you want.' },
+        { question: 'What resolution are the exported code images?', answer: 'Images are exported at 2x (Retina) resolution for crisp rendering on high-DPI displays, social media, and presentations.' },
+      ]}
     >
       <div className="grid grid-cols-1 xl:grid-cols-[1fr_1.2fr] gap-6">
         {/* Controls */}

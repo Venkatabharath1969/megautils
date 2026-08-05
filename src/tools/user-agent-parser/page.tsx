@@ -139,6 +139,12 @@ export default function UserAgentParserTool() {
       description="Parse user agent strings to detect browser, OS, and device type. Shows your current browser's UA."
       category="network"
       categoryLabel="Network Tools"
+      faqs={[
+        { question: 'What is a user agent string?', answer: 'A user agent string is a text identifier sent by your browser to websites, containing information about your browser type, version, operating system, and device.' },
+        { question: 'How do I find my browser user agent?', answer: 'This tool automatically detects and displays your current browser\'s user agent string at the top of the page. You can also find it by typing "navigator.userAgent" in your browser\'s developer console.' },
+        { question: 'Why do user agent strings all start with Mozilla?', answer: 'Most browsers include "Mozilla" for historical compatibility reasons, dating back to the early browser wars when servers would serve different content based on the user agent.' },
+        { question: 'Can user agent strings be spoofed?', answer: 'Yes, user agent strings can be easily changed using browser extensions or developer tools, which is why they should not be relied upon for security purposes.' },
+      ]}
     >
       <div className="max-w-3xl mx-auto space-y-6">
         {/* Current UA */}

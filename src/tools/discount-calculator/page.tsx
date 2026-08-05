@@ -52,6 +52,11 @@ export default function DiscountCalculator() {
       description="Calculate discount amounts, final prices, and find original prices from discounted values."
       category="financial"
       categoryLabel="Financial Calculators"
+      faqs={[
+        { question: 'How do I calculate a discount percentage?', answer: 'Multiply the original price by the discount percentage divided by 100, then subtract from the original price. For example, 25% off $200 = $200 - $50 = $150.' },
+        { question: 'How do stacked discounts work?', answer: 'Stacked discounts are applied sequentially, not added together. A 20% discount followed by a 10% discount equals a 28% total discount, not 30%.' },
+        { question: 'How do I find the original price from a sale price?', answer: 'Divide the sale price by (1 minus the discount rate). For example, if an item is $75 after a 25% discount, the original price is $75 / 0.75 = $100.' },
+      ]}
     >
       {/* Mode toggle */}
       <div className="flex gap-2 mb-6">

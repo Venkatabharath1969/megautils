@@ -60,7 +60,7 @@ export default function SqlEscapeTool() {
   const clear = () => { setInput(''); setOutput('') }
 
   return (
-    <ToolPage title="SQL String Escape / Unescape" description="Escape or unescape strings for SQL queries. Supports MySQL and PostgreSQL modes." category="string" categoryLabel="String Utilities">
+    <ToolPage title="SQL String Escape / Unescape" description="Escape or unescape strings for SQL queries. Supports MySQL and PostgreSQL modes." category="string" categoryLabel="String Utilities" faqs={[{ question: 'Why do I need to escape SQL strings?', answer: 'Escaping prevents SQL injection attacks by neutralizing special characters like single quotes that could break your query or allow malicious code execution.' }, { question: 'What characters need escaping in SQL?', answer: "Single quotes ('), backslashes (\\), and null bytes are the most common characters requiring escaping. MySQL also escapes double quotes and percent signs." }, { question: 'What is the difference between MySQL and PostgreSQL escaping?', answer: "MySQL uses backslash escaping (\\') while PostgreSQL uses double single quotes (''). This tool supports both modes." }]}>
       <div className="flex flex-wrap gap-2 mb-4">
         <button onClick={() => setMode('escape')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'escape' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Escape</button>
         <button onClick={() => setMode('unescape')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'unescape' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Unescape</button>

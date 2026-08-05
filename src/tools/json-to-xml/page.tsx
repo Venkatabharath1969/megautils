@@ -55,7 +55,12 @@ export default function JsonToXmlTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="JSON to XML Converter" description="Convert JSON data to XML format with configurable root element" category="developer" categoryLabel="Developer Tools">
+    <ToolPage title="JSON to XML Converter" description="Convert JSON data to XML format with configurable root element" category="developer" categoryLabel="Developer Tools" faqs={[
+        { question: 'How do I convert JSON to XML?', answer: 'Paste your JSON data, optionally set a root element name, and click Convert to get well-formed XML with proper indentation and an XML declaration.' },
+        { question: 'How are JSON arrays handled in XML conversion?', answer: 'JSON arrays are converted by repeating the parent element tag for each array item, which is the standard convention for representing lists in XML.' },
+        { question: 'Are special characters escaped in the XML output?', answer: 'Yes, characters like &, <, >, ", and apostrophes are automatically escaped to their XML entity equivalents for valid XML output.' },
+        { question: 'Can I customize the root XML element name?', answer: 'Yes, use the Root Element Name field to set any custom tag name for the outermost XML element instead of the default "root".' },
+      ]}>
       <div className="mb-4">
         <label className="text-sm font-medium">Root Element Name</label>
         <input

@@ -70,6 +70,12 @@ export default function CSSFilterGeneratorTool() {
       description="Build CSS filter effects visually. Adjust blur, brightness, contrast, grayscale, hue-rotate, and more with live preview."
       category="css"
       categoryLabel="CSS Tools"
+      faqs={[
+        { question: 'What is the CSS filter property?', answer: 'The CSS filter property applies graphical effects like blur, brightness, contrast, and grayscale to an element, similar to photo editing filters.' },
+        { question: 'Can I combine multiple CSS filters?', answer: 'Yes, you can chain multiple filter functions in a single declaration like filter: blur(2px) brightness(120%) contrast(110%), and they are applied in the order listed.' },
+        { question: 'What is the difference between filter and backdrop-filter?', answer: 'filter applies effects to the element itself and its contents, while backdrop-filter applies effects to the area behind the element, commonly used for frosted glass effects.' },
+        { question: 'Does CSS filter affect performance?', answer: 'Filters are GPU-accelerated in modern browsers and perform well for most uses, but heavy blur effects on large elements or many filtered elements at once can impact rendering performance.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Controls */}

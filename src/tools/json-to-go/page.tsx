@@ -95,7 +95,12 @@ export default function JsonToGoTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="JSON to Go Struct" description="Generate Go struct definitions from JSON data with proper types and json tags" category="developer" categoryLabel="Developer Tools">
+    <ToolPage title="JSON to Go Struct" description="Generate Go struct definitions from JSON data with proper types and json tags" category="developer" categoryLabel="Developer Tools" faqs={[
+        { question: 'How do I convert JSON to a Go struct?', answer: 'Paste your JSON object into the input, optionally set a struct name, and click Generate to get properly typed Go struct definitions with json tags.' },
+        { question: 'Does this tool handle nested JSON objects?', answer: 'Yes, nested JSON objects are automatically converted into separate Go struct types with proper field references and PascalCase naming.' },
+        { question: 'What Go types are generated from JSON values?', answer: 'Strings map to string, integers to int, decimals to float64, booleans to bool, null values to interface{}, and arrays to slices of the appropriate type.' },
+        { question: 'Are json tags included in the generated Go structs?', answer: 'Yes, every field includes a json:"fieldName" tag matching the original JSON key name for correct serialization and deserialization.' },
+      ]}>
       <div className="mb-4">
         <label className="text-sm font-medium">Struct Name</label>
         <input

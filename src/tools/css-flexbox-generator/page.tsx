@@ -45,7 +45,18 @@ export default function CssFlexboxGeneratorTool() {
   const childColors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#6366f1']
 
   return (
-    <ToolPage title="CSS Flexbox Generator" description="Visual flexbox playground with live preview and generated CSS." category="css" categoryLabel="CSS Tools">
+    <ToolPage
+      title="CSS Flexbox Generator"
+      description="Visual flexbox playground with live preview and generated CSS."
+      category="css"
+      categoryLabel="CSS Tools"
+      faqs={[
+        { question: 'What is CSS Flexbox used for?', answer: 'CSS Flexbox is a one-dimensional layout model for distributing space and aligning items in a container, making it ideal for navigation bars, card layouts, and centering content.' },
+        { question: 'What is the difference between justify-content and align-items?', answer: 'justify-content controls spacing along the main axis (horizontal by default), while align-items controls alignment along the cross axis (vertical by default).' },
+        { question: 'When should I use Flexbox vs CSS Grid?', answer: 'Use Flexbox for one-dimensional layouts (a single row or column) and CSS Grid for two-dimensional layouts where you need control over both rows and columns simultaneously.' },
+        { question: 'What does flex-wrap do?', answer: 'flex-wrap controls whether flex items are forced onto a single line or can wrap onto multiple lines when they overflow the container.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Controls */}
         <div className="space-y-4">

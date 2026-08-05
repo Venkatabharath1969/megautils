@@ -16,7 +16,17 @@ export default function StringLengthCalculatorTool() {
   }, [input])
 
   return (
-    <ToolPage title="String Length Calculator" description="Analyze text length: character count, UTF-8 byte length, UTF-16 length, word count, and line count." category="text" categoryLabel="Text Tools">
+    <ToolPage
+      title="String Length Calculator"
+      description="Analyze text length: character count, UTF-8 byte length, UTF-16 length, word count, and line count."
+      category="text"
+      categoryLabel="Text Tools"
+      faqs={[
+        { question: 'What is the difference between character count and byte length?', answer: 'Character count is the number of visible characters, while byte length measures storage size in UTF-8 encoding where non-ASCII characters use 2-4 bytes each.' },
+        { question: 'Why is UTF-16 length different from character count?', answer: 'UTF-16 length matches JavaScript\'s .length property, which counts surrogate pairs (like emojis) as 2 units instead of 1 character.' },
+        { question: 'How are words counted?', answer: 'Words are counted by splitting text on whitespace, so any sequence of non-space characters separated by spaces, tabs, or newlines counts as one word.' },
+      ]}
+    >
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-4">
         {[
           { label: 'Characters', value: stats.charCount },

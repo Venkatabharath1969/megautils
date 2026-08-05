@@ -35,7 +35,18 @@ export default function CaesarCipherTool() {
   const clear = () => setInput('')
 
   return (
-    <ToolPage title="Caesar Cipher" description="Encrypt and decrypt text using Caesar cipher with configurable shift (1-25)" category="encoders" categoryLabel="Encoders & Decoders">
+    <ToolPage
+      title="Caesar Cipher"
+      description="Encrypt and decrypt text using Caesar cipher with configurable shift (1-25)"
+      category="encoders"
+      categoryLabel="Encoders & Decoders"
+      faqs={[
+        { question: 'What is a Caesar cipher?', answer: 'A Caesar cipher is one of the oldest encryption techniques, named after Julius Caesar. It works by shifting each letter in the text by a fixed number of positions in the alphabet.' },
+        { question: 'How do I decrypt a Caesar cipher without knowing the shift?', answer: 'Use the brute force table shown below the output. It displays all 25 possible shifts at once, so you can visually scan for the one that produces readable text.' },
+        { question: 'Is Caesar cipher the same as ROT13?', answer: 'ROT13 is a specific case of the Caesar cipher with a shift of 13. Since the alphabet has 26 letters, ROT13 is its own inverse, meaning encoding and decoding use the same operation.' },
+        { question: 'Is the Caesar cipher secure?', answer: 'No. The Caesar cipher is trivially easy to break since there are only 25 possible shifts to try. It is used for learning and puzzles, not for securing sensitive data.' },
+      ]}
+    >
       <div className="flex flex-wrap items-center gap-4 mb-4">
         <div className="flex gap-2">
           <button onClick={() => setMode('encrypt')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'encrypt' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Encrypt</button>

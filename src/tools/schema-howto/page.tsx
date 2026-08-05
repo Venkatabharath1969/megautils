@@ -72,7 +72,18 @@ export default function SchemaHowToTool() {
   const inputClass = 'w-full rounded-lg border border-input bg-tool-bg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring'
 
   return (
-    <ToolPage title="HowTo Schema Generator" description="Generate HowTo JSON-LD structured data for step-by-step guides." category="seo" categoryLabel="SEO Tools">
+    <ToolPage
+      title="HowTo Schema Generator"
+      description="Generate HowTo JSON-LD structured data for step-by-step guides."
+      category="seo"
+      categoryLabel="SEO Tools"
+      faqs={[
+        { question: 'What is HowTo schema markup?', answer: 'HowTo schema is JSON-LD structured data that describes a set of steps to complete a task. It helps Google display step-by-step instructions as rich results directly in search.' },
+        { question: 'What is the ISO 8601 format for totalTime?', answer: 'ISO 8601 duration format uses the pattern PT#H#M#S. For example, PT30M means 30 minutes, PT1H means 1 hour, and PT1H30M means 1 hour and 30 minutes.' },
+        { question: 'Should I include images in HowTo steps?', answer: 'Yes, adding images to each step is highly recommended. Pages with step images are more likely to receive rich results and provide a better user experience.' },
+        { question: 'Can HowTo schema appear as a rich result on mobile?', answer: 'Yes. Google shows HowTo rich results on both mobile and desktop search. On mobile, they often appear as an expandable accordion of steps with optional images.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-4 max-h-[80vh] overflow-y-auto pr-2">
           <div className="flex items-center justify-between">

@@ -41,6 +41,11 @@ export default function PercentageCalculatorTool() {
       description="Calculate percentages: what is X% of Y, X is what % of Y, and percentage change."
       category="math"
       categoryLabel="Math & Science"
+      faqs={[
+        { question: 'How do I calculate what percentage one number is of another?', answer: 'Divide the part by the whole and multiply by 100. For example, 25 is 50% of 50 because (25 / 50) x 100 = 50%.' },
+        { question: 'How do I calculate percentage change?', answer: 'Subtract the old value from the new value, divide by the absolute value of the old value, and multiply by 100. A change from 80 to 100 is a 25% increase.' },
+        { question: 'What is the formula for percentage of a number?', answer: 'To find X% of Y, multiply Y by X/100. For example, 15% of 200 is 200 x 0.15 = 30.' },
+      ]}
     >
       <div className="max-w-xl mx-auto space-y-6">
         {/* Mode tabs */}

@@ -92,7 +92,11 @@ export default function MarkdownTableGeneratorTool() {
   }
 
   return (
-    <ToolPage title="Markdown Table Generator" description="Build Markdown tables visually with a grid editor. Set alignment, copy, or download." category="markdown" categoryLabel="Markdown Tools">
+    <ToolPage title="Markdown Table Generator" description="Build Markdown tables visually with a grid editor. Set alignment, copy, or download." category="markdown" categoryLabel="Markdown Tools" faqs={[
+        { question: 'How do you create a table in Markdown?', answer: 'Markdown tables use pipes (|) to separate columns and hyphens (-) to create the header separator row. This tool generates the correct syntax automatically from your grid input.' },
+        { question: 'Can I align columns in Markdown tables?', answer: 'Yes, use colons in the separator row: left-aligned (---), center-aligned (:---:), or right-aligned (---:). This tool lets you set alignment per column with simple buttons.' },
+        { question: 'What is the maximum size for a Markdown table?', answer: 'There is no hard limit on Markdown table size, but very large tables become hard to read in plain text. This tool supports up to 20 rows and 10 columns for practical use.' },
+      ]}>
       <div className="space-y-4">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-3">

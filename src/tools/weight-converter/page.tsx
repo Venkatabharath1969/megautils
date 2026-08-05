@@ -40,6 +40,11 @@ export default function WeightConverterTool() {
       description="Convert between kilograms, grams, pounds, ounces, tons, stones, and more."
       category="converters"
       categoryLabel="Unit Converters"
+      faqs={[
+        { question: 'How many pounds are in a kilogram?', answer: 'One kilogram equals approximately 2.20462 pounds. Conversely, one pound equals exactly 0.45359237 kilograms.' },
+        { question: 'What is a stone and where is it used?', answer: 'A stone equals 14 pounds (approximately 6.35 kg) and is commonly used in the United Kingdom and Ireland to measure body weight.' },
+        { question: 'What is the difference between a metric ton and a short ton?', answer: 'A metric ton (tonne) equals 1,000 kilograms or about 2,204.6 pounds, while a US short ton equals 2,000 pounds or about 907.2 kilograms.' },
+      ]}
     >
       <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-end">
         <div className="space-y-3">

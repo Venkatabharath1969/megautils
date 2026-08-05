@@ -51,6 +51,11 @@ export default function NumberBaseConverterTool() {
       description="Convert between binary, octal, decimal, and hexadecimal. Enter in any base and see all four simultaneously."
       category="converters"
       categoryLabel="Unit Converters"
+      faqs={[
+        { question: 'How do I convert binary to decimal?', answer: 'Select "Binary (Base 2)" as the input base, enter your binary number, and the decimal equivalent appears instantly alongside octal and hexadecimal values.' },
+        { question: 'What is the difference between binary, octal, decimal, and hexadecimal?', answer: 'They are number systems with different bases: binary uses 2 digits (0-1), octal uses 8 (0-7), decimal uses 10 (0-9), and hexadecimal uses 16 (0-9, A-F).' },
+        { question: 'How do I convert hex to binary?', answer: 'Select "Hexadecimal (Base 16)" as the input, enter your hex value, and the binary conversion is displayed automatically.' },
+      ]}
     >
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Input */}

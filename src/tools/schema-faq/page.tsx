@@ -45,7 +45,18 @@ export default function SchemaFaqTool() {
   const inputClass = 'w-full rounded-lg border border-input bg-tool-bg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring'
 
   return (
-    <ToolPage title="FAQ Schema Generator" description="Generate FAQPage JSON-LD structured data for SEO." category="seo" categoryLabel="SEO Tools">
+    <ToolPage
+      title="FAQ Schema Generator"
+      description="Generate FAQPage JSON-LD structured data for SEO."
+      category="seo"
+      categoryLabel="SEO Tools"
+      faqs={[
+        { question: 'What is FAQ schema markup?', answer: 'FAQ schema is JSON-LD structured data that marks up a page containing a list of questions and answers. It can make your page eligible for a rich FAQ snippet directly in Google search results.' },
+        { question: 'How many questions should I include in FAQ schema?', answer: 'There is no strict limit, but Google typically displays 2-4 questions in the rich result. Include all relevant FAQs on your page, and Google will choose which ones to show.' },
+        { question: 'Does FAQ schema guarantee a rich result in Google?', answer: 'No. Adding FAQ schema makes your page eligible for rich results, but Google decides whether to display them based on content quality, relevance, and other ranking factors.' },
+        { question: 'Can I use FAQ schema on any page?', answer: 'FAQ schema should only be used on pages where the content is genuinely in a question-and-answer format authored by the site. It should not be used on forums or pages where users submit answers.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-4">
           <div className="flex items-center justify-between">

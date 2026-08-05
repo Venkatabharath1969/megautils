@@ -70,6 +70,12 @@ export default function AgeCalculatorTool() {
       description="Calculate your exact age in years, months, and days. See your next birthday countdown and total days alive."
       category="datetime"
       categoryLabel="Date & Time"
+      faqs={[
+        { question: 'How is the exact age calculated?', answer: 'The calculator computes the precise difference between your date of birth and the current date, accounting for varying month lengths and leap years to give exact years, months, and days.' },
+        { question: 'Does the age calculator update in real time?', answer: 'Yes, the total hours and minutes counters update every second, giving you a live view of your age ticking up in real time.' },
+        { question: 'How does the birthday countdown work?', answer: 'It calculates the number of days remaining until your next birthday and shows the exact date, day of the week, and which birthday number you will be celebrating.' },
+        { question: 'Can I find out what day of the week I was born?', answer: 'Yes, after entering your date of birth, the calculator displays the day of the week you were born on, such as Monday, Tuesday, etc.' },
+      ]}
     >
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Input */}

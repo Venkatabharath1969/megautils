@@ -80,7 +80,11 @@ export default function TextToAsciiArtTool() {
   }, [input])
 
   return (
-    <ToolPage title="Text to ASCII Art" description="Convert text to ASCII art using a simple block font. Supports A-Z, 0-9, and common punctuation." category="text" categoryLabel="Text Tools">
+    <ToolPage title="Text to ASCII Art" description="Convert text to ASCII art using a simple block font. Supports A-Z, 0-9, and common punctuation." category="text" categoryLabel="Text Tools" faqs={[
+        { question: 'What is ASCII art?', answer: 'ASCII art is a graphic design technique that creates images and text art using printable characters from the ASCII standard, like letters, numbers, and symbols like # and *.' },
+        { question: 'Where can I use ASCII art text?', answer: 'ASCII art text works great in code comments, terminal banners, README files, email signatures, and any plain text environment where formatting is limited.' },
+        { question: 'What characters are supported?', answer: 'This tool supports all uppercase letters A-Z, digits 0-9, and common punctuation including periods, commas, exclamation marks, question marks, hyphens, colons, and apostrophes.' },
+      ]}>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium">Input Text</span>

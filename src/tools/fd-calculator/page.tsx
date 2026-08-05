@@ -41,6 +41,12 @@ export default function FDCalculator() {
       description="Calculate Fixed Deposit maturity amount and interest earned. Supports different compounding frequencies."
       category="financial"
       categoryLabel="Financial Calculators"
+      faqs={[
+        { question: 'How is FD interest calculated?', answer: 'FD interest is calculated using compound interest: A = P(1 + r/n)^(nt), where P is principal, r is annual rate, n is compounding frequency, and t is tenure in years.' },
+        { question: 'Which compounding frequency gives the highest FD returns?', answer: 'Monthly compounding yields the highest returns, followed by quarterly, half-yearly, and yearly. The difference is small but adds up on larger deposits and longer tenures.' },
+        { question: 'Is FD interest taxable in India?', answer: 'Yes, FD interest is taxable as per your income tax slab. TDS of 10% is deducted by banks if annual interest exceeds Rs 40,000 (Rs 50,000 for senior citizens).' },
+        { question: 'Can I withdraw my FD before maturity?', answer: 'Yes, most banks allow premature withdrawal of FDs, but a penalty of 0.5-1% is typically deducted from the applicable interest rate.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Inputs */}

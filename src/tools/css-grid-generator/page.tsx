@@ -63,7 +63,18 @@ export default function CssGridGeneratorTool() {
   const sizeOptions = ['auto', '1fr', '2fr', 'minmax(100px, 1fr)', '100px', '150px', '200px']
 
   return (
-    <ToolPage title="CSS Grid Generator" description="Build CSS Grid layouts visually with customizable columns, rows, and gaps." category="css" categoryLabel="CSS Tools">
+    <ToolPage
+      title="CSS Grid Generator"
+      description="Build CSS Grid layouts visually with customizable columns, rows, and gaps."
+      category="css"
+      categoryLabel="CSS Tools"
+      faqs={[
+        { question: 'What is CSS Grid Layout?', answer: 'CSS Grid is a two-dimensional layout system that lets you define rows and columns simultaneously, making it ideal for building complex page layouts.' },
+        { question: 'What does the fr unit mean in CSS Grid?', answer: 'The fr (fraction) unit represents a fraction of the available space in the grid container. For example, 1fr 2fr creates two columns where the second is twice as wide as the first.' },
+        { question: 'How do I set gaps between grid items?', answer: 'Use the column-gap and row-gap properties (or the shorthand gap) to add spacing between grid cells without affecting the outer edges.' },
+        { question: 'Can I mix fr units with fixed sizes in CSS Grid?', answer: 'Yes, you can freely combine fr units with px, %, em, or minmax() values in grid-template-columns and grid-template-rows for flexible yet controlled layouts.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Controls */}
         <div className="space-y-4">

@@ -39,7 +39,11 @@ export default function ReadingTimeCalculatorTool() {
   }, [input])
 
   return (
-    <ToolPage title="Reading Time Calculator" description="Estimate reading and speaking time for any text. Based on 200 WPM reading and 130 WPM speaking speed." category="text" categoryLabel="Text Tools">
+    <ToolPage title="Reading Time Calculator" description="Estimate reading and speaking time for any text. Based on 200 WPM reading and 130 WPM speaking speed." category="text" categoryLabel="Text Tools" faqs={[
+        { question: 'What is the average reading speed?', answer: 'The average adult reading speed is approximately 200-250 words per minute (WPM). This tool uses 200 WPM as a conservative estimate for general content.' },
+        { question: 'How is speaking time different from reading time?', answer: 'Speaking time is calculated at approximately 130 words per minute, which is slower than reading because spoken delivery requires pauses, emphasis, and audience engagement.' },
+        { question: 'Why should I display reading time on my blog posts?', answer: 'Showing estimated reading time helps set reader expectations and can increase engagement. Studies show that readers are more likely to start an article when they know the time commitment.' },
+      ]}>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
         <div className="p-4 rounded-lg bg-muted text-center">
           <div className="text-2xl font-bold text-primary">{formatTime(stats.readingTimeMin)}</div>

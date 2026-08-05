@@ -86,7 +86,12 @@ export default function ReadabilityScoreTool() {
   }, [text])
 
   return (
-    <ToolPage title="Readability Score Analyzer" description="Calculate Flesch-Kincaid, Flesch Reading Ease, Gunning Fog, and SMOG readability scores." category="seo" categoryLabel="SEO Tools">
+    <ToolPage title="Readability Score Analyzer" description="Calculate Flesch-Kincaid, Flesch Reading Ease, Gunning Fog, and SMOG readability scores." category="seo" categoryLabel="SEO Tools" faqs={[
+        { question: 'What is a good Flesch Reading Ease score?', answer: 'A score between 60-70 is considered standard and easily understood by most adults. Scores above 70 are easy to read, while scores below 30 are very difficult and suited for academic audiences.' },
+        { question: 'What is the Flesch-Kincaid Grade Level?', answer: 'The Flesch-Kincaid Grade Level estimates the U.S. school grade needed to understand a text. For web content, aim for a grade level of 7-8 to reach the widest audience.' },
+        { question: 'How does readability affect SEO?', answer: 'While readability isn\'t a direct Google ranking factor, content that is easy to read tends to have lower bounce rates and higher engagement, which can indirectly improve search rankings.' },
+        { question: 'What is the Gunning Fog Index?', answer: 'The Gunning Fog Index estimates the years of formal education needed to understand a text on first reading. A score of 7-8 is ideal for most web content.' },
+      ]}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-4">
           <div className="flex items-center justify-between">

@@ -102,7 +102,17 @@ export default function ColorNameFinderTool() {
   const isValidHex = /^#?([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(hexInput)
 
   return (
-    <ToolPage title="Color Name Finder" description="Find the nearest CSS named color for any HEX color value" category="color" categoryLabel="Color Tools">
+    <ToolPage
+      title="Color Name Finder"
+      description="Find the nearest CSS named color for any HEX color value"
+      category="color"
+      categoryLabel="Color Tools"
+      faqs={[
+        { question: 'How many CSS named colors are there?', answer: 'There are 148 named CSS colors recognized by all modern browsers, ranging from basic names like "red" and "blue" to specific ones like "rebeccapurple" and "cornflowerblue."' },
+        { question: 'How does the color name finder work?', answer: 'It calculates the perceptual distance between your input color and all 148 CSS named colors, then ranks them by closest match percentage.' },
+        { question: 'Can I use CSS color names in my code instead of hex values?', answer: 'Yes, CSS named colors are valid in any CSS property. For example, "color: dodgerblue" is equivalent to "color: #1E90FF."' },
+      ]}
+    >
       <div className="space-y-6">
         <div className="flex flex-wrap items-end gap-4">
           <div>

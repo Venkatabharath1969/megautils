@@ -93,6 +93,12 @@ export default function NumberToWordsTool() {
       description="Convert numbers to English words. Handles up to quadrillions, negatives, and decimals."
       category="math"
       categoryLabel="Math & Science"
+      faqs={[
+        { question: 'How do I convert a number to words?', answer: 'Type or paste any number into the input field and it is instantly converted to its English word equivalent.' },
+        { question: 'What is the largest number this tool can convert?', answer: 'This tool handles numbers up to the quadrillions (999,999,999,999,999) as well as negative numbers and decimals.' },
+        { question: 'How are decimal numbers written in words?', answer: 'The whole part is converted normally, then "point" is added followed by each decimal digit spoken individually (e.g., 3.14 becomes "three point one four").' },
+        { question: 'Can I convert negative numbers to words?', answer: 'Yes, negative numbers are prefixed with the word "negative" followed by the number in words.' },
+      ]}
     >
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Input */}

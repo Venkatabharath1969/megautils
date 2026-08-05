@@ -62,6 +62,11 @@ export default function UrlParserTool() {
       description="Parse a URL into its components: protocol, hostname, port, pathname, query parameters, and hash."
       category="network"
       categoryLabel="Network Tools"
+      faqs={[
+        { question: 'What are the parts of a URL?', answer: 'A URL consists of the protocol (http/https), hostname (domain name), port, pathname (page path), query parameters (key-value pairs after ?), and hash fragment (section after #).' },
+        { question: 'What is the difference between a URL and a URI?', answer: 'A URL (Uniform Resource Locator) is a specific type of URI (Uniform Resource Identifier) that provides the location and access method for a resource on the internet.' },
+        { question: 'What are query parameters in a URL?', answer: 'Query parameters are key-value pairs appended to a URL after a question mark (?), separated by ampersands (&), used to pass data to the server like search terms or filter options.' },
+      ]}
     >
       <div className="max-w-3xl mx-auto space-y-6">
         {/* Input */}

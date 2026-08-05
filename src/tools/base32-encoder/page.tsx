@@ -72,7 +72,17 @@ export default function Base32EncoderTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="Base32 Encoder / Decoder" description="Encode text to Base32 or decode Base32 to text (RFC 4648)" category="encoders" categoryLabel="Encoders & Decoders">
+    <ToolPage
+      title="Base32 Encoder / Decoder"
+      description="Encode text to Base32 or decode Base32 to text (RFC 4648)"
+      category="encoders"
+      categoryLabel="Encoders & Decoders"
+      faqs={[
+        { question: 'What is Base32 encoding?', answer: 'Base32 is a binary-to-text encoding scheme defined in RFC 4648 that represents binary data using 32 ASCII characters (A-Z and 2-7). It is less space-efficient than Base64 but uses only uppercase letters and digits, avoiding case-sensitivity issues.' },
+        { question: 'What is the difference between Base32 and Base64?', answer: 'Base32 uses 32 characters (A-Z, 2-7) and increases data size by about 60%, while Base64 uses 64 characters (A-Z, a-z, 0-9, +, /) and increases size by about 33%. Base32 is preferred when case-insensitivity is needed.' },
+        { question: 'Where is Base32 commonly used?', answer: 'Base32 is used in TOTP two-factor authentication secrets, file naming on case-insensitive file systems, and certain DNS record encodings where only uppercase alphanumeric characters are safe.' },
+      ]}
+    >
       <div className="flex gap-2 mb-4">
         <button onClick={() => setMode('encode')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'encode' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Encode</button>
         <button onClick={() => setMode('decode')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'decode' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Decode</button>

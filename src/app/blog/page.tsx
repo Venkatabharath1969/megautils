@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { getVisiblePosts } from '@/lib/blog-data'
+import { getVisiblePostsFromDB } from '@/lib/blog-data'
 import { ChevronRight, Clock, Calendar, Tag } from 'lucide-react'
 
 export const metadata: Metadata = {
@@ -8,8 +8,8 @@ export const metadata: Metadata = {
   description: 'Learn how to use developer tools, understand encoding formats, master regex, and more with our in-depth guides.',
 }
 
-export default function BlogPage() {
-  const posts = getVisiblePosts()
+export default async function BlogPage() {
+  const posts = await getVisiblePostsFromDB()
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">

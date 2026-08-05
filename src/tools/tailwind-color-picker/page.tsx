@@ -60,6 +60,11 @@ export default function TailwindColorPickerTool() {
       description="Browse all Tailwind CSS default colors. Click any shade to copy the class name or hex value."
       category="css"
       categoryLabel="CSS Tools"
+      faqs={[
+        { question: 'How many colors does Tailwind CSS include by default?', answer: 'Tailwind CSS includes 22 color families (like slate, red, blue, emerald) each with 11 shades ranging from 50 (lightest) to 950 (darkest), totaling 242 default color values.' },
+        { question: 'How do I use Tailwind colors in my project?', answer: 'Apply Tailwind color classes directly in your HTML using the pattern bg-{color}-{shade} for backgrounds, text-{color}-{shade} for text, and border-{color}-{shade} for borders.' },
+        { question: 'Can I customize the default Tailwind color palette?', answer: 'Yes, you can extend or override the default colors in your Tailwind configuration file (tailwind.config.js or v4 CSS theme) by adding custom color values.' },
+      ]}
     >
       <div className="mb-6">
         <input

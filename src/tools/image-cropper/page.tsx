@@ -150,6 +150,11 @@ export default function ImageCropperTool() {
       description="Crop images to any size with visual selection or precise coordinates"
       category="image"
       categoryLabel="Image Tools"
+      faqs={[
+        { question: 'How do I crop an image to exact pixel dimensions?', answer: 'Upload your image, then enter the exact X, Y, Width, and Height values in the coordinate fields. Click Crop to generate the cropped result at your specified dimensions.' },
+        { question: 'Does this tool upload my image to a server?', answer: 'No. All cropping is done entirely in your browser using the HTML5 Canvas API. Your image never leaves your device.' },
+        { question: 'What image formats can I crop?', answer: 'You can crop any image format supported by your browser, including PNG, JPG, WebP, GIF, and BMP. The cropped output is saved as PNG.' },
+      ]}
     >
       <div className="space-y-6">
         <div className="flex items-center justify-between">

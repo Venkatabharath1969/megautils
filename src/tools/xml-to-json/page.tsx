@@ -81,7 +81,12 @@ export default function XmlToJsonTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="XML to JSON Converter" description="Convert XML data to JSON format. Parses tags, attributes, and text content." category="developer" categoryLabel="Developer Tools">
+    <ToolPage title="XML to JSON Converter" description="Convert XML data to JSON format. Parses tags, attributes, and text content." category="developer" categoryLabel="Developer Tools" faqs={[
+        { question: 'How do I convert XML to JSON?', answer: 'Paste your XML into the input and click Convert to get a JSON representation. Element tags become keys, and repeated elements are automatically grouped into arrays.' },
+        { question: 'How are XML attributes handled in JSON?', answer: 'XML attributes are placed in an @attributes object within the element, and text content of elements with attributes is stored under a #text key.' },
+        { question: 'Does this tool validate XML before converting?', answer: 'Yes, the tool uses the browser DOMParser to validate XML syntax. If your XML is malformed, it will display a specific error message.' },
+        { question: 'Can I convert large XML files to JSON?', answer: 'Yes, this tool processes XML entirely in your browser with no size limits imposed by a server, though very large files may take a moment to parse.' },
+      ]}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <div className="flex items-center justify-between mb-2">

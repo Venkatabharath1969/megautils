@@ -41,6 +41,12 @@ export default function LengthConverterTool() {
       description="Convert between meters, kilometers, miles, feet, inches, and more length units."
       category="converters"
       categoryLabel="Unit Converters"
+      faqs={[
+        { question: 'How many feet are in a meter?', answer: 'One meter equals approximately 3.28084 feet. Conversely, one foot equals exactly 0.3048 meters.' },
+        { question: 'How do I convert miles to kilometers?', answer: 'Multiply the number of miles by 1.609344 to get kilometers. For example, 5 miles equals approximately 8.047 kilometers.' },
+        { question: 'What is a nautical mile and how does it differ from a regular mile?', answer: 'A nautical mile equals 1,852 meters (about 1.151 regular miles) and is based on one minute of latitude arc, making it standard for maritime and aviation navigation.' },
+        { question: 'Does this tool show all unit conversions at once?', answer: 'Yes, below the main conversion result, an "All Conversions" grid shows your input value converted to every supported length unit simultaneously.' },
+      ]}
     >
       <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-end">
         {/* From */}

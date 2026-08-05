@@ -76,7 +76,18 @@ export default function UtmLinkBuilderTool() {
   }
 
   return (
-    <ToolPage title="UTM Link Builder" description="Generate UTM-tagged URLs for campaign tracking. Supports single and bulk mode." category="seo" categoryLabel="SEO Tools">
+    <ToolPage
+      title="UTM Link Builder"
+      description="Generate UTM-tagged URLs for campaign tracking. Supports single and bulk mode."
+      category="seo"
+      categoryLabel="SEO Tools"
+      faqs={[
+        { question: 'What are UTM parameters?', answer: 'UTM parameters are tags added to a URL that allow analytics tools like Google Analytics to track where traffic comes from. The five standard parameters are source, medium, campaign, term, and content.' },
+        { question: 'Which UTM parameters are required?', answer: 'At minimum, you should use utm_source, utm_medium, and utm_campaign. These three parameters give you enough data to identify the traffic source, marketing channel, and campaign name in your analytics.' },
+        { question: 'Are UTM parameters case-sensitive?', answer: 'Yes. Google Analytics treats "Facebook" and "facebook" as different sources. Use consistent lowercase naming conventions across all your campaigns to keep your analytics data clean.' },
+        { question: 'What is the difference between utm_term and utm_content?', answer: 'utm_term identifies paid search keywords, while utm_content differentiates between multiple links or ads pointing to the same URL, such as a text link vs. a banner ad in the same email.' },
+      ]}
+    >
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex gap-1">

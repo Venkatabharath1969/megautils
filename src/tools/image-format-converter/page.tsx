@@ -95,6 +95,12 @@ export default function ImageFormatConverterTool() {
       description="Convert images between PNG, JPG, and WebP formats"
       category="image"
       categoryLabel="Image Tools"
+      faqs={[
+        { question: 'Which image format has the smallest file size?', answer: 'WebP typically produces the smallest file sizes, offering 25-35% smaller files than JPG at equivalent quality. JPG is smaller than PNG for photographs.' },
+        { question: 'Does converting PNG to JPG lose quality?', answer: 'Yes, JPG uses lossy compression so some image data is discarded. Use the quality slider to control the trade-off between file size and visual quality.' },
+        { question: 'Is WebP supported by all browsers?', answer: 'WebP is supported by all modern browsers including Chrome, Firefox, Edge, and Safari. Only very old browser versions lack WebP support.' },
+        { question: 'Does this tool upload my images?', answer: 'No. All conversion happens locally in your browser using the Canvas API. Your images are never uploaded to any server.' },
+      ]}
     >
       <div className="space-y-6">
         <div className="flex items-center justify-between">

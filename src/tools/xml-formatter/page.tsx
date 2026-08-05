@@ -101,7 +101,18 @@ export default function XmlFormatterTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="XML Formatter" description="Format, beautify, and minify XML data" category="developer" categoryLabel="Developer Tools">
+    <ToolPage
+      title="XML Formatter"
+      description="Format, beautify, and minify XML data"
+      category="developer"
+      categoryLabel="Developer Tools"
+      faqs={[
+        { question: 'How do I pretty-print XML?', answer: 'Paste your XML into the input field and click "Format / Beautify" to add proper indentation and line breaks, making the nested tag structure easy to read.' },
+        { question: 'What does minifying XML do?', answer: 'Minifying XML removes all unnecessary whitespace between tags, reducing the file size for faster transmission over networks or more compact storage.' },
+        { question: 'Does formatting XML change the data content?', answer: 'No, formatting only adjusts whitespace and indentation between tags. All element names, attributes, and text content remain exactly the same.' },
+        { question: 'Can this formatter handle XML with CDATA sections and comments?', answer: 'Yes, the formatter preserves CDATA sections, comments, and processing instructions like the XML declaration while properly indenting the surrounding structure.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <div className="flex items-center justify-between mb-2">

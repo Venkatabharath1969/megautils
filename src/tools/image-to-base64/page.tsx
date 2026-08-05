@@ -71,6 +71,11 @@ export default function ImageToBase64Tool() {
       description="Convert images to Base64 data URI or decode Base64 back to images"
       category="image"
       categoryLabel="Image Tools"
+      faqs={[
+        { question: 'What is a Base64 data URI for images?', answer: 'A Base64 data URI embeds the image data directly as a text string in your HTML or CSS, eliminating the need for a separate image file request.' },
+        { question: 'When should I use Base64-encoded images?', answer: 'Base64 is best for very small images like icons or simple graphics under 10 KB. For larger images, regular files are more efficient since Base64 increases size by about 33%.' },
+        { question: 'How do I use a Base64 image in HTML?', answer: 'Place the full data URI string (starting with "data:image/...") in the src attribute of an img tag, like: <img src="data:image/png;base64,..." />.' },
+      ]}
     >
       {/* Mode Toggle */}
       <div className="flex gap-2 mb-4">

@@ -135,6 +135,12 @@ export default function HttpStatusCodesTool() {
       description="Searchable reference of all HTTP status codes with descriptions. Filter by category."
       category="network"
       categoryLabel="Network Tools"
+      faqs={[
+        { question: 'What does HTTP 404 mean?', answer: 'HTTP 404 (Not Found) means the server cannot find the requested resource. This usually occurs when a URL is mistyped or the page has been removed.' },
+        { question: 'What is the difference between 401 and 403?', answer: '401 (Unauthorized) means authentication is required and has not been provided. 403 (Forbidden) means the server understood the request but refuses to authorize it, even with valid credentials.' },
+        { question: 'What does a 500 Internal Server Error mean?', answer: 'A 500 error indicates the server encountered an unexpected condition that prevented it from fulfilling the request. It is a generic server-side error, not caused by the client.' },
+        { question: 'What is the difference between 301 and 302 redirects?', answer: '301 (Moved Permanently) tells browsers and search engines the resource has moved permanently to a new URL. 302 (Found) indicates a temporary redirect where the original URL should still be used in the future.' },
+      ]}
     >
       <div className="space-y-4">
         {/* Search */}

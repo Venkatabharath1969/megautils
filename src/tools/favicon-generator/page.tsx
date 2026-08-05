@@ -78,6 +78,11 @@ export default function FaviconGeneratorTool() {
       description="Generate favicons in all standard sizes from any image"
       category="image"
       categoryLabel="Image Tools"
+      faqs={[
+        { question: 'What size should a favicon be?', answer: 'The most common favicon sizes are 16x16 (classic browser tab), 32x32 (standard), 48x48 (Windows), and 180x180 (Apple touch icon). This tool generates all four sizes.' },
+        { question: 'What image format works best for favicons?', answer: 'PNG is the most widely supported modern favicon format. Use a square source image with a simple design that remains recognizable at very small sizes.' },
+        { question: 'How do I add a favicon to my website?', answer: 'Place the favicon file in your site root and add a link tag in your HTML head: <link rel="icon" href="/favicon-32x32.png" type="image/png">.' },
+      ]}
     >
       <div className="space-y-6">
         <div className="flex items-center justify-between">

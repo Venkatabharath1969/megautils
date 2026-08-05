@@ -79,7 +79,18 @@ export default function UnicodeTextFormatterTool() {
   }, [input, boldUpper, boldLower, italicUpper, italicLower, boldItalicUpper, boldItalicLower, monoUpper, monoLower])
 
   return (
-    <ToolPage title="Unicode Text Formatter" description="Convert text to Unicode styled variants: Bold, Italic, Bold Italic, Monospace, Strikethrough, and Upside Down." category="text" categoryLabel="Text Tools">
+    <ToolPage
+      title="Unicode Text Formatter"
+      description="Convert text to Unicode styled variants: Bold, Italic, Bold Italic, Monospace, Strikethrough, and Upside Down."
+      category="text"
+      categoryLabel="Text Tools"
+      faqs={[
+        { question: 'How do I make bold or italic text for social media?', answer: 'Type your text and copy the bold, italic, or other Unicode-styled variant. These work on platforms like Twitter, Instagram, and Facebook where HTML formatting is not supported.' },
+        { question: 'Are Unicode text styles the same as HTML bold/italic?', answer: 'No, these use special Unicode characters that look like styled text. They work anywhere plain text is accepted, unlike HTML tags which require a renderer.' },
+        { question: 'Why do some Unicode styles not display correctly?', answer: 'Some devices or apps may not have fonts that support all Unicode mathematical symbols. Results may vary across platforms and operating systems.' },
+        { question: 'What text styles are available?', answer: 'This tool offers bold, italic, bold italic, monospace, strikethrough, and upside-down text transformations.' },
+      ]}
+    >
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium">Input Text</span>
         <ClearButton onClear={() => setInput('')} />

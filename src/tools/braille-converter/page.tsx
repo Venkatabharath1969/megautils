@@ -101,7 +101,18 @@ export default function BrailleConverterTool() {
   const clear = () => setInput('')
 
   return (
-    <ToolPage title="Braille Converter" description="Convert text to Unicode Braille patterns and back. Supports A-Z, 0-9, and common punctuation." category="encoders" categoryLabel="Encoders & Decoders">
+    <ToolPage
+      title="Braille Converter"
+      description="Convert text to Unicode Braille patterns and back. Supports A-Z, 0-9, and common punctuation."
+      category="encoders"
+      categoryLabel="Encoders & Decoders"
+      faqs={[
+        { question: 'How do I convert text to Braille?', answer: 'Type or paste text into the input field and it is instantly converted to Unicode Braille characters that you can copy and use anywhere.' },
+        { question: 'What characters can be converted to Braille?', answer: 'This tool supports the English alphabet (A-Z), numbers (0-9), and common punctuation marks like periods, commas, and question marks.' },
+        { question: 'Can I convert Braille back to text?', answer: 'Yes, switch to "Braille to Text" mode, paste Unicode Braille characters, and they will be decoded back to readable English text.' },
+        { question: 'Is this the same as physical Braille?', answer: 'The patterns correspond to Grade 1 Braille (uncontracted), which maps each letter individually. Physical Braille books often use Grade 2 with contractions and abbreviations.' },
+      ]}
+    >
       <div className="flex gap-2 mb-4">
         <button onClick={() => { setMode('toBraille'); setInput('') }} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'toBraille' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Text → Braille</button>
         <button onClick={() => { setMode('fromBraille'); setInput('') }} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'fromBraille' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Braille → Text</button>

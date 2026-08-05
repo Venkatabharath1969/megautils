@@ -53,7 +53,18 @@ export default function TintShadeGeneratorTool() {
   const fullScale = [...shades.reverse(), baseColor, ...tints]
 
   return (
-    <ToolPage title="Tint & Shade Generator" description="Generate 10 tints (lighter) and 10 shades (darker) from any base color." category="color" categoryLabel="Color Tools">
+    <ToolPage
+      title="Tint & Shade Generator"
+      description="Generate 10 tints (lighter) and 10 shades (darker) from any base color."
+      category="color"
+      categoryLabel="Color Tools"
+      faqs={[
+        { question: 'What is the difference between a tint and a shade?', answer: 'A tint is created by adding white to a base color to make it lighter, while a shade is created by adding black to make it darker.' },
+        { question: 'How many tints and shades does this tool generate?', answer: 'This tool generates 10 tints (progressively lighter) and 10 shades (progressively darker) from any base hex color you provide.' },
+        { question: 'Can I use the generated tints and shades in my design system?', answer: 'Yes, each generated color includes its hex code which you can copy and use directly in CSS, Figma, Sketch, or any design tool.' },
+        { question: 'How are tints and shades calculated?', answer: 'Tints are calculated by linearly interpolating each RGB channel toward 255 (white), and shades by interpolating toward 0 (black), at evenly spaced intervals.' },
+      ]}
+    >
       <div className="space-y-6">
         {/* Base Color Input */}
         <div>

@@ -76,7 +76,18 @@ export default function SchemaJobPostingTool() {
   const inputClass = 'w-full rounded-lg border border-input bg-tool-bg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring'
 
   return (
-    <ToolPage title="Job Posting Schema Generator" description="Generate JobPosting JSON-LD structured data for SEO." category="seo" categoryLabel="SEO Tools">
+    <ToolPage
+      title="Job Posting Schema Generator"
+      description="Generate JobPosting JSON-LD structured data for SEO."
+      category="seo"
+      categoryLabel="SEO Tools"
+      faqs={[
+        { question: 'What is JobPosting schema?', answer: 'JobPosting schema is JSON-LD structured data that describes a job listing, including the title, salary, location, and hiring company. It enables your jobs to appear in Google for Jobs search results.' },
+        { question: 'Is salary information required in JobPosting schema?', answer: 'Salary is not required but strongly recommended. Google gives preference to job postings that include salary ranges, and many candidates filter by salary in Google for Jobs.' },
+        { question: 'How do I mark a job as remote in the schema?', answer: 'Set the jobLocationType to "TELECOMMUTE" in your JobPosting schema. This tells Google the position is remote and makes it appear when users filter for remote jobs.' },
+        { question: 'What happens when the validThrough date passes?', answer: 'Google will automatically stop showing the job listing in search results after the validThrough date expires. Keep this date updated or remove expired job postings from your site.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-4">
           <div className="flex items-center justify-between">

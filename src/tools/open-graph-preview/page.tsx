@@ -26,7 +26,12 @@ export default function OpenGraphPreviewTool() {
   const descText = ogDescription || 'This is a preview of how your link will appear when shared on social media platforms.'
 
   return (
-    <ToolPage title="Open Graph Preview" description="Preview how your links will appear when shared on Facebook, LinkedIn, and Twitter." category="seo" categoryLabel="SEO Tools">
+    <ToolPage title="Open Graph Preview" description="Preview how your links will appear when shared on Facebook, LinkedIn, and Twitter." category="seo" categoryLabel="SEO Tools" faqs={[
+        { question: 'What is Open Graph and why does it matter?', answer: 'Open Graph is a protocol created by Facebook that controls how URLs are displayed when shared on social media, letting you set the title, description, and image for link previews.' },
+        { question: 'What is the recommended Open Graph image size?', answer: 'The recommended OG image size is 1200x630 pixels with a 1.91:1 aspect ratio. This ensures your image displays correctly across Facebook, LinkedIn, and Twitter/X.' },
+        { question: 'How do I test my Open Graph tags?', answer: 'Use this preview tool to see how your link will appear, then validate with Facebook\'s Sharing Debugger or Twitter\'s Card Validator to clear any cached previews.' },
+        { question: 'Why is my social media link preview not updating?', answer: 'Social platforms cache Open Graph data. After updating your OG tags, use Facebook\'s Sharing Debugger to scrape the URL again and force a cache refresh.' },
+      ]}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Form */}
         <div className="space-y-4">

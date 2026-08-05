@@ -31,6 +31,12 @@ export default function StockProfitCalculator() {
       description="Calculate profit or loss on stock trades. Includes commission/brokerage fees, ROI percentage, and break-even price."
       category="financial"
       categoryLabel="Financial Calculators"
+      faqs={[
+        { question: 'How do I calculate profit on a stock trade?', answer: 'Multiply the number of shares by the difference between sell and buy prices, then subtract any commissions or fees. This gives your net profit or loss.' },
+        { question: 'What is the break-even price for a stock?', answer: 'The break-even price accounts for buy and sell commissions. It equals (total buy cost + sell commission) divided by the number of shares.' },
+        { question: 'How is ROI calculated on stocks?', answer: 'ROI on stocks is calculated as (net profit / total investment cost) x 100. This includes commissions in both the profit and cost calculations.' },
+        { question: 'Do stock commissions affect profit significantly?', answer: 'For small trades, commissions can significantly reduce returns. Many brokers now offer zero-commission trading, but always factor in any fees when calculating actual profit.' },
+      ]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Inputs */}

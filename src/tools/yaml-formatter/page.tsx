@@ -224,7 +224,18 @@ export default function YamlFormatterTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="YAML Formatter" description="Format and beautify YAML with consistent indentation" category="developer" categoryLabel="Developer Tools">
+    <ToolPage
+      title="YAML Formatter"
+      description="Format and beautify YAML with consistent indentation"
+      category="developer"
+      categoryLabel="Developer Tools"
+      faqs={[
+        { question: 'Why is indentation so important in YAML?', answer: 'YAML uses indentation to define structure and hierarchy instead of brackets or tags, so incorrect indentation will change the meaning of your data or cause parsing errors.' },
+        { question: 'How many spaces should I use for YAML indentation?', answer: 'Two spaces per level is the most common convention in YAML files. Tabs are not allowed in YAML, so spaces must be used for indentation.' },
+        { question: 'Can this tool fix broken YAML indentation?', answer: 'Yes, paste your YAML and click "Format" to parse it and regenerate it with clean, consistent two-space indentation throughout the document.' },
+        { question: 'What is the difference between YAML and JSON?', answer: 'YAML is a superset of JSON that uses indentation instead of braces, supports comments, and is generally more human-readable, making it popular for configuration files.' },
+      ]}
+    >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <div className="flex items-center justify-between mb-2">

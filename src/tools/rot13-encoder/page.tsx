@@ -16,7 +16,17 @@ export default function Rot13EncoderTool() {
   const output = useMemo(() => rot13(input), [input])
 
   return (
-    <ToolPage title="ROT13 Encoder / Decoder" description="Apply ROT13 cipher to encode or decode text. ROT13 is its own inverse." category="encoders" categoryLabel="Encoders & Decoders">
+    <ToolPage
+      title="ROT13 Encoder / Decoder"
+      description="Apply ROT13 cipher to encode or decode text. ROT13 is its own inverse."
+      category="encoders"
+      categoryLabel="Encoders & Decoders"
+      faqs={[
+        { question: 'What is ROT13?', answer: 'ROT13 is a simple letter substitution cipher that replaces each letter with the letter 13 positions after it in the alphabet. Since the alphabet has 26 letters, applying ROT13 twice returns the original text.' },
+        { question: 'Is ROT13 secure encryption?', answer: 'No. ROT13 provides no cryptographic security whatsoever. It is used only for obscuring text, such as hiding spoilers or puzzle answers, not for protecting sensitive information.' },
+        { question: 'Does ROT13 work with numbers and special characters?', answer: 'No. ROT13 only transforms the 26 English letters (A-Z, a-z). Numbers, punctuation, spaces, and non-Latin characters pass through unchanged.' },
+      ]}
+    >
       <div className="mb-4 p-3 rounded-lg bg-muted text-sm text-muted-foreground">
         ROT13 shifts each letter 13 positions in the alphabet. Applying it twice returns the original text.
       </div>
