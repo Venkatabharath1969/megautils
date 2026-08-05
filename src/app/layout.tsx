@@ -32,6 +32,37 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: 'MegaUtils',
+              url: 'https://megautils.xyz',
+              description: '177+ free browser-based utility tools for developers, designers, and everyone.',
+              sameAs: ['https://github.com/Venkatabharath1969/megautils'],
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebSite',
+              name: 'MegaUtils',
+              url: 'https://megautils.xyz',
+              potentialAction: {
+                '@type': 'SearchAction',
+                target: 'https://megautils.xyz/?q={search_term_string}',
+                'query-input': 'required name=search_term_string',
+              },
+            }),
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <ThemeProvider>
           <LanguageProvider>

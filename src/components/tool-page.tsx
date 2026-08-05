@@ -16,12 +16,13 @@ interface ToolPageProps {
   description: string
   category: string
   categoryLabel: string
+  slug?: string
   children: ReactNode
   helpContent?: ReactNode
   faqs?: FAQItem[]
 }
 
-export function ToolPage({ title, description, category, categoryLabel, children, helpContent, faqs }: ToolPageProps) {
+export function ToolPage({ title, description, category, categoryLabel, slug, children, helpContent, faqs }: ToolPageProps) {
   const { t } = useLanguage()
 
   return (
@@ -109,7 +110,7 @@ export function ToolPage({ title, description, category, categoryLabel, children
             '@context': 'https://schema.org',
             '@type': 'SoftwareApplication',
             name: title,
-            url: typeof window !== 'undefined' ? window.location.href : `https://megautils.xyz/tools/${category}`,
+            url: `https://megautils.xyz/tools/${slug || category}`,
             description: description,
             applicationCategory: 'UtilityApplication',
             operatingSystem: 'Any',
@@ -117,13 +118,6 @@ export function ToolPage({ title, description, category, categoryLabel, children
               '@type': 'Offer',
               price: '0',
               priceCurrency: 'USD',
-            },
-            aggregateRating: {
-              '@type': 'AggregateRating',
-              ratingValue: '4.8',
-              ratingCount: '127',
-              bestRating: '5',
-              worstRating: '1',
             },
             browserRequirements: 'Requires JavaScript',
             permissions: 'none',
@@ -133,6 +127,22 @@ export function ToolPage({ title, description, category, categoryLabel, children
               name: 'MegaUtils',
               url: 'https://megautils.xyz',
             },
+          }),
+        }}
+      />
+
+      {/* JSON-LD BreadcrumbList Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://megautils.xyz' },
+              { '@type': 'ListItem', position: 2, name: categoryLabel, item: `https://megautils.xyz/category/${category}` },
+              { '@type': 'ListItem', position: 3, name: title },
+            ],
           }),
         }}
       />
