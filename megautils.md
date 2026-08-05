@@ -94,7 +94,7 @@ C:\Users\sbhara3\projects\toolnova\ # Local dev path
 │       ├── json-formatter/page.tsx
 │       ├── base64-encoder/page.tsx
 │       └── ... (177 total)
-├── AGENTS.md                      # THIS FILE
+├── megautils.md                   # THIS FILE (project reference & deployment log)
 ├── next.config.ts
 ├── tsconfig.json
 └── package.json

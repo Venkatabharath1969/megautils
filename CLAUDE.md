@@ -1,1 +1,1 @@
-@AGENTS.md
+@megautils.md
