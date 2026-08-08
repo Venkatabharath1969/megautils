@@ -71,6 +71,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Footer />
           </LanguageProvider>
         </ThemeProvider>
+        {/* Infolinks Ad Network */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `var infolinks_pid = 3446872; var infolinks_wsid = 0;`,
+          }}
+        />
+        <script async src="//resources.infolinks.com/js/infolinks_main.js" />
       </body>
     </html>
   )
