@@ -62,6 +62,14 @@ export default function HomePage() {
         })}
       </div>
 
+      {/* Product Hunt Badge */}
+      <div className="mt-10 flex justify-center">
+        <a href="https://www.producthunt.com/posts/utilsnow" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card hover:border-primary/30 transition-colors text-sm">
+          <svg width="20" height="20" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="20" fill="#DA552F"/><path d="M22.667 20H18v-6.667h4.667a3.333 3.333 0 010 6.667zM18 22.667v4h-2.667V11.333H22.667a6 6 0 110 12H18v-.666z" fill="#fff"/></svg>
+          <span className="text-muted-foreground">Featured on <span className="font-semibold text-foreground">Product Hunt</span></span>
+        </a>
+      </div>
+
       {/* Trust Bar */}
       <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
         {[
