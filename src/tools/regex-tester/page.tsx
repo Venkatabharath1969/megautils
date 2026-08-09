@@ -67,6 +67,37 @@ export default function RegexTesterTool() {
       description="Test regular expressions with real-time matching, capture groups, and flag options."
       category="developer"
       categoryLabel="Developer Tools"
+      helpContent={
+        <>
+          <h2>What is a Regex Tester?</h2>
+          <p>
+            A regex tester is a tool that lets you write a regular expression pattern, apply it against sample text, and immediately see which parts of the text match. Regular expressions (regex) are a powerful pattern-matching language supported by virtually every programming language, text editor, and command-line utility. They are used for input validation, search-and-replace operations, log parsing, data extraction, and much more. Despite their power, regex syntax can be cryptic, so a live tester with instant visual feedback dramatically speeds up the authoring and debugging process.
+          </p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Type your regular expression into the <strong>Pattern</strong> field. The delimiters <code>/</code> are shown for context but you do not need to type them.</li>
+            <li>Toggle the <strong>flags</strong> you need: <code>g</code> (global — find all matches), <code>i</code> (case-insensitive), <code>m</code> (multiline — <code>^</code>/<code>$</code> match line boundaries), and <code>s</code> (dotall — <code>.</code> matches newlines).</li>
+            <li>Paste or type your <strong>test string</strong> in the text area below.</li>
+            <li>Matches appear in real time. The <strong>Highlighted Matches</strong> panel wraps each match in guillemets (<code>«»</code>), and the <strong>Match Details</strong> panel lists every match with its index position and any capture groups.</li>
+            <li>Iterate on your pattern until the matches are exactly what you expect, then copy the pattern into your code.</li>
+          </ol>
+
+          <h2>When to Use a Regex Tester</h2>
+          <p>
+            Use this tool whenever you need to validate an email format, extract numbers from a log file, split a CSV line respecting quoted fields, or build a URL-routing pattern. It is especially valuable when working with complex patterns involving lookaheads, lookbehinds, or nested groups, where a small typo can change the meaning entirely. Testing on utilsnow.com before deploying saves you from subtle bugs in production.
+          </p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Start simple. Build your pattern piece by piece, verifying each addition matches the right text before adding the next token.</li>
+            <li>Use <strong>capture groups</strong> <code>()</code> deliberately. Every group adds overhead; use non-capturing groups <code>(?:)</code> when you only need grouping, not extraction.</li>
+            <li>Be mindful of <strong>greedy vs. lazy</strong> quantifiers. <code>.*</code> matches as much as possible; <code>.*?</code> matches as little as possible. Choosing the wrong one is a common source of bugs.</li>
+            <li>This tool uses <strong>JavaScript regex syntax</strong>. Most patterns transfer directly to Python, Java, and Go, but features like <code>\p&#123;L&#125;</code> (Unicode categories) or possessive quantifiers may differ across engines.</li>
+            <li>Anchor your patterns with <code>^</code> and <code>$</code> when validating entire strings to prevent partial matches from slipping through.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'What do the regex flags (g, i, m, s) mean?', answer: 'g (global) finds all matches, i (case insensitive) ignores letter casing, m (multiline) makes ^ and $ match line starts/ends, and s (dotall) makes the dot (.) match newline characters as well.' },
         { question: 'What are capture groups in regex?', answer: 'Capture groups are parts of a pattern enclosed in parentheses, e.g., (\\d+). They let you extract specific portions of a match, which this tool displays in the Match Details panel.' },

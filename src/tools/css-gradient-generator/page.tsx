@@ -57,6 +57,37 @@ export default function CssGradientGeneratorTool() {
       description="Build beautiful CSS gradients with live preview. Supports linear and radial gradients."
       category="css"
       categoryLabel="CSS Tools"
+      helpContent={
+        <>
+          <h2>What is a CSS Gradient Generator?</h2>
+          <p>
+            A CSS gradient generator is a visual tool that helps you design smooth color transitions — either along a straight line (linear gradient) or radiating from a center point (radial gradient) — and outputs the exact CSS code needed to reproduce the effect in any web page. Writing gradient syntax by hand is error-prone because you must specify the type, angle or shape, and every color stop with its position. This generator lets you adjust all those parameters interactively while a live preview updates in real time, so you can craft pixel-perfect gradients without memorising the specification.
+          </p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Choose a <strong>gradient type</strong>: <strong>Linear</strong> transitions along a line at a given angle, while <strong>Radial</strong> radiates outward from the center in a circular pattern.</li>
+            <li>For linear gradients, set the <strong>angle</strong> using the slider or select a preset direction like "to right" or "to bottom left."</li>
+            <li>Adjust the <strong>color stops</strong>: click a color swatch to change its color, drag its position slider to move it along the gradient, or type a HEX value directly. Click <strong>+ Add Stop</strong> to introduce additional colors.</li>
+            <li>Watch the <strong>preview panel</strong> update live as you make changes.</li>
+            <li>When you are happy with the result, click <strong>Copy</strong> next to the generated CSS code and paste it into your stylesheet.</li>
+          </ol>
+
+          <h2>When to Use a CSS Gradient Generator</h2>
+          <p>
+            Gradients are used for hero section backgrounds, button hover states, overlay effects on images, progress bars, and decorative dividers. They load instantly (no image download required) and scale perfectly to any screen size, making them an excellent performance-friendly alternative to background images. The CSS gradient generator on utilsnow.com is especially handy when you need to experiment with multi-stop gradients or translate a designer's mockup into production-ready code quickly.
+          </p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Keep gradients <strong>subtle</strong> for backgrounds — large contrast jumps can look garish and distract from content.</li>
+            <li>Use <strong>two or three stops</strong> for most UI elements. Adding too many stops increases complexity and can create muddy midtones.</li>
+            <li>For smooth transitions between very different hues, add an intermediate stop in a complementary color to avoid a grey "dead zone" in the middle.</li>
+            <li>CSS gradients are <strong>treated as images</strong>, so you can layer multiple gradients using comma-separated values in the <code>background</code> property.</li>
+            <li>All modern browsers — Chrome, Firefox, Safari, and Edge — support CSS gradients without vendor prefixes, so the generated code works out of the box.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'What is the difference between linear and radial gradients?', answer: 'A linear gradient transitions colors along a straight line at a specified angle, while a radial gradient radiates colors outward from a center point in a circular or elliptical shape.' },
         { question: 'Are CSS gradients supported in all browsers?', answer: 'Yes. CSS gradients are supported in all modern browsers including Chrome, Firefox, Safari, and Edge. No vendor prefixes are needed for current browser versions.' },

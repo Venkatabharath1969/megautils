@@ -64,6 +64,37 @@ export default function PasswordGeneratorTool() {
       description="Generate secure random passwords with customizable length and character sets."
       category="generators"
       categoryLabel="Generators"
+      helpContent={
+        <>
+          <h2>What is a Password Generator?</h2>
+          <p>
+            A password generator creates random strings of characters that are designed to be extremely difficult for attackers to guess or crack through brute-force methods. Humans are notoriously bad at inventing passwords — we tend to reuse familiar words, add predictable numbers, and follow patterns that automated cracking tools exploit in seconds. A dedicated generator removes that human bias by using a cryptographically secure random number source to select each character independently, producing passwords with maximum entropy for their length.
+          </p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Set your desired <strong>password length</strong> using the slider. Security experts recommend at least 12–16 characters; longer is always better.</li>
+            <li>Choose which <strong>character sets</strong> to include: uppercase letters, lowercase letters, numbers, and symbols. Enabling all four maximises the keyspace and produces the strongest passwords.</li>
+            <li>Set the <strong>quantity</strong> if you need more than one password — you can generate up to 50 at once.</li>
+            <li>Click <strong>Generate Password</strong>. Each password appears with a colour-coded strength indicator so you can judge its quality at a glance.</li>
+            <li>Click the <strong>Copy</strong> button next to any password to send it to your clipboard, then paste it into your password manager or sign-up form.</li>
+          </ol>
+
+          <h2>When to Use a Password Generator</h2>
+          <p>
+            Use a generator every time you create a new account, rotate credentials, generate API keys, or set up database passwords. It is especially important for accounts that protect sensitive information — email, banking, cloud infrastructure, and admin panels. Generating passwords in bulk is handy when provisioning multiple test accounts or issuing temporary credentials to team members.
+          </p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li><strong>Never reuse passwords.</strong> If one service is breached, attackers will try the same credentials on every other site — a technique called credential stuffing.</li>
+            <li>Store generated passwords in a reputable <strong>password manager</strong> rather than in a spreadsheet, sticky note, or browser autofill alone.</li>
+            <li>For passphrases (easier to type on mobile), consider combining four or more random dictionary words — but for maximum security per character, symbol-rich random strings are superior.</li>
+            <li>This generator on utilsnow.com uses the <strong>Web Crypto API</strong> (<code>crypto.getRandomValues</code>), which is the same cryptographic primitive browsers use for TLS. Your passwords are never sent to a server.</li>
+            <li>Enable <strong>two-factor authentication</strong> (2FA) wherever possible — even the strongest password benefits from an additional layer of security.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'How long should a strong password be?', answer: 'Security experts recommend at least 12-16 characters. Longer passwords with a mix of uppercase, lowercase, numbers, and symbols are exponentially harder to crack.' },
         { question: 'Are the generated passwords truly random?', answer: 'Yes. This tool uses the Web Crypto API (crypto.getRandomValues), which provides cryptographically secure random number generation built into your browser.' },

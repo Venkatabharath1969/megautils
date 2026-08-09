@@ -54,6 +54,41 @@ export default function CompoundInterestCalculator() {
         { question: 'How does compounding frequency affect returns?', answer: 'More frequent compounding (e.g., daily vs. annually) yields slightly higher returns because interest is reinvested sooner. However, the difference shrinks as frequency increases.' },
         { question: 'Why is compound interest called the eighth wonder of the world?', answer: 'This quote, often attributed to Einstein, highlights how compound interest accelerates wealth growth over long periods — small, consistent returns can produce dramatically large results given enough time.' },
       ]}
+      helpContent={
+        <>
+          <h2>What is Compound Interest?</h2>
+          <p>
+            Compound interest is the process of earning interest not only on your original principal but also on the interest
+            that has already been added to your balance. Unlike simple interest, which is calculated solely on the initial
+            deposit, compound interest causes your money to grow exponentially over time. The standard formula is
+            A&nbsp;=&nbsp;P(1&nbsp;+&nbsp;r/n)^(nt), where P is the principal amount, r is the annual interest rate expressed
+            as a decimal, n is the number of times interest compounds per year, and t is the number of years. This calculator
+            lets you experiment with each of those variables and immediately see how they affect your final balance. A
+            year-by-year breakdown table and a visual bar chart show exactly how much of your ending balance comes from the
+            original deposit versus accumulated interest, making it easy to appreciate the power of compounding over long
+            time horizons.
+          </p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your starting principal amount in dollars using the text field or the slider.</li>
+            <li>Set the annual interest rate as a percentage. For savings accounts this might be 4-5%; for stock market returns a common long-term average is 7-10%.</li>
+            <li>Choose the investment time period in years — the longer the horizon, the more dramatic the compounding effect becomes.</li>
+            <li>Select a compounding frequency: annually, semi-annually, quarterly, monthly, or daily. Monthly compounding is the most common for bank accounts and loans.</li>
+            <li>Review the results panel on the right, which shows the final amount, total interest earned, and a proportional bar comparing principal to interest.</li>
+            <li>Scroll down to the year-by-year breakdown table to see how your balance grows each year and what percentage gain each year contributes.</li>
+          </ol>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Start investing as early as possible — time is the most powerful variable in the compound interest formula, and even modest returns compound into large sums over decades.</li>
+            <li>Compare compounding frequencies to understand their impact. Daily compounding yields slightly more than annual compounding, but the difference narrows at higher frequencies.</li>
+            <li>Use this calculator to evaluate loan costs as well. The same formula applies to debt: a higher compounding frequency on a loan means you pay more interest over time.</li>
+            <li>Adjust the interest rate to model different scenarios — optimistic, expected, and pessimistic — to build a realistic range of outcomes for your financial planning.</li>
+            <li>Remember that this calculator shows nominal growth. In real-world planning, factor in inflation, taxes, and fees, which reduce the effective return on your investment.</li>
+          </ul>
+        </>
+      }
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Inputs */}

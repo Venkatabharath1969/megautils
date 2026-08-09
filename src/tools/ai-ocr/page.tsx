@@ -131,6 +131,38 @@ export default function AIOCR() {
       category="image"
       categoryLabel="Image Tools"
       slug="ai-ocr"
+      helpContent={
+        <>
+          <h2>What is AI Image to Text (OCR)?</h2>
+          <p>
+            AI Image to Text is a free optical character recognition tool that extracts readable, editable text from images, screenshots, scanned documents, and photographs. Powered by Tesseract.js — the leading open-source OCR engine — it analyzes the pixel patterns in your image to identify individual characters, words, lines, and paragraphs. The entire recognition process runs locally in your browser, which means your images are never uploaded to any external server. This makes the tool ideal for sensitive documents such as contracts, medical records, identification cards, and financial statements.
+          </p>
+          <p>
+            The tool supports over 100 languages including English, Spanish, French, German, Hindi, Chinese, Japanese, and Korean. You can select the appropriate language before starting recognition to significantly improve accuracy. Whether you need to digitize a printed page, pull text from a screenshot, or convert a handwritten note into editable content, this tool provides fast and reliable results directly in your browser.
+          </p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Select the language of the text in your image from the dropdown menu at the top of the tool.</li>
+            <li>Click the upload area or drag and drop an image file (PNG, JPG, WebP, BMP, or GIF) up to 20 MB.</li>
+            <li>A preview of your uploaded image will appear on the left side of the screen.</li>
+            <li>Click the Extract Text button to begin OCR processing. A progress bar will show the recognition status.</li>
+            <li>Once complete, the extracted text appears in the right panel where you can review it for accuracy.</li>
+            <li>Use the copy button to copy the text to your clipboard, or download it as a plain text file for later use.</li>
+            <li>Click clear to reset the tool and process another image.</li>
+          </ol>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Use high-resolution images with clear, sharp text for the best recognition accuracy. Blurry or low-contrast images produce less reliable results.</li>
+            <li>Crop your image to focus on the text area before uploading. Removing unnecessary borders, logos, and background elements helps the engine concentrate on the text.</li>
+            <li>Ensure the text in the image is not rotated or heavily skewed. Straight, level text is recognized much more accurately.</li>
+            <li>Always select the correct language before clicking Extract Text. The language model is critical for accurate character recognition, especially for non-Latin scripts.</li>
+            <li>The first use requires downloading the language model to your browser. This is a one-time setup per language, and subsequent extractions will be faster.</li>
+            <li>For multi-language documents, process the image once per language and combine the results for complete coverage.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'What is OCR and how does it work?', answer: 'OCR (Optical Character Recognition) is a technology that converts images of text into machine-readable text. This tool uses Tesseract.js, an open-source OCR engine, to analyze pixel patterns in your image and identify characters, words, and paragraphs.' },
         { question: 'Is my image data safe and private?', answer: 'Yes. All processing happens entirely in your browser, on your device. Your images are never uploaded to any server. The Tesseract.js engine runs locally, ensuring complete privacy.' },

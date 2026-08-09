@@ -25,6 +25,36 @@ export default function WordCounterTool() {
       description="Count words, characters, sentences, paragraphs, and estimate reading time."
       category="text"
       categoryLabel="Text Tools"
+      helpContent={
+        <>
+          <h2>What is a Word Counter?</h2>
+          <p>
+            A word counter is a tool that analyses a block of text and reports key statistics including the total number of words, characters (with and without spaces), sentences, paragraphs, and lines. It also estimates how long the text will take to read aloud or silently. Writers, students, marketers, and developers rely on word counters daily to meet length requirements, optimise content for SEO, and ensure readability. Unlike simple character counters built into some text editors, a dedicated word counter provides a comprehensive dashboard of metrics in one place.
+          </p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Type directly into the text area, or <strong>paste</strong> existing content from a document, email, or web page.</li>
+            <li>All statistics update <strong>instantly</strong> as you type — there is no button to press. The counts are displayed in the cards above the text area.</li>
+            <li>Review the metrics you need: <strong>Words</strong>, <strong>Characters</strong>, <strong>Characters (no spaces)</strong>, <strong>Sentences</strong>, <strong>Paragraphs</strong>, <strong>Lines</strong>, <strong>Reading Time</strong>, and <strong>Speaking Time</strong>.</li>
+            <li>Click <strong>Clear</strong> to reset the text area and start a new analysis.</li>
+          </ol>
+
+          <h2>When to Use a Word Counter</h2>
+          <p>
+            Word counters are essential when writing within strict limits — college essays with a 500-word cap, meta descriptions capped at 160 characters, tweets limited to 280 characters, or LinkedIn posts with a 3,000-character maximum. Content marketers use them to hit target article lengths for SEO (typically 1,000–2,000 words for blog posts). Public speakers use speaking-time estimates to fit presentations into allotted slots. The word counter on utilsnow.com handles all of these scenarios instantly in the browser.
+          </p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li><strong>Reading time</strong> is based on an average of 200 words per minute, which is the widely accepted rate for adult readers processing online content.</li>
+            <li><strong>Speaking time</strong> uses 130 words per minute, a comfortable pace for presentations or podcasts.</li>
+            <li>If you need a character count <strong>without spaces</strong>, check the "No Spaces" card — this is the metric many academic and publishing platforms use.</li>
+            <li>Sentence detection relies on terminal punctuation (<code>.</code>, <code>!</code>, <code>?</code>). Abbreviations like "U.S.A." may slightly inflate the count; rewrite them without periods if precision is critical.</li>
+            <li>For SEO, aim for content that thoroughly covers a topic rather than padding to hit a word count — search engines reward depth and relevance over sheer length.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'How is reading time calculated?', answer: 'Reading time is estimated based on an average reading speed of 200 words per minute, which is the standard rate for adult readers processing online content.' },
         { question: 'Does the character count include spaces?', answer: 'Both counts are provided — total characters (with spaces) and characters without spaces — so you can use whichever is needed for your platform or assignment.' },

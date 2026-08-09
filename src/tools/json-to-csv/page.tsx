@@ -62,6 +62,37 @@ export default function JsonToCsvTool() {
       description="Convert a JSON array of objects to CSV format"
       category="developer"
       categoryLabel="Developer Tools"
+      helpContent={
+        <>
+          <h2>What is JSON to CSV Converter?</h2>
+          <p>
+            JSON to CSV Converter is a free online tool that transforms a JSON array of objects into a clean, standards-compliant CSV file ready for use in spreadsheets, databases, and data analysis workflows. JSON (JavaScript Object Notation) is the most common data interchange format on the web, but many business tools and reporting systems still rely on CSV (Comma-Separated Values) for data import and analysis. This converter bridges that gap by automatically extracting all unique keys from your JSON objects as column headers and mapping each object to a corresponding CSV row.
+          </p>
+          <p>
+            The converter follows the RFC 4180 CSV standard, which means fields containing commas, double quotes, or newlines are properly escaped and wrapped in quotes. Nested objects and arrays within your JSON are serialized as JSON strings inside the CSV cell so that no data is lost during conversion. All processing happens entirely in your browser — nothing is uploaded to any server, making the tool safe for sensitive or proprietary datasets.
+          </p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Paste your JSON data into the input area on the left. The data must be a JSON array of objects, for example: <code>[&#123;&quot;name&quot;: &quot;Alice&quot;, &quot;age&quot;: 30&#125;]</code>.</li>
+            <li>Click the Convert to CSV button to run the conversion.</li>
+            <li>The resulting CSV output appears in the right panel, with column headers derived from all unique keys found across your JSON objects.</li>
+            <li>Use the copy button to copy the CSV text to your clipboard, or click download to save it as a .csv file.</li>
+            <li>Open the downloaded file in Microsoft Excel, Google Sheets, LibreOffice Calc, or any other spreadsheet application.</li>
+            <li>Use the clear button to reset both panels and convert a different dataset.</li>
+          </ol>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Ensure your JSON input is a valid array of objects. A single object or a primitive value will produce an error. Wrap single objects in square brackets to create a one-row CSV.</li>
+            <li>Flatten deeply nested JSON structures before converting for cleaner, more readable CSV output. Nested objects are serialized as JSON strings, which can be hard to work with in spreadsheets.</li>
+            <li>If your objects have different keys, the converter merges all keys into a single header row and fills missing values with empty cells, so inconsistent data is handled gracefully.</li>
+            <li>The converter handles large datasets efficiently since it runs in your browser with no server round-trips. However, extremely large files may take a moment to process.</li>
+            <li>Validate your JSON syntax before pasting. Common issues include trailing commas, unquoted keys, and single quotes instead of double quotes.</li>
+            <li>The downloaded CSV uses UTF-8 encoding, which is universally supported by modern spreadsheet applications.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'What JSON format does this converter expect?', answer: 'It expects a JSON array of flat objects, e.g., [{"name": "Alice", "age": 30}]. Each object becomes a row, and all unique keys become CSV column headers.' },
         { question: 'How does the converter handle nested JSON objects?', answer: 'Nested objects and arrays are serialized as JSON strings within the CSV cell. For deeply nested data, consider flattening your JSON first for a cleaner CSV output.' },

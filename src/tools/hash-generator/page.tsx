@@ -144,6 +144,41 @@ export default function HashGeneratorTool() {
         { question: 'Which hashing algorithm should I use?', answer: 'Use SHA-256 or SHA-512 for security purposes. MD5 and SHA-1 are fine for checksums and non-security uses like cache keys or file integrity checks.' },
         { question: 'Is my input text stored or sent anywhere?', answer: 'No. All hashing is performed locally in your browser using the Web Crypto API and a browser-based MD5 implementation. Nothing leaves your device.' },
       ]}
+      helpContent={
+        <>
+          <h2>What is a Hash Generator?</h2>
+          <p>
+            A hash generator takes any text input and produces a fixed-length string of hexadecimal characters called a hash
+            or digest. Hashing is a one-way mathematical function — the same input always produces the same output, but you
+            cannot reverse the hash back to the original text. This property makes hashing essential for password storage, data
+            integrity verification, digital signatures, and blockchain technology. This tool computes four widely used
+            algorithms simultaneously: MD5, which produces a 128-bit hash and is commonly used for checksums; SHA-1, a 160-bit
+            algorithm that is now deprecated for security use; SHA-256, the current industry standard used in TLS certificates
+            and Bitcoin; and SHA-512, which offers the largest digest size for maximum collision resistance. All hashing is
+            performed locally in your browser using the Web Crypto API and a pure JavaScript MD5 implementation, so your data
+            never leaves your device.
+          </p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Type or paste the text you want to hash into the input field.</li>
+            <li>All four hash values — MD5, SHA-1, SHA-256, and SHA-512 — are computed in real time and displayed below the input as you type.</li>
+            <li>Click the <strong>Copy</strong> button next to any hash to copy its hexadecimal value to your clipboard.</li>
+            <li>Use the copied hash wherever you need it: configuration files, checksum verification, database seeding, or documentation.</li>
+            <li>Click <strong>Clear</strong> to reset the input and all computed hashes.</li>
+          </ol>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Use SHA-256 or SHA-512 for any security-sensitive application such as password hashing, file integrity checks, or digital signatures. MD5 and SHA-1 are considered cryptographically broken and should only be used for non-security purposes.</li>
+            <li>Even a single-character change in the input produces a completely different hash — this avalanche effect is what makes hashes useful for detecting tampering.</li>
+            <li>When verifying file downloads, compute the SHA-256 hash of the downloaded file and compare it to the hash published by the author to ensure the file has not been corrupted or altered.</li>
+            <li>Never store plain-text passwords. Instead, store their hashes using a purpose-built algorithm like bcrypt or Argon2 that adds salting and key stretching on top of basic hashing.</li>
+            <li>MD5 is still useful for non-security tasks such as generating cache keys, deduplicating content, or creating short identifiers where collision risk is acceptable.</li>
+            <li>Remember that hashing is deterministic — the same input always yields the same output — so identical passwords will produce identical hashes unless a unique salt is added.</li>
+          </ul>
+        </>
+      }
     >
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium">Input Text</span>

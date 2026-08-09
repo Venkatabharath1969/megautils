@@ -791,6 +791,37 @@ export default function AIGrammarChecker() {
       category="text"
       categoryLabel="Text Tools"
       slug="ai-grammar-checker"
+      helpContent={
+        <>
+          <h2>What is AI Grammar Checker?</h2>
+          <p>
+            AI Grammar Checker is a free, browser-based writing assistant that scans your text for spelling mistakes, grammar errors, punctuation problems, and style issues. Unlike cloud-dependent grammar tools, this checker runs entirely in your browser using a sophisticated rule-based engine built in pure JavaScript. It includes a dictionary of over 500 commonly misspelled words, pattern-matching for grammar rules like subject-verb agreement and confused words, and heuristics for detecting passive voice and overly long sentences. Your text never leaves your device, making it ideal for proofreading confidential documents, academic papers, and professional emails.
+          </p>
+          <p>
+            Errors are organized into four clear categories — spelling, grammar, punctuation, and style — each highlighted with a distinct color in the text. You can click any highlighted error to see the suggested correction and apply it individually, or use the Fix All button to auto-correct every spelling, grammar, and punctuation issue at once. Style suggestions are displayed for your consideration but are not auto-corrected, since they often require human judgment to rephrase properly.
+          </p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Type or paste the text you want to proofread into the input area on the left side of the screen.</li>
+            <li>The tool instantly analyzes your text and highlights any issues it finds, grouped by category.</li>
+            <li>Review the error summary panel at the top to see how many spelling, grammar, punctuation, and style issues were detected.</li>
+            <li>Click on any highlighted error in the text to view its description and suggested fix, then apply the correction with a single click.</li>
+            <li>Alternatively, click the Fix All button to automatically apply all spelling, grammar, and punctuation corrections at once.</li>
+            <li>Copy the corrected text using the copy button, or clear the input to start checking a new document.</li>
+          </ol>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Paste your full document at once rather than checking sentence by sentence. The tool analyzes context across sentences for more accurate detection.</li>
+            <li>Pay special attention to confused-word detections such as their/there/they&#39;re and your/you&#39;re, as these are among the most common writing mistakes that spell-checkers often miss.</li>
+            <li>Review style suggestions carefully. Passive voice is not always wrong, and long sentences can be intentional for rhetorical effect.</li>
+            <li>Use this tool as a final proofreading step after you have finished writing and editing your content for structure and clarity.</li>
+            <li>The checker works best with standard English prose. It may flag intentional informal language, dialogue, or creative writing choices as errors.</li>
+            <li>Since all processing happens locally, there is no word limit. You can check documents of any length without worrying about character caps or rate limits.</li>
+          </ul>
+        </>
+      }
       faqs={[
         {
           question: 'How does this grammar checker work without AI models?',

@@ -92,6 +92,36 @@ export default function ColorPickerTool() {
       description="Pick a color and get HEX, RGB, and HSL values. Copy any format."
       category="color"
       categoryLabel="Color Tools"
+      helpContent={
+        <>
+          <h2>What is a Color Picker?</h2>
+          <p>
+            A color picker is a design utility that lets you select a color visually and instantly receive its value in multiple formats — HEX, RGB, and HSL — ready to paste into CSS, design software, or any application that accepts color codes. Colors on the web are defined numerically, but the relationship between those numbers and what you actually see on screen is not intuitive. A visual picker bridges that gap by letting you choose the exact shade you want and translating it into every format you might need.
+          </p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Click the <strong>color swatch</strong> on the left to open your browser's native color picker and drag to the exact shade you want.</li>
+            <li>Alternatively, type a color value into the <strong>Manual Input</strong> field — you can enter HEX (<code>#ff5733</code>), RGB (<code>rgb(255, 87, 51)</code>), or HSL (<code>hsl(11, 100%, 60%)</code>) — then press <strong>Enter</strong> or click <strong>Apply</strong>.</li>
+            <li>All three format cards on the right — <strong>HEX</strong>, <strong>RGB</strong>, and <strong>HSL</strong> — update instantly, along with the individual R, G, and B channel values.</li>
+            <li>Click the <strong>Copy</strong> button next to any format to send it directly to your clipboard for use in stylesheets, design files, or code.</li>
+          </ol>
+
+          <h2>When to Use a Color Picker</h2>
+          <p>
+            Designers and front-end developers reach for a color picker when building a brand palette, matching colors from a mockup, checking contrast ratios for accessibility, or converting between formats for different tools. It is especially useful when a client provides a color in one format (say, a Pantone or HEX code) and your project requires another (HSL for programmatic theming, for example). The color picker on utilsnow.com converts instantly between all three web-standard formats in your browser.
+          </p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li><strong>HEX</strong> is the most common format in CSS and design tools. Use it for static color definitions.</li>
+            <li>Choose <strong>RGB/RGBA</strong> when you need an alpha (transparency) channel — e.g., <code>rgba(59, 130, 246, 0.5)</code>.</li>
+            <li><strong>HSL</strong> is ideal for generating tints and shades programmatically: keep the hue constant and adjust saturation and lightness to build a cohesive scale.</li>
+            <li>Ensure your chosen color meets <strong>WCAG contrast requirements</strong> (at least 4.5:1 for normal text) to keep your content accessible to all users.</li>
+            <li>When sampling a color from an image or screenshot, open the image in a new tab and use your operating system's eyedropper, then paste the result into the manual input field to get all formats at once.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'What is the difference between HEX, RGB, and HSL?', answer: 'HEX uses a 6-digit hexadecimal code (e.g., #3B82F6), RGB defines color by red/green/blue intensity (0-255), and HSL describes color by hue, saturation, and lightness — all represent the same color in different formats.' },
         { question: 'Which color format should I use in CSS?', answer: 'HEX is most common for solid colors, RGB/RGBA is best when you need transparency, and HSL is ideal when you want to programmatically adjust hue, saturation, or lightness.' },

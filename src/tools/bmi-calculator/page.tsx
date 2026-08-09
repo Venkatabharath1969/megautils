@@ -69,6 +69,40 @@ export default function BMICalculatorTool() {
         { question: 'How is BMI calculated?', answer: 'BMI is calculated by dividing your weight in kilograms by your height in meters squared: BMI = kg / m². For imperial units, the formula is (weight in pounds × 703) / (height in inches)².' },
         { question: 'Does BMI apply the same way to all age groups?', answer: 'Standard BMI categories apply to adults 20 and older. For children and teens, BMI is interpreted using age- and sex-specific percentile charts from the CDC.' },
       ]}
+      helpContent={
+        <>
+          <h2>What is BMI?</h2>
+          <p>
+            Body Mass Index, or BMI, is a simple numerical value calculated from a person's weight and height. It is widely
+            used by healthcare professionals as a quick screening tool to categorize individuals into weight-status groups:
+            underweight (below 18.5), normal weight (18.5 to 24.9), overweight (25 to 29.9), and obese (30 and above). The
+            formula in metric units is BMI&nbsp;=&nbsp;weight&nbsp;(kg)&nbsp;/&nbsp;height&nbsp;(m)&sup2;. For imperial units
+            the equivalent is BMI&nbsp;=&nbsp;(weight&nbsp;in&nbsp;pounds&nbsp;&times;&nbsp;703)&nbsp;/&nbsp;(height&nbsp;in&nbsp;inches)&sup2;.
+            While BMI does not directly measure body fat, it correlates well enough with more precise methods to serve as a
+            useful first-pass indicator. This calculator supports both metric and imperial inputs, displays your result on a
+            color-coded scale, and shows the healthy weight range for your specific height so you can set informed goals.
+          </p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Select your preferred height unit — centimeters or feet and inches — using the toggle buttons, then enter your height.</li>
+            <li>Select your preferred weight unit — kilograms or pounds — and enter your weight.</li>
+            <li>Your BMI is calculated instantly and displayed in the results panel alongside its category: Underweight, Normal, Overweight, or Obese.</li>
+            <li>Review the color-coded BMI scale to see where your value falls relative to the standard ranges.</li>
+            <li>Check the healthy weight range displayed below the scale — this shows the minimum and maximum weight considered normal for your height.</li>
+          </ol>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>BMI is a screening tool, not a diagnostic one. A high BMI in muscular athletes does not necessarily indicate excess body fat — consider complementary measures like waist circumference or body-fat percentage.</li>
+            <li>Track your BMI over time rather than focusing on a single reading. Trends are far more informative than any individual measurement when assessing health progress.</li>
+            <li>For children and teenagers, standard adult BMI categories do not apply. Pediatric BMI is interpreted using age- and sex-specific percentile charts published by the CDC or WHO.</li>
+            <li>Use the healthy weight range as a guideline, not an absolute target. Individual factors such as bone density, muscle mass, ethnicity, and age all influence what a healthy weight looks like for you.</li>
+            <li>If your BMI places you in the overweight or obese category, consult a healthcare provider for a comprehensive assessment that includes blood pressure, cholesterol, blood sugar, and lifestyle factors.</li>
+            <li>Remember that BMI does not distinguish between weight from fat and weight from muscle. Strength athletes, for example, routinely have BMIs above 25 while maintaining excellent cardiovascular health.</li>
+          </ul>
+        </>
+      }
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Inputs */}

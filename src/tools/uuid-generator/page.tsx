@@ -35,6 +35,37 @@ export default function UuidGeneratorTool() {
       description="Generate random UUID v4 identifiers. Bulk generate up to 100 at once."
       category="generators"
       categoryLabel="Generators"
+      helpContent={
+        <>
+          <h2>What is a UUID Generator?</h2>
+          <p>
+            A UUID (Universally Unique Identifier) generator creates 128-bit identifiers that are guaranteed to be unique for all practical purposes without requiring a central registration authority. The most commonly used version — UUID v4 — is generated from cryptographically strong random numbers, producing identifiers like <code>550e8400-e29b-41d4-a716-446655440000</code>. UUIDs are the standard way to assign IDs to database records, distributed system nodes, API resources, message-queue events, and session tokens in modern software architectures.
+          </p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Set the <strong>Count</strong> — choose how many UUIDs you need, from 1 up to 100 at a time.</li>
+            <li>Select your preferred <strong>case</strong>: lowercase (default and most common) or UPPERCASE.</li>
+            <li>Click <strong>Generate</strong>. All UUIDs appear instantly in a scrollable list.</li>
+            <li>Click the <strong>Copy</strong> button next to any single UUID to copy it, or use the bulk <strong>Copy</strong> button at the top to copy every generated UUID (one per line).</li>
+            <li>Click <strong>Clear</strong> to reset the list and generate a fresh batch.</li>
+          </ol>
+
+          <h2>When to Use a UUID Generator</h2>
+          <p>
+            Developers use UUIDs when they need unique primary keys that can be generated on the client side without hitting a database sequence, when merging data from multiple microservices that each create records independently, and when building offline-first applications that sync later. UUIDs are also ideal for creating shareable links, tracking analytics events, and assigning correlation IDs to distributed traces. The UUID generator on utilsnow.com runs entirely in your browser using the Web Crypto API, so no identifiers are ever transmitted to a server.
+          </p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>UUID v4 collision probability is astronomically low — you would need to generate roughly <strong>2.71 quintillion</strong> IDs before a 50 % chance of a single duplicate.</li>
+            <li>If you need <strong>sortable</strong> IDs (e.g., for database index performance), consider UUIDv7 or ULID, which embed a timestamp prefix. UUID v4 is fully random and does not sort chronologically.</li>
+            <li>Store UUIDs as a native <code>UUID</code> column type in PostgreSQL or as <code>BINARY(16)</code> in MySQL for optimal storage and indexing — storing them as a 36-character string wastes space.</li>
+            <li>When displaying UUIDs to end users, consider showing only the first 8 characters as a short reference and revealing the full ID on click or hover.</li>
+            <li>This tool uses <code>crypto.getRandomValues</code>, the same cryptographic primitive your browser uses for TLS, so the generated UUIDs are suitable for security-sensitive contexts.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'What is a UUID and what is it used for?', answer: 'A UUID (Universally Unique Identifier) is a 128-bit identifier used to uniquely identify resources in databases, APIs, and distributed systems without requiring a central authority.' },
         { question: 'Can two UUIDs ever be the same?', answer: 'While theoretically possible, the probability of a collision with UUID v4 is astronomically low — you would need to generate about 2.71 quintillion UUIDs to have a 50% chance of a single duplicate.' },

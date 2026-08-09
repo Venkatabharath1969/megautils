@@ -34,6 +34,37 @@ export default function EMICalculator() {
       description="Calculate your Equated Monthly Installment (EMI) for home loans, car loans, and personal loans."
       category="financial"
       categoryLabel="Financial Calculators"
+      helpContent={
+        <>
+          <h2>What is EMI Calculator?</h2>
+          <p>
+            EMI Calculator is a free financial planning tool that computes your Equated Monthly Installment for any type of loan — home loans, car loans, personal loans, education loans, or any other amortized credit product. EMI stands for Equated Monthly Installment, which is the fixed amount you pay to the lender every month until the loan is fully repaid. Each EMI payment consists of two components: a portion that goes toward repaying the principal amount and a portion that covers the interest charged by the lender. This calculator uses the standard reducing-balance formula to give you an accurate monthly payment figure along with a complete breakdown of total interest and total payment over the life of the loan.
+          </p>
+          <p>
+            Understanding your EMI before taking a loan is essential for sound financial planning. By adjusting the loan amount, interest rate, and tenure, you can see how each variable affects your monthly outflow and total cost of borrowing. The visual payment breakdown bar shows the proportion of principal versus interest, helping you make informed decisions about loan tenure and prepayment strategies. All calculations happen instantly in your browser with no data sent to any server.
+          </p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter the total loan amount you plan to borrow using the input field or the slider. The range supports amounts from 50,000 to 5 crore.</li>
+            <li>Set the annual interest rate offered by your lender. You can type the exact rate or use the slider for quick adjustments.</li>
+            <li>Choose the loan tenure in years or months. Use the dropdown to switch between the two units.</li>
+            <li>Your monthly EMI is calculated and displayed instantly along with the total interest payable and total payment amount.</li>
+            <li>Review the payment breakdown bar to see what percentage of your total payment goes toward principal versus interest.</li>
+            <li>Experiment with different combinations of amount, rate, and tenure to find a repayment plan that fits your monthly budget.</li>
+          </ol>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Keep your total EMI obligations across all loans below 40 to 50 percent of your monthly income to maintain a healthy debt-to-income ratio.</li>
+            <li>A shorter loan tenure means higher monthly EMIs but significantly less total interest paid over the life of the loan. Compare different tenures to find the right balance.</li>
+            <li>Even a small reduction in interest rate can save a substantial amount over long tenures. Negotiate with your lender or consider refinancing options if better rates become available.</li>
+            <li>Making partial prepayments toward the principal reduces your outstanding balance, which in turn lowers either your remaining tenure or your monthly EMI, saving you money on interest.</li>
+            <li>Use this calculator to compare loan offers from different banks by entering each offer&#39;s rate and tenure to see the actual cost difference in monthly and total payments.</li>
+            <li>Remember that the EMI shown here covers principal and interest only. Additional costs such as processing fees, insurance premiums, and taxes may apply depending on your lender.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'What is EMI and how is it calculated?', answer: 'EMI (Equated Monthly Installment) is a fixed monthly payment combining principal and interest. It is calculated using the formula: EMI = P x r x (1+r)^n / ((1+r)^n - 1), where P is principal, r is monthly interest rate, and n is total months.' },
         { question: 'Does a higher tenure reduce EMI?', answer: 'Yes, a longer tenure reduces the monthly EMI amount, but you end up paying significantly more total interest over the life of the loan.' },

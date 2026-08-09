@@ -127,6 +127,39 @@ export default function HtmlFormatterTool() {
         { question: 'What is the difference between beautifying and minifying HTML?', answer: 'Beautifying adds indentation and line breaks for readability, while minifying strips all unnecessary whitespace to reduce file size for faster page loads.' },
         { question: 'Is my HTML data safe when using this tool?', answer: 'Yes. All processing happens locally in your browser. Nothing is uploaded to any server.' },
       ]}
+      helpContent={
+        <>
+          <h2>What is an HTML Formatter?</h2>
+          <p>
+            An HTML formatter is a tool that takes raw or minified HTML markup and restructures it with consistent indentation,
+            proper line breaks, and clean nesting so the code is easy to read and maintain. Whether you are working with a
+            single snippet pasted from a CMS or an entire page exported from a build pipeline, formatting reveals the document
+            structure at a glance. This is especially valuable when debugging layout issues, reviewing pull requests, or
+            onboarding new team members who need to understand a template quickly. The formatter can also work in reverse:
+            minifying already-beautified HTML by stripping unnecessary whitespace and line breaks, which reduces file size and
+            can improve page-load performance in production environments.
+          </p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Paste your raw, minified, or poorly indented HTML into the input panel on the left side of the screen.</li>
+            <li>Choose your preferred indentation width from the dropdown — two spaces is the most common convention, but four spaces is also popular.</li>
+            <li>Click <strong>Format / Beautify</strong> to produce cleanly indented output, or click <strong>Minify</strong> to collapse everything onto as few characters as possible.</li>
+            <li>Review the result in the output panel. Use the <strong>Copy</strong> button to send it to your clipboard or <strong>Download</strong> to save it as a file.</li>
+            <li>If you need to start over, click <strong>Clear</strong> to reset both panels.</li>
+          </ol>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Always beautify HTML before committing it to version control so that diffs are meaningful and reviewable line by line.</li>
+            <li>Use minified HTML in production to reduce bandwidth — even a few kilobytes can matter on high-traffic pages or slow mobile connections.</li>
+            <li>When pasting HTML from email builders or WYSIWYG editors, format it first to locate redundant wrapper elements and inline styles that can be cleaned up.</li>
+            <li>Pair this formatter with a linter like HTMLHint to catch structural errors such as unclosed tags or missing attributes after formatting.</li>
+            <li>If the formatter output looks unexpected, check that your original markup does not contain broken tags or unescaped special characters, which can confuse any parser.</li>
+            <li>For templating languages like EJS, Handlebars, or Jinja, format only the static HTML portions — template expressions inside double braces may not parse correctly.</li>
+          </ul>
+        </>
+      }
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>

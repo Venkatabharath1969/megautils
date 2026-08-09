@@ -112,6 +112,41 @@ export default function ImageResizerTool() {
         { question: 'Is my image uploaded to a server?', answer: 'No. All resizing is done locally in your browser using the HTML Canvas API. Your image never leaves your device.' },
         { question: 'What image formats are supported?', answer: 'You can upload any format your browser supports, including PNG, JPEG, WebP, GIF, and SVG. The resized output is downloaded as a PNG file.' },
       ]}
+      helpContent={
+        <>
+          <h2>What is an Image Resizer?</h2>
+          <p>
+            An image resizer is a tool that changes the pixel dimensions of an image to match a desired width and height.
+            Resizing is one of the most common image-editing tasks and is essential for web development, social media posting,
+            email newsletters, and print preparation. Images that are too large slow down web pages and waste bandwidth, while
+            images that are too small appear blurry when stretched. This tool performs all resizing directly in your browser
+            using the HTML Canvas API — your image is never uploaded to a server, keeping your files completely private. You
+            can upload any format your browser supports, including PNG, JPEG, WebP, GIF, and SVG. The resized output is
+            downloaded as a high-quality PNG file. An aspect-ratio lock ensures your image maintains its original proportions
+            by default, preventing the stretched or squished appearance that results from changing width and height independently.
+          </p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Click the upload area or drag and drop an image file onto it. The tool accepts PNG, JPEG, WebP, GIF, SVG, and other browser-supported formats.</li>
+            <li>Once uploaded, the original dimensions and file size are displayed. The width and height fields are pre-filled with the current pixel values.</li>
+            <li>Enter your desired width or height. If the aspect-ratio lock is enabled, the other dimension updates automatically to maintain proportions.</li>
+            <li>To resize freely without preserving proportions, click the lock icon between the width and height fields to unlock the aspect ratio.</li>
+            <li>Click <strong>Resize Image</strong> to generate the resized version. A preview and the new file size appear instantly.</li>
+            <li>Click <strong>Download</strong> to save the resized image as a PNG file to your device.</li>
+          </ol>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Always resize images down rather than up when possible. Downscaling preserves sharpness, while upscaling forces the browser to interpolate new pixels, which reduces clarity.</li>
+            <li>For website hero images and banners, common widths are 1200px to 1920px. For thumbnails and social media avatars, 150px to 500px is typical.</li>
+            <li>Keep the aspect ratio locked unless you specifically need a non-proportional crop — unlocking it can distort faces, text, and other recognizable elements.</li>
+            <li>Check the file size after resizing. If the output is still too large for your needs, consider using a dedicated image compressor to reduce quality slightly without changing dimensions.</li>
+            <li>When preparing images for retina or high-DPI displays, export at twice the display size (e.g., 600px wide for a 300px container) and let CSS scale them down for crisp rendering.</li>
+            <li>Use the Clear button to remove the current image and start fresh without reloading the page.</li>
+          </ul>
+        </>
+      }
     >
       <div className="space-y-6">
         {/* Upload */}

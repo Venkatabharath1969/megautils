@@ -135,6 +135,37 @@ export default function AIBGRemover() {
       category="image"
       categoryLabel="Image Tools"
       slug="ai-bg-remover"
+      helpContent={
+        <>
+          <h2>What is AI Background Remover?</h2>
+          <p>
+            AI Background Remover is a free online tool that automatically detects the foreground subject in any photograph or image and removes the background, producing a clean PNG file with full transparency. Powered by a neural network that runs entirely inside your browser, it eliminates the need for manual masking in photo-editing software. Whether you are preparing product photos for an e-commerce store, creating profile pictures, designing marketing materials, or compositing images for social media, this tool delivers professional-quality cutouts in seconds without uploading your files to any external server.
+          </p>
+          <p>
+            The underlying AI model analyzes every pixel to distinguish people, objects, and animals from their surroundings. It handles complex edges such as hair, fur, semi-transparent fabrics, and intricate shapes with impressive accuracy. Because the engine is downloaded once and cached in your browser, subsequent uses are nearly instant, and the tool even works offline after the initial setup.
+          </p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Click the upload area or drag and drop an image file (PNG, JPG, or WebP) up to 20 MB in size.</li>
+            <li>On your first visit the AI engine will be downloaded automatically. A progress bar shows the status of this one-time setup.</li>
+            <li>Once the engine is ready, background removal begins immediately. You can watch the progress in real time.</li>
+            <li>When processing is complete, a side-by-side comparison of the original and the transparent result is displayed.</li>
+            <li>Click the download button to save the result as a high-quality PNG with a transparent background.</li>
+            <li>Use the clear button to reset the tool and process another image.</li>
+          </ol>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Use high-resolution images with good lighting and clear contrast between the subject and the background for the best results.</li>
+            <li>Simple, uncluttered backgrounds are removed more cleanly, but the AI also handles busy or complex scenes well.</li>
+            <li>If the first run seems slow, be patient while the model downloads. Every subsequent use will be significantly faster thanks to browser caching.</li>
+            <li>The output PNG preserves the original image dimensions, so you can drop it directly into design tools like Figma, Canva, or Photoshop.</li>
+            <li>For batch processing, simply clear and upload the next image. The AI engine stays loaded in memory for the duration of your session.</li>
+            <li>All processing is private. Your images are never sent to a server, making this tool safe for confidential or sensitive photos.</li>
+          </ul>
+        </>
+      }
       faqs={[
         {
           question: 'How does AI background removal work?',

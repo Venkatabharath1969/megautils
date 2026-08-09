@@ -94,6 +94,41 @@ export default function CaseConverterTool() {
         { question: 'What is Sentence case vs Title Case?', answer: 'Sentence case capitalizes only the first letter of the first word (like a normal sentence), while Title Case capitalizes the first letter of every word (commonly used in headings and titles).' },
         { question: 'What is CONSTANT_CASE used for?', answer: 'CONSTANT_CASE (all uppercase with underscores) is the convention for constant values and environment variables in most programming languages, such as MAX_RETRY_COUNT or API_BASE_URL.' },
       ]}
+      helpContent={
+        <>
+          <h2>What is a Case Converter?</h2>
+          <p>
+            A case converter is a utility that transforms text between different capitalization and naming conventions in a
+            single step. In software development, writing, and data processing, the same phrase often needs to appear in
+            multiple formats: a variable name might use camelCase in JavaScript, snake_case in Python, kebab-case in a CSS
+            class, PascalCase for a React component, and CONSTANT_CASE for an environment variable. Manually rewriting each
+            form is tedious and error-prone. This tool instantly generates all common conventions at once so you can copy the
+            one you need. Beyond programming, case conversion is useful for formatting headings in Title Case, normalizing
+            user input to lowercase for comparison, or converting an entire paragraph to UPPERCASE for emphasis. The converter
+            handles multi-word input by splitting on spaces, punctuation, and existing case boundaries, then reassembling the
+            words in the target format.
+          </p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Type or paste your text into the input field at the top of the page.</li>
+            <li>All supported case conversions are generated instantly and displayed below the input. You do not need to click a button — results update as you type.</li>
+            <li>Find the format you need — UPPERCASE, lowercase, Title Case, Sentence case, camelCase, snake_case, kebab-case, PascalCase, or CONSTANT_CASE — and click the <strong>Copy</strong> button next to it.</li>
+            <li>Paste the converted text into your code editor, document, or form field.</li>
+            <li>Click <strong>Clear</strong> to reset the input and start a new conversion.</li>
+          </ol>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Use camelCase for JavaScript and TypeScript variables and function names, and PascalCase for class names and React component names — this follows the conventions enforced by most linters.</li>
+            <li>Choose snake_case for Python variables, Ruby methods, and database column names, as it is the standard in those ecosystems.</li>
+            <li>Use kebab-case for URL slugs, CSS class names, and HTML attributes to ensure compatibility and readability in web contexts.</li>
+            <li>CONSTANT_CASE is the universal standard for environment variables and constant declarations — using it signals that a value should not be reassigned.</li>
+            <li>When converting text that contains acronyms like "API" or "URL," review the output to make sure the acronym is handled the way your style guide expects.</li>
+            <li>For large batches of text, consider scripting the conversion, but for quick one-off needs this tool is the fastest path from input to correctly cased output.</li>
+          </ul>
+        </>
+      }
     >
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium">Input Text</span>

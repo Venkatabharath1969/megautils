@@ -115,6 +115,36 @@ export default function AIImageUpscaler() {
       category="image"
       categoryLabel="Image Tools"
       slug="ai-image-upscaler"
+      helpContent={
+        <>
+          <h2>What is AI Image Upscaler?</h2>
+          <p>
+            AI Image Upscaler is a free tool that enlarges your images to twice their original resolution using ESRGAN (Enhanced Super-Resolution Generative Adversarial Network), a state-of-the-art AI model trained on millions of image pairs. Unlike traditional resizing, which simply interpolates pixels and produces blurry results, ESRGAN predicts and reconstructs fine details such as textures, edges, and patterns that did not exist in the original low-resolution image. The result is a sharper, more detailed enlargement that looks natural and professional.
+          </p>
+          <p>
+            The entire upscaling process runs directly in your browser using a JavaScript implementation of the AI model. Your images never leave your device, ensuring complete privacy. This makes the tool perfect for enhancing product photos, restoring old or low-resolution images, improving thumbnails for printing, and preparing social media graphics that need to look crisp on high-density displays.
+          </p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Click the upload area or drag and drop an image file (PNG, JPG, or WebP) up to 20 MB in size.</li>
+            <li>The AI model loads automatically and begins processing your image. A progress bar tracks the upscaling progress as the model works through each section of the image.</li>
+            <li>Once complete, a side-by-side comparison shows the original image alongside the 2x upscaled result, with the new dimensions displayed.</li>
+            <li>Click the download button to save the upscaled image as a high-quality PNG file.</li>
+            <li>Use the clear button to reset and upscale another image.</li>
+          </ol>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Start with the best quality source image available. The AI enhances existing detail, so a clearer input produces a better upscaled output.</li>
+            <li>Keep source images under 2000 pixels on each side for faster processing. Larger images are supported but will take significantly longer because the AI processes them in small patches.</li>
+            <li>The tool produces a 2x enlargement. If you need 4x, you can run the output through the tool a second time, though quality gains diminish with each pass.</li>
+            <li>PNG output format is used to preserve maximum quality. If you need a smaller file, convert the result to JPEG afterwards using an image converter.</li>
+            <li>AI upscaling works best on photographs, illustrations, and graphics. It is less effective on text-heavy images or screenshots where pixel-perfect accuracy matters more than detail enhancement.</li>
+            <li>All processing is private and local. Your images are never sent to a server, making this tool safe for personal photos, proprietary designs, and sensitive visual content.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'How does AI image upscaling work?', answer: 'AI upscaling uses an advanced AI engine (ESRGAN) trained on millions of image pairs. It learns to predict missing high-resolution details rather than simply interpolating pixels, producing sharper and more detailed results than traditional resizing.' },
         { question: 'Is my image uploaded to any server?', answer: 'No. All processing runs entirely in your browser on your device. Your images never leave your device, ensuring complete privacy.' },

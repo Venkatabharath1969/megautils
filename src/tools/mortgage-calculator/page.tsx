@@ -60,6 +60,37 @@ export default function MortgageCalculator() {
       description="Calculate monthly mortgage payments, total interest, and view a complete amortization schedule."
       category="financial"
       categoryLabel="Financial Calculators"
+      helpContent={
+        <>
+          <h2>What is a Mortgage Calculator?</h2>
+          <p>
+            A mortgage calculator is a financial planning tool that estimates your monthly home-loan payment based on the property price, down payment, interest rate, and loan term. It applies the standard amortization formula used by banks and lenders worldwide: <code>M&nbsp;=&nbsp;P[r(1+r)^n]/[(1+r)^n−1]</code>, where <strong>P</strong> is the loan principal, <strong>r</strong> is the monthly interest rate, and <strong>n</strong> is the total number of payments. Beyond the headline monthly figure, this calculator also shows total interest paid over the life of the loan and a full year-by-year amortization schedule so you can see exactly how each payment is split between principal and interest.
+          </p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter the <strong>Home Price</strong> — either type the amount or drag the slider.</li>
+            <li>Set your <strong>Down Payment</strong> percentage. The tool instantly shows the dollar equivalent so you can plan your savings target.</li>
+            <li>Enter the annual <strong>Interest Rate</strong>. Check current rates from your lender or a financial news site for the most accurate estimate.</li>
+            <li>Choose a <strong>Loan Term</strong> — common options are 15, 20, or 30 years. Shorter terms mean higher monthly payments but substantially less total interest.</li>
+            <li>Review the results panel: your <strong>monthly payment</strong>, total interest, total cost, a colour-coded cost breakdown bar, and a scrollable <strong>amortization schedule</strong>.</li>
+          </ol>
+
+          <h2>When to Use a Mortgage Calculator</h2>
+          <p>
+            Use this calculator when you are house-hunting and need to determine how much home you can afford, when comparing fixed-rate offers from different lenders, or when deciding between a 15-year and 30-year term. It is also useful for evaluating the impact of making a larger down payment — even a few percentage points can save tens of thousands of dollars in interest. The mortgage calculator on utilsnow.com runs entirely in your browser, so your financial details remain private.
+          </p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>A <strong>20 % down payment</strong> is the traditional threshold to avoid Private Mortgage Insurance (PMI), which adds to your monthly cost.</li>
+            <li>This calculator covers <strong>principal and interest only</strong>. Budget separately for property taxes, homeowner's insurance, HOA fees, and maintenance — these can add 30–50 % on top of your base payment.</li>
+            <li>Look at the <strong>amortization schedule</strong> to understand how early payments are mostly interest. Making extra principal payments in the first few years can dramatically shorten your loan.</li>
+            <li>Compare the <strong>total interest</strong> across different term lengths. A 30-year loan at 6.5 % costs roughly twice as much in total interest as a 15-year loan at the same rate.</li>
+            <li>Re-run the calculator periodically as rates change — even a 0.25 % rate drop can save thousands over the life of a loan.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'How is the monthly mortgage payment calculated?', answer: 'It uses the standard amortization formula: M = P[r(1+r)^n]/[(1+r)^n-1], where P is the loan principal, r is the monthly interest rate, and n is the total number of monthly payments.' },
         { question: 'What is an amortization schedule?', answer: 'An amortization schedule shows how each payment is split between principal and interest over the life of the loan. Early payments are mostly interest, while later payments go primarily toward principal.' },
