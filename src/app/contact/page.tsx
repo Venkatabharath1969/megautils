@@ -5,7 +5,7 @@ import { ContactForm } from '@/components/contact-form'
 
 export const metadata: Metadata = {
   title: 'Contact Us',
-  description: 'Get in touch with MegaUtils. Report bugs, request features, or ask questions about our free online tools.',
+  description: 'Get in touch with UtilsNow. Report bugs, request features, or ask questions about our free online tools.',
 }
 
 export default function ContactPage() {

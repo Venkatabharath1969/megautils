@@ -3,8 +3,8 @@ import type { Metadata } from 'next'
 import { ChevronRight, Shield, Zap, Heart, Globe } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'About MegaUtils',
-  description: 'About MegaUtils - Free online utility tools for developers, designers, and everyone. 100+ tools, all processing in your browser.',
+  title: 'About UtilsNow',
+  description: 'About UtilsNow - Free online utility tools for developers, designers, and everyone. 100+ tools, all processing in your browser.',
 }
 
 export default function AboutPage() {
@@ -17,11 +17,11 @@ export default function AboutPage() {
         <span className="text-foreground font-medium">About</span>
       </nav>
 
-      <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-6">About MegaUtils</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-6">About UtilsNow</h1>
 
       <div className="prose prose-sm dark:prose-invert max-w-none mb-12">
         <p className="text-lg text-muted-foreground">
-          MegaUtils is a free collection of 100+ online utility tools built for developers, designers,
+          UtilsNow is a free collection of 100+ online utility tools built for developers, designers,
           content creators, and anyone who needs quick, reliable tools without the hassle of signing up
           or installing software.
         </p>
@@ -29,7 +29,7 @@ export default function AboutPage() {
         <h2>Our Mission</h2>
         <p>
           We believe essential utility tools should be free, fast, and private. Too many online tools
-          require accounts, bombard you with pop-ups, or send your data to remote servers. MegaUtils
+          require accounts, bombard you with pop-ups, or send your data to remote servers. UtilsNow
           is different:
         </p>
         <ul>
@@ -56,7 +56,7 @@ export default function AboutPage() {
 
         <h2>Privacy First</h2>
         <p>
-          Privacy is at the core of MegaUtils. Every tool runs entirely in your browser using
+          Privacy is at the core of UtilsNow. Every tool runs entirely in your browser using
           client-side JavaScript. Your data - whether it&apos;s JSON, passwords, or financial
           information - never leaves your device. We don&apos;t have access to it, and we don&apos;t
           want it.
@@ -67,7 +67,7 @@ export default function AboutPage() {
 
         <h2>Built with Modern Technology</h2>
         <p>
-          MegaUtils is built with Next.js, React, and Tailwind CSS, ensuring fast page loads,
+          UtilsNow is built with Next.js, React, and Tailwind CSS, ensuring fast page loads,
           responsive design, and a great experience on any device.
         </p>
       </div>

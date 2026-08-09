@@ -1,9 +1,9 @@
-# MegaUtils — Free Online Tools
+# UtilsNow — Free Online Tools
 
 > https://utilsnow.com — 177 free browser-based utility tools. No signup. No data uploaded. 100% client-side processing.
 
 ## About
-MegaUtils is a free online tools website with 177 utilities across 17 categories for developers, designers, students, and professionals. Every tool runs entirely in your browser — no data leaves your device. No login required.
+UtilsNow is a free online tools website with 177 utilities across 17 categories for developers, designers, students, and professionals. Every tool runs entirely in your browser — no data leaves your device. No login required.
 
 ## Categories & Tools
 

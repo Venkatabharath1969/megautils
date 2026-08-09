@@ -16,7 +16,7 @@ export function Footer() {
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary">
                 <Wrench className="h-4 w-4 text-primary-foreground" />
               </div>
-              MegaUtils
+              UtilsNow
             </Link>
             <p className="text-sm text-muted-foreground">{t('footer.description')}</p>
             <div className="flex items-center gap-1.5 mt-3 text-xs text-muted-foreground">
@@ -61,7 +61,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-8 pt-6 border-t border-border text-center text-xs text-muted-foreground">
-          &copy; {new Date().getFullYear()} MegaUtils. {t('footer.copyright')}
+          &copy; {new Date().getFullYear()} UtilsNow. {t('footer.copyright')}
         </div>
       </div>
     </footer>

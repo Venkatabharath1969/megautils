@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title,
     description: `Free online ${title.toLowerCase()}. Process data securely in your browser. No login required.`,
     openGraph: {
-      title: `${title} | MegaUtils`,
+      title: `${title} | UtilsNow`,
       description: `Free online ${title.toLowerCase()}. 100% client-side, no data uploaded.`,
       url: `https://utilsnow.com/tools/${slug}`,
       type: 'website',

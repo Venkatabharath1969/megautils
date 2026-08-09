@@ -124,7 +124,7 @@ export function ToolPage({ title, description, category, categoryLabel, slug, ch
             isAccessibleForFree: true,
             creator: {
               '@type': 'Organization',
-              name: 'MegaUtils',
+              name: 'UtilsNow',
               url: 'https://utilsnow.com',
             },
           }),

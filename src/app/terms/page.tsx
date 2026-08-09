@@ -4,7 +4,7 @@ import { ChevronRight } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Terms of Service',
-  description: 'MegaUtils terms of service. Read our terms for using the free online tools.',
+  description: 'UtilsNow terms of service. Read our terms for using the free online tools.',
 }
 
 export default function TermsPage() {
@@ -23,13 +23,13 @@ export default function TermsPage() {
       <div className="prose prose-sm dark:prose-invert max-w-none">
         <h2>1. Acceptance of Terms</h2>
         <p>
-          By accessing and using MegaUtils (utilsnow.com), you accept and agree to be bound by these
+          By accessing and using UtilsNow (utilsnow.com), you accept and agree to be bound by these
           Terms of Service. If you do not agree to these terms, please do not use our website.
         </p>
 
         <h2>2. Description of Service</h2>
         <p>
-          MegaUtils provides free online utility tools including but not limited to code formatters,
+          UtilsNow provides free online utility tools including but not limited to code formatters,
           data converters, calculators, SEO tools, and generators. All tools process data entirely
           within your browser and do not transmit your data to our servers.
         </p>
@@ -51,7 +51,7 @@ export default function TermsPage() {
 
         <h2>4. Tools Provided &quot;As Is&quot;</h2>
         <p>
-          All tools on MegaUtils are provided on an &quot;as is&quot; and &quot;as available&quot; basis.
+          All tools on UtilsNow are provided on an &quot;as is&quot; and &quot;as available&quot; basis.
           We make no warranties, expressed or implied, regarding the accuracy, reliability, or
           completeness of any tool&apos;s output. You use the tools at your own risk.
         </p>
@@ -62,7 +62,7 @@ export default function TermsPage() {
 
         <h2>5. Limitation of Liability</h2>
         <p>
-          To the fullest extent permitted by applicable law, MegaUtils and its operators shall not be
+          To the fullest extent permitted by applicable law, UtilsNow and its operators shall not be
           liable for any indirect, incidental, special, consequential, or punitive damages, including
           but not limited to:
         </p>
@@ -75,7 +75,7 @@ export default function TermsPage() {
 
         <h2>6. Intellectual Property</h2>
         <p>
-          The MegaUtils website, including its design, layout, graphics, and code, is protected by
+          The UtilsNow website, including its design, layout, graphics, and code, is protected by
           intellectual property laws. You may not reproduce, distribute, or create derivative works
           from our website content without our express written permission.
         </p>
@@ -88,7 +88,7 @@ export default function TermsPage() {
 
         <h2>8. Advertising</h2>
         <p>
-          MegaUtils displays advertisements through Google AdSense and possibly other advertising networks.
+          UtilsNow displays advertisements through Google AdSense and possibly other advertising networks.
           These advertisements help us keep all tools free to use. Third-party advertisers may use cookies
           and tracking technologies as described in our <Link href="/privacy">Privacy Policy</Link>.
         </p>

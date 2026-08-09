@@ -22,7 +22,7 @@ export function Header() {
           <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary">
             <Wrench className="h-4 w-4 text-primary-foreground" />
           </div>
-          <span className="hidden sm:inline">MegaUtils</span>
+          <span className="hidden sm:inline">UtilsNow</span>
         </Link>
 
         {/* Search Bar - Desktop */}

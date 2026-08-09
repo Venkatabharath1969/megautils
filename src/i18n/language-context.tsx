@@ -20,7 +20,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    const saved = localStorage.getItem('megautils-lang') as LangCode
+    const saved = localStorage.getItem('utilsnow-lang') as LangCode
     if (saved && translations[saved]) {
       setLangState(saved)
     } else {
@@ -35,7 +35,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   const setLang = (newLang: LangCode) => {
     setLangState(newLang)
-    localStorage.setItem('megautils-lang', newLang)
+    localStorage.setItem('utilsnow-lang', newLang)
     document.documentElement.lang = newLang
   }
 

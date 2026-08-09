@@ -4,7 +4,7 @@ import { ChevronRight } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'MegaUtils privacy policy. All tool processing happens in your browser. No data is stored or transmitted to any server.',
+  description: 'UtilsNow privacy policy. All tool processing happens in your browser. No data is stored or transmitted to any server.',
 }
 
 export default function PrivacyPage() {
@@ -23,7 +23,7 @@ export default function PrivacyPage() {
       <div className="prose prose-sm dark:prose-invert max-w-none">
         <h2>Overview</h2>
         <p>
-          MegaUtils (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) is committed to protecting your privacy.
+          UtilsNow (&quot;we&quot;, &quot;us&quot;, or &quot;our&quot;) is committed to protecting your privacy.
           This Privacy Policy explains how we collect, use, and safeguard your information when you visit our
           website at utilsnow.com.
         </p>
@@ -31,7 +31,7 @@ export default function PrivacyPage() {
         <h2>Client-Side Processing</h2>
         <p>
           <strong>All tool processing happens entirely in your browser.</strong> When you use any tool on
-          MegaUtils, your data is processed locally on your device using JavaScript. No data is uploaded,
+          UtilsNow, your data is processed locally on your device using JavaScript. No data is uploaded,
           transmitted, or stored on our servers. Your files, text, and inputs never leave your browser.
         </p>
 
@@ -43,7 +43,7 @@ export default function PrivacyPage() {
         </p>
 
         <h3>Automatically Collected Information</h3>
-        <p>When you visit MegaUtils, we may automatically collect certain information, including:</p>
+        <p>When you visit UtilsNow, we may automatically collect certain information, including:</p>
         <ul>
           <li>Browser type and version</li>
           <li>Operating system</li>
