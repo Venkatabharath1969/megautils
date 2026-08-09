@@ -26,14 +26,12 @@ const categories = [
 
 export default function HomePage() {
   const { t } = useLanguage()
-  const totalTools = categories.reduce((sum, c) => sum + c.count, 0)
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
       {/* Hero */}
       <div className="text-center mb-10 sm:mb-14">
         <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">
-          <span className="text-primary">{totalTools}+</span> {t('hero.title')}
+          <span className="text-primary">182+</span> {t('hero.title')}
         </h1>
         <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
           {t('hero.subtitle')}
@@ -70,7 +68,7 @@ export default function HomePage() {
           { label: t('trust.free'), value: t('trust.free.value') },
           { label: t('trust.login'), value: t('trust.login.value') },
           { label: t('trust.data'), value: t('trust.data.value') },
-          { label: t('trust.tools'), value: `${totalTools}+` },
+          { label: t('trust.tools'), value: '182+' },
         ].map((stat) => (
           <div key={stat.label} className="p-4 rounded-lg bg-card border border-border">
             <div className="text-2xl font-bold text-primary">{stat.value}</div>

@@ -113,7 +113,7 @@ export function ToolPage({ title, description, category, categoryLabel, slug, ch
             url: `https://utilsnow.com/tools/${slug || category}`,
             description: description,
             applicationCategory: 'UtilityApplication',
-            operatingSystem: 'Any',
+            operatingSystem: 'Any (works in any modern browser)',
             offers: {
               '@type': 'Offer',
               price: '0',

@@ -57,7 +57,7 @@ export default function AboutPage() {
         <h2>Privacy First</h2>
         <p>
           Privacy is at the core of UtilsNow. Every tool runs entirely in your browser using
-          client-side JavaScript. Your data - whether it&apos;s JSON, passwords, or financial
+          browser-based JavaScript. Your data - whether it&apos;s JSON, passwords, or financial
           information - never leaves your device. We don&apos;t have access to it, and we don&apos;t
           want it.
         </p>

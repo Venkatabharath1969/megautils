@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react'
 import { ToolPage, ClearButton } from '@/components/tool-page'
-import { Upload, Download, Loader2, Grid3X3, Eye, Square, Smile } from 'lucide-react'
+import { Upload, Download, Loader2, Grid3X3, Eye, Square, Smile, Shield, Wifi } from 'lucide-react'
 
 type BlurStyle = 'pixelate' | 'blur' | 'black' | 'emoji'
 type Status = 'idle' | 'loading' | 'processing' | 'done' | 'error'
@@ -192,6 +192,16 @@ export default function AIFaceBlurTool() {
 
   const processImage = useCallback(
     async (file: File) => {
+      if (!file.type.startsWith('image/')) {
+        setErrorMsg('Please upload an image file (PNG, JPG, WebP)')
+        setStatus('error')
+        return
+      }
+      if (file.size > 20 * 1024 * 1024) {
+        setErrorMsg('File size must be under 20 MB')
+        setStatus('error')
+        return
+      }
       setStatus('loading')
       setErrorMsg('')
       setFaceCount(0)
@@ -328,7 +338,7 @@ export default function AIFaceBlurTool() {
   return (
     <ToolPage
       title="AI Face Blur"
-      description="Automatically detect and blur faces in photos for privacy. Choose pixelate, blur, or black bar styles. 100% client-side."
+      description="Automatically detect and blur faces in photos for privacy. Choose pixelate, blur, or black bar styles. Runs entirely in your browser."
       category="image"
       categoryLabel="Image Tools"
       slug="ai-face-blur"
@@ -336,12 +346,12 @@ export default function AIFaceBlurTool() {
         {
           question: 'How does the AI face detection work?',
           answer:
-            'This tool uses TinyFaceDetector, a lightweight deep learning model from the face-api.js library. It runs entirely in your browser using JavaScript — no server processing or uploads required. The model is only ~190KB and detects faces in real-time.',
+            'This tool uses TinyFaceDetector, a lightweight AI engine from the face-api.js library. It runs entirely in your browser — no server processing or uploads required. The AI engine is only ~190KB and detects faces in real-time.',
         },
         {
           question: 'Is my image uploaded to any server?',
           answer:
-            'No. All processing happens 100% client-side in your browser. Your images never leave your device. The AI model is loaded from a CDN once and then runs locally in your browser.',
+            'No. All processing happens entirely in your browser, on your device. Your images never leave your device. The AI engine is loaded once and then runs locally in your browser.',
         },
         {
           question: 'What blur styles are available?',
@@ -364,22 +374,35 @@ export default function AIFaceBlurTool() {
 
         {/* Upload area — shown when idle or as a re-upload option */}
         {status === 'idle' && (
-          <label
-            className="flex flex-col items-center justify-center h-44 border-2 border-dashed border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors"
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-          >
-            <Upload className="h-8 w-8 text-muted-foreground mb-2" />
-            <span className="text-sm text-muted-foreground">Click or drag & drop an image</span>
-            <span className="text-xs text-muted-foreground mt-1">PNG, JPG, WebP supported</span>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleFile}
-              className="hidden"
-            />
-          </label>
+          <div>
+            <label
+              className={`flex flex-col items-center justify-center h-56 border-2 border-dashed rounded-xl cursor-pointer transition-colors border-border hover:border-muted-foreground hover:bg-muted/50`}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+            >
+              <Upload className="h-10 w-10 text-muted-foreground mb-3" />
+              <span className="text-sm font-medium text-foreground">Drag & drop your image here, or click to browse</span>
+              <span className="text-xs text-muted-foreground mt-1">Supports JPG, PNG, WebP</span>
+              <span className="text-xs text-muted-foreground">Max file size: 20MB</span>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFile}
+                className="hidden"
+              />
+            </label>
+            <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground mt-3">
+              <span className="inline-flex items-center gap-1.5">
+                <Shield className="h-3.5 w-3.5 text-green-500" />
+                Your image never leaves your device
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Wifi className="h-3.5 w-3.5 text-blue-500" />
+                Works offline after first use
+              </span>
+            </div>
+          </div>
         )}
 
         {/* Loading / Processing states */}
@@ -387,7 +410,7 @@ export default function AIFaceBlurTool() {
           <div className="flex flex-col items-center justify-center h-44 border border-border rounded-lg bg-muted/20">
             <Loader2 className="h-8 w-8 text-primary animate-spin mb-3" />
             <span className="text-sm font-medium">
-              {status === 'loading' ? 'Loading AI model...' : 'Detecting faces...'}
+              {status === 'loading' ? 'Preparing AI engine (one-time setup)...' : 'Scanning for faces...'}
             </span>
             <span className="text-xs text-muted-foreground mt-1">This may take a few seconds</span>
           </div>
@@ -490,6 +513,7 @@ export default function AIFaceBlurTool() {
                   <img
                     src={resultImage}
                     alt="Face-blurred result"
+                    loading="lazy"
                     className="max-w-full h-auto max-h-[500px] mx-auto block"
                   />
                 </div>

@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef } from 'react'
 import { ToolPage, ClearButton } from '@/components/tool-page'
-import { Download, Upload, AlertTriangle } from 'lucide-react'
+import { Download, Upload, AlertTriangle, Shield, Wifi } from 'lucide-react'
 
 export default function AIImageUpscaler() {
   const [originalImage, setOriginalImage] = useState<string | null>(null)
@@ -15,7 +15,16 @@ export default function AIImageUpscaler() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const processFile = useCallback(async (file: File) => {
-    if (!file.type.startsWith('image/')) return
+    if (!file.type.startsWith('image/')) {
+      setErrorMsg('Please upload an image file (PNG, JPG, WebP)')
+      setStatus('error')
+      return
+    }
+    if (file.size > 20 * 1024 * 1024) {
+      setErrorMsg('File size must be under 20 MB')
+      setStatus('error')
+      return
+    }
 
     setStatus('processing')
     setProgress(0)
@@ -86,7 +95,8 @@ export default function AIImageUpscaler() {
     a.click()
   }, [upscaledImage, originalSize])
 
-  const clear = () => {
+  const clear = useCallback(() => {
+    if (originalImage) URL.revokeObjectURL(originalImage)
     setOriginalImage(null)
     setUpscaledImage(null)
     setStatus('idle')
@@ -94,22 +104,22 @@ export default function AIImageUpscaler() {
     setOriginalSize({ w: 0, h: 0 })
     setErrorMsg('')
     if (fileInputRef.current) fileInputRef.current.value = ''
-  }
+  }, [originalImage])
 
   const showLargeWarning = originalSize.w > 2000 || originalSize.h > 2000
 
   return (
     <ToolPage
       title="AI Image Upscaler"
-      description="Enlarge images 2x using AI super-resolution. Enhances detail that standard resizing blurs. 100% client-side."
+      description="Enlarge images 2x using AI super-resolution. Enhances detail that standard resizing blurs. Runs entirely in your browser."
       category="image"
       categoryLabel="Image Tools"
       slug="ai-image-upscaler"
       faqs={[
-        { question: 'How does AI image upscaling work?', answer: 'AI upscaling uses a neural network model (ESRGAN) trained on millions of image pairs. It learns to predict missing high-resolution details rather than simply interpolating pixels, producing sharper and more detailed results than traditional resizing.' },
-        { question: 'Is my image uploaded to any server?', answer: 'No. All processing runs entirely in your browser using TensorFlow.js. Your images never leave your device, ensuring complete privacy.' },
+        { question: 'How does AI image upscaling work?', answer: 'AI upscaling uses an advanced AI engine (ESRGAN) trained on millions of image pairs. It learns to predict missing high-resolution details rather than simply interpolating pixels, producing sharper and more detailed results than traditional resizing.' },
+        { question: 'Is my image uploaded to any server?', answer: 'No. All processing runs entirely in your browser on your device. Your images never leave your device, ensuring complete privacy.' },
         { question: 'What image formats are supported?', answer: 'You can upload any format supported by your browser, including PNG, JPEG, WebP, and GIF. The upscaled output is downloaded as a PNG file to preserve maximum quality.' },
-        { question: 'Why is upscaling large images slow?', answer: 'AI upscaling is computationally intensive. The neural network processes the image in small patches. Larger images have more patches to process, so they take longer. Images over 2000px on either side may take significantly more time.' },
+        { question: 'Why is upscaling large images slow?', answer: 'AI upscaling is computationally intensive. The AI processes the image in small patches. Larger images have more patches to process, so they take longer. Images over 2000px on either side may take significantly more time.' },
       ]}
     >
       <div className="space-y-6">
@@ -121,27 +131,40 @@ export default function AIImageUpscaler() {
 
         {/* Upload area */}
         {!originalImage ? (
-          <label
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            className={`flex flex-col items-center justify-center h-48 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
-              isDragOver
-                ? 'border-primary bg-primary/5'
-                : 'border-border hover:bg-muted/50'
-            }`}
-          >
-            <Upload className="h-8 w-8 text-muted-foreground mb-2" />
-            <span className="text-sm text-muted-foreground">Click to upload or drag & drop an image</span>
-            <span className="text-xs text-muted-foreground mt-1">PNG, JPG, WebP supported</span>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleFile}
-              className="hidden"
-            />
-          </label>
+          <div>
+            <label
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              className={`flex flex-col items-center justify-center h-56 border-2 border-dashed rounded-xl cursor-pointer transition-colors ${
+                isDragOver
+                  ? 'border-primary bg-primary/5'
+                  : 'border-border hover:border-muted-foreground hover:bg-muted/50'
+              }`}
+            >
+              <Upload className={`h-10 w-10 mb-3 ${isDragOver ? 'text-primary' : 'text-muted-foreground'}`} />
+              <span className="text-sm font-medium text-foreground">Drag & drop your image here, or click to browse</span>
+              <span className="text-xs text-muted-foreground mt-1">Supports JPG, PNG, WebP</span>
+              <span className="text-xs text-muted-foreground">Max file size: 20MB</span>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFile}
+                className="hidden"
+              />
+            </label>
+            <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground mt-3">
+              <span className="inline-flex items-center gap-1.5">
+                <Shield className="h-3.5 w-3.5 text-green-500" />
+                Your image never leaves your device
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Wifi className="h-3.5 w-3.5 text-blue-500" />
+                Works offline after first use
+              </span>
+            </div>
+          </div>
         ) : (
           <div className="space-y-6">
             {/* Large image warning */}
@@ -156,7 +179,7 @@ export default function AIImageUpscaler() {
             {status === 'processing' && (
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="font-medium">Upscaling with AI...</span>
+                  <span className="font-medium">Enhancing your image with AI...</span>
                   <span className="text-muted-foreground">{progress}%</span>
                 </div>
                 <div className="w-full h-2 rounded-full bg-muted overflow-hidden">
@@ -207,10 +230,11 @@ export default function AIImageUpscaler() {
                     <img
                       src={upscaledImage}
                       alt="Upscaled"
+                      loading="lazy"
                       className="max-w-full h-auto max-h-80 mx-auto object-contain"
                     />
                   ) : status === 'processing' ? (
-                    <span className="text-sm text-muted-foreground">Processing...</span>
+                    <span className="text-sm text-muted-foreground">Working on your image...</span>
                   ) : status === 'error' ? (
                     <span className="text-sm text-red-500">Failed</span>
                   ) : null}

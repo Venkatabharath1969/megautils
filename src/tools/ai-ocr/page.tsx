@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react'
 import { ToolPage, CopyButton, DownloadButton, ClearButton } from '@/components/tool-page'
-import { Upload, ImageIcon } from 'lucide-react'
+import { Upload, ImageIcon, Shield, Wifi } from 'lucide-react'
 
 const LANGUAGES = [
   { code: 'eng', label: 'English' },
@@ -60,6 +60,11 @@ export default function AIOCR() {
       setStatus('error')
       return
     }
+    if (file.size > 20 * 1024 * 1024) {
+      setErrorMsg('File size must be under 20 MB')
+      setStatus('error')
+      return
+    }
 
     currentFile.current = file
     setImageName(file.name)
@@ -114,21 +119,21 @@ export default function AIOCR() {
   }, [])
 
   const progressLabel = status === 'loading'
-    ? 'Initializing OCR engine...'
+    ? 'Preparing AI engine (one-time setup)...'
     : status === 'processing'
-      ? `Recognizing text... ${progress}%`
+      ? `Reading text from your image... ${progress}%`
       : ''
 
   return (
     <ToolPage
       title="AI Image to Text (OCR)"
-      description="Extract text from images, screenshots, and documents using AI. Supports 100+ languages. 100% client-side."
+      description="Extract text from images, screenshots, and documents using AI. Supports 100+ languages. Runs entirely in your browser."
       category="image"
       categoryLabel="Image Tools"
       slug="ai-ocr"
       faqs={[
         { question: 'What is OCR and how does it work?', answer: 'OCR (Optical Character Recognition) is a technology that converts images of text into machine-readable text. This tool uses Tesseract.js, an open-source OCR engine, to analyze pixel patterns in your image and identify characters, words, and paragraphs.' },
-        { question: 'Is my image data safe and private?', answer: 'Yes. All OCR processing happens entirely in your browser using client-side JavaScript. Your images are never uploaded to any server. The Tesseract.js engine runs locally on your device, ensuring complete privacy.' },
+        { question: 'Is my image data safe and private?', answer: 'Yes. All processing happens entirely in your browser, on your device. Your images are never uploaded to any server. The Tesseract.js engine runs locally, ensuring complete privacy.' },
         { question: 'What image formats and types are supported?', answer: 'This tool supports all common image formats including PNG, JPEG, WebP, BMP, and GIF. It works well with photos of documents, screenshots, scanned pages, receipts, business cards, and any image containing text.' },
         { question: 'How can I improve OCR accuracy?', answer: 'For best results, use high-resolution images with clear, well-lit text. Ensure the text is not rotated or skewed. Selecting the correct language helps the engine recognize characters more accurately. Cropping the image to focus on the text area also improves results.' },
       ]}
@@ -155,27 +160,40 @@ export default function AIOCR() {
         {/* Main content area */}
         {!image ? (
           /* Upload zone */
-          <label
-            className={`flex flex-col items-center justify-center h-56 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${
-              dragOver
-                ? 'border-primary bg-primary/5'
-                : 'border-border hover:bg-muted/50'
-            }`}
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-          >
-            <Upload className="h-10 w-10 text-muted-foreground mb-3" />
-            <span className="text-sm font-medium">Click to upload or drag & drop an image</span>
-            <span className="text-xs text-muted-foreground mt-1">PNG, JPG, WebP, BMP, GIF</span>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={handleInputChange}
-              className="hidden"
-            />
-          </label>
+          <div>
+            <label
+              className={`flex flex-col items-center justify-center h-56 border-2 border-dashed rounded-xl cursor-pointer transition-colors ${
+                dragOver
+                  ? 'border-primary bg-primary/5'
+                  : 'border-border hover:border-muted-foreground hover:bg-muted/50'
+              }`}
+              onDrop={handleDrop}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+            >
+              <Upload className={`h-10 w-10 mb-3 ${dragOver ? 'text-primary' : 'text-muted-foreground'}`} />
+              <span className="text-sm font-medium text-foreground">Drag & drop your image here, or click to browse</span>
+              <span className="text-xs text-muted-foreground mt-1">Supports JPG, PNG, WebP, BMP, GIF</span>
+              <span className="text-xs text-muted-foreground">Max file size: 20MB</span>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleInputChange}
+                className="hidden"
+              />
+            </label>
+            <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground mt-3">
+              <span className="inline-flex items-center gap-1.5">
+                <Shield className="h-3.5 w-3.5 text-green-500" />
+                Your image never leaves your device
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Wifi className="h-3.5 w-3.5 text-blue-500" />
+                Works offline after first use
+              </span>
+            </div>
+          </div>
         ) : (
           /* Two-column layout: image preview + extracted text */
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -190,6 +208,7 @@ export default function AIOCR() {
                 <img
                   src={image}
                   alt="Uploaded preview"
+                  loading="lazy"
                   className="max-w-full max-h-80 mx-auto rounded object-contain"
                 />
               </div>

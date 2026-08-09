@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react'
 import { ToolPage, ClearButton } from '@/components/tool-page'
-import { Upload, Download, ImageIcon, Loader2, Shield } from 'lucide-react'
+import { Upload, Download, ImageIcon, Loader2, Shield, Wifi } from 'lucide-react'
 
 type Status = 'idle' | 'downloading' | 'processing' | 'done' | 'error'
 
@@ -31,7 +31,7 @@ export default function AIBGRemover() {
 
     try {
       setStatus('downloading')
-      setProgressLabel('Loading AI model...')
+      setProgressLabel('Preparing AI engine (one-time setup)...')
 
       const { removeBackground } = await import('@imgly/background-removal')
 
@@ -46,10 +46,10 @@ export default function AIBGRemover() {
           setProgress(pct)
           if (key.includes('fetch') || key.includes('download')) {
             setStatus('downloading')
-            setProgressLabel('Downloading AI model (first time only — cached after)...')
+            setProgressLabel('Setting up AI (first time only — instant next time)...')
           } else {
             setStatus('processing')
-            setProgressLabel('Removing background...')
+            setProgressLabel('Working on your image...')
           }
         },
         output: {
@@ -131,22 +131,22 @@ export default function AIBGRemover() {
   return (
     <ToolPage
       title="AI Background Remover"
-      description="Remove image backgrounds instantly using AI. 100% client-side — your images never leave your device."
+      description="Remove image backgrounds instantly using AI. Runs entirely in your browser — your images never leave your device."
       category="image"
       categoryLabel="Image Tools"
       slug="ai-bg-remover"
       faqs={[
         {
           question: 'How does AI background removal work?',
-          answer: 'This tool uses a neural network model (ISNet) that runs entirely in your browser via WebAssembly. It analyzes the image to detect the foreground subject and separates it from the background, producing a transparent PNG.',
+          answer: 'This tool uses an AI engine that runs entirely in your browser. It analyzes the image to detect the foreground subject and separates it from the background, producing a transparent PNG.',
         },
         {
           question: 'Is my image uploaded to a server?',
-          answer: 'No. All processing happens 100% locally in your browser. Your images never leave your device. The AI model is downloaded once and cached for future use.',
+          answer: 'No. All processing happens entirely on your device, in your browser. Your images never leave your device. The AI engine is downloaded once and cached for future use.',
         },
         {
           question: 'Why is the first use slower?',
-          answer: 'On first use, the AI model (~40 MB) needs to be downloaded to your browser. This is cached automatically, so subsequent uses are much faster. You will see a progress bar during the download.',
+          answer: 'On first use, the AI engine (~40 MB) needs to be downloaded to your browser. This is cached automatically, so subsequent uses are much faster. You will see a progress bar during the download.',
         },
         {
           question: 'What image formats are supported?',
@@ -180,10 +180,13 @@ export default function AIBGRemover() {
           >
             <Upload className={`h-10 w-10 mb-3 ${dragOver ? 'text-primary' : 'text-muted-foreground'}`} />
             <span className="text-sm font-medium text-foreground">
-              Drop your image here or click to upload
+              Drag & drop your image here, or click to browse
             </span>
             <span className="text-xs text-muted-foreground mt-1">
-              PNG, JPG, WebP up to 20 MB
+              Supports JPG, PNG, WebP
+            </span>
+            <span className="text-xs text-muted-foreground">
+              Max file size: 20MB
             </span>
             <input
               ref={fileInputRef}
@@ -195,11 +198,17 @@ export default function AIBGRemover() {
           </label>
         )}
 
-        {/* Privacy badge */}
+        {/* Privacy & offline badges */}
         {status === 'idle' && !originalUrl && (
-          <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-            <Shield className="h-3.5 w-3.5 text-green-500" />
-            Your image never leaves your device
+          <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5">
+              <Shield className="h-3.5 w-3.5 text-green-500" />
+              Your image never leaves your device
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <Wifi className="h-3.5 w-3.5 text-blue-500" />
+              Works offline after first use
+            </span>
           </div>
         )}
 
@@ -281,6 +290,7 @@ export default function AIBGRemover() {
                   <img
                     src={resultUrl}
                     alt="Background removed"
+                    loading="lazy"
                     className="max-w-full h-auto max-h-80 mx-auto object-contain"
                   />
                 </div>

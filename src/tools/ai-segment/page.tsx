@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { ToolPage, ClearButton } from '@/components/tool-page'
-import { Upload, Download, Loader2, MousePointer2, Shield } from 'lucide-react'
+import { Upload, Download, Loader2, MousePointer2, Shield, Wifi } from 'lucide-react'
 
 type Status = 'idle' | 'downloading' | 'ready' | 'processing' | 'done' | 'error'
 
@@ -38,7 +38,7 @@ export default function AISegment() {
     if (modelRef.current && processorRef.current) return
 
     setStatus('downloading')
-    setProgressLabel('Loading AI model (~14 MB)...')
+    setProgressLabel('Setting up AI (~14 MB, first time only — instant next time)...')
     setProgress(0)
 
     const { SamModel, AutoProcessor } = await import('@huggingface/transformers')
@@ -63,7 +63,7 @@ export default function AISegment() {
     await ensureModel()
 
     setStatus('processing')
-    setProgressLabel('Analyzing image...')
+    setProgressLabel('Analyzing your image...')
     setProgress(0)
 
     const { RawImage } = await import('@huggingface/transformers')
@@ -91,7 +91,7 @@ export default function AISegment() {
     }
 
     setStatus('processing')
-    setProgressLabel('Generating mask...')
+    setProgressLabel('Creating your cutout...')
 
     try {
       // Format points: [[[x1,y1], [x2,y2], ...]]
@@ -492,14 +492,14 @@ export default function AISegment() {
   return (
     <ToolPage
       title="AI Image Segmentation"
-      description="Click on any object to cut it out. Uses Meta's Segment Anything AI model. 100% client-side — your images never leave your device."
+      description="Click on any object to cut it out. Uses Meta's Segment Anything AI. Runs entirely in your browser — your images never leave your device."
       category="image"
       categoryLabel="Image Tools"
       slug="ai-segment"
       faqs={[
         {
           question: 'What is AI image segmentation?',
-          answer: 'AI image segmentation uses neural networks to identify and separate individual objects in an image. This tool uses Meta\'s Segment Anything Model (SlimSAM) to let you click on any object and get a precise cutout with a transparent background, perfect for photo editing, design, and compositing.',
+          answer: 'AI image segmentation identifies and separates individual objects in an image. This tool uses Meta\'s Segment Anything AI (SlimSAM) to let you click on any object and get a precise cutout with a transparent background, perfect for photo editing, design, and compositing.',
         },
         {
           question: 'How do the include and exclude clicks work?',
@@ -507,11 +507,11 @@ export default function AISegment() {
         },
         {
           question: 'Is my image uploaded to a server?',
-          answer: 'No. All processing happens 100% locally in your browser using WebAssembly. The AI model (~14 MB) is downloaded once and cached. Your images never leave your device, ensuring complete privacy.',
+          answer: 'No. All processing happens entirely on your device, in your browser. The AI engine (~14 MB) is downloaded once and cached. Your images never leave your device, ensuring complete privacy.',
         },
         {
           question: 'Why is the first use slower?',
-          answer: 'On first use, the SlimSAM model (~14 MB) needs to be downloaded to your browser. This is cached automatically, so subsequent uses are instant. After loading, the model analyzes your image once, then each click generates a mask in under a second.',
+          answer: 'On first use, the AI engine (~14 MB) needs to be downloaded to your browser. This is cached automatically, so subsequent uses are instant. After loading, the AI analyzes your image once, then each click generates a cutout in under a second.',
         },
       ]}
     >
@@ -542,10 +542,13 @@ export default function AISegment() {
             >
               <Upload className={`h-10 w-10 mb-3 ${dragOver ? 'text-primary' : 'text-muted-foreground'}`} />
               <span className="text-sm font-medium text-foreground">
-                Drop your image here or click to upload
+                Drag & drop your image here, or click to browse
               </span>
               <span className="text-xs text-muted-foreground mt-1">
-                PNG, JPG, WebP up to 20 MB
+                Supports JPG, PNG, WebP
+              </span>
+              <span className="text-xs text-muted-foreground">
+                Max file size: 20MB
               </span>
               <input
                 ref={fileInputRef}
@@ -555,9 +558,15 @@ export default function AISegment() {
                 className="hidden"
               />
             </label>
-            <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-              <Shield className="h-3.5 w-3.5 text-green-500" />
-              Your image never leaves your device
+            <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5">
+                <Shield className="h-3.5 w-3.5 text-green-500" />
+                Your image never leaves your device
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Wifi className="h-3.5 w-3.5 text-blue-500" />
+                Works offline after first use
+              </span>
             </div>
           </>
         )}
@@ -666,6 +675,7 @@ export default function AISegment() {
                     <img
                       src={resultUrl}
                       alt="Segmented cutout"
+                      loading="lazy"
                       className="max-w-full h-auto max-h-[500px] mx-auto object-contain"
                     />
                   ) : (
