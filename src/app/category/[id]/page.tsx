@@ -114,6 +114,7 @@ const categoryData: Record<string, { label: string; description: string; tools: 
       { id: 'ai-speech-to-text', name: 'AI Speech to Text', description: 'Convert speech to text in real-time using your microphone' },
       { id: 'ai-sentiment-analysis', name: 'AI Sentiment Analysis', description: 'Analyze the emotional tone of any text instantly' },
       { id: 'ai-grammar-checker', name: 'AI Grammar Checker', description: 'Check text for grammar, spelling, and punctuation errors instantly' },
+      { id: 'ai-paraphraser', name: 'AI Paraphrasing Tool', description: 'Rewrite text in different styles — formal, simple, or creative modes' },
     ],
   },
   string: {
@@ -259,6 +260,10 @@ const categoryData: Record<string, { label: string; description: string; tools: 
       { id: 'ai-segment', name: 'AI Image Segmentation', description: 'Click on any object to cut it out using AI' },
       { id: 'ai-depth-map', name: 'AI Depth Map Generator', description: 'Generate 3D depth maps from any photo using AI' },
       { id: 'ai-image-classifier', name: 'AI Image Classifier', description: 'Identify objects, animals, and scenes in photos using AI' },
+      { id: 'ai-image-caption', name: 'AI Image Caption Generator', description: 'Generate natural language descriptions and alt text for images using AI' },
+      { id: 'ai-object-remover', name: 'AI Object Remover', description: 'Paint over unwanted objects and remove them from photos' },
+      { id: 'ai-photo-colorizer', name: 'AI Photo Colorizer', description: 'Add color to black & white photos instantly with style presets' },
+      { id: 'ai-object-detection', name: 'AI Object Detection', description: 'Detect and label objects in images with bounding boxes using AI' },
     ],
   },
   datetime: {
