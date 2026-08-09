@@ -3,7 +3,7 @@
 # Runs daily via cron — checks if any new posts published today
 
 KEY="dcfb9d8fec340f7ea5f85fdf5924ba8f"
-HOST="megautils.xyz"
+HOST="utilsnow.com"
 DB_PASS="megautils_36ed23db45f9cc50"
 LOG="/var/log/megautils-indexnow.log"
 

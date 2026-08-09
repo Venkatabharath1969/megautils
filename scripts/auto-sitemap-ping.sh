@@ -4,7 +4,7 @@
 
 LOG="/var/log/megautils-sitemap-ping.log"
 TODAY=$(date +%Y-%m-%d)
-SITEMAP="https://megautils.xyz/sitemap.xml"
+SITEMAP="https://utilsnow.com/sitemap.xml"
 
 # Ping Google
 GOOGLE_RESP=$(curl -s -o /dev/null -w "%{http_code}" "https://www.google.com/ping?sitemap=$SITEMAP")

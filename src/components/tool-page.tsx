@@ -110,7 +110,7 @@ export function ToolPage({ title, description, category, categoryLabel, slug, ch
             '@context': 'https://schema.org',
             '@type': 'SoftwareApplication',
             name: title,
-            url: `https://megautils.xyz/tools/${slug || category}`,
+            url: `https://utilsnow.com/tools/${slug || category}`,
             description: description,
             applicationCategory: 'UtilityApplication',
             operatingSystem: 'Any',
@@ -125,7 +125,7 @@ export function ToolPage({ title, description, category, categoryLabel, slug, ch
             creator: {
               '@type': 'Organization',
               name: 'MegaUtils',
-              url: 'https://megautils.xyz',
+              url: 'https://utilsnow.com',
             },
           }),
         }}
@@ -139,8 +139,8 @@ export function ToolPage({ title, description, category, categoryLabel, slug, ch
             '@context': 'https://schema.org',
             '@type': 'BreadcrumbList',
             itemListElement: [
-              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://megautils.xyz' },
-              { '@type': 'ListItem', position: 2, name: categoryLabel, item: `https://megautils.xyz/category/${category}` },
+              { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://utilsnow.com' },
+              { '@type': 'ListItem', position: 2, name: categoryLabel, item: `https://utilsnow.com/category/${category}` },
               { '@type': 'ListItem', position: 3, name: title },
             ],
           }),

@@ -17,11 +17,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: {
       title: `${title} | MegaUtils`,
       description: `Free online ${title.toLowerCase()}. 100% client-side, no data uploaded.`,
-      url: `https://megautils.xyz/tools/${slug}`,
+      url: `https://utilsnow.com/tools/${slug}`,
       type: 'website',
     },
     alternates: {
-      canonical: `https://megautils.xyz/tools/${slug}`,
+      canonical: `https://utilsnow.com/tools/${slug}`,
     },
   }
 }

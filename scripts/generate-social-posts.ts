@@ -168,9 +168,9 @@ const linkedInCTAs = [
 ]
 
 const twitterTemplates = [
-  (title: string, excerpt: string) => `${truncate(title, 80)} — ${truncate(excerpt, 120)}\n\nTry it free → megautils.xyz`,
-  (title: string, _excerpt: string, firstPoint: string) => `${truncate(firstPoint, 140)}\n\n${truncate(title, 80)} → megautils.xyz`,
-  (title: string, excerpt: string) => `💡 ${truncate(title, 70)}\n\n${truncate(excerpt, 130)}\n\nmegautils.xyz`,
+  (title: string, excerpt: string) => `${truncate(title, 80)} — ${truncate(excerpt, 120)}\n\nTry it free → utilsnow.com`,
+  (title: string, _excerpt: string, firstPoint: string) => `${truncate(firstPoint, 140)}\n\n${truncate(title, 80)} → utilsnow.com`,
+  (title: string, excerpt: string) => `💡 ${truncate(title, 70)}\n\n${truncate(excerpt, 130)}\n\nutilsnow.com`,
 ]
 
 const redditTitleFormats = [
@@ -294,8 +294,8 @@ function generateReddit(post: BlogPost, index: number): SocialPost {
   const tools = (post.related_tools || []).slice(0, 2)
   const toolSection =
     tools.length > 0
-      ? `\n\nI also built free browser tools for this (${tools.map(toolName).join(', ')}) on megautils.xyz — everything runs client-side, no data uploaded.`
-      : '\n\nAll tools are free and run entirely in your browser on megautils.xyz — no signup, no data collection.'
+      ? `\n\nI also built free browser tools for this (${tools.map(toolName).join(', ')}) on utilsnow.com — everything runs client-side, no data uploaded.`
+      : '\n\nAll tools are free and run entirely in your browser on utilsnow.com — no signup, no data collection.'
 
   const body = [summary, bulletSection, toolSection, '\n\nDisclosure: I built this.'].join('')
 

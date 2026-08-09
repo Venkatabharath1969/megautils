@@ -3,7 +3,7 @@
 # Run after deployment: bash scripts/indexnow-submit.sh
 
 KEY="dcfb9d8fec340f7ea5f85fdf5924ba8f"
-HOST="megautils.xyz"
+HOST="utilsnow.com"
 
 # Build URL list from sitemap
 URLS=$(curl -s "https://${HOST}/sitemap.xml" | grep -oP '<loc>\K[^<]+')

@@ -20,7 +20,7 @@ if [ $BUILD_EXIT -eq 0 ]; then
   sleep 5
   
   # Verify site is up
-  STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://megautils.xyz)
+  STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://utilsnow.com)
   echo "[$TODAY] Site status after restart: HTTP $STATUS" >> $LOG
   
   # Submit new URLs to IndexNow

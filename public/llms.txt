@@ -1,6 +1,6 @@
 # MegaUtils — Free Online Tools
 
-> https://megautils.xyz — 177 free browser-based utility tools. No signup. No data uploaded. 100% client-side processing.
+> https://utilsnow.com — 177 free browser-based utility tools. No signup. No data uploaded. 100% client-side processing.
 
 ## About
 MegaUtils is a free online tools website with 177 utilities across 17 categories for developers, designers, students, and professionals. Every tool runs entirely in your browser — no data leaves your device. No login required.
@@ -59,16 +59,16 @@ Markdown to HTML, Markdown to Text, HTML to Markdown, Markdown Table Generator
 Fake Data Generator, .gitignore Generator, UTM Link Builder, Placeholder Image Generator, Code to Image, Privacy Policy Generator, Terms Generator, Robots.txt Generator
 
 ## Key Pages
-- https://megautils.xyz/ — Homepage with all 17 category cards
-- https://megautils.xyz/tools/json-formatter — Format, validate, and beautify JSON
-- https://megautils.xyz/tools/base64-encoder — Encode and decode Base64 strings
-- https://megautils.xyz/tools/mortgage-calculator — Calculate mortgage payments and amortization
-- https://megautils.xyz/tools/color-picker — Pick colors with HEX/RGB/HSL values
-- https://megautils.xyz/tools/regex-tester — Test regular expressions with live highlighting
-- https://megautils.xyz/tools/css-gradient-generator — Build CSS gradients visually
-- https://megautils.xyz/tools/word-counter — Count words, characters, sentences, paragraphs
-- https://megautils.xyz/tools/password-generator — Generate secure random passwords
-- https://megautils.xyz/blog — How-to guides, tutorials, and tool comparisons
+- https://utilsnow.com/ — Homepage with all 17 category cards
+- https://utilsnow.com/tools/json-formatter — Format, validate, and beautify JSON
+- https://utilsnow.com/tools/base64-encoder — Encode and decode Base64 strings
+- https://utilsnow.com/tools/mortgage-calculator — Calculate mortgage payments and amortization
+- https://utilsnow.com/tools/color-picker — Pick colors with HEX/RGB/HSL values
+- https://utilsnow.com/tools/regex-tester — Test regular expressions with live highlighting
+- https://utilsnow.com/tools/css-gradient-generator — Build CSS gradients visually
+- https://utilsnow.com/tools/word-counter — Count words, characters, sentences, paragraphs
+- https://utilsnow.com/tools/password-generator — Generate secure random passwords
+- https://utilsnow.com/blog — How-to guides, tutorials, and tool comparisons
 
 ## Privacy & Security
 All tool processing happens 100% client-side in the user's browser. No data is uploaded, stored, or transmitted to any server. No cookies for tracking. No login or account required. HTTPS enforced.
