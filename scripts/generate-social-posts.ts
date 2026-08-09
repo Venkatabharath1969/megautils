@@ -203,7 +203,7 @@ function generateLinkedIn(post: BlogPost, index: number): SocialPost {
   const toolMention =
     tools.length > 0
       ? `\n\nI also built free browser-based tools for this: ${tools.map(toolName).join(', ')} — no signup, no data uploaded. Everything runs in your browser.`
-      : '\n\nAll tools on MegaUtils are free, browser-based, and require no signup. Your data never leaves your device.'
+      : '\n\nAll tools on UtilsNow are free, browser-based, and require no signup. Your data never leaves your device.'
 
   // Assemble the body
   const body = [

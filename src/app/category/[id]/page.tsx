@@ -247,6 +247,11 @@ const categoryData: Record<string, { label: string; description: string; tools: 
       { id: 'image-cropper', name: 'Image Cropper', description: 'Crop images visually' },
       { id: 'placeholder-image-generator', name: 'Placeholder Image', description: 'Generate placeholder images' },
       { id: 'svg-optimizer', name: 'SVG Optimizer', description: 'Optimize and minify SVG code' },
+      { id: 'ai-bg-remover', name: 'AI Background Remover', description: 'Remove image backgrounds instantly using AI' },
+      { id: 'ai-face-blur', name: 'AI Face Blur', description: 'Automatically detect and blur faces for privacy' },
+      { id: 'ai-ocr', name: 'AI Image to Text (OCR)', description: 'Extract text from images using AI-powered OCR' },
+      { id: 'ai-image-upscaler', name: 'AI Image Upscaler', description: 'Enlarge images 2x using AI super-resolution' },
+      { id: 'ai-segment', name: 'AI Image Segmentation', description: 'Click on any object to cut it out using AI' },
     ],
   },
   datetime: {
