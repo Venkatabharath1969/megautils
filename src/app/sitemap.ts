@@ -6,7 +6,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // All 177 tool slugs (alphabetical)
   const tools = [
-    'age-calculator', 'ai-bg-remover', 'ai-face-blur', 'ai-image-upscaler', 'ai-ocr', 'ai-segment', 'angle-converter', 'area-converter', 'aspect-ratio-calculator',
+    'age-calculator', 'ai-bg-remover', 'ai-content-detector', 'ai-depth-map', 'ai-face-blur', 'ai-grammar-checker', 'ai-image-classifier', 'ai-image-upscaler', 'ai-ocr', 'ai-segment', 'ai-sentiment-analysis', 'ai-speech-to-text', 'ai-text-summarizer', 'angle-converter', 'area-converter', 'aspect-ratio-calculator',
     'barcode-generator', 'base32-encoder', 'base64-encoder', 'blank-line-remover',
     'bmi-calculator', 'braille-converter', 'break-even-calculator', 'caesar-cipher',
     'cagr-calculator', 'case-converter', 'chmod-calculator', 'code-to-image',

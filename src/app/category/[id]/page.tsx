@@ -109,6 +109,11 @@ const categoryData: Record<string, { label: string; description: string; tools: 
       { id: 'unicode-text-formatter', name: 'Unicode Text Formatter', description: 'Bold, italic, strikethrough Unicode text' },
       { id: 'text-to-ascii-art', name: 'Text to ASCII Art', description: 'Convert text to ASCII block art' },
       { id: 'small-text-generator', name: 'Small Text Generator', description: 'Superscript, subscript, small caps' },
+      { id: 'ai-text-summarizer', name: 'AI Text Summarizer', description: 'Summarize long text into key points instantly' },
+      { id: 'ai-content-detector', name: 'AI Content Detector', description: 'Detect whether text was written by AI or a human' },
+      { id: 'ai-speech-to-text', name: 'AI Speech to Text', description: 'Convert speech to text in real-time using your microphone' },
+      { id: 'ai-sentiment-analysis', name: 'AI Sentiment Analysis', description: 'Analyze the emotional tone of any text instantly' },
+      { id: 'ai-grammar-checker', name: 'AI Grammar Checker', description: 'Check text for grammar, spelling, and punctuation errors instantly' },
     ],
   },
   string: {
@@ -252,6 +257,8 @@ const categoryData: Record<string, { label: string; description: string; tools: 
       { id: 'ai-ocr', name: 'AI Image to Text (OCR)', description: 'Extract text from images using AI-powered OCR' },
       { id: 'ai-image-upscaler', name: 'AI Image Upscaler', description: 'Enlarge images 2x using AI super-resolution' },
       { id: 'ai-segment', name: 'AI Image Segmentation', description: 'Click on any object to cut it out using AI' },
+      { id: 'ai-depth-map', name: 'AI Depth Map Generator', description: 'Generate 3D depth maps from any photo using AI' },
+      { id: 'ai-image-classifier', name: 'AI Image Classifier', description: 'Identify objects, animals, and scenes in photos using AI' },
     ],
   },
   datetime: {
