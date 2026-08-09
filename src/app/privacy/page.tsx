@@ -28,7 +28,7 @@ export default function PrivacyPage() {
           website at utilsnow.com.
         </p>
 
-        <h2>Client-Side Processing</h2>
+        <h2>Browser-Based Processing</h2>
         <p>
           <strong>All tool processing happens entirely in your browser.</strong> When you use any tool on
           UtilsNow, your data is processed locally on your device using JavaScript. No data is uploaded,

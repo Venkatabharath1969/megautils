@@ -21,7 +21,7 @@ export default function AboutPage() {
 
       <div className="prose prose-sm dark:prose-invert max-w-none mb-12">
         <p className="text-lg text-muted-foreground">
-          UtilsNow is a free collection of 100+ online utility tools built for developers, designers,
+          UtilsNow is a free collection of 194+ online utility tools built for developers, designers,
           content creators, and anyone who needs quick, reliable tools without the hassle of signing up
           or installing software.
         </p>
@@ -65,6 +65,10 @@ export default function AboutPage() {
           Read our full <Link href="/privacy">Privacy Policy</Link> for more details.
         </p>
 
+        <h2>Who Built UtilsNow</h2>
+        <p>
+          UtilsNow is built and maintained by a software engineer passionate about creating free, privacy-first tools for the global developer community. Based in India, our mission is to provide the best online utilities without compromising user privacy or requiring signups.
+        </p>
         <h2>Built with Modern Technology</h2>
         <p>
           UtilsNow is built with Next.js, React, and Tailwind CSS, ensuring fast page loads,

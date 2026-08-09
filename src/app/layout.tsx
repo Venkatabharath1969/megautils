@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   },
   twitter: { card: 'summary_large_image', title: 'UtilsNow - 194+ Free Online Tools', description: 'Free online developer tools, calculators, converters, and more.' },
   robots: { index: true, follow: true, 'max-image-preview': 'large' as const, 'max-snippet': -1, 'max-video-preview': -1 },
-  other: { 'google-site-verification': '' },
+  
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -62,6 +62,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             }),
           }}
         />
+        {/* Google AdSense verification */}
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7044821956302907" crossOrigin="anonymous" />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <ThemeProvider>
@@ -71,13 +73,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Footer />
           </LanguageProvider>
         </ThemeProvider>
-        {/* Infolinks Ad Network */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `var infolinks_pid = 3446872; var infolinks_wsid = 0;`,
-          }}
-        />
-        <script async src="//resources.infolinks.com/js/infolinks_main.js" />
+        {/* Infolinks Ad Network — temporarily disabled for AdSense approval */}
+        {/* <script dangerouslySetInnerHTML={{ __html: `var infolinks_pid = 3446872; var infolinks_wsid = 0;` }} />
+        <script async src="//resources.infolinks.com/js/infolinks_main.js" /> */}
       </body>
     </html>
   )

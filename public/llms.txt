@@ -1,9 +1,9 @@
 # UtilsNow — Free Online Tools
 
-> https://utilsnow.com — 177 free browser-based utility tools. No signup. No data uploaded. 100% client-side processing.
+> https://utilsnow.com — 194 free browser-based utility tools. No signup. No data uploaded. Runs entirely in your browser.
 
 ## About
-UtilsNow is a free online tools website with 177 utilities across 17 categories for developers, designers, students, and professionals. Every tool runs entirely in your browser — no data leaves your device. No login required.
+UtilsNow is a free online tools website with 194 utilities across 17 categories for developers, designers, students, and professionals. Every tool runs entirely in your browser — no data leaves your device. No login required.
 
 ## Categories & Tools
 
@@ -58,7 +58,13 @@ Markdown to HTML, Markdown to Text, HTML to Markdown, Markdown Table Generator
 ### Generators (8)
 Fake Data Generator, .gitignore Generator, UTM Link Builder, Placeholder Image Generator, Code to Image, Privacy Policy Generator, Terms Generator, Robots.txt Generator
 
+### AI-Powered Tools (17)
+AI Background Remover, AI Content Detector, AI Grammar Checker, AI Paraphrasing Tool, AI Text Summarizer, AI Speech to Text, AI Sentiment Analysis, AI Image Upscaler, AI OCR (Image to Text), AI Face Blur, AI Image Segmentation, AI Depth Map Generator, AI Image Classifier, AI Object Detection, AI Object Remover, AI Photo Colorizer, AI Image Caption Generator
+
 ## Key Pages
+- https://utilsnow.com/tools/ai-bg-remover — Remove image backgrounds using AI
+- https://utilsnow.com/tools/ai-content-detector — Detect AI-generated text
+- https://utilsnow.com/tools/ai-grammar-checker — Check grammar and spelling
 - https://utilsnow.com/ — Homepage with all 17 category cards
 - https://utilsnow.com/tools/json-formatter — Format, validate, and beautify JSON
 - https://utilsnow.com/tools/base64-encoder — Encode and decode Base64 strings
