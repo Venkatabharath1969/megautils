@@ -40,12 +40,13 @@ export default function AIBGRemover() {
       setProgress(0)
 
       const blob = await removeBackground(file, {
+        model: 'isnet_quint8',
         progress: (key: string, current: number, total: number) => {
           const pct = total > 0 ? Math.round((current / total) * 100) : 0
           setProgress(pct)
           if (key.includes('fetch') || key.includes('download')) {
             setStatus('downloading')
-            setProgressLabel('Downloading AI model...')
+            setProgressLabel('Downloading AI model (first time only — cached after)...')
           } else {
             setStatus('processing')
             setProgressLabel('Removing background...')
