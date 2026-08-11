@@ -4,6 +4,15 @@ import { useState, useCallback, useRef } from 'react'
 import { ToolPage, ClearButton } from '@/components/tool-page'
 import { Download, Lock, Unlock, Upload } from 'lucide-react'
 
+const PRESETS = [
+  { label: 'Instagram Post', w: 1080, h: 1080 },
+  { label: 'Twitter Header', w: 1500, h: 500 },
+  { label: 'Facebook Cover', w: 820, h: 312 },
+  { label: 'YouTube Thumbnail', w: 1280, h: 720 },
+  { label: 'LinkedIn Banner', w: 1584, h: 396 },
+  { label: 'Passport Photo', w: 413, h: 531 },
+] as const
+
 export default function ImageResizerTool() {
   const [imageSrc, setImageSrc] = useState<string | null>(null)
   const [originalWidth, setOriginalWidth] = useState(0)
@@ -14,12 +23,13 @@ export default function ImageResizerTool() {
   const [lockAspect, setLockAspect] = useState(true)
   const [resizedUrl, setResizedUrl] = useState<string | null>(null)
   const [resizedSize, setResizedSize] = useState(0)
+  const [isDragging, setIsDragging] = useState(false)
+  const [outputFormat, setOutputFormat] = useState<'png' | 'jpeg' | 'webp'>('png')
+  const [quality, setQuality] = useState(85)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const aspectRatio = useRef(1)
 
-  const handleFile = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+  const processFile = useCallback((file: File) => {
     setOriginalSize(file.size)
     setResizedUrl(null)
     const reader = new FileReader()
@@ -37,6 +47,29 @@ export default function ImageResizerTool() {
       img.src = src
     }
     reader.readAsDataURL(file)
+  }, [])
+
+  const handleFile = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    processFile(file)
+  }, [processFile])
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(false)
+    const file = e.dataTransfer.files[0]
+    if (file && file.type.startsWith('image/')) processFile(file)
+  }, [processFile])
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(true)
+  }, [])
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(false)
   }, [])
 
   const handleWidthChange = useCallback((val: number) => {
@@ -69,18 +102,19 @@ export default function ImageResizerTool() {
           setResizedSize(blob.size)
           setResizedUrl(URL.createObjectURL(blob))
         }
-      }, 'image/png')
+      }, `image/${outputFormat}`, outputFormat === 'png' ? undefined : quality / 100)
     }
     img.src = imageSrc
-  }, [imageSrc, width, height])
+  }, [imageSrc, width, height, outputFormat, quality])
 
   const handleDownload = useCallback(() => {
     if (!resizedUrl) return
+    const ext = outputFormat === 'jpeg' ? 'jpg' : outputFormat
     const a = document.createElement('a')
     a.href = resizedUrl
-    a.download = `resized-${width}x${height}.png`
+    a.download = `resized-${width}x${height}.${ext}`
     a.click()
-  }, [resizedUrl, width, height])
+  }, [resizedUrl, width, height, outputFormat])
 
   const clear = () => {
     setImageSrc(null)
@@ -91,6 +125,8 @@ export default function ImageResizerTool() {
     setOriginalHeight(0)
     setOriginalSize(0)
     setResizedSize(0)
+    setOutputFormat('png')
+    setQuality(85)
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
@@ -110,7 +146,7 @@ export default function ImageResizerTool() {
         { question: 'Does resizing an image reduce its quality?', answer: 'Enlarging an image beyond its original dimensions can reduce sharpness because new pixels must be interpolated. Downscaling generally preserves quality well.' },
         { question: 'What does locking the aspect ratio do?', answer: 'Locking the aspect ratio ensures that when you change the width, the height adjusts proportionally (and vice versa), preventing the image from appearing stretched or squished.' },
         { question: 'Is my image uploaded to a server?', answer: 'No. All resizing is done locally in your browser using the HTML Canvas API. Your image never leaves your device.' },
-        { question: 'What image formats are supported?', answer: 'You can upload any format your browser supports, including PNG, JPEG, WebP, GIF, and SVG. The resized output is downloaded as a PNG file.' },
+        { question: 'What image formats are supported?', answer: 'You can upload any format your browser supports, including PNG, JPEG, WebP, GIF, and SVG. The resized output can be downloaded as PNG, JPEG, or WebP — use JPEG or WebP with an adjustable quality slider for smaller file sizes.' },
       ]}
       helpContent={
         <>
@@ -121,8 +157,8 @@ export default function ImageResizerTool() {
             email newsletters, and print preparation. Images that are too large slow down web pages and waste bandwidth, while
             images that are too small appear blurry when stretched. This tool performs all resizing directly in your browser
             using the HTML Canvas API — your image is never uploaded to a server, keeping your files completely private. You
-            can upload any format your browser supports, including PNG, JPEG, WebP, GIF, and SVG. The resized output is
-            downloaded as a high-quality PNG file. An aspect-ratio lock ensures your image maintains its original proportions
+            can upload any format your browser supports, including PNG, JPEG, WebP, GIF, and SVG. Choose your output format
+            — PNG for lossless quality, or JPEG/WebP with an adjustable quality slider for smaller file sizes. An aspect-ratio lock ensures your image maintains its original proportions
             by default, preventing the stretched or squished appearance that results from changing width and height independently.
           </p>
 
@@ -156,9 +192,16 @@ export default function ImageResizerTool() {
         </div>
 
         {!imageSrc ? (
-          <label className="flex flex-col items-center justify-center h-48 border-2 border-dashed border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+          <label
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            className={`flex flex-col items-center justify-center h-48 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${isDragging ? 'border-primary bg-primary/10' : 'border-border hover:bg-muted/50'}`}
+          >
             <Upload className="h-8 w-8 text-muted-foreground mb-2" />
-            <span className="text-sm text-muted-foreground">Click to upload or drag an image</span>
+            <span className="text-sm text-muted-foreground">
+              {isDragging ? 'Drop your image here' : 'Click to upload or drag an image'}
+            </span>
             <input
               ref={fileInputRef}
               type="file"
@@ -204,6 +247,57 @@ export default function ImageResizerTool() {
                     className="w-full h-9 px-3 rounded-md border border-input bg-card text-sm"
                   />
                 </div>
+              </div>
+
+              {/* Preset sizes */}
+              <div>
+                <label className="text-sm font-medium mb-1.5 block">Preset Sizes</label>
+                <div className="flex flex-wrap gap-1.5">
+                  {PRESETS.map((p) => (
+                    <button
+                      key={p.label}
+                      onClick={() => {
+                        setWidth(p.w)
+                        setHeight(p.h)
+                        setLockAspect(false)
+                        setResizedUrl(null)
+                      }}
+                      className="px-2 py-1 text-xs rounded-md border border-border bg-card hover:bg-muted transition-colors"
+                      title={`${p.w} × ${p.h}`}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Output format & quality */}
+              <div className="flex items-end gap-3">
+                <div className="flex-1">
+                  <label className="text-sm font-medium mb-1 block">Output Format</label>
+                  <select
+                    value={outputFormat}
+                    onChange={(e) => { setOutputFormat(e.target.value as 'png' | 'jpeg' | 'webp'); setResizedUrl(null) }}
+                    className="w-full h-9 px-3 rounded-md border border-input bg-card text-sm"
+                  >
+                    <option value="png">PNG</option>
+                    <option value="jpeg">JPEG</option>
+                    <option value="webp">WebP</option>
+                  </select>
+                </div>
+                {outputFormat !== 'png' && (
+                  <div className="flex-1">
+                    <label className="text-sm font-medium mb-1 block">Quality: {quality}%</label>
+                    <input
+                      type="range"
+                      min={1}
+                      max={100}
+                      value={quality}
+                      onChange={(e) => { setQuality(Number(e.target.value)); setResizedUrl(null) }}
+                      className="w-full h-9"
+                    />
+                  </div>
+                )}
               </div>
 
               <div className="flex flex-wrap gap-2">

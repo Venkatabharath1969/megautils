@@ -62,24 +62,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const blogPosts = getVisiblePosts()
 
+  const siteLastModified = new Date('2026-08-11')
+  const toolsLastModified = new Date('2026-08-09')
+
   return [
-    { url: baseUrl, lastModified: new Date(), changeFrequency: 'daily', priority: 1 },
-    { url: `${baseUrl}/about`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
-    { url: `${baseUrl}/contact`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
-    { url: `${baseUrl}/privacy`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.4 },
-    { url: `${baseUrl}/terms`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.4 },
-    { url: `${baseUrl}/blog`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.8 },
+    { url: baseUrl, lastModified: siteLastModified, changeFrequency: 'daily', priority: 1 },
+    { url: `${baseUrl}/about`, lastModified: siteLastModified, changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${baseUrl}/contact`, lastModified: new Date('2026-08-04'), changeFrequency: 'monthly', priority: 0.5 },
+    { url: `${baseUrl}/privacy`, lastModified: new Date('2026-08-09'), changeFrequency: 'monthly', priority: 0.4 },
+    { url: `${baseUrl}/terms`, lastModified: new Date('2026-08-04'), changeFrequency: 'monthly', priority: 0.4 },
+    { url: `${baseUrl}/blog`, lastModified: siteLastModified, changeFrequency: 'daily', priority: 0.8 },
     ...categories.map(cat => ({
       url: `${baseUrl}/category/${cat}`,
-      lastModified: new Date(),
+      lastModified: siteLastModified,
       changeFrequency: 'weekly' as const,
       priority: 0.8,
     })),
     ...tools.map(tool => ({
       url: `${baseUrl}/tools/${tool}`,
-      lastModified: new Date(),
+      lastModified: tool.startsWith('ai-') ? siteLastModified : toolsLastModified,
       changeFrequency: 'monthly' as const,
-      priority: 0.7,
+      priority: tool.startsWith('ai-') ? 0.8 : 0.7,
     })),
     ...blogPosts.map(post => ({
       url: `${baseUrl}/blog/${post.slug}`,
