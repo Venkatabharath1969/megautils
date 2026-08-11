@@ -58,6 +58,7 @@ export function Footer() {
               <li><Link href="/cookies" className="hover:text-foreground transition-colors">Cookie Policy</Link></li>
               <li><Link href="/about" className="hover:text-foreground transition-colors">About</Link></li>
               <li><Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link></li>
+              <li><Link href="/blog" className="hover:text-foreground transition-colors">Blog</Link></li>
             </ul>
           </div>
         </div>

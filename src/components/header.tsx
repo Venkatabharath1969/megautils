@@ -61,6 +61,12 @@ export function Header() {
           </div>
         </div>
 
+        {/* Desktop Nav Links */}
+        <nav className="hidden md:flex items-center gap-4 text-sm">
+          <Link href="/blog" className="text-muted-foreground hover:text-foreground transition-colors">Blog</Link>
+          <Link href="/about" className="text-muted-foreground hover:text-foreground transition-colors">About</Link>
+        </nav>
+
         {/* Right side actions */}
         <div className="flex items-center gap-2">
           <button
@@ -108,6 +114,20 @@ export function Header() {
         </div>
       )}
 
+      {/* Mobile Menu */}
+      {mobileMenuOpen && (
+        <nav className="md:hidden border-t border-border bg-background px-4 py-3 space-y-1">
+          <Link href="/blog" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-sm hover:bg-muted transition-colors">Blog</Link>
+          <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-sm hover:bg-muted transition-colors">About</Link>
+          <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-sm hover:bg-muted transition-colors">Contact</Link>
+          <div className="border-t border-border my-2" />
+          <Link href="/category/developer" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-sm text-muted-foreground hover:bg-muted transition-colors">Developer Tools</Link>
+          <Link href="/category/image" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-sm text-muted-foreground hover:bg-muted transition-colors">Image & AI Tools</Link>
+          <Link href="/category/financial" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-sm text-muted-foreground hover:bg-muted transition-colors">Financial Calculators</Link>
+          <Link href="/category/text" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-sm text-muted-foreground hover:bg-muted transition-colors">Text Tools</Link>
+          <Link href="/category/seo" onClick={() => setMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-sm text-muted-foreground hover:bg-muted transition-colors">SEO Tools</Link>
+        </nav>
+      )}
     </header>
   )
 }
