@@ -62,6 +62,8 @@ export function Footer() {
         </div>
         <div className="mt-8 pt-6 border-t border-border text-center text-xs text-muted-foreground">
           &copy; {new Date().getFullYear()} UtilsNow. {t('footer.copyright')}
+          <span className="mx-1">·</span>
+          Built by <Link href="/about" className="hover:text-foreground transition-colors">Bharath S</Link>
         </div>
       </div>
     </footer>

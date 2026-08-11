@@ -67,7 +67,20 @@ export default function AboutPage() {
 
         <h2>Who Built UtilsNow</h2>
         <p>
-          UtilsNow is built and maintained by a software engineer passionate about creating free, privacy-first tools for the global developer community. Based in India, our mission is to provide the best online utilities without compromising user privacy or requiring signups.
+          UtilsNow is created and maintained by <strong>Bharath S</strong>, a software engineer based in India
+          with a passion for building free, privacy-first tools that make everyday tasks easier
+          for developers, designers, students, and professionals worldwide.
+        </p>
+        <blockquote>
+          &ldquo;I was frustrated with online tools that require signups, show excessive ads, or upload
+          your data to servers. So I built UtilsNow — 194+ tools that run entirely in your browser.
+          Your data never leaves your device.&rdquo;
+        </blockquote>
+        <p>
+          Connect:{' '}
+          <a href="https://www.linkedin.com/company/techie-boy" target="_blank" rel="noopener noreferrer">LinkedIn (Techie Boy)</a>
+          {' · '}
+          <a href="https://github.com/Venkatabharath1969" target="_blank" rel="noopener noreferrer">GitHub</a>
         </p>
         <h2>Built with Modern Technology</h2>
         <p>

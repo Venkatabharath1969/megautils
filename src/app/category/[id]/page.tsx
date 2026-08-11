@@ -340,6 +340,26 @@ export default async function CategoryPage({ params }: { params: Promise<{ id: s
           </Link>
         ))}
       </div>
+
+      {/* JSON-LD ItemList Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'ItemList',
+            name: `Free ${cat.label} Tools`,
+            description: cat.description,
+            numberOfItems: cat.tools.length,
+            itemListElement: cat.tools.map((tool, i) => ({
+              '@type': 'ListItem',
+              position: i + 1,
+              name: tool.name,
+              url: `https://utilsnow.com/tools/${tool.id}`,
+            })),
+          }),
+        }}
+      />
     </div>
   )
 }

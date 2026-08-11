@@ -43,6 +43,29 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               url: 'https://utilsnow.com',
               description: '194+ free browser-based utility tools for developers, designers, and everyone.',
               sameAs: ['https://github.com/Venkatabharath1969/megautils'],
+              founder: { '@id': 'https://utilsnow.com/#creator' },
+            }),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Person',
+              '@id': 'https://utilsnow.com/#creator',
+              name: 'Bharath S',
+              jobTitle: 'Software Engineer',
+              url: 'https://utilsnow.com/about',
+              worksFor: {
+                '@type': 'Organization',
+                name: 'UtilsNow',
+                url: 'https://utilsnow.com',
+              },
+              sameAs: [
+                'https://github.com/Venkatabharath1969',
+              ],
+              knowsAbout: ['Web Development', 'JavaScript', 'TypeScript', 'AI Tools', 'Developer Tools'],
             }),
           }}
         />

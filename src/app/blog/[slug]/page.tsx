@@ -89,6 +89,35 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           className="prose prose-sm sm:prose-base dark:prose-invert max-w-none prose-headings:font-semibold prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-table:border-collapse prose-th:border prose-th:border-border prose-th:px-3 prose-th:py-2 prose-th:bg-muted prose-td:border prose-td:border-border prose-td:px-3 prose-td:py-2"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
+
+        {/* JSON-LD Article Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Article',
+              headline: post.title,
+              description: post.description,
+              datePublished: post.publishDate,
+              dateModified: post.publishDate,
+              author: {
+                '@type': 'Person',
+                name: 'Bharath S',
+                url: 'https://utilsnow.com/about',
+              },
+              publisher: {
+                '@type': 'Organization',
+                name: 'UtilsNow',
+                url: 'https://utilsnow.com',
+              },
+              mainEntityOfPage: {
+                '@type': 'WebPage',
+                '@id': `https://utilsnow.com/blog/${post.slug}`,
+              },
+            }),
+          }}
+        />
       </article>
 
       {/* Related Tools */}

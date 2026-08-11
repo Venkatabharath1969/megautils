@@ -41,6 +41,7 @@ export function ToolPage({ title, description, category, categoryLabel, slug, ch
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{title}</h1>
           <p className="text-muted-foreground mt-1">{description}</p>
+          <span className="text-xs text-muted-foreground">Last updated: August 2026</span>
         </div>
         <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 text-xs font-medium whitespace-nowrap shrink-0">
           <Shield className="h-3.5 w-3.5" />
