@@ -1,0 +1,13 @@
+/* TEAM */
+Creator: Bharath S
+Role: Software Engineer
+Site: https://utilsnow.com
+Location: India
+GitHub: github.com/Venkatabharath1969
+
+/* SITE */
+Last update: 2026-08-11
+Language: English + 9 more
+Standards: HTML5, CSS3, ES2024
+Framework: Next.js 16, TypeScript, Tailwind CSS v4
+Tools: 194 browser-based tools including 17 AI-powered

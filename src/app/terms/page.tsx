@@ -5,6 +5,7 @@ import { ChevronRight } from 'lucide-react'
 export const metadata: Metadata = {
   title: 'Terms of Service',
   description: 'UtilsNow terms of service. Read our terms for using the free online tools.',
+  alternates: { canonical: 'https://utilsnow.com/terms' },
 }
 
 export default function TermsPage() {

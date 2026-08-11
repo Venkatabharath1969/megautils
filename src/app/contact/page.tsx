@@ -6,6 +6,7 @@ import { ContactForm } from '@/components/contact-form'
 export const metadata: Metadata = {
   title: 'Contact Us',
   description: 'Get in touch with UtilsNow. Report bugs, request features, or ask questions about our free online tools.',
+  alternates: { canonical: 'https://utilsnow.com/contact' },
 }
 
 export default function ContactPage() {

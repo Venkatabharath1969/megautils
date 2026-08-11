@@ -5,6 +5,7 @@ import { ChevronRight, Shield, Zap, Heart, Globe } from 'lucide-react'
 export const metadata: Metadata = {
   title: 'About UtilsNow',
   description: 'About UtilsNow - Free online utility tools for developers, designers, and everyone. 100+ tools, all processing in your browser.',
+  alternates: { canonical: 'https://utilsnow.com/about' },
 }
 
 export default function AboutPage() {

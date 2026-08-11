@@ -6,6 +6,7 @@ import { ChevronRight, Clock, Calendar, Tag } from 'lucide-react'
 export const metadata: Metadata = {
   title: 'Blog - How-To Guides & Comparisons',
   description: 'Learn how to use developer tools, understand encoding formats, master regex, and more with our in-depth guides.',
+  alternates: { canonical: 'https://utilsnow.com/blog' },
 }
 
 export default async function BlogPage() {

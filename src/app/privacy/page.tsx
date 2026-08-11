@@ -5,6 +5,7 @@ import { ChevronRight } from 'lucide-react'
 export const metadata: Metadata = {
   title: 'Privacy Policy',
   description: 'UtilsNow privacy policy. All tool processing happens in your browser. No data is stored or transmitted to any server.',
+  alternates: { canonical: 'https://utilsnow.com/privacy' },
 }
 
 export default function PrivacyPage() {
@@ -54,6 +55,11 @@ export default function PrivacyPage() {
         <p>This information is collected through analytics services and is used to improve our website.</p>
 
         <h2>Cookies and Advertising</h2>
+        <p>
+          For full details on how we use cookies, please see our{' '}
+          <Link href="/cookies">Cookie Policy</Link>.
+        </p>
+
         <h3>Essential Cookies</h3>
         <p>
           We use essential cookies to remember your preferences, such as your selected theme (light/dark mode).

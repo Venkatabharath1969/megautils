@@ -7,7 +7,7 @@ import { useLanguage } from '@/i18n/language-context'
 export function Footer() {
   const { t } = useLanguage()
   return (
-    <footer className="border-t border-border bg-card mt-auto">
+    <footer aria-label="Footer navigation" className="border-t border-border bg-card mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
@@ -55,6 +55,7 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link></li>
               <li><Link href="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link></li>
+              <li><Link href="/cookies" className="hover:text-foreground transition-colors">Cookie Policy</Link></li>
               <li><Link href="/about" className="hover:text-foreground transition-colors">About</Link></li>
               <li><Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link></li>
             </ul>

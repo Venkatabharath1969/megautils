@@ -307,7 +307,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params
   const cat = categoryData[id]
   if (!cat) return { title: 'Category Not Found' }
-  return { title: `${cat.label} - Free Online Tools`, description: cat.description }
+  return { title: `${cat.label} - Free Online Tools`, description: cat.description, alternates: { canonical: `https://utilsnow.com/category/${id}` } }
 }
 
 export default async function CategoryPage({ params }: { params: Promise<{ id: string }> }) {
