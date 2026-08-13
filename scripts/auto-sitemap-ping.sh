@@ -2,7 +2,7 @@
 # Auto Sitemap Ping: Notifies Google and Bing when new content is available
 # Runs daily via cron
 
-LOG="/var/log/megautils-sitemap-ping.log"
+LOG="/var/log/utilsnow-sitemap-ping.log"
 TODAY=$(date +%Y-%m-%d)
 SITEMAP="https://utilsnow.com/sitemap.xml"
 

@@ -2,7 +2,7 @@
 # Auto Rebuild: Rebuilds and redeploys the app weekly to pick up new blog posts in sitemap
 # Runs every Sunday at 3 AM via cron
 
-LOG="/var/log/megautils-rebuild.log"
+LOG="/var/log/utilsnow-rebuild.log"
 TODAY=$(date +%Y-%m-%d)
 DIR="/root/megautils"
 
@@ -16,7 +16,7 @@ BUILD_EXIT=$?
 
 if [ $BUILD_EXIT -eq 0 ]; then
   echo "[$TODAY] Build successful. Restarting PM2..." >> $LOG
-  pm2 restart megautils >> $LOG 2>&1
+  pm2 restart utilsnow >> $LOG 2>&1
   sleep 5
   
   # Verify site is up
