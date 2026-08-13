@@ -223,6 +223,8 @@ utilsnow.com is blocked by corporate firewalls as "Newly Registered Domain" (reg
 | Temporal | internal | Postiz workflows |
 | Temporal Elasticsearch | internal | Temporal search |
 | Uptime Kuma | 3001 (Nginx: 8090) | Uptime monitoring (http://200.141.2.221:8090) |
+| Listmonk | 9000 (Nginx: 9090) | Newsletter system (http://200.141.2.221:9090) |
+| Listmonk PostgreSQL | internal | Listmonk data |
 | n8n | 5678 | Workflow automation |
 | n8n PostgreSQL | internal | n8n data |
 
@@ -341,24 +343,24 @@ utilsnow.com is blocked by corporate firewalls as "Newly Registered Domain" (reg
 | 2026-08-09 | AdSense applied, GSC + Bing verified |
 | 2026-08-11 | SEO/Trust 100% overhaul + tool upgrades + RAM optimization |
 | 2026-08-13 | Phase 1 UX: Cmd+K, share, favorites, popular tools, tool registry |
-| 2026-08-13 | Phase 2 Automation: social posting (3x/day), IndexNow upgrade (230 URLs), Uptime Kuma deployed |
+| 2026-08-13 | Phase 2 Automation: social posting (3x/day), IndexNow (230 URLs), Uptime Kuma, Listmonk, backlink-pilot |
 | 2026-08-13 | Removed all MegaUtils brand refs, renamed PM2 process to "utilsnow" |
 
 ---
 
 ## Master Plan — Remaining Phases
 
-### Phase 2: Automation Engine — STATUS
+### Phase 2: Automation Engine — STATUS (COMPLETE)
 | Automation | Status | Details |
 |-----------|--------|---------|
 | Auto social posting (3x/day) | ✅ LIVE | Shell script → Postiz API, 5 templates, 3 platforms |
 | Auto indexing (230 URLs/day) | ✅ LIVE | IndexNow batch API, tested HTTP 200 |
 | Uptime monitoring | ✅ LIVE | Uptime Kuma at http://200.141.2.221:8090 |
+| Newsletter system | ✅ DEPLOYED | Listmonk at http://200.141.2.221:9090 (admin/UtilsNow2026!) |
+| Backlink directories | ✅ READY | backlink-pilot (259 sites), config created, tracker ready |
 | Postiz OAuth app | ✅ CREATED | Client ID: pca_2sFVY55T8v3GcgTb4iPDXdOSafw3bfKR |
-| Auto blog posts (1/day, SEO) | ⏳ Next | n8n + Gemini 2.5 Flash |
-| Auto newsletter | ⏳ Next | Listmonk (self-hosted) |
-| Auto backlink submission | ⏳ Next | backlink-pilot (226 sites) |
-| Auto content refresh | ⏳ Next | n8n + GSC API + Gemini |
+| Auto blog posts (1/day, SEO) | ⏳ Phase 3 | n8n + Gemini 2.5 Flash |
+| Auto content refresh | ⏳ Phase 3 | n8n + GSC API + Gemini |
 
 ### Phase 3: Programmatic SEO (1,300+ pages)
 | Page Type | Pages | Traffic Potential |
