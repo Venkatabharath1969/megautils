@@ -214,7 +214,7 @@ utilsnow.com is blocked by corporate firewalls as "Newly Registered Domain" (reg
 
 | Service | Port | Purpose |
 |---------|------|---------|
-| UtilsNow (Next.js) | 3000 | Main website (PM2) |
+| UtilsNow (Next.js) | 3000 | Main website (PM2 name: "utilsnow") |
 | Nginx | 80/443 | Reverse proxy, SSL, gzip |
 | UtilsNow PostgreSQL | 5433 | Blog + social posts DB |
 | Postiz | 5200 | Social media automation |
@@ -222,6 +222,7 @@ utilsnow.com is blocked by corporate firewalls as "Newly Registered Domain" (reg
 | Postiz Redis | internal | Postiz cache |
 | Temporal | internal | Postiz workflows |
 | Temporal Elasticsearch | internal | Temporal search |
+| Uptime Kuma | 3001 (Nginx: 8090) | Uptime monitoring (http://200.141.2.221:8090) |
 | n8n | 5678 | Workflow automation |
 | n8n PostgreSQL | internal | n8n data |
 
@@ -271,14 +272,31 @@ utilsnow.com is blocked by corporate firewalls as "Newly Registered Domain" (reg
 
 ---
 
-## Automated Cron Jobs
+## Automated Cron Jobs (Phase 2 — All Running)
 
-| Schedule | Script | Purpose |
-|----------|--------|---------|
-| Daily 6:00 AM UTC | auto-indexnow.sh | Submit blog URLs to Bing/Yandex |
-| Daily 6:30 AM UTC | auto-sitemap-ping.sh | Ping Google & Bing |
-| Weekly Sunday 3 AM | auto-rebuild.sh | Rebuild + deploy + ping |
-| Weekly Monday 7 AM | generate-social-posts.ts | Generate social content |
+| Schedule | Script | Purpose | Human Effort |
+|----------|--------|---------|-------------|
+| Daily 3:00 AM IST | auto-index-all.sh | IndexNow batch (230 URLs) + sitemap ping | ZERO |
+| Daily 9 AM, 1 PM, 6 PM IST | auto-social-post.sh | Post random tool to X/LinkedIn/Bluesky | ZERO |
+| Weekly Sunday 3 AM UTC | auto-rebuild.sh | Rebuild + deploy | ZERO |
+| Weekly Monday 7 AM UTC | generate-social-posts.ts | Generate social content | ZERO |
+
+### Auto Social Posting Details
+- **Script**: `/opt/automation/auto-social-post.sh`
+- **Data**: `/opt/automation/tools-data.json` (50 tools)
+- **Templates**: 5 rotating templates (1 AI-specific)
+- **Platforms**: X/Twitter, LinkedIn, Bluesky (all 3 per post)
+- **Schedule**: 30min ahead for Temporal processing
+- **Lock**: Prevents stacking via `/tmp/utilsnow-social.lock`
+- **Log**: `/var/log/utilsnow-social.log`
+- **Tested**: HTTP 201 success confirmed
+
+### Auto Indexing Details
+- **Script**: `/root/megautils/scripts/auto-index-all.sh`
+- **Submits**: ALL 230 sitemap URLs to IndexNow batch API
+- **Also**: Detects new blog posts from DB not yet in sitemap
+- **Log**: `/var/log/utilsnow-autoindex.log`
+- **Tested**: HTTP 200, all URLs accepted
 
 ---
 
@@ -323,21 +341,24 @@ utilsnow.com is blocked by corporate firewalls as "Newly Registered Domain" (reg
 | 2026-08-09 | AdSense applied, GSC + Bing verified |
 | 2026-08-11 | SEO/Trust 100% overhaul + tool upgrades + RAM optimization |
 | 2026-08-13 | Phase 1 UX: Cmd+K, share, favorites, popular tools, tool registry |
+| 2026-08-13 | Phase 2 Automation: social posting (3x/day), IndexNow upgrade (230 URLs), Uptime Kuma deployed |
+| 2026-08-13 | Removed all MegaUtils brand refs, renamed PM2 process to "utilsnow" |
 
 ---
 
 ## Master Plan — Remaining Phases
 
-### Phase 2: Automation Engine (n8n + Postiz API)
-| Automation | Tool | Schedule | Human Effort |
-|-----------|------|----------|-------------|
-| Auto blog posts (1/day, SEO) | n8n + Gemini 2.5 Flash | Daily 2 AM | ZERO |
-| Auto social posting (3x/day) | n8n → Postiz Public API | 3x daily | ZERO |
-| Auto indexing (Google + Bing) | IndexNow + Google API via n8n | Daily 3 AM | ZERO |
-| Auto content refresh | n8n + GSC API + Gemini | Weekly | ZERO |
-| Auto newsletter | n8n → Listmonk (self-hosted) | Weekly Thu | ZERO |
-| Auto monitoring (uptime, SEO) | Uptime Kuma + n8n → Telegram | 24/7 | 5min reading |
-| Auto backlink submission | backlink-pilot (226 sites) | Daily 10/day | ZERO |
+### Phase 2: Automation Engine — STATUS
+| Automation | Status | Details |
+|-----------|--------|---------|
+| Auto social posting (3x/day) | ✅ LIVE | Shell script → Postiz API, 5 templates, 3 platforms |
+| Auto indexing (230 URLs/day) | ✅ LIVE | IndexNow batch API, tested HTTP 200 |
+| Uptime monitoring | ✅ LIVE | Uptime Kuma at http://200.141.2.221:8090 |
+| Postiz OAuth app | ✅ CREATED | Client ID: pca_2sFVY55T8v3GcgTb4iPDXdOSafw3bfKR |
+| Auto blog posts (1/day, SEO) | ⏳ Next | n8n + Gemini 2.5 Flash |
+| Auto newsletter | ⏳ Next | Listmonk (self-hosted) |
+| Auto backlink submission | ⏳ Next | backlink-pilot (226 sites) |
+| Auto content refresh | ⏳ Next | n8n + GSC API + Gemini |
 
 ### Phase 3: Programmatic SEO (1,300+ pages)
 | Page Type | Pages | Traffic Potential |
