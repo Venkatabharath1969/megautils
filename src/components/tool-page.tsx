@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { useState, type ReactNode, useMemo } from 'react'
 import { usePathname } from 'next/navigation'
 import { AdSlot } from './ad-slot'
+import { ShareButtons } from './share-buttons'
+import { FavoriteButton } from './favorite-button'
 import { useLanguage } from '@/i18n/language-context'
 
 const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
@@ -278,9 +280,13 @@ export function ToolPage({ title, description, category, categoryLabel, slug, ch
           <p className="text-muted-foreground mt-1">{description}</p>
           <span className="text-xs text-muted-foreground">Last updated: August 2026</span>
         </div>
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 text-xs font-medium whitespace-nowrap shrink-0">
-          <Shield className="h-3.5 w-3.5" />
-          {t('tool.privacy')}
+        <div className="flex items-center gap-3 shrink-0">
+          <FavoriteButton toolId={derivedSlug} />
+          <ShareButtons title={title} />
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 text-xs font-medium whitespace-nowrap">
+            <Shield className="h-3.5 w-3.5" />
+            {t('tool.privacy')}
+          </div>
         </div>
       </div>
 

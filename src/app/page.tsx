@@ -1,103 +1,14 @@
 'use client'
 
 import Link from 'next/link'
-import { Suspense, useMemo } from 'react'
+import { Suspense, useMemo, useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Code2, Binary, Shield, Search, Type, Terminal, PenTool, FileText, Palette, Paintbrush, DollarSign, ArrowLeftRight, Calculator, ImageIcon, Clock, Globe, Sparkles, X } from 'lucide-react'
+import { Code2, Binary, Shield, Search, Type, Terminal, PenTool, FileText, Palette, Paintbrush, DollarSign, ArrowLeftRight, Calculator, ImageIcon, Clock, Globe, Sparkles, X, Star } from 'lucide-react'
 import { useLanguage } from '@/i18n/language-context'
+import { TOOLS, POPULAR_TOOLS, CATEGORIES, getCategoryById } from '@/lib/tool-registry'
 
-// Flat list of all tools for search — id, name, description, category
-const allTools: { id: string; name: string; description: string; category: string }[] = [
-  // Developer Tools
-  { id: 'json-formatter', name: 'JSON Formatter & Validator', description: 'Format, validate, and beautify JSON data', category: 'developer' },
-  { id: 'json-to-yaml', name: 'JSON to YAML', description: 'Convert JSON to YAML format', category: 'developer' },
-  { id: 'yaml-to-json', name: 'YAML to JSON', description: 'Convert YAML to JSON format', category: 'developer' },
-  { id: 'json-to-csv', name: 'JSON to CSV', description: 'Convert JSON arrays to CSV', category: 'developer' },
-  { id: 'csv-to-json', name: 'CSV to JSON', description: 'Convert CSV data to JSON', category: 'developer' },
-  { id: 'json-to-typescript', name: 'JSON to TypeScript', description: 'Generate TypeScript interfaces from JSON', category: 'developer' },
-  { id: 'json-to-xml', name: 'JSON to XML', description: 'Convert JSON to XML format', category: 'developer' },
-  { id: 'xml-to-json', name: 'XML to JSON', description: 'Convert XML to JSON format', category: 'developer' },
-  { id: 'html-formatter', name: 'HTML Formatter', description: 'Format and beautify HTML code', category: 'developer' },
-  { id: 'css-formatter', name: 'CSS Formatter', description: 'Format, beautify, and minify CSS', category: 'developer' },
-  { id: 'sql-formatter', name: 'SQL Formatter', description: 'Format SQL queries', category: 'developer' },
-  { id: 'javascript-formatter', name: 'JavaScript Formatter', description: 'Format and beautify JavaScript code', category: 'developer' },
-  { id: 'text-diff', name: 'Text Diff', description: 'Compare two texts with highlighted differences', category: 'developer' },
-  { id: 'code-to-image', name: 'Code to Image', description: 'Convert code snippets to beautiful images', category: 'developer' },
-  // Encoders & Decoders
-  { id: 'base64-encoder', name: 'Base64 Encoder/Decoder', description: 'Encode and decode Base64', category: 'encoders' },
-  { id: 'url-encoder', name: 'URL Encoder/Decoder', description: 'Encode and decode URL strings', category: 'encoders' },
-  { id: 'jwt-decoder', name: 'JWT Decoder', description: 'Decode and inspect JSON Web Tokens', category: 'encoders' },
-  { id: 'text-to-binary', name: 'Text to Binary', description: 'Convert text to binary and back', category: 'encoders' },
-  { id: 'morse-code-translator', name: 'Morse Code Translator', description: 'Convert text to Morse code', category: 'encoders' },
-  // Crypto & Hash
-  { id: 'hash-generator', name: 'Hash Generator', description: 'Generate MD5, SHA-1, SHA-256 hashes', category: 'crypto' },
-  { id: 'password-generator', name: 'Password Generator', description: 'Generate secure passwords', category: 'crypto' },
-  // SEO Tools
-  { id: 'meta-tag-generator', name: 'Meta Tag Generator', description: 'Generate SEO meta tags with OG and Twitter cards', category: 'seo' },
-  { id: 'sitemap-generator', name: 'XML Sitemap Generator', description: 'Generate XML sitemaps', category: 'seo' },
-  { id: 'serp-preview', name: 'SERP Preview', description: 'Preview how your page looks in Google search', category: 'seo' },
-  { id: 'keyword-density-checker', name: 'Keyword Density Checker', description: 'Analyze keyword frequency', category: 'seo' },
-  // Text Tools
-  { id: 'word-counter', name: 'Word Counter', description: 'Count words, characters, sentences', category: 'text' },
-  { id: 'case-converter', name: 'Case Converter', description: 'UPPER, lower, Title, camelCase, snake_case', category: 'text' },
-  { id: 'duplicate-line-remover', name: 'Duplicate Line Remover', description: 'Remove duplicate lines from text', category: 'text' },
-  { id: 'find-and-replace', name: 'Find & Replace', description: 'Bulk find and replace with regex', category: 'text' },
-  { id: 'text-to-slug', name: 'Text to Slug', description: 'Convert text to URL-friendly slugs', category: 'text' },
-  // String Utilities
-  { id: 'regex-tester', name: 'Regex Tester', description: 'Test regex with match highlighting', category: 'string' },
-  { id: 'lorem-ipsum-generator', name: 'Lorem Ipsum Generator', description: 'Generate placeholder text', category: 'string' },
-  // Color Tools
-  { id: 'color-picker', name: 'Color Picker', description: 'Pick colors with HEX, RGB, HSL output', category: 'color' },
-  { id: 'contrast-checker', name: 'WCAG Contrast Checker', description: 'Check color contrast for accessibility', category: 'color' },
-  { id: 'color-palette-generator', name: 'Color Palette Generator', description: 'Generate harmonious color palettes', category: 'color' },
-  // CSS Tools
-  { id: 'css-gradient-generator', name: 'CSS Gradient Generator', description: 'Build CSS gradients', category: 'css' },
-  { id: 'css-box-shadow-generator', name: 'Box Shadow Generator', description: 'CSS box shadow builder', category: 'css' },
-  { id: 'css-flexbox-generator', name: 'Flexbox Generator', description: 'Visual CSS flexbox layout builder', category: 'css' },
-  { id: 'css-grid-generator', name: 'Grid Generator', description: 'Visual CSS grid layout builder', category: 'css' },
-  // Financial
-  { id: 'compound-interest-calculator', name: 'Compound Interest', description: 'Calculate compound interest', category: 'financial' },
-  { id: 'emi-calculator', name: 'EMI Calculator', description: 'Calculate monthly loan EMI', category: 'financial' },
-  { id: 'mortgage-calculator', name: 'Mortgage Calculator', description: 'Home loan payments', category: 'financial' },
-  { id: 'percentage-calculator', name: 'Percentage Calculator', description: 'Calculate percentages', category: 'financial' },
-  { id: 'tip-calculator', name: 'Tip Calculator', description: 'Calculate tips and split bills', category: 'financial' },
-  // Unit Converters
-  { id: 'length-converter', name: 'Length Converter', description: 'Meters, km, miles, feet, inches', category: 'converters' },
-  { id: 'weight-converter', name: 'Weight Converter', description: 'Kilograms, pounds, ounces, grams', category: 'converters' },
-  { id: 'temperature-converter', name: 'Temperature Converter', description: 'Celsius, Fahrenheit, Kelvin', category: 'converters' },
-  { id: 'data-storage-converter', name: 'Data Storage Converter', description: 'Bytes, KB, MB, GB, TB', category: 'converters' },
-  // Image Tools
-  { id: 'qr-code-generator', name: 'QR Code Generator', description: 'Generate QR codes from text/URLs', category: 'image' },
-  { id: 'image-resizer', name: 'Image Resizer', description: 'Resize images with aspect ratio', category: 'image' },
-  { id: 'favicon-generator', name: 'Favicon Generator', description: 'Generate favicons in all sizes', category: 'image' },
-  { id: 'ai-bg-remover', name: 'AI Background Remover', description: 'Remove image backgrounds with AI', category: 'image' },
-  // Date & Time
-  { id: 'unix-timestamp-converter', name: 'Unix Timestamp Converter', description: 'Convert timestamps to dates', category: 'datetime' },
-  { id: 'date-calculator', name: 'Date Calculator', description: 'Add/subtract dates', category: 'datetime' },
-  { id: 'age-calculator', name: 'Age Calculator', description: 'Calculate exact age', category: 'datetime' },
-  // Generators
-  { id: 'uuid-generator', name: 'UUID Generator', description: 'Generate UUID v4', category: 'generators' },
-  { id: 'fake-data-generator', name: 'Fake Data Generator', description: 'Generate random names, emails', category: 'generators' },
-  // Math
-  { id: 'scientific-calculator', name: 'Scientific Calculator', description: 'Advanced calculator with scientific functions', category: 'math' },
-  { id: 'bmi-calculator', name: 'BMI Calculator', description: 'Body Mass Index calculator', category: 'math' },
-  // Network
-  { id: 'http-status-codes', name: 'HTTP Status Codes', description: 'Searchable HTTP status code reference', category: 'network' },
-  { id: 'url-parser', name: 'URL Parser', description: 'Parse URLs into components', category: 'network' },
-  // Markdown
-  { id: 'markdown-editor', name: 'Markdown Editor', description: 'Live markdown editor with preview', category: 'markdown' },
-  { id: 'markdown-to-html', name: 'Markdown to HTML', description: 'Convert Markdown to clean HTML', category: 'markdown' },
-  // Content
-  { id: 'headline-analyzer', name: 'Headline Analyzer', description: 'Score headlines for impact and SEO', category: 'content' },
-  { id: 'text-to-speech', name: 'Text to Speech', description: 'Convert text to spoken audio', category: 'content' },
-]
-
-const categoryLabels: Record<string, string> = {
-  developer: 'Developer Tools', encoders: 'Encoders & Decoders', crypto: 'Crypto & Hash',
-  seo: 'SEO Tools', text: 'Text Tools', string: 'String Utilities', content: 'Content & Writing',
-  markdown: 'Markdown Tools', color: 'Color Tools', css: 'CSS Tools', financial: 'Financial Calculators',
-  converters: 'Unit Converters', math: 'Math & Science', image: 'Image Tools', datetime: 'Date & Time',
-  network: 'Network & API', generators: 'Generators',
+function getCategoryLabel(categoryId: string): string {
+  return getCategoryById(categoryId)?.label || categoryId
 }
 
 const categories = [
@@ -127,7 +38,7 @@ function SearchResults() {
   const results = useMemo(() => {
     if (!query) return []
     const q = query.toLowerCase()
-    return allTools.filter(
+    return TOOLS.filter(
       (tool) =>
         tool.name.toLowerCase().includes(q) ||
         tool.description.toLowerCase().includes(q) ||
@@ -161,7 +72,7 @@ function SearchResults() {
             >
               <h3 className="font-semibold text-sm group-hover:text-primary transition-colors">{tool.name}</h3>
               <p className="text-xs text-muted-foreground mt-1">{tool.description}</p>
-              <div className="mt-2 text-xs text-primary font-medium">{categoryLabels[tool.category] || tool.category} &rarr;</div>
+              <div className="mt-2 text-xs text-primary font-medium">{getCategoryLabel(tool.category)} &rarr;</div>
             </Link>
           ))}
         </div>
@@ -177,6 +88,21 @@ function SearchResults() {
 
 export default function HomePage() {
   const { t } = useLanguage()
+
+  const [recentToolIds, setRecentToolIds] = useState<string[]>([])
+  const [favoriteToolIds, setFavoriteToolIds] = useState<string[]>([])
+
+  useEffect(() => {
+    try {
+      const storedRecent = JSON.parse(localStorage.getItem('utilsnow-recent-tools') || '[]')
+      setRecentToolIds(storedRecent)
+    } catch {}
+    try {
+      const storedFavs = JSON.parse(localStorage.getItem('utilsnow-favorites') || '[]')
+      setFavoriteToolIds(storedFavs)
+    } catch {}
+  }, [])
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
       {/* Search Results */}
@@ -196,6 +122,72 @@ export default function HomePage() {
           </span>
         </p>
       </div>
+
+      {/* Your Favorites */}
+      {favoriteToolIds.length > 0 && (
+        <section className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+            <h2 className="text-lg font-semibold">Your Favorites</h2>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {favoriteToolIds.slice(0, 8).map(id => {
+              const tool = TOOLS.find(t => t.id === id)
+              if (!tool) return null
+              return (
+                <Link key={id} href={`/tools/${id}`}
+                  className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card hover:bg-muted transition-colors">
+                  <div className="flex-1 min-w-0">
+                    <span className="text-sm font-medium truncate block">{tool.name}</span>
+                    <span className="text-xs text-muted-foreground">{getCategoryLabel(tool.category)}</span>
+                  </div>
+                  {tool.isAI && <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400">AI</span>}
+                </Link>
+              )
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* Recently Used */}
+      {recentToolIds.length > 0 && (
+        <section className="mb-8">
+          <h2 className="text-lg font-semibold mb-4">Recently Used</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {recentToolIds.slice(0, 4).map(id => {
+              const tool = TOOLS.find(t => t.id === id)
+              if (!tool) return null
+              return (
+                <Link key={id} href={`/tools/${id}`}
+                  className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card hover:bg-muted transition-colors">
+                  <span className="text-sm font-medium truncate">{tool.name}</span>
+                </Link>
+              )
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* Popular Tools */}
+      <section className="mb-8">
+        <h2 className="text-lg font-semibold mb-4">Popular Tools</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {POPULAR_TOOLS.map(id => {
+            const tool = TOOLS.find(t => t.id === id)
+            if (!tool) return null
+            return (
+              <Link key={id} href={`/tools/${id}`}
+                className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card hover:bg-muted transition-colors">
+                <div className="flex-1 min-w-0">
+                  <span className="text-sm font-medium truncate block">{tool.name}</span>
+                  <span className="text-xs text-muted-foreground">{getCategoryLabel(tool.category)}</span>
+                </div>
+                {tool.isAI && <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400">AI</span>}
+              </Link>
+            )
+          })}
+        </div>
+      </section>
 
       {/* Categories Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

@@ -2,29 +2,15 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { Search, Menu, X, Wrench } from 'lucide-react'
 import { ThemeToggle } from './theme-toggle'
 import { LanguageSwitcher } from './language-switcher'
 
-import { useLanguage } from '@/i18n/language-context'
-
 export function Header() {
-  const [searchOpen, setSearchOpen] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [mobileSearchQuery, setMobileSearchQuery] = useState('')
-  const router = useRouter()
-  const { t } = useLanguage()
 
-  const handleSearch = (query: string) => {
-    const trimmed = query.trim()
-    if (trimmed) {
-      router.push(`/?q=${encodeURIComponent(trimmed)}`)
-      setSearchQuery('')
-      setMobileSearchQuery('')
-      setSearchOpen(false)
-    }
+  const openCommandPalette = () => {
+    window.dispatchEvent(new Event('open-command-palette'))
   }
 
   return (
@@ -38,27 +24,17 @@ export function Header() {
           <span className="hidden sm:inline">UtilsNow</span>
         </Link>
 
-        {/* Search Bar - Desktop */}
-        <div className="hidden md:flex flex-1 max-w-md mx-4" role="search">
-          <div className="relative w-full">
-            <button
-              type="button"
-              onClick={() => handleSearch(searchQuery)}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-              aria-label="Search"
-            >
-              <Search className="h-4 w-4" />
-            </button>
-            <input
-              type="search"
-              aria-label="Search tools"
-              placeholder={t('search.placeholder')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => { if (e.key === 'Enter') handleSearch(searchQuery) }}
-              className="w-full h-9 pl-9 pr-4 rounded-md border border-input bg-card text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-            />
-          </div>
+        {/* Search Trigger - Desktop (opens Command Palette) */}
+        <div className="hidden md:flex flex-1 max-w-md mx-4">
+          <button
+            type="button"
+            onClick={openCommandPalette}
+            className="w-full h-9 flex items-center gap-2 px-3 rounded-md border border-input bg-card text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors cursor-pointer"
+          >
+            <Search className="h-4 w-4 shrink-0" />
+            <span className="flex-1 text-left">Search tools...</span>
+            <kbd className="hidden lg:inline-flex text-[10px] font-medium bg-muted px-1.5 py-0.5 rounded border border-border">⌘K</kbd>
+          </button>
         </div>
 
         {/* Desktop Nav Links */}
@@ -70,8 +46,8 @@ export function Header() {
         {/* Right side actions */}
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setSearchOpen(!searchOpen)}
-            aria-label="Search"
+            onClick={openCommandPalette}
+            aria-label="Search tools"
             className="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-md border border-border hover:bg-muted transition-colors"
           >
             <Search className="h-4 w-4" />
@@ -87,32 +63,6 @@ export function Header() {
           </button>
         </div>
       </div>
-
-      {/* Mobile Search */}
-      {searchOpen && (
-        <div className="md:hidden px-4 pb-3" role="search">
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => handleSearch(mobileSearchQuery)}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-              aria-label="Search"
-            >
-              <Search className="h-4 w-4" />
-            </button>
-            <input
-              type="search"
-              aria-label="Search tools"
-              placeholder={t('search.placeholder')}
-              value={mobileSearchQuery}
-              onChange={(e) => setMobileSearchQuery(e.target.value)}
-              onKeyDown={(e) => { if (e.key === 'Enter') handleSearch(mobileSearchQuery) }}
-              autoFocus
-              className="w-full h-9 pl-9 pr-4 rounded-md border border-input bg-card text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-            />
-          </div>
-        </div>
-      )}
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
