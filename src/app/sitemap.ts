@@ -1,5 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { getVisiblePosts } from '@/lib/blog-data'
+import { UNIT_CATEGORIES, getAllConversionPairs } from '@/lib/conversion-data'
+import { COMPARISONS } from '@/lib/comparison-data'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://utilsnow.com'
@@ -87,6 +89,39 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...blogPosts.map(post => ({
       url: `${baseUrl}/blog/${post.slug}`,
       lastModified: new Date(post.publishDate),
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    })),
+    // Unit conversion hub + category hubs
+    { url: `${baseUrl}/convert`, lastModified: siteLastModified, changeFrequency: 'weekly' as const, priority: 0.8 },
+    ...UNIT_CATEGORIES.map(cat => ({
+      url: `${baseUrl}/convert/${cat.id}`,
+      lastModified: siteLastModified,
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    })),
+    // All unit conversion pair pages
+    ...getAllConversionPairs().map(({ category, from, to }) => ({
+      url: `${baseUrl}/convert/${category.id}/${from.id}-to-${to.id}`,
+      lastModified: siteLastModified,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    })),
+    // Percentage calculator pages
+    { url: `${baseUrl}/calculate`, lastModified: siteLastModified, changeFrequency: 'weekly' as const, priority: 0.7 },
+    ...[5, 10, 15, 20, 25, 30, 40, 50, 60, 75, 80, 90].flatMap(pct =>
+      [50, 100, 150, 200, 250, 300, 400, 500, 750, 1000].map(base => ({
+        url: `${baseUrl}/calculate/what-is-${pct}-percent-of-${base}`,
+        lastModified: siteLastModified,
+        changeFrequency: 'monthly' as const,
+        priority: 0.5,
+      }))
+    ),
+    // Comparison pages
+    { url: `${baseUrl}/compare`, lastModified: siteLastModified, changeFrequency: 'weekly' as const, priority: 0.7 },
+    ...COMPARISONS.map(c => ({
+      url: `${baseUrl}/compare/${c.slug}`,
+      lastModified: siteLastModified,
       changeFrequency: 'monthly' as const,
       priority: 0.6,
     })),
