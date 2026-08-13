@@ -140,6 +140,7 @@ Google (Googlebot, Google-Extended), ChatGPT (GPTBot, OAI-SearchBot, ChatGPT-Use
 | Google Search Console | ✅ Verified, 7+ impressions |
 | Bing Webmaster Tools | ✅ Verified |
 | Google AdSense | ⏳ Under review (pub-3062425605979427) |
+| Google Analytics 4 | ✅ Live (G-EJLXNS4PYF) |
 | IndexNow | ✅ Active (daily auto-submit) |
 | GDPR Consent | ✅ Google 3-choice CMP |
 
@@ -346,6 +347,8 @@ utilsnow.com is blocked by corporate firewalls as "Newly Registered Domain" (reg
 | 2026-08-13 | Phase 2 Automation: social posting (3x/day), IndexNow (230 URLs), Uptime Kuma, Listmonk, backlink-pilot |
 | 2026-08-13 | Removed all MegaUtils brand refs, renamed PM2 process to "utilsnow" |
 | 2026-08-13 | Phase 3 Programmatic SEO: 327 new pages (192 conversions + 120 calculators + 6 comparisons + 9 hubs). Sitemap: 230→557 URLs. All submitted to IndexNow. |
+| 2026-08-13 | Phase 4 Revenue: Email subscribe (Listmonk), affiliate suggestions, Pro upsell + /pro page, embeddable widgets, GA4 (G-EJLXNS4PYF) |
+| 2026-08-13 | Cloudflare Tunnels for admin access (Postiz, Uptime Kuma, Listmonk) |
 
 ---
 
