@@ -7,6 +7,10 @@ import { usePathname } from 'next/navigation'
 import { AdSlot } from './ad-slot'
 import { ShareButtons } from './share-buttons'
 import { FavoriteButton } from './favorite-button'
+import { EmailSubscribe } from './email-subscribe'
+import { EmbedCode } from './embed-code'
+import { ProSuggestion } from './pro-suggestion'
+import { ProUpsellBanner } from './usage-tracker'
 import { useLanguage } from '@/i18n/language-context'
 
 const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
@@ -273,6 +277,9 @@ export function ToolPage({ title, description, category, categoryLabel, slug, ch
         <span className="text-foreground font-medium">{title}</span>
       </nav>
 
+      {/* Pro Upsell Banner (shown after 10 daily uses) */}
+      <ProUpsellBanner />
+
       {/* Title & Privacy Badge */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div>
@@ -290,9 +297,17 @@ export function ToolPage({ title, description, category, categoryLabel, slug, ch
         </div>
       </div>
 
+      {/* Embed Code */}
+      {derivedSlug && <EmbedCode slug={derivedSlug} title={title} />}
+
       {/* Tool Content */}
-      <div className="bg-card rounded-xl border border-border p-4 sm:p-6">
+      <div className="bg-card rounded-xl border border-border p-4 sm:p-6 mt-3">
         {children}
+      </div>
+
+      {/* Pro Suggestion */}
+      <div className="mt-4">
+        <ProSuggestion category={category} />
       </div>
 
       {/* Below Tool Ad */}
@@ -361,6 +376,11 @@ export function ToolPage({ title, description, category, categoryLabel, slug, ch
           </div>
         </div>
       )}
+
+      {/* Email Subscribe */}
+      <div className="mt-8">
+        <EmailSubscribe />
+      </div>
 
       {/* JSON-LD SoftwareApplication Schema */}
       <script

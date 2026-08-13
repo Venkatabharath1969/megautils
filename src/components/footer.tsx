@@ -3,6 +3,7 @@
 import { Wrench, Shield } from 'lucide-react'
 import Link from 'next/link'
 import { useLanguage } from '@/i18n/language-context'
+import { EmailSubscribe } from './email-subscribe'
 
 export function Footer() {
   const { t } = useLanguage()
@@ -22,6 +23,9 @@ export function Footer() {
             <div className="flex items-center gap-1.5 mt-3 text-xs text-muted-foreground">
               <Shield className="h-3.5 w-3.5 text-green-500" />
               <span>{t('footer.privacy.badge')}</span>
+            </div>
+            <div className="mt-4">
+              <EmailSubscribe />
             </div>
           </div>
 
