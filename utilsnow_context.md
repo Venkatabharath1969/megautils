@@ -1,7 +1,7 @@
 # UtilsNow — Complete Project Context
 
 > **Single source of truth for all AI sessions. Read this FIRST.**
-> **Last updated: 2026-08-11**
+> **Last updated: 2026-08-13**
 
 ---
 
@@ -10,15 +10,16 @@
 | Key | Value |
 |-----|-------|
 | **Brand** | UtilsNow |
-| **Domain** | utilsnow.com |
+| **Domain** | utilsnow.com (registered 2026-08-09, Spaceship) |
 | **Old Domain** | megautils.xyz (301 redirects to utilsnow.com) |
 | **Framework** | Next.js 16.2.12 (Turbopack), App Router |
 | **Language** | TypeScript (strict) |
 | **Styling** | Tailwind CSS v4 (`@theme inline` in globals.css) |
 | **Theme** | next-themes (dark/light/system via `.dark` class) |
 | **Icons** | lucide-react |
+| **Search** | Fuse.js fuzzy search (Cmd+K command palette) |
 | **i18n** | Client-side context (`src/i18n/`), 10 languages, localStorage (`utilsnow-lang`) |
-| **Tools** | **194 tools** (177 utility + 17 AI-powered) across 17 categories |
+| **Tools** | **191 tools** (174 utility + 17 AI-powered) across 17 categories |
 | **Monetization** | Google AdSense (pub-3062425605979427) — under review |
 | **Privacy** | All processing in user's browser. No data uploaded/stored. No login. |
 | **Blog** | PostgreSQL + file-based fallback, 89 posts auto-publishing through Nov 2028 |
@@ -30,6 +31,49 @@
 | **Creator** | Bharath S (Software Engineer, India) |
 | **GitHub** | github.com/Venkatabharath1969 |
 | **LinkedIn** | linkedin.com/company/techie-boy |
+
+---
+
+## Core Architecture (Phase 1 — Aug 13, 2026)
+
+### Tool Registry (Single Source of Truth)
+- **File**: `src/lib/tool-registry.ts` (1,500 lines)
+- Contains ALL 191 tools + 17 categories with types, helpers, and search keywords
+- Every tool has 5-15 fuzzy search aliases (e.g., "md to text" → Markdown Converter)
+- Exports: `TOOLS`, `CATEGORIES`, `POPULAR_TOOLS`, `getToolsByCategory()`, `getToolById()`, `getRelatedTools()`, `getCategoryById()`, `searchTools()`
+- **ALL components import from here** — no more duplicate tool lists
+
+### Cmd+K Command Palette
+- **File**: `src/components/command-palette.tsx` (210 lines)
+- Opens on Cmd+K / Ctrl+K globally
+- Fuse.js fuzzy search (name weight 3, keywords weight 2, description weight 1)
+- Keyboard navigation (↑↓ Enter Escape)
+- Shows: Recent tools (localStorage) → Popular tools → Search results
+- AI badge on AI-powered tools
+- Integrated in `layout.tsx`, triggered from header search button
+
+### Share Buttons
+- **File**: `src/components/share-buttons.tsx`
+- X/Twitter, LinkedIn, Copy Link, Native Web Share API
+- Custom SVG icons for X and LinkedIn
+- Appears on every tool page near the title
+
+### Favorites / Bookmarks
+- **File**: `src/components/favorite-button.tsx`
+- Star icon on every tool page (yellow fill when active)
+- Persists to `localStorage('utilsnow-favorites')`
+- "Your Favorites" section on homepage
+
+### Homepage Sections (in order)
+1. Search Results (if `?q=` query active)
+2. Hero section
+3. Your Favorites (if user has any)
+4. Recently Used (if user has history)
+5. Popular Tools (8 curated tools, always shown)
+6. Categories grid (17 categories)
+7. Product Hunt badge
+8. Trust bar
+9. CollectionPage schema
 
 ---
 
@@ -45,7 +89,7 @@
 | CSS Tools | css | 14 |
 | Encoders & Decoders | encoders | 14 |
 | Unit Converters | converters | 14 |
-| Generators | generators | 10 |
+| Generators | generators | 8 (4 + 4 cross-refs) |
 | Color Tools | color | 8 |
 | String Utilities | string | 6 |
 | Date & Time | datetime | 5 |
@@ -54,7 +98,7 @@
 | Network & API | network | 4 |
 | Content & Writing | content | 3 |
 | Crypto & Hash | crypto | 3 |
-| **TOTAL** | | **197** (194 dirs + 3 sub-tools) |
+| **TOTAL** | | **191 unique** |
 
 ---
 
@@ -68,18 +112,18 @@
 | WebSite + SearchAction | layout.tsx (every page) | ✅ |
 | CollectionPage + ItemList | Homepage (page.tsx) | ✅ |
 | SoftwareApplication | Every tool (tool-page.tsx) | ✅ |
-| FAQPage | Every tool (194 tools) | ✅ |
+| FAQPage | Every tool (191 tools) | ✅ |
 | BreadcrumbList | Every tool (tool-page.tsx) | ✅ |
 | ItemList | Every category page (17) | ✅ |
 | Article + author + publisher | Every blog post (89) | ✅ |
 
 ### Discovery Files
-| File | URL | Size/Lines | Status |
-|------|-----|-----------|--------|
-| robots.txt | /robots.txt | 40+ AI bots | ✅ |
+| File | URL | Details | Status |
+|------|-----|---------|--------|
+| robots.txt | /robots.txt | 40+ AI bots allowed | ✅ |
 | sitemap.xml | /sitemap.xml | 226 URLs, accurate lastmod | ✅ |
-| llms.txt | /llms.txt | Summary | ✅ |
-| llms-full.txt | /llms-full.txt | 2,024 lines, 128KB | ✅ |
+| llms.txt | /llms.txt | Summary for AI bots | ✅ |
+| llms-full.txt | /llms-full.txt | 2,024 lines, 128KB, all 191 tools detailed | ✅ |
 | ads.txt | /ads.txt | ca-pub-3062425605979427 | ✅ |
 | manifest.json | /manifest.json | PWA manifest | ✅ |
 | humans.txt | /humans.txt | Creator info | ✅ |
@@ -87,65 +131,58 @@
 | RSS feed | /feed.xml | Blog posts (last 20) | ✅ |
 | OG image | /opengraph-image | Dynamic 1200x630, edge runtime | ✅ |
 
-### AI Bot Coverage (robots.txt)
-| Platform | Bot(s) Allowed |
-|----------|---------------|
-| Google Search | Googlebot |
-| Google Gemini | Google-Extended |
-| ChatGPT/OpenAI | GPTBot, OAI-SearchBot, ChatGPT-User |
-| Claude/Anthropic | ClaudeBot, Claude-SearchBot, Claude-Web, anthropic-ai |
-| Perplexity | PerplexityBot, Perplexity-User |
-| Bing/Copilot | Bingbot |
-| Apple Intelligence | Applebot, Applebot-Extended |
-| Meta AI | Meta-ExternalAgent, meta-webindexer, FacebookBot |
-| Amazon Alexa | Amazonbot, Amzn-SearchBot, Amzn-User |
-| Brave/Leo AI | BraveBot |
-| You.com | YouBot |
-| Phind | PhindBot |
-| DuckDuckGo | DuckDuckBot, DuckAssistBot |
-| Kagi | Kagibot |
-| Common Crawl | CCBot |
-| DeepSeek | DeepSeekBot |
-| Mistral | MistralAI-User |
-| Qwen/Alibaba | QwenBot |
-| Cohere | cohere-ai |
-| ByteDance | Bytespider (BLOCKED) |
+### AI Bot Coverage (robots.txt — 40+ bots)
+Google (Googlebot, Google-Extended), ChatGPT (GPTBot, OAI-SearchBot, ChatGPT-User), Claude (ClaudeBot, Claude-SearchBot, Claude-Web, anthropic-ai), Perplexity (PerplexityBot, Perplexity-User), Bing (Bingbot), Apple (Applebot, Applebot-Extended), Meta (Meta-ExternalAgent, meta-webindexer, FacebookBot), Amazon (Amazonbot, Amzn-SearchBot, Amzn-User), Brave (BraveBot), You.com (YouBot), Phind (PhindBot), DuckDuckGo (DuckDuckBot, DuckAssistBot), Kagi (Kagibot), CCBot, DeepSeekBot, MistralAI-User, QwenBot, cohere-ai. **Blocked**: Bytespider.
 
 ### Verification & Monetization
 | Service | Status |
 |---------|--------|
-| Google Search Console | ✅ Verified (HTML file), 7+ impressions |
-| Bing Webmaster Tools | ✅ Verified (XML file) |
+| Google Search Console | ✅ Verified, 7+ impressions |
+| Bing Webmaster Tools | ✅ Verified |
 | Google AdSense | ⏳ Under review (pub-3062425605979427) |
 | IndexNow | ✅ Active (daily auto-submit) |
 | GDPR Consent | ✅ Google 3-choice CMP |
 
-### Pages & UX
+### Pages & UX Features
 | Feature | Status |
 |---------|--------|
-| 404 page (not-found.tsx) | ✅ With category links |
-| Error boundary (error.tsx) | ✅ With retry button |
-| Loading spinner (loading.tsx) | ✅ Centered spinner |
-| Cookie policy (/cookies) | ✅ GDPR compliant |
-| Privacy policy (/privacy) | ✅ |
-| Terms of service (/terms) | ✅ |
-| About page (/about) | ✅ With author bio |
-| Contact page (/contact) | ✅ |
-| Working search (header) | ✅ Filters tools on homepage |
-| Related tools on tool pages | ✅ Auto-derived from URL, 4 per page |
-| "Last updated" on tools | ✅ August 2026 |
-
-### Accessibility (WCAG 2.1)
-| Feature | Status |
-|---------|--------|
-| Skip-to-content link | ✅ sr-only, visible on focus |
-| ARIA labels on search | ✅ role="search", aria-label |
-| Breadcrumb aria-label | ✅ |
-| Footer aria-label | ✅ |
-| Canonical URLs (all pages) | ✅ |
+| Cmd+K Command Palette (Fuse.js fuzzy search) | ✅ All 191 tools searchable with aliases |
+| Share buttons (X, LinkedIn, Copy, Native Share) | ✅ Every tool page |
+| Favorites/bookmarks (star icon, localStorage) | ✅ Every tool page + homepage section |
+| Recently Used tools (localStorage) | ✅ Homepage section |
+| Popular Tools (8 curated) | ✅ Homepage section |
+| Related tools on tool pages | ✅ Auto-derived, 4 per page |
+| 404 page with category links | ✅ |
+| Error boundary with retry | ✅ |
+| Loading spinner | ✅ |
+| Cookie/Privacy/Terms/About/Contact pages | ✅ |
+| Blog + RSS feed | ✅ |
+| "Last updated" freshness signal | ✅ |
+| Skip-to-content link (WCAG) | ✅ |
+| ARIA labels on interactive elements | ✅ |
+| Canonical URLs on ALL pages | ✅ |
 | Preconnect for AdSense | ✅ |
-| Author identity in footer | ✅ "Built by Bharath S" |
-| sameAs (GitHub, LinkedIn, X) | ✅ On Organization + Person |
+
+---
+
+## Domain Reputation (Corporate Firewall Block)
+
+utilsnow.com is blocked by corporate firewalls as "Newly Registered Domain" (registered Aug 9, 2026). Auto-lifts after **30-32 days** (~Sep 10, 2026).
+
+**Categorization services to submit to** (owner action):
+| Service | URL | Turnaround |
+|---------|-----|-----------|
+| BlueCoat/Symantec | sitereview.bluecoat.com | Minutes-hours |
+| Zscaler | sitereview.zscaler.com | 24-72 hours |
+| FortiGuard | fortiguard.fortinet.com/faq/wfratingsubmit | 1-3 days |
+| BrightCloud | brightcloud.com/tools/change-request.php | 24-72 hours |
+| TrustedSource/Trellix | trustedsource.org | 3-5 days |
+| Norton Safe Web | safeweb.norton.com | Up to 48 hours |
+| Cisco Talos | talosintelligence.com | 3-5 days |
+| Microsoft SmartScreen | feedback.smartscreen.microsoft.com | Variable |
+| Palo Alto PAN-DB | urlfiltering.paloaltonetworks.com | After Sep 10 (32-day NRD) |
+
+**Category to request**: "Technology/Internet" or "Computer/Internet Info"
 
 ---
 
@@ -175,20 +212,62 @@
 
 ## Infrastructure
 
-| Service | Port | RAM Limit | Purpose |
-|---------|------|-----------|---------|
-| UtilsNow (Next.js) | 3000 | ~60MB | Main website (PM2) |
-| Nginx | 80/443 | ~20MB | Reverse proxy, SSL, gzip |
-| UtilsNow PostgreSQL | 5433 | ~26MB | Blog + social posts DB |
-| Postiz | 5200 | 1.5GB limit | Social media automation |
-| Postiz PostgreSQL | internal | ~27MB | Postiz data |
-| Postiz Redis | internal | ~5MB | Postiz cache |
-| Temporal | internal | 384MB limit | Postiz workflows |
-| Temporal Elasticsearch | internal | ~256MB | Temporal search |
-| n8n | 5678 | 512MB limit | Workflow automation |
-| n8n PostgreSQL | internal | ~33MB | n8n data |
+| Service | Port | Purpose |
+|---------|------|---------|
+| UtilsNow (Next.js) | 3000 | Main website (PM2) |
+| Nginx | 80/443 | Reverse proxy, SSL, gzip |
+| UtilsNow PostgreSQL | 5433 | Blog + social posts DB |
+| Postiz | 5200 | Social media automation |
+| Postiz PostgreSQL | internal | Postiz data |
+| Postiz Redis | internal | Postiz cache |
+| Temporal | internal | Postiz workflows |
+| Temporal Elasticsearch | internal | Temporal search |
+| n8n | 5678 | Workflow automation |
+| n8n PostgreSQL | internal | n8n data |
 
-**Total VPS RAM usage: ~47% of 15GB** (optimized from 69%)
+**VPS RAM usage: ~47% of 15GB** (optimized from 69%)
+
+### Social Media (Postiz)
+| Platform | Account | Status |
+|----------|---------|--------|
+| X/Twitter | @techieBharath | ✅ Connected |
+| LinkedIn | Bharath S (personal) | ✅ Connected |
+| Bluesky | @utilsnow.bsky.social | ✅ Connected |
+| LinkedIn Page | Techie Boy | ❌ Not connected (owner needs to add "LinkedIn Page" integration) |
+
+**Postiz API**: Public API at `/api/public/v1`. Official n8n community node: `n8n-nodes-postiz`. API key needed from Settings → Developers → Public API.
+
+---
+
+## Key Files Reference
+
+| File | Purpose |
+|------|---------|
+| `src/lib/tool-registry.ts` | **Single source of truth**: ALL 191 tools + 17 categories + search keywords |
+| `src/components/command-palette.tsx` | Cmd+K fuzzy search (Fuse.js) |
+| `src/components/share-buttons.tsx` | X, LinkedIn, Copy, Native Share |
+| `src/components/favorite-button.tsx` | Star bookmark (localStorage) |
+| `src/components/tool-page.tsx` | Tool wrapper: breadcrumb, FAQs, related tools, share, favorite, schema |
+| `src/components/header.tsx` | Header with Cmd+K trigger + mobile menu |
+| `src/components/footer.tsx` | Footer: author, cookie policy, blog link, nav |
+| `src/app/layout.tsx` | Root layout: schemas, AdSense, skip-link, preconnect, OG, CommandPalette |
+| `src/app/page.tsx` | Homepage: favorites, recent, popular, categories, search, schema |
+| `src/app/not-found.tsx` | 404 page |
+| `src/app/error.tsx` | Error boundary |
+| `src/app/loading.tsx` | Loading spinner |
+| `src/app/opengraph-image.tsx` | Dynamic OG image (1200x630, edge) |
+| `src/app/feed.xml/route.ts` | RSS feed for blog |
+| `src/app/cookies/page.tsx` | Cookie policy (GDPR) |
+| `src/app/robots.ts` | robots.txt (40+ AI bots) |
+| `src/app/sitemap.ts` | Dynamic sitemap (226 URLs) |
+| `src/i18n/translations.ts` | 10 languages |
+| `src/lib/blog-data.ts` | Blog: PostgreSQL + fallback |
+| `public/llms.txt` | AI discovery summary |
+| `public/llms-full.txt` | AI discovery full (128KB) |
+| `public/ads.txt` | AdSense publisher |
+| `public/manifest.json` | PWA manifest |
+| `public/humans.txt` | Creator info |
+| `public/.well-known/security.txt` | Security contact (RFC 9116) |
 
 ---
 
@@ -203,42 +282,31 @@
 
 ---
 
-## Key Files Reference
+## Recent Upgrades
 
-| File | Purpose |
-|------|---------|
-| `src/app/layout.tsx` | Root layout: schemas, AdSense, skip-link, preconnect, OG |
-| `src/app/page.tsx` | Homepage: search, categories, CollectionPage schema |
-| `src/app/not-found.tsx` | 404 page with category links |
-| `src/app/error.tsx` | Error boundary with retry |
-| `src/app/loading.tsx` | Loading spinner |
-| `src/app/opengraph-image.tsx` | Dynamic OG image (1200x630, edge) |
-| `src/app/feed.xml/route.ts` | RSS feed for blog |
-| `src/app/cookies/page.tsx` | Cookie policy (GDPR) |
-| `src/app/robots.ts` | robots.txt (40+ AI bots) |
-| `src/app/sitemap.ts` | Dynamic sitemap (226 URLs) |
-| `src/components/tool-page.tsx` | Tool wrapper: breadcrumb, FAQs, related tools, schema |
-| `src/components/header.tsx` | Header with working search |
-| `src/components/footer.tsx` | Footer: author, cookie policy, nav |
-| `src/i18n/translations.ts` | 10 languages |
-| `src/lib/blog-data.ts` | Blog: PostgreSQL + fallback |
-| `public/llms.txt` | AI discovery summary |
-| `public/llms-full.txt` | AI discovery full (128KB) |
-| `public/ads.txt` | AdSense publisher |
-| `public/manifest.json` | PWA manifest |
-| `public/humans.txt` | Creator info |
-| `public/.well-known/security.txt` | Security contact (RFC 9116) |
+### Aug 13, 2026 — Phase 1: World-Class UX Overhaul
+- Cmd+K command palette with Fuse.js (191 tools, 100+ aliases each)
+- Tool registry (1,500 lines, single source of truth)
+- Share buttons on every tool page
+- Favorites/bookmarks system
+- Recently Used + Popular Tools on homepage
+- Homepage now uses tool-registry (fixed 70/191 search bug)
 
----
+### Aug 11, 2026 — SEO/Trust 100% Overhaul
+- Person schema + About page author bio
+- llms-full.txt (128KB, 2,024 lines)
+- Article schema on blog + ItemList on categories
+- 404, error, loading pages
+- OG image, RSS feed, cookie policy
+- 40+ AI bots in robots.txt
+- Canonical URLs, skip-to-content, ARIA labels
+- VPS RAM: 69% → 47%
 
-## Recent Tool Upgrades (Aug 11, 2026)
-
-| Tool | Changes |
-|------|---------|
-| Markdown Converter | Complete rewrite: 3 output modes (dropdown), file upload, clipboard paste, load example, stats bar, 826 lines |
-| Markdown Editor | 16-button toolbar, keyboard shortcuts, auto-save, file upload, drag-and-drop, 580 lines |
-| QR Code Generator | Replaced broken Google Charts API with 100% client-side Canvas, color customization, SVG download |
-| Image Resizer | Fixed fake drag-and-drop, added PNG/JPEG/WebP format selector + quality slider, 6 social presets |
+### Aug 11, 2026 — Tool Upgrades
+- Markdown Converter: complete rewrite (826 lines)
+- Markdown Editor: toolbar, shortcuts, auto-save (580 lines)
+- QR Code Generator: replaced broken Google Charts API
+- Image Resizer: real drag-and-drop + PNG/JPEG/WebP + presets
 
 ---
 
@@ -253,39 +321,68 @@
 | 2026-08-09 | Domain migration to utilsnow.com |
 | 2026-08-09 | 17 AI tools built (Phase A + B) |
 | 2026-08-09 | AdSense applied, GSC + Bing verified |
-| 2026-08-11 | Homepage counts fixed to match reality |
-| 2026-08-11 | Markdown Converter rewrite + Editor upgrade |
-| 2026-08-11 | QR Code fix + Image Resizer fix |
-| 2026-08-11 | Person schema + llms-full.txt (128KB) + Article schema |
-| 2026-08-11 | ItemList schema on categories + freshness signals |
-| 2026-08-11 | 100% SEO/GEO/Trust overhaul: 404, error, loading, OG image, canonical URLs, RSS feed, cookie policy, skip-to-content, ARIA, search, related tools, 40+ AI bots in robots.txt, manifest, humans.txt, security.txt |
-| 2026-08-11 | VPS RAM optimized: 69% → 47% (Docker limits + cleanup) |
+| 2026-08-11 | SEO/Trust 100% overhaul + tool upgrades + RAM optimization |
+| 2026-08-13 | Phase 1 UX: Cmd+K, share, favorites, popular tools, tool registry |
 
 ---
 
-## Manual Actions Required (For Owner)
+## Master Plan — Remaining Phases
 
-| Action | Where | Priority |
-|--------|-------|----------|
-| Check AdSense approval | adsense.google.com | Wait (2-14 days) |
-| Request indexing of top 20 pages | Google Search Console → URL Inspection | Do daily (10-15/day) |
-| Submit URL to Brave Search | search.brave.com/submit-url | Do once |
-| Submit to AlternativeTo | alternativeto.net | Week 2 |
-| Submit to SaaSHub | saashub.com | Week 2 |
-| Submit to SourceForge | sourceforge.net | Week 2 |
-| Create Crunchbase profile | crunchbase.com | Week 2 |
-| Start Reddit/Quora presence | r/webdev, r/productivity | Build karma first |
+### Phase 2: Automation Engine (n8n + Postiz API)
+| Automation | Tool | Schedule | Human Effort |
+|-----------|------|----------|-------------|
+| Auto blog posts (1/day, SEO) | n8n + Gemini 2.5 Flash | Daily 2 AM | ZERO |
+| Auto social posting (3x/day) | n8n → Postiz Public API | 3x daily | ZERO |
+| Auto indexing (Google + Bing) | IndexNow + Google API via n8n | Daily 3 AM | ZERO |
+| Auto content refresh | n8n + GSC API + Gemini | Weekly | ZERO |
+| Auto newsletter | n8n → Listmonk (self-hosted) | Weekly Thu | ZERO |
+| Auto monitoring (uptime, SEO) | Uptime Kuma + n8n → Telegram | 24/7 | 5min reading |
+| Auto backlink submission | backlink-pilot (226 sites) | Daily 10/day | ZERO |
+
+### Phase 3: Programmatic SEO (1,300+ pages)
+| Page Type | Pages | Traffic Potential |
+|-----------|-------|-------------------|
+| Unit conversion pairs | 568 | 100K-200K/mo |
+| "What is X% of Y" calculators | 200+ | 50K-200K/mo |
+| File format conversions | 134 | 100K-500K/mo |
+| "How to" guides | 194 | 50K-200K/mo |
+| Comparison pages | 140 | 50K-100K/mo |
+| Reference tables | 65 | 30K-50K/mo |
+
+### Phase 4: Revenue Stack (Beyond AdSense)
+| Channel | Monthly at Scale |
+|---------|-----------------|
+| Display Ads (AdSense → Mediavine → Raptive) | $5K-$175K |
+| UtilsNow Pro ($4.99/mo via LemonSqueezy) | $1.5K-$750K |
+| Affiliate marketing | $3K-$60K |
+| API access | $2K-$25K |
+| Chrome extension | $750-$15K |
+| White-label licensing | $3K-$20K |
+| Sponsored placements | $1.5K-$15K |
+
+### Premium UX Features (Future)
+- Micro-interactions (copy animations, button feedback)
+- Onboarding flow (Developer/Designer/Student personas)
+- Usage dashboard + gamification (badges, streaks, shareable stats)
+- Tool of the Day
+- Progressive disclosure (Basic/Advanced modes)
+- Embeddable widgets (/embed/[tool])
+- Comparison pages (/vs/tinywow, /vs/10015)
+- Audience landing pages (/for/developers, /for/students)
 
 ---
 
-## Future Roadmap
+## Manual Actions Required (Owner)
 
-| Phase | Features | Impact |
-|-------|----------|--------|
-| Tool upgrades | JSON tree view, regex colored highlights, EMI amortization, Base64 file upload | Higher user retention |
-| AI Translator | 414M global searches target | Massive traffic |
-| Programmatic SEO | 500+ format conversion pages | More Google entry points |
-| Comparison pages | "UtilsNow vs SmallPDF" etc. | High-conversion traffic |
-| helpContent on all tools | Remaining 169 tools | Better AdSense approval odds |
-| Chrome extension | Quick-access to tools | User retention |
-| Freemium subscription | $4.99/mo for premium features | Direct revenue |
+| # | Action | Time | Where |
+|---|--------|------|-------|
+| 1 | Submit domain to BlueCoat | 2min | sitereview.bluecoat.com |
+| 2 | Submit to Zscaler | 2min | sitereview.zscaler.com |
+| 3 | Submit to FortiGuard | 2min | fortiguard.fortinet.com/faq/wfratingsubmit |
+| 4 | Submit to BrightCloud | 2min | brightcloud.com/tools/change-request.php |
+| 5 | Submit to Norton Safe Web | 2min | safeweb.norton.com |
+| 6 | Submit to Brave Search | 2min | search.brave.com/submit-url |
+| 7 | Connect LinkedIn Page in Postiz | 5min | http://200.141.2.221 → Integrations → LinkedIn Page |
+| 8 | Generate Postiz API key | 2min | http://200.141.2.221 → Settings → Developers |
+| 9 | Request indexing 10 URLs/day in GSC | 10min/day | search.google.com/search-console → URL Inspection |
+| 10 | Check AdSense approval | 1min | adsense.google.com |
