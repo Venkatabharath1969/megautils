@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const LIST_UUID = 'a41f23f8-9c36-4b73-ba93-9faae56e4367'
+const LIST_UUID = '2d190a10-3c68-44fe-88c5-92ac116ac0ba'
 
 export async function POST(req: NextRequest) {
   try {
