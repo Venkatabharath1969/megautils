@@ -1,7 +1,7 @@
 # UtilsNow — Complete Project Context
 
 > **Single source of truth for all AI sessions. Read this FIRST.**
-> **Last updated: 2026-08-13 (Phase 3 complete)**
+> **Last updated: 2026-08-13 (All 4 Phases complete)**
 
 ---
 
@@ -354,17 +354,33 @@ utilsnow.com is blocked by corporate firewalls as "Newly Registered Domain" (reg
 
 ## Master Plan — Remaining Phases
 
-### Phase 2: Automation Engine — STATUS (COMPLETE)
+### Phase 2: Automation Engine — COMPLETE
 | Automation | Status | Details |
 |-----------|--------|---------|
 | Auto social posting (3x/day) | ✅ LIVE | Shell script → Postiz API, 5 templates, 3 platforms |
-| Auto indexing (230 URLs/day) | ✅ LIVE | IndexNow batch API, tested HTTP 200 |
-| Uptime monitoring | ✅ LIVE | Uptime Kuma at http://200.141.2.221:8090 |
-| Newsletter system | ✅ DEPLOYED | Listmonk at http://200.141.2.221:9090 (admin/UtilsNow2026!) |
-| Backlink directories | ✅ READY | backlink-pilot (259 sites), config created, tracker ready |
+| Auto indexing (557 URLs/day) | ✅ LIVE | IndexNow batch API, tested HTTP 200 |
+| Uptime monitoring | ✅ LIVE | Uptime Kuma (Cloudflare tunnel) |
+| Newsletter system | ✅ DEPLOYED | Listmonk (Cloudflare tunnel), List UUID: a41f23f8-9c36-4b73-ba93-9faae56e4367 |
+| Backlink directories | ✅ READY | backlink-pilot (259 sites), config created |
 | Postiz OAuth app | ✅ CREATED | Client ID: pca_2sFVY55T8v3GcgTb4iPDXdOSafw3bfKR |
-| Auto blog posts (1/day, SEO) | ⏳ Phase 3 | n8n + Gemini 2.5 Flash |
-| Auto content refresh | ⏳ Phase 3 | n8n + GSC API + Gemini |
+
+### Phase 4: Revenue Stack — COMPLETE
+| Feature | Status | Details |
+|---------|--------|---------|
+| Email subscription | ✅ LIVE | EmailSubscribe component → /api/subscribe → Listmonk |
+| Affiliate suggestions | ✅ LIVE | ProSuggestion: 8 categories (image→Canva, dev→VS Code, seo→Semrush, etc.) |
+| Pro upsell banner | ✅ LIVE | After 10 daily tool uses (localStorage tracker, dismissible) |
+| /pro landing page | ✅ LIVE | Coming Soon, $4.99/mo, feature cards |
+| Embeddable widgets | ✅ LIVE | /embed/[slug] + EmbedCode copy button on every tool |
+| Google Analytics 4 | ✅ LIVE | G-EJLXNS4PYF (env: NEXT_PUBLIC_GA_ID) |
+
+### Cloudflare Tunnel Access (Corporate Firewall Bypass)
+| Service | Tunnel URL | Login |
+|---------|-----------|-------|
+| Postiz | https://expansion-epson-drum-celebs.trycloudflare.com | co.bharaths@gmail.com / MegaUtils2026! |
+| Uptime Kuma | https://foam-presidential-baptist-infant.trycloudflare.com | admin / UtilsNow2026! |
+| Listmonk | https://hampton-sierra-stored-website.trycloudflare.com | admin / UtilsNow2026! |
+Note: Quick tunnel URLs change on restart. Run `cloudflared tunnel --url http://localhost:PORT` to recreate.
 
 ### Phase 3: Programmatic SEO — STATUS (COMPLETE - 327 pages live)
 | Page Type | Pages | Routes | Status |
@@ -425,3 +441,30 @@ utilsnow.com is blocked by corporate firewalls as "Newly Registered Domain" (reg
 | 8 | Generate Postiz API key | 2min | http://200.141.2.221 → Settings → Developers |
 | 9 | Request indexing 10 URLs/day in GSC | 10min/day | search.google.com/search-console → URL Inspection |
 | 10 | Check AdSense approval | 1min | adsense.google.com |
+
+---
+
+## AI Content & Video Pipeline (Built Aug 14, 2026)
+
+### Gemini-Powered Social Posting (LIVE)
+- **Script**: `/opt/automation/auto-social-gemini.sh` (428 lines)
+- **API**: Gemini 2.5 Flash (free tier)
+- **Key**: `/opt/automation/.gemini-key`
+- **Schedule**: Cron 3x/day (9 AM, 1 PM, 6 PM IST)
+- **Platforms**: LinkedIn (published), Bluesky (published), X/Twitter (credits depleted)
+- **Content**: Platform-native, problem-first hooks, category-aware prompts
+- **Fallback**: Template-based if Gemini API fails
+- **Log**: `/var/log/utilsnow-social-ai.log`
+
+### AI Video Pipeline (TESTED)
+- **Location**: `/opt/automation/video-pipeline/`
+- **Pipeline**: Screenshots (Playwright) → Script (Gemini) → Voiceover (Edge TTS) → Video (FFmpeg)
+- **Output**: 1920x1080 MP4, Ken Burns zoom, crossfade transitions
+- **Cost**: $0.01-0.05 per video
+- **Test result**: json-formatter.mp4 — 22s, 7.6MB, working
+- **Daily cron**: `/opt/automation/video-pipeline/daily-video.sh` (ready, needs YouTube API for auto-upload)
+
+### Google Analytics 4
+- **Measurement ID**: G-EJLXNS4PYF
+- **Env var**: NEXT_PUBLIC_GA_ID in .env.local
+- **Status**: LIVE on all pages
