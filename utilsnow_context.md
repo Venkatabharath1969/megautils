@@ -496,3 +496,62 @@ Note: Quick tunnel URLs change on restart. Run `cloudflared tunnel --url http://
 - Links in FIRST COMMENT, never in post body (50% reach penalty)
 - Reply to every comment within 60 minutes
 - Best times: 8:30 AM IST Tue-Thu
+
+---
+
+## Multi-Platform Social Media Strategy (Aug 15, 2026)
+
+### Active Platforms
+| Platform | Account | Status | Automation |
+|----------|---------|--------|-----------|
+| LinkedIn (personal) | Bharath S | ✅ PUBLISHING | Postiz 3x/week + Python 3x/week + Engagement bot 2x/day |
+| Bluesky | @utilsnow.bsky.social | ✅ PUBLISHING (11 posts) | Postiz daily + screenshots |
+| X/Twitter | @techieBharath | ❌ Credits depleted | Skip (paid API $0.20/post) |
+
+### Platforms To Add (All Free API, All Supported by Postiz)
+| Platform | Type | Content | Frequency |
+|----------|------|---------|-----------|
+| Dev.to | Blog articles | Tool deep-dives, tutorials | 1x/week |
+| Hashnode | Blog articles | Cross-post from Dev.to | 1x/week |
+| Mastodon | Microblog | Tool tips + links | Daily |
+| Discord | Webhook | Tool announcements | Daily |
+| Telegram | Channel | Tool tips + links | Daily |
+| LinkedIn Newsletter | Newsletter | "The Developer Toolkit" — weekly edition | 1x/week |
+
+### LinkedIn Engagement (Automated)
+- **Engagement bot**: `/opt/automation/linkedin-engage.sh` — runs 2x/day (Mon-Sat)
+- **Comment responder**: `/opt/bharath-se-automation/engagement/comment_responder.py`
+- **Features**: Fetch comments → classify (substantive/spam) → Gemini AI reply → post threaded response
+- **Golden Hour**: Monitors at T+5/15/30/60 minutes after each post
+
+### Carousel Image Service
+- **Service**: `/opt/automation/carousel-service/` (Satori + Resvg)
+- **Port**: 3457 (systemd: carousel-service)
+- **API**: `POST http://localhost:3457/api/slides`
+- **Output**: 1080x1080 PNG slides (hook, content, CTA with utilsnow.com)
+
+### LinkedIn Algorithm Rules (Data-Backed)
+- Max 1 post/day (40% reach drop at 2+/day, 6 studies, 2M+ posts)
+- Min 24h gap between posts
+- Carousels get 5.85x more engagement than text (Buffer, 45M posts)
+- Links in body (raw URL) = no penalty. Link preview CARDS = 50% penalty
+- Reply to comments within 60 minutes (Golden Hour)
+- 80% value / 20% promotional content mix
+
+### LinkedIn Groups To Join (Manual)
+- Python Developers Community (1.9M members)
+- Front End Developer
+- Freelance Developers (8K)
+- Productivity Tips & Best Practices (23K)
+- Link Building and SEO (30K)
+
+### Accounts Owner Needs To Create
+| Platform | Action | Credential Needed |
+|----------|--------|-------------------|
+| Dev.to | Sign up → API key | API key |
+| Hashnode | Sign up → PAT token | Personal Access Token |
+| Mastodon | Sign up → Create app → Token | Access token |
+| Telegram | @BotFather → /newbot + Create @utilsnow channel | Bot token |
+| Discord | Create server → Webhook | Webhook URL |
+| YouTube | Create channel → Enable Data API → OAuth | Client ID + Secret |
+| Brevo | Sign up → SMTP credentials | SMTP host/port/user/pass |
