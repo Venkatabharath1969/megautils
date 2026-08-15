@@ -468,3 +468,31 @@ Note: Quick tunnel URLs change on restart. Run `cloudflared tunnel --url http://
 - **Measurement ID**: G-EJLXNS4PYF
 - **Env var**: NEXT_PUBLIC_GA_ID in .env.local
 - **Status**: LIVE on all pages
+
+### LinkedIn Algorithm Optimization (Aug 15, 2026)
+
+**CRITICAL FINDING:** Posting 4x/day was causing 40%+ reach drop per post (confirmed by 6 studies, 2M+ posts analyzed).
+
+**Old schedule (HARMFUL):** Python 1x/day + Postiz 3x/day = 4 posts/day = 28/week
+**New schedule (OPTIMIZED):** Python 3x/week + Postiz 3x/week = 6 posts/week, 24h gap
+
+| Day | LinkedIn Source | Bluesky | Content Type |
+|-----|---------------|---------|-------------|
+| Mon | Python project (Java/tech) | ✅ Postiz | Personal brand |
+| Tue | Postiz (UtilsNow tool) | ✅ Postiz | Tool promotion |
+| Wed | Python project (Java/tech) | ✅ Postiz | Personal brand |
+| Thu | Postiz (UtilsNow tool) | ✅ Postiz | Tool promotion |
+| Fri | Python project (Java/tech) | ✅ Postiz | Personal brand |
+| Sat | Postiz (UtilsNow tool) | ✅ Postiz | Tool promotion |
+| Sun | REST | ✅ Postiz | No LinkedIn |
+
+**Script:** `/opt/automation/auto-social-optimized.sh`
+**Cron:** `0 3 * * *` (8:30 AM IST) — posts LinkedIn only on Tue/Thu/Sat, Bluesky daily
+
+**Key rules (data-backed):**
+- Max 1 LinkedIn post/day (40% reach drop at 2+/day)
+- Min 24h gap between LinkedIn posts
+- 80% value / 20% promotional content mix
+- Links in FIRST COMMENT, never in post body (50% reach penalty)
+- Reply to every comment within 60 minutes
+- Best times: 8:30 AM IST Tue-Thu
