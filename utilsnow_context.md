@@ -571,8 +571,12 @@ Note: Quick tunnel URLs change on restart. Run `cloudflared tunnel --url http://
 **Cron:** Daily at 8:30 AM IST — single trigger posts to ALL 5 platforms
 **Content:** Gemini AI generates platform-native content per tool
 
-### Platforms Still Pending
-| Platform | Status | Blocker |
-|----------|--------|---------|
-| Dev.to | ⏳ Needs API key | User needs: dev.to/settings/extensions → scroll to API Keys |
-| Hashnode | ⏳ Needs blog creation | User needs to create a Hashnode blog/publication first |
+### Platforms NOT Available (Verified Aug 15, 2026)
+| Platform | Reason | Alternative |
+|----------|--------|-------------|
+| Dev.to | Account suspended (onboarding incomplete) | Email support@dev.to for reinstatement |
+| Hashnode | API became PAID-ONLY (May 2026) | Skip — use Dev.to instead |
+| X/Twitter | API costs $0.20 per post with URL | Skip — too expensive |
+| Medium | API dead since Jan 2025 | Skip — no new tokens |
+| Lemmy | Registration requires manual approval | Apply at programming.dev |
+| Reddit | Commercial API requires manual approval + $0.24/1K calls | Post manually only |
