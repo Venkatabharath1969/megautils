@@ -555,3 +555,24 @@ Note: Quick tunnel URLs change on restart. Run `cloudflared tunnel --url http://
 | Discord | Create server → Webhook | Webhook URL |
 | YouTube | Create channel → Enable Data API → OAuth | Client ID + Secret |
 | Brevo | Sign up → SMTP credentials | SMTP host/port/user/pass |
+
+### Multi-Platform Posting (Aug 15, 2026) — 5 Platforms from 1 Trigger
+
+| Platform | Handle/Channel | Status | Verified |
+|----------|---------------|--------|----------|
+| LinkedIn | Bharath S (personal) | ✅ PUBLISHING | Live URLs confirmed |
+| Bluesky | @utilsnow.bsky.social | ✅ PUBLISHING | 11+ posts live |
+| Mastodon | @UtilsNow@mastodon.social | ✅ PUBLISHING | https://mastodon.social/@UtilsNow |
+| Telegram | @utilsnow channel | ✅ PUBLISHING | https://t.me/utilsnow |
+| Discord | UtilsNow Community webhook | ✅ PUBLISHING | HTTP 204 confirmed |
+
+**Script:** `/opt/automation/auto-social-optimized.sh`
+**Credentials:** `/opt/automation/.social-credentials`
+**Cron:** Daily at 8:30 AM IST — single trigger posts to ALL 5 platforms
+**Content:** Gemini AI generates platform-native content per tool
+
+### Platforms Still Pending
+| Platform | Status | Blocker |
+|----------|--------|---------|
+| Dev.to | ⏳ Needs API key | User needs: dev.to/settings/extensions → scroll to API Keys |
+| Hashnode | ⏳ Needs blog creation | User needs to create a Hashnode blog/publication first |
