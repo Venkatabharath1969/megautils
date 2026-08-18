@@ -81,7 +81,34 @@ export default function XmlToJsonTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="XML to JSON Converter" description="Convert XML data to JSON format. Parses tags, attributes, and text content." category="developer" categoryLabel="Developer Tools" faqs={[
+    <ToolPage title="XML to JSON Converter" description="Convert XML data to JSON format. Parses tags, attributes, and text content." category="developer" categoryLabel="Developer Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>XML to JSON Converter is a free browser-based tool that lets you convert XML documents to JSON format, mapping elements to objects and attributes to properties. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when integrating XML-based legacy systems with modern JSON APIs, migrating data formats, or processing XML feeds in JavaScript. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this data conversion tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need xml to json.</li>
+          </ul>
+        </>
+      }
+ faqs={[
         { question: 'How do I convert XML to JSON?', answer: 'Paste your XML into the input and click Convert to get a JSON representation. Element tags become keys, and repeated elements are automatically grouped into arrays.' },
         { question: 'How are XML attributes handled in JSON?', answer: 'XML attributes are placed in an @attributes object within the element, and text content of elements with attributes is stored under a #text key.' },
         { question: 'Does this tool validate XML before converting?', answer: 'Yes, the tool uses the browser DOMParser to validate XML syntax. If your XML is malformed, it will display a specific error message.' },

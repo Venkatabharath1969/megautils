@@ -83,6 +83,32 @@ export default function IpAddressInfoTool() {
       description="View your current public IP address. This tool makes a network request to api.ipify.org to fetch your IP."
       category="network"
       categoryLabel="Network Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>IP Address Info is a free browser-based tool that lets you display your current IP address along with geolocation, ISP, and network information. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when checking your public IP, verifying VPN connections, troubleshooting network issues, or determining geographic location. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this networking tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need ip lookup.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'What is a public IP address?', answer: 'A public IP address is the address assigned to your network by your internet service provider (ISP). It is visible to websites and services you connect to on the internet.' },
         { question: 'What is the difference between IPv4 and IPv6?', answer: 'IPv4 uses 32-bit addresses (e.g., 192.168.1.1) supporting about 4.3 billion addresses. IPv6 uses 128-bit addresses (e.g., 2001:db8::1) supporting virtually unlimited addresses.' },

@@ -39,6 +39,31 @@ export default function AngleConverterTool() {
       description="Convert between degrees, radians, gradians, turns, arc minutes, and arc seconds."
       category="converters"
       categoryLabel="Unit Converters"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>The Angle Converter transforms angle measurements between different units including degrees, radians, gradians (gons), turns, arc minutes, and arc seconds. It is essential for mathematics, engineering, navigation, and astronomy where different conventions are used depending on the field and application.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter a numeric value in any angle unit field.</li>
+            <li>All other unit fields update <strong>instantly</strong> with the converted values.</li>
+            <li>Use the results for trigonometric calculations, navigation, or engineering work.</li>
+            <li>Copy any converted value for use in your calculations.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>Use an angle converter when switching between mathematical conventions (radians for calculus, degrees for geometry), programming trigonometric functions (most languages use radians), surveying work (which uses gradians), or astronomical calculations (which use arc minutes and arc seconds).</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Remember: 180 degrees equals pi radians. This is the most common conversion in programming.</li>
+            <li>Gradians divide a right angle into 100 parts, making them convenient for surveying.</li>
+            <li>One full turn equals 360 degrees, 2*pi radians, or 400 gradians.</li>
+            <li>Arc minutes and arc seconds are used primarily in navigation and astronomy.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'How many radians are in 180 degrees?', answer: '180 degrees equals exactly pi radians, which is approximately 3.14159 radians. This is one of the most fundamental angle conversions in mathematics.' },
         { question: 'What is a gradian?', answer: 'A gradian (also called a gon) divides a right angle into 100 equal parts, so a full circle is 400 gradians. It is primarily used in surveying and some European countries.' },

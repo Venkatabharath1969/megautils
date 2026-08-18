@@ -77,7 +77,34 @@ export default function TextDiffTool() {
   const clear = () => { setLeft(''); setRight(''); setShowDiff(false) }
 
   return (
-    <ToolPage title="Text Diff Checker" description="Compare two texts side by side and highlight differences" category="developer" categoryLabel="Developer Tools" faqs={[{ question: 'What is a text diff checker?', answer: 'A diff checker compares two pieces of text and highlights the exact lines and words that differ between them, making it easy to spot changes.' }, { question: 'How does the diff algorithm work?', answer: 'It uses a longest common subsequence (LCS) algorithm to find the minimal set of additions, deletions, and modifications between two texts.' }, { question: 'Can I compare code with this tool?', answer: 'Yes. This diff checker works with any text including source code, configuration files, and documents. It preserves whitespace and indentation for accurate code comparison.' }, { question: 'Is my text data safe?', answer: 'Yes. All comparison happens locally in your browser. Your text is never uploaded to any server.' }]}>
+    <ToolPage title="Text Diff Checker" description="Compare two texts side by side and highlight differences" category="developer" categoryLabel="Developer Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>Text Diff is a free browser-based tool that lets you compare two text inputs and visualize the differences with highlighted additions and deletions. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when reviewing document changes, comparing code versions, verifying edits in configuration files, or validating content updates. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this development tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need text comparison.</li>
+          </ul>
+        </>
+      }
+ faqs={[{ question: 'What is a text diff checker?', answer: 'A diff checker compares two pieces of text and highlights the exact lines and words that differ between them, making it easy to spot changes.' }, { question: 'How does the diff algorithm work?', answer: 'It uses a longest common subsequence (LCS) algorithm to find the minimal set of additions, deletions, and modifications between two texts.' }, { question: 'Can I compare code with this tool?', answer: 'Yes. This diff checker works with any text including source code, configuration files, and documents. It preserves whitespace and indentation for accurate code comparison.' }, { question: 'Is my text data safe?', answer: 'Yes. All comparison happens locally in your browser. Your text is never uploaded to any server.' }]}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <div className="flex items-center justify-between mb-2">

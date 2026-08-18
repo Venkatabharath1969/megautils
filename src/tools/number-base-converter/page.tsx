@@ -51,6 +51,32 @@ export default function NumberBaseConverterTool() {
       description="Convert between binary, octal, decimal, and hexadecimal. Enter in any base and see all four simultaneously."
       category="converters"
       categoryLabel="Unit Converters"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>Number Base Converter is a free browser-based tool that lets you convert numbers between decimal, binary, octal, and hexadecimal number systems. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when programming tasks involving bitwise operations, understanding memory addresses, debugging binary data, or learning computer science. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this computing tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need number system conversion.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'How do I convert binary to decimal?', answer: 'Select "Binary (Base 2)" as the input base, enter your binary number, and the decimal equivalent appears instantly alongside octal and hexadecimal values.' },
         { question: 'What is the difference between binary, octal, decimal, and hexadecimal?', answer: 'They are number systems with different bases: binary uses 2 digits (0-1), octal uses 8 (0-7), decimal uses 10 (0-9), and hexadecimal uses 16 (0-9, A-F).' },

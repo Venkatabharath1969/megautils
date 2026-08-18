@@ -48,6 +48,32 @@ export default function FuelEconomyConverterTool() {
       description="Convert between km/L, mpg (US), mpg (UK), and L/100km fuel consumption units."
       category="converters"
       categoryLabel="Unit Converters"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>Fuel Economy Converter is a free browser-based tool that lets you convert between fuel economy units including MPG (US), MPG (UK), km/L, and L/100km. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when comparing vehicle fuel efficiency across different measurement systems used in various countries. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this automotive tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need fuel economy conversion.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'How do I convert MPG to L/100km?', answer: 'Divide 235.215 by the MPG (US) value to get L/100km. For example, 30 MPG equals approximately 7.84 L/100km.' },
         { question: 'What is the difference between US MPG and UK MPG?', answer: 'US MPG uses the US gallon (3.785 liters) while UK MPG uses the imperial gallon (4.546 liters). A UK MPG value will always be higher than US MPG for the same vehicle.' },

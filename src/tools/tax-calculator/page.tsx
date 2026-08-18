@@ -106,6 +106,32 @@ export default function TaxCalculator() {
       description="Estimate your US federal income tax. See bracket breakdown, effective tax rate, and tax owed by filing status."
       category="financial"
       categoryLabel="Financial Calculators"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>Tax Calculator is a free browser-based tool that lets you estimate income tax liability based on income, deductions, and applicable tax brackets for basic tax planning. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when estimating tax payments, understanding marginal tax rates, planning deductions, or comparing tax scenarios. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this taxation tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need income tax estimation.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'What is the difference between marginal and effective tax rate?', answer: 'Your marginal tax rate is the rate on your last dollar of income, while your effective tax rate is the average rate you pay across all your income after applying bracket thresholds.' },
         { question: 'What is the standard deduction for 2024?', answer: 'For 2024, the standard deduction is $14,600 for single filers, $29,200 for married filing jointly, and $21,900 for head of household.' },

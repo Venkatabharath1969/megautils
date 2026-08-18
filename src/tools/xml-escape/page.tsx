@@ -47,7 +47,34 @@ export default function XmlEscapeTool() {
   const clear = () => { setInput(''); setOutput('') }
 
   return (
-    <ToolPage title="XML Escape / Unescape" description="Escape or unescape XML special characters like ampersand, angle brackets, quotes, and apostrophes." category="string" categoryLabel="String Utilities" faqs={[
+    <ToolPage title="XML Escape / Unescape" description="Escape or unescape XML special characters like ampersand, angle brackets, quotes, and apostrophes." category="string" categoryLabel="String Utilities"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>XML Escape/Unescape is a free browser-based tool that lets you escape special characters (&amp;, &lt;, &gt;, &quot;, &apos;) for safe inclusion in XML documents, or unescape XML entities. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when preparing content for XML feeds, fixing malformed XML, or handling user input in XML-based APIs. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this data processing tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need xml escaping.</li>
+          </ul>
+        </>
+      }
+ faqs={[
         { question: 'What characters need to be escaped in XML?', answer: 'The five XML special characters that must be escaped are & (&amp;amp;), < (&amp;lt;), > (&amp;gt;), " (&amp;quot;), and the apostrophe (&amp;apos;).' },
         { question: 'Why do I need to escape XML characters?', answer: 'Unescaped special characters like < and & break XML parsing because they are reserved for markup syntax. Escaping ensures your text content is treated as data, not structure.' },
         { question: 'What is the difference between XML and HTML escaping?', answer: 'XML uses the same core five entities as HTML but is stricter. HTML has many more named entities like &amp;nbsp; and &amp;copy; that are not valid in XML.' },

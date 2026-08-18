@@ -288,6 +288,32 @@ export default function AIPhotoColorizer() {
       description="Add color to black & white photos instantly. Choose from natural, warm, cool, and vintage styles — runs entirely in your browser."
       category="image"
       categoryLabel="Image Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>AI Photo Colorizer transforms black-and-white photographs into color images using deep learning. The neural network has been trained on millions of color photographs and learned to predict realistic colors for objects, skin tones, skies, and landscapes. It runs entirely in your browser, keeping your photos private.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Upload a grayscale or black-and-white photograph.</li>
+            <li>Wait while the AI model analyzes the image and predicts colors.</li>
+            <li>View the colorized result alongside the original.</li>
+            <li>Download the colorized image in full resolution.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>Photo colorization breathes life into historical photographs, family archives, and vintage images. Genealogy enthusiasts use it to visualize ancestors in color, historians use it for educational presentations, and media producers use it to restore archival footage for documentaries.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>High-contrast black-and-white photos with clear details produce the best colorization.</li>
+            <li>The AI makes educated guesses about colors — it may not match the original colors exactly.</li>
+            <li>Outdoor scenes with sky, grass, and natural elements tend to colorize very well.</li>
+            <li>Portraits usually get realistic skin tones, but clothing colors are estimated.</li>
+            <li>All processing is local — your family photos are never uploaded to any server.</li>
+          </ul>
+        </>
+      }
       slug="ai-photo-colorizer"
       faqs={[
         {

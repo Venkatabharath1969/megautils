@@ -38,6 +38,31 @@ export default function AreaConverterTool() {
       description="Convert between square meters, square feet, square kilometers, square miles, acres, and hectares."
       category="converters"
       categoryLabel="Unit Converters"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>The Area Converter transforms measurements between different area units including square meters, square feet, acres, hectares, square kilometers, square miles, square yards, and square inches. It handles both metric and imperial units, making it essential for real estate, land surveying, agriculture, and international property comparisons.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter a numeric value in any area unit field.</li>
+            <li>All other unit fields update <strong>instantly</strong> with the converted values.</li>
+            <li>Use the results for property comparisons, land measurements, or construction calculations.</li>
+            <li>Copy any converted value for use in your documents.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>Area conversion is needed when comparing property sizes listed in different unit systems, converting between metric and imperial for international real estate, calculating land area for agricultural planning, or working with construction blueprints that use different measurement standards.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>One acre equals 43,560 square feet — a useful figure for US real estate.</li>
+            <li>One hectare equals 10,000 square meters or roughly 2.47 acres.</li>
+            <li>For quick mental math, 1 square meter is approximately 10.76 square feet.</li>
+            <li>All conversions are mathematically precise — no rounding errors in the calculation.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'How many square feet are in an acre?', answer: 'One acre equals 43,560 square feet. An acre is roughly the size of a football field without the end zones.' },
         { question: 'How do I convert square meters to square feet?', answer: 'Multiply square meters by 10.764 to get square feet. For example, 100 square meters equals approximately 1,076.4 square feet.' },

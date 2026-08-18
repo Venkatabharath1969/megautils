@@ -70,6 +70,31 @@ export default function AgeCalculatorTool() {
       description="Calculate your exact age in years, months, and days. See your next birthday countdown and total days alive."
       category="datetime"
       categoryLabel="Date & Time"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>An age calculator computes the exact duration between two dates — typically your birth date and today — and returns your age in years, months, and days. Unlike simply subtracting years, this tool accounts for leap years, varying month lengths, and the exact day boundaries that affect whether you have already passed your birthday in the current calendar year.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your <strong>date of birth</strong> in the input field.</li>
+            <li>Optionally change the <strong>end date</strong> if you want to calculate age at a specific past or future point.</li>
+            <li>View your age in <strong>years, months, and days</strong> instantly.</li>
+            <li>Use the results for age verification, form filling, or curiosity.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>Use an age calculator when filling out official forms, verifying eligibility for age-restricted services, planning milestone birthdays, or calculating the exact age difference between family members. It is also helpful for HR professionals determining employee tenure or retirement eligibility.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Leap year babies (February 29) are handled correctly — the tool counts actual elapsed days.</li>
+            <li>All calculations run in your browser, so your birth date stays private.</li>
+            <li>For historical dates, the Gregorian calendar is assumed throughout.</li>
+            <li>Time zones are not factored in — only the date portion matters.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'How is the exact age calculated?', answer: 'The calculator computes the precise difference between your date of birth and the current date, accounting for varying month lengths and leap years to give exact years, months, and days.' },
         { question: 'Does the age calculator update in real time?', answer: 'Yes, the total hours and minutes counters update every second, giving you a live view of your age ticking up in real time.' },

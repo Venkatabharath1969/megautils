@@ -50,6 +50,32 @@ export default function SchemaFaqTool() {
       description="Generate FAQPage JSON-LD structured data for SEO."
       category="seo"
       categoryLabel="SEO Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>FAQ Schema Generator is a free browser-based tool that lets you generate FAQPage JSON-LD structured data for frequently asked questions sections on your pages. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when getting FAQ rich snippets in search results that display expandable question-and-answer pairs. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this SEO tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need faq schema markup.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'What is FAQ schema markup?', answer: 'FAQ schema is JSON-LD structured data that marks up a page containing a list of questions and answers. It can make your page eligible for a rich FAQ snippet directly in Google search results.' },
         { question: 'How many questions should I include in FAQ schema?', answer: 'There is no strict limit, but Google typically displays 2-4 questions in the rich result. Include all relevant FAQs on your page, and Google will choose which ones to show.' },

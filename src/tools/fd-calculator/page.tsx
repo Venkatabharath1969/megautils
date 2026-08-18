@@ -41,6 +41,32 @@ export default function FDCalculator() {
       description="Calculate Fixed Deposit maturity amount and interest earned. Supports different compounding frequencies."
       category="financial"
       categoryLabel="Financial Calculators"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>FD Calculator is a free browser-based tool that lets you calculate Fixed Deposit maturity amounts and interest earned with support for simple and compound interest options. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when planning fixed deposit investments, comparing bank FD rates, or estimating returns on term deposits. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this finance tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need fixed deposit calculation.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'How is FD interest calculated?', answer: 'FD interest is calculated using compound interest: A = P(1 + r/n)^(nt), where P is principal, r is annual rate, n is compounding frequency, and t is tenure in years.' },
         { question: 'Which compounding frequency gives the highest FD returns?', answer: 'Monthly compounding yields the highest returns, followed by quarterly, half-yearly, and yearly. The difference is small but adds up on larger deposits and longer tenures.' },

@@ -341,6 +341,32 @@ export default function AIFaceBlurTool() {
       description="Automatically detect and blur faces in photos for privacy. Choose pixelate, blur, or black bar styles. Runs entirely in your browser."
       category="image"
       categoryLabel="Image Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>AI Face Blur automatically detects all human faces in a photograph and applies a blur effect to anonymize them. It uses a neural network–based face detection model that identifies facial regions with high accuracy, then applies a configurable Gaussian blur to each detected face while leaving the rest of the image untouched. The entire process runs in your browser — your photos are never uploaded.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Upload an image containing one or more faces.</li>
+            <li>The AI model automatically detects all visible faces.</li>
+            <li>Adjust the <strong>blur intensity</strong> slider to control how strongly faces are obscured.</li>
+            <li>Preview the result and download the anonymized image.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>Use face blur when sharing photos on social media where bystanders did not consent to being photographed, when publishing street photography, when creating training data that must comply with privacy regulations (GDPR), or when preparing images for public reports and presentations where individual identities must be protected.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>The detector works best on frontal or slightly angled faces; heavily occluded or profile faces may be missed.</li>
+            <li>Increase blur intensity for stronger anonymization — a light blur may still allow identification.</li>
+            <li>For group photos, all detected faces are blurred simultaneously.</li>
+            <li>Processing happens entirely on your device, making it safe for sensitive photos.</li>
+            <li>If a face is not detected, try cropping to include the full head and shoulders.</li>
+          </ul>
+        </>
+      }
       slug="ai-face-blur"
       faqs={[
         {

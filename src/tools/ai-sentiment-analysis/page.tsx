@@ -354,6 +354,32 @@ export default function AISentimentAnalysis() {
       description="Analyze the emotional tone of any text. Detects positive, negative, and neutral sentiment — runs entirely in your browser."
       category="text"
       categoryLabel="Text Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>AI Sentiment Analysis examines text and determines its emotional tone — positive, negative, or neutral — along with a confidence score. It uses a natural language processing model to understand context, sarcasm indicators, and word connotations. The analysis runs entirely in your browser for instant, private results.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Paste or type the text you want to analyze.</li>
+            <li>Click <strong>Analyze</strong> to process the text.</li>
+            <li>View the sentiment classification (positive, negative, or neutral) with a confidence score.</li>
+            <li>Use the results for content analysis, brand monitoring, or customer feedback assessment.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>Sentiment analysis is used in social media monitoring, customer review analysis, brand reputation management, market research, and content strategy. Writers use it to gauge the emotional tone of their drafts, and support teams use it to prioritize negative feedback.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Longer text passages produce more reliable sentiment scores than single words or short phrases.</li>
+            <li>Sarcasm and irony can confuse the model — review edge cases manually.</li>
+            <li>The tool works best with English text written in a direct style.</li>
+            <li>All analysis runs locally, so customer feedback and private communications remain confidential.</li>
+            <li>For mixed-sentiment text, the overall score reflects the dominant tone.</li>
+          </ul>
+        </>
+      }
       slug="ai-sentiment-analysis"
       faqs={[
         {

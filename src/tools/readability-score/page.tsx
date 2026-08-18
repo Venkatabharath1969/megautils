@@ -86,7 +86,34 @@ export default function ReadabilityScoreTool() {
   }, [text])
 
   return (
-    <ToolPage title="Readability Score Analyzer" description="Calculate Flesch-Kincaid, Flesch Reading Ease, Gunning Fog, and SMOG readability scores." category="seo" categoryLabel="SEO Tools" faqs={[
+    <ToolPage title="Readability Score Analyzer" description="Calculate Flesch-Kincaid, Flesch Reading Ease, Gunning Fog, and SMOG readability scores." category="seo" categoryLabel="SEO Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>Readability Score is a free browser-based tool that lets you analyze text readability using Flesch-Kincaid, Gunning Fog, Coleman-Liau, and other standard readability formulas. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when ensuring content is appropriate for your target audience reading level, optimizing for SEO, or meeting accessibility standards. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this content quality tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need readability analysis.</li>
+          </ul>
+        </>
+      }
+ faqs={[
         { question: 'What is a good Flesch Reading Ease score?', answer: 'A score between 60-70 is considered standard and easily understood by most adults. Scores above 70 are easy to read, while scores below 30 are very difficult and suited for academic audiences.' },
         { question: 'What is the Flesch-Kincaid Grade Level?', answer: 'The Flesch-Kincaid Grade Level estimates the U.S. school grade needed to understand a text. For web content, aim for a grade level of 7-8 to reach the widest audience.' },
         { question: 'How does readability affect SEO?', answer: 'While readability isn\'t a direct Google ranking factor, content that is easy to read tends to have lower bounce rates and higher engagement, which can indirectly improve search rankings.' },

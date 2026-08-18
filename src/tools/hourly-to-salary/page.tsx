@@ -59,6 +59,32 @@ export default function HourlyToSalary() {
       description="Convert hourly rate to annual salary and vice versa. See your earnings broken down by hour, day, week, and month."
       category="financial"
       categoryLabel="Financial Calculators"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>Hourly to Salary Converter is a free browser-based tool that lets you convert between hourly wages and annual salary, factoring in hours per week, weeks per year, and overtime. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when comparing job offers quoted in different formats, calculating freelance rates, or budgeting based on hourly work. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this employment tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need wage conversion.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'How do I convert hourly wage to annual salary?', answer: 'Multiply your hourly rate by the number of hours you work per week, then multiply by 52 weeks. For example, $25/hour at 40 hours/week equals $52,000 per year.' },
         { question: 'How many work hours are in a year?', answer: 'A standard full-time work year is 2,080 hours (40 hours/week x 52 weeks). With two weeks of vacation, it drops to 2,000 hours.' },

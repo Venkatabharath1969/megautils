@@ -129,7 +129,34 @@ export default function JsonToPythonTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="JSON to Python Dataclass" description="Generate Python dataclass definitions from JSON with proper type annotations" category="developer" categoryLabel="Developer Tools" faqs={[
+    <ToolPage title="JSON to Python Dataclass" description="Generate Python dataclass definitions from JSON with proper type annotations" category="developer" categoryLabel="Developer Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>JSON to Python Dict is a free browser-based tool that lets you convert JSON data into Python dictionary syntax with proper Python conventions (True/False/None instead of true/false/null). It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when converting API response examples to Python code, creating test fixtures, or migrating data between JavaScript and Python. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this Python development tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need json to python conversion.</li>
+          </ul>
+        </>
+      }
+ faqs={[
         { question: 'How do I convert JSON to Python dataclasses?', answer: 'Paste a JSON object into the input, set a class name, and click Generate to get Python dataclass definitions with proper type annotations and imports.' },
         { question: 'Does the tool generate Python type hints?', answer: 'Yes, all fields include type annotations such as str, int, float, bool, List[], and Optional[] based on the JSON values.' },
         { question: 'Are nested JSON objects supported?', answer: 'Yes, nested objects are converted into separate dataclass definitions with proper cross-references and snake_case field naming.' },

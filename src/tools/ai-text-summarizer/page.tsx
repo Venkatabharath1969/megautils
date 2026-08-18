@@ -146,6 +146,32 @@ export default function AITextSummarizer() {
       description="Summarize long text into key points instantly. Extracts the most important sentences — runs entirely in your browser."
       category="text"
       categoryLabel="Text Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>The AI Text Summarizer condenses long documents, articles, and text passages into shorter summaries that capture the key points. It uses a language model to identify the most important sentences and concepts, producing a coherent summary that saves you reading time. All processing runs locally in your browser.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Paste the text you want to summarize into the input area.</li>
+            <li>Click <strong>Summarize</strong> to process the text.</li>
+            <li>Read the generated summary highlighting the key points.</li>
+            <li>Copy the summary for notes, reports, or quick reference.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>Text summarization saves time when reviewing long articles, research papers, reports, or email threads. Students use it to create study notes, professionals use it to quickly digest meeting minutes, and content curators use it to write article abstracts.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Provide at least a few paragraphs of text for meaningful summaries — very short inputs produce minimal output.</li>
+            <li>Well-structured text with clear topic sentences produces the best summaries.</li>
+            <li>Always verify that the summary captures the critical points — AI may omit nuanced details.</li>
+            <li>The tool works best with informational and expository text, not creative writing.</li>
+            <li>Your text is never sent to any server — processing is entirely local.</li>
+          </ul>
+        </>
+      }
       slug="ai-text-summarizer"
       faqs={[
         {

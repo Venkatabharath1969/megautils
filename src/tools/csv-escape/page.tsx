@@ -38,7 +38,34 @@ export default function CsvEscapeTool() {
   const clear = () => { setInput(''); setOutput('') }
 
   return (
-    <ToolPage title="CSV Field Escape / Unescape" description="Escape or unescape strings for CSV fields. Handles quote wrapping and double-quote escaping." category="string" categoryLabel="String Utilities" faqs={[
+    <ToolPage title="CSV Field Escape / Unescape" description="Escape or unescape strings for CSV fields. Handles quote wrapping and double-quote escaping." category="string" categoryLabel="String Utilities"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>CSV Escape/Unescape is a free browser-based tool that lets you escape special characters in CSV fields (commas, quotes, newlines) or unescape previously escaped CSV data. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when preparing data for CSV export, fixing malformed CSV files, or handling fields with special characters. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this data processing tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need csv escaping.</li>
+          </ul>
+        </>
+      }
+ faqs={[
         { question: 'When do CSV fields need to be escaped?', answer: 'CSV fields must be escaped when they contain commas, double quotes, or newline characters. The field is wrapped in double quotes and any existing quotes are doubled.' },
         { question: 'How do you escape quotes in CSV?', answer: 'In CSV format, double quotes inside a field value are escaped by doubling them (e.g., "She said ""hello"""), and the entire field is wrapped in quotes.' },
         { question: 'What does CSV unescape do?', answer: 'CSV unescape removes the outer double quotes from a quoted field and converts doubled quotes ("") back to single quotes, restoring the original text.' },

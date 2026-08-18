@@ -144,7 +144,34 @@ export default function TomlFormatterTool() {
   const clear = () => { setInput(''); setOutput(''); setError('') }
 
   return (
-    <ToolPage title="TOML Formatter" description="Format and beautify TOML configuration files with aligned keys" category="developer" categoryLabel="Developer Tools" faqs={[
+    <ToolPage title="TOML Formatter" description="Format and beautify TOML configuration files with aligned keys" category="developer" categoryLabel="Developer Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>TOML Formatter is a free browser-based tool that lets you format and beautify TOML configuration files with proper indentation and consistent spacing. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when cleaning up Rust Cargo.toml files, Python pyproject.toml, or any TOML configuration file for readability. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this development tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need toml formatting.</li>
+          </ul>
+        </>
+      }
+ faqs={[
         { question: 'What is TOML?', answer: 'TOML (Tom\'s Obvious Minimal Language) is a configuration file format that is easy to read, with clear semantics for key-value pairs, tables, and arrays commonly used in Rust (Cargo.toml) and Python (pyproject.toml) projects.' },
         { question: 'How does this TOML formatter work?', answer: 'Paste your TOML content and click Format to get a beautified version with aligned key-value pairs, consistent spacing around equals signs, and proper section separation.' },
         { question: 'Does the formatter validate TOML syntax?', answer: 'The formatter parses section headers and key-value pairs, so malformed TOML will produce an error. It handles strings, numbers, booleans, arrays, and dates.' },

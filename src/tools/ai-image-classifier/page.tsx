@@ -140,6 +140,32 @@ export default function AIImageClassifier() {
       description="Identify objects, animals, and scenes in any photo using AI. Get instant labels with confidence scores — runs entirely in your browser."
       category="image"
       categoryLabel="Image Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>AI Image Classifier identifies the contents of an image and assigns category labels with confidence scores. It uses a pre-trained image classification model to recognize hundreds of object categories — from animals and vehicles to food and everyday objects. The model runs entirely in your browser for instant, private results.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Upload an image using the file picker or drag-and-drop.</li>
+            <li>The AI model processes the image and identifies its contents.</li>
+            <li>View the top predicted categories with <strong>confidence percentages</strong>.</li>
+            <li>Use the classifications for tagging, sorting, or content moderation.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>Image classification is used for automatic photo organization, content moderation, e-commerce product categorization, wildlife identification, and accessibility tagging. Developers use it to prototype computer vision features before building custom models.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Images with a single clear subject produce the most accurate classifications.</li>
+            <li>The model recognizes common objects but may struggle with abstract art or highly specialized items.</li>
+            <li>Confidence scores below 50% indicate uncertainty — consider the top three predictions together.</li>
+            <li>All processing is local, so sensitive images are never uploaded.</li>
+            <li>Try different angles or crops of the same subject to see how classification changes.</li>
+          </ul>
+        </>
+      }
       slug="ai-image-classifier"
       faqs={[
         {

@@ -76,7 +76,22 @@ export default function PrivacyPage() {
           You may opt out of personalized advertising by visiting{' '}
           <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer">
             Google Ads Settings
+          </a>. You may also opt out of third-party vendor use of cookies for personalized advertising by visiting{' '}
+          <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer">
+            www.aboutads.info/choices
+          </a>{' '}
+          or the{' '}
+          <a href="https://optout.networkadvertising.org/" target="_blank" rel="noopener noreferrer">
+            Network Advertising Initiative opt-out page
           </a>.
+        </p>
+
+        <h3>Third-Party Ad Networks</h3>
+        <p>
+          Third-party vendors, including Google, use cookies to serve ads based on your prior visits to
+          this website or other websites. Google&apos;s use of advertising cookies enables it and its partners
+          to serve ads to you based on your visit to our site and/or other sites on the Internet.
+          Any data collected by third-party advertisers is subject to their respective privacy policies.
         </p>
 
         <h3>Analytics</h3>

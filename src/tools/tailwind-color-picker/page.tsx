@@ -60,6 +60,32 @@ export default function TailwindColorPickerTool() {
       description="Browse all Tailwind CSS default colors. Click any shade to copy the class name or hex value."
       category="css"
       categoryLabel="CSS Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>Tailwind Color Picker is a free browser-based tool that lets you browse and search all Tailwind CSS color classes with visual previews, HEX values, and one-click copy. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when finding the right Tailwind color class for your design, converting between Tailwind colors and HEX/RGB values. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this Tailwind CSS tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need tailwind color reference.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'How many colors does Tailwind CSS include by default?', answer: 'Tailwind CSS includes 22 color families (like slate, red, blue, emerald) each with 11 shades ranging from 50 (lightest) to 950 (darkest), totaling 242 default color values.' },
         { question: 'How do I use Tailwind colors in my project?', answer: 'Apply Tailwind color classes directly in your HTML using the pattern bg-{color}-{shade} for backgrounds, text-{color}-{shade} for text, and border-{color}-{shade} for borders.' },

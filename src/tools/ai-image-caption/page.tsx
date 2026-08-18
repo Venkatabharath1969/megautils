@@ -152,6 +152,32 @@ export default function AIImageCaption() {
       description="Generate natural language descriptions for any image using AI. Perfect for alt-text and accessibility — runs entirely in your browser."
       category="image"
       categoryLabel="Image Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>AI Image Caption uses a vision-language model to generate a natural-language description of the contents of a photograph. It identifies objects, scenes, actions, and relationships in the image and produces a coherent sentence or paragraph describing what the photo shows. This is useful for accessibility (alt text), content management, and social media.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Upload or drag-and-drop an image.</li>
+            <li>Wait while the AI model analyzes the visual content.</li>
+            <li>Read the generated caption displayed below the image.</li>
+            <li>Copy the caption for use as alt text, social media descriptions, or metadata.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>Image captioning is essential for web accessibility — providing meaningful alt text for screen reader users. Content managers use it to auto-generate descriptions for large image libraries. Social media managers use it to draft post captions, and photographers use it to tag and organize their portfolios.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Clear, well-lit photographs produce the most accurate captions.</li>
+            <li>The model may not recognize specific people or brand logos — it describes visual content generically.</li>
+            <li>Use the generated caption as a starting point and refine it for context-specific accuracy.</li>
+            <li>All processing runs locally, so your images remain private.</li>
+            <li>For best results, ensure the main subject is prominent and not heavily occluded.</li>
+          </ul>
+        </>
+      }
       slug="ai-image-caption"
       faqs={[
         {

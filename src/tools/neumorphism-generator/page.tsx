@@ -114,6 +114,32 @@ export default function NeumorphismGeneratorTool() {
       description="Generate soft UI (neumorphism) CSS with customizable shadows, shapes, and light direction. Live preview included."
       category="css"
       categoryLabel="CSS Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>Neumorphism Generator is a free browser-based tool that lets you create soft UI (neumorphic) effects with adjustable shadow intensity, blur, color, and shape properties. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when designing modern neumorphic buttons, cards, and input fields with the soft 3D effect trend. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this UI design tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need neumorphism effects.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'What is neumorphism in UI design?', answer: 'Neumorphism (or soft UI) is a design style that combines background colors with two opposing box shadows (one light, one dark) to create elements that appear to extrude from or press into the background.' },
         { question: 'How is neumorphism different from flat design?', answer: 'Flat design uses zero depth and bold colors, while neumorphism simulates soft, realistic depth using subtle shadows on a matching background color to create an extruded or pressed effect.' },

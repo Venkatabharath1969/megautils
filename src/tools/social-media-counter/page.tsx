@@ -20,7 +20,34 @@ export default function SocialMediaCounterTool() {
   const charCount = useMemo(() => text.length, [text])
 
   return (
-    <ToolPage title="Social Media Character Counter" description="Check your text against character limits for Twitter/X, LinkedIn, Instagram, Facebook, TikTok, Threads, and YouTube." category="content" categoryLabel="Content Tools" faqs={[
+    <ToolPage title="Social Media Character Counter" description="Check your text against character limits for Twitter/X, LinkedIn, Instagram, Facebook, TikTok, Threads, and YouTube." category="content" categoryLabel="Content Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>Social Media Character Counter is a free browser-based tool that lets you count characters for social media platforms with specific limits for Twitter/X (280), Instagram (2200), LinkedIn (3000), and more. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when ensuring posts fit within platform character limits, optimizing content length for engagement. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this social media tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need character counting.</li>
+          </ul>
+        </>
+      }
+ faqs={[
         { question: 'What is the character limit for Twitter/X posts?', answer: 'Twitter/X has a 280-character limit for standard posts. Verified subscribers on X Premium may have higher limits up to 25,000 characters.' },
         { question: 'What is the Instagram caption character limit?', answer: 'Instagram captions have a maximum limit of 2,200 characters. However, captions are truncated after about 125 characters in the feed, so put your most important text first.' },
         { question: 'What is the LinkedIn post character limit?', answer: 'LinkedIn posts support up to 3,000 characters. Content is truncated after about 140 characters with a "see more" link, so lead with a compelling hook.' },

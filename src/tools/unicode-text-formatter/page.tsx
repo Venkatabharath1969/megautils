@@ -84,6 +84,32 @@ export default function UnicodeTextFormatterTool() {
       description="Convert text to Unicode styled variants: Bold, Italic, Bold Italic, Monospace, Strikethrough, and Upside Down."
       category="text"
       categoryLabel="Text Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>Unicode Text Formatter is a free browser-based tool that lets you convert regular text to various Unicode styles including bold, italic, script, and monospace using Unicode characters. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when creating styled text for social media bios and posts where HTML formatting is not available. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this design tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need unicode text styling.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'How do I make bold or italic text for social media?', answer: 'Type your text and copy the bold, italic, or other Unicode-styled variant. These work on platforms like Twitter, Instagram, and Facebook where HTML formatting is not supported.' },
         { question: 'Are Unicode text styles the same as HTML bold/italic?', answer: 'No, these use special Unicode characters that look like styled text. They work anywhere plain text is accepted, unlike HTML tags which require a renderer.' },

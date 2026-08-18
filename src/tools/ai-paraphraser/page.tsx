@@ -650,6 +650,32 @@ export default function AIParaphraser() {
       description="Rewrite text in different styles instantly. Choose formal, simple, or creative modes — runs entirely in your browser."
       category="text"
       categoryLabel="Text Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>The AI Paraphrasing Tool rewrites text while preserving its original meaning. It uses a language model to generate alternative phrasings, helping you improve clarity, avoid repetition, adjust tone, or create unique versions of existing content. All processing happens in your browser — your text is never sent to external servers.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Paste or type the text you want to paraphrase into the input area.</li>
+            <li>Click <strong>Paraphrase</strong> to generate an alternative version.</li>
+            <li>Review the output and make any manual adjustments for accuracy.</li>
+            <li>Copy the paraphrased text for use in your document or project.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>Paraphrasing is useful when you need to rewrite content to avoid self-plagiarism, simplify complex language for a broader audience, adjust the formality level of text, or create multiple variations of marketing copy. Students use it to better understand source material by seeing concepts expressed differently.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Always review paraphrased output for factual accuracy — AI can subtly change meaning.</li>
+            <li>Short paragraphs (2-5 sentences) produce the most coherent results.</li>
+            <li>Use paraphrasing as a starting point, not a final product — human editing improves quality.</li>
+            <li>The tool works best with English text; other languages may produce less natural results.</li>
+            <li>Never use paraphrasing to present others' work as your own — always cite original sources.</li>
+          </ul>
+        </>
+      }
       slug="ai-paraphraser"
       faqs={[
         {

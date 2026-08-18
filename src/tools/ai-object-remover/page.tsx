@@ -394,6 +394,32 @@ export default function AIObjectRemover() {
       description="Remove unwanted objects from photos. Paint over what you want to erase — runs entirely in your browser."
       category="image"
       categoryLabel="Image Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>AI Object Remover uses inpainting technology to remove unwanted objects from photographs. You select the area containing the object you want to remove, and the AI fills in the gap with content that matches the surrounding background. The result looks natural, as if the object was never there. All processing runs in your browser.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Upload the image containing the object you want to remove.</li>
+            <li>Use the brush tool to <strong>paint over</strong> the object you want to erase.</li>
+            <li>Click the remove button to let the AI inpaint the selected area.</li>
+            <li>Preview the result and download the cleaned image.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>Object removal is useful for cleaning up photographs before publishing — removing photobombers from vacation shots, erasing power lines from landscape photos, removing logos or watermarks from your own images, or cleaning up product photos for e-commerce listings.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Smaller objects on uniform backgrounds are removed most cleanly.</li>
+            <li>For complex backgrounds (detailed textures, patterns), results may require touch-up.</li>
+            <li>Paint slightly beyond the object edges to ensure complete removal.</li>
+            <li>Processing time depends on the size of the selected area and your device performance.</li>
+            <li>Your photos never leave your device — all AI processing is local.</li>
+          </ul>
+        </>
+      }
       slug="ai-object-remover"
       faqs={[
         {

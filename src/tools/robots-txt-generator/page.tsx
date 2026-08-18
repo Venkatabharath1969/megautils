@@ -62,7 +62,34 @@ export default function RobotsTxtGeneratorTool() {
   }
 
   return (
-    <ToolPage title="Robots.txt Generator" description="Build a robots.txt file with user-agent rules, sitemap URL, and crawl delay." category="seo" categoryLabel="SEO Tools" faqs={[
+    <ToolPage title="Robots.txt Generator" description="Build a robots.txt file with user-agent rules, sitemap URL, and crawl delay." category="seo" categoryLabel="SEO Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>Robots.txt Generator is a free browser-based tool that lets you create robots.txt files with rules for search engine crawlers including allow, disallow, and sitemap directives. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when controlling search engine access to your website, blocking private directories, or specifying sitemap locations. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this SEO tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need robots.txt creation.</li>
+          </ul>
+        </>
+      }
+ faqs={[
         { question: 'What is a robots.txt file?', answer: 'A robots.txt file is a plain text file placed at the root of your website that tells search engine crawlers which pages or sections they are allowed or disallowed from crawling.' },
         { question: 'Does robots.txt block pages from appearing in Google?', answer: 'No, robots.txt only prevents crawling, not indexing. Google may still index a URL if other pages link to it. Use a "noindex" meta tag to prevent a page from appearing in search results.' },
         { question: 'Where should I put my robots.txt file?', answer: 'The robots.txt file must be placed in the root directory of your website (e.g., https://example.com/robots.txt). It won\'t work if placed in a subdirectory.' },

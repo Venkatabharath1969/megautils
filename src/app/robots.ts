@@ -3,6 +3,8 @@ import type { MetadataRoute } from 'next'
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
+      // Google AdSense crawler (REQUIRED for ad serving)
+      { userAgent: 'Mediapartners-Google', allow: '/' },
       // Standard search crawlers
       { userAgent: 'Googlebot', allow: '/' },
       { userAgent: 'Bingbot', allow: '/' },

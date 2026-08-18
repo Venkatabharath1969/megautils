@@ -39,6 +39,32 @@ export default function FrequencyConverterTool() {
       description="Convert between Hz, kHz, MHz, GHz, THz, RPM, and radians/second."
       category="converters"
       categoryLabel="Unit Converters"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>Frequency Converter is a free browser-based tool that lets you convert between frequency units including hertz, kilohertz, megahertz, gigahertz, and RPM. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when electronics calculations, understanding wireless specifications, audio engineering, or motor speed conversions. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this engineering tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need frequency conversion.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'How many MHz are in 1 GHz?', answer: 'One gigahertz (GHz) equals 1,000 megahertz (MHz). For example, a 2.4 GHz Wi-Fi signal operates at 2,400 MHz.' },
         { question: 'How do you convert RPM to Hz?', answer: 'Divide the RPM value by 60 to get hertz. For example, a motor spinning at 3,600 RPM has a frequency of 60 Hz.' },

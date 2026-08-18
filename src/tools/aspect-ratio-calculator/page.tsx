@@ -50,6 +50,31 @@ export default function AspectRatioCalculatorTool() {
 
   return (
     <ToolPage title="Aspect Ratio Calculator" description="Calculate aspect ratios from dimensions or find missing dimensions from a ratio" category="math" categoryLabel="Math & Science"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>The Aspect Ratio Calculator helps you find and maintain the correct proportions when resizing images, videos, or screen layouts. Enter a width and height to calculate the aspect ratio, or enter a ratio and one dimension to find the other. Common ratios include 16:9 for widescreen video, 4:3 for traditional displays, and 1:1 for social media squares.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter the <strong>width</strong> and <strong>height</strong> to calculate the aspect ratio.</li>
+            <li>Or enter a target ratio and one dimension to find the other.</li>
+            <li>View the simplified ratio (e.g., 1920x1080 becomes 16:9).</li>
+            <li>Use the results for image resizing, video editing, or responsive design.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>Aspect ratio calculations are needed when resizing images for social media platforms (each has different requirements), cropping video footage, designing responsive web layouts, choosing monitor resolutions, or preparing print materials at specific proportions.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>16:9 is the standard for YouTube, Netflix, and most modern displays.</li>
+            <li>Instagram feed posts use 1:1 (square) or 4:5 (portrait).</li>
+            <li>When resizing, always maintain aspect ratio to avoid stretching or distortion.</li>
+            <li>For responsive web design, use CSS aspect-ratio property with the calculated value.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'What is the aspect ratio of 1920x1080?', answer: '1920x1080 has an aspect ratio of 16:9, which is the standard widescreen format used for HD and 4K displays, YouTube videos, and most modern monitors.' },
         { question: 'What aspect ratio is best for Instagram?', answer: 'Instagram supports 1:1 (square) for feed posts, 4:5 (portrait) for maximum feed visibility, and 9:16 (vertical) for Stories and Reels.' },

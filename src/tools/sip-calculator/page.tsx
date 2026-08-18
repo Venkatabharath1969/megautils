@@ -44,6 +44,32 @@ export default function SIPCalculator() {
       description="Calculate returns on your Systematic Investment Plan (SIP). Plan your mutual fund investments with ease."
       category="financial"
       categoryLabel="Financial Calculators"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>SIP Calculator is a free browser-based tool that lets you calculate returns from Systematic Investment Plan with monthly contributions, expected returns, and investment duration. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when planning mutual fund SIP investments, comparing lump sum vs SIP returns, or setting monthly investment goals. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this finance tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need sip calculation.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'What is a SIP and how does it work?', answer: 'A SIP (Systematic Investment Plan) lets you invest a fixed amount in mutual funds at regular intervals (usually monthly), benefiting from rupee cost averaging and the power of compounding.' },
         { question: 'How much can I earn from a SIP of 10,000 per month?', answer: 'A monthly SIP of Rs 10,000 for 10 years at 12% expected returns would grow to approximately Rs 23.2 lakhs, with Rs 12 lakhs invested and Rs 11.2 lakhs in estimated returns.' },

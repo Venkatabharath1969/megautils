@@ -78,6 +78,32 @@ export default function FaviconGeneratorTool() {
       description="Generate favicons in all standard sizes from any image"
       category="image"
       categoryLabel="Image Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>Favicon Generator is a free browser-based tool that lets you create favicons from images in multiple sizes (16x16, 32x32, 48x48, 180x180) for browsers and devices. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when adding a site icon visible in browser tabs, bookmarks, and home screens when building or updating a website. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this web development tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need favicon creation.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'What size should a favicon be?', answer: 'The most common favicon sizes are 16x16 (classic browser tab), 32x32 (standard), 48x48 (Windows), and 180x180 (Apple touch icon). This tool generates all four sizes.' },
         { question: 'What image format works best for favicons?', answer: 'PNG is the most widely supported modern favicon format. Use a square source image with a simple design that remains recognizable at very small sizes.' },

@@ -1,0 +1,492 @@
+#!/usr/bin/env python3
+"""
+Add helpContent and FAQs to all tool pages that don't have them.
+Each tool gets unique, hand-crafted content specific to what the tool does.
+"""
+import os, re, json
+
+TOOLS_DIR = '/root/megautils/src/tools'
+
+# Comprehensive content for EVERY tool without helpContent
+# Format: { slug: { title, what, howto, when, tips, faqs } }
+TOOL_CONTENT = {
+    "age-calculator": {
+        "what": "An age calculator computes the exact duration between two dates — typically your birth date and today — and returns your age in years, months, and days. Unlike simply subtracting years, this tool accounts for leap years, varying month lengths, and the exact day boundaries that affect whether you have already passed your birthday in the current calendar year.",
+        "howto": ["Enter your <strong>date of birth</strong> in the input field.", "Optionally change the <strong>end date</strong> if you want to calculate age at a specific past or future point.", "View your age in <strong>years, months, and days</strong> instantly.", "Use the results for age verification, form filling, or curiosity."],
+        "when": "Use an age calculator when filling out official forms, verifying eligibility for age-restricted services, planning milestone birthdays, or calculating the exact age difference between family members. It is also helpful for HR professionals determining employee tenure or retirement eligibility.",
+        "tips": ["Leap year babies (February 29) are handled correctly — the tool counts actual elapsed days.", "All calculations run in your browser, so your birth date stays private.", "For historical dates, the Gregorian calendar is assumed throughout.", "Time zones are not factored in — only the date portion matters."],
+        "faqs": [
+            ("How does the age calculator handle leap years?", "The calculator accounts for leap years by counting actual calendar days between dates. If your birth date is February 29, it correctly determines whether each intervening year was a leap year."),
+            ("Is my date of birth stored anywhere?", "No. All processing happens in your browser. Your birth date is never sent to any server."),
+            ("Can I calculate age between two arbitrary dates?", "Yes. You can set both the start and end dates to any values to find the exact duration between them."),
+        ]
+    },
+    "ai-depth-map": {
+        "what": "A depth map generator uses AI to estimate the relative distance of objects in a photograph from the camera. It produces a grayscale image where lighter pixels represent closer objects and darker pixels represent objects farther away. This technique, called monocular depth estimation, runs entirely in your browser using a pre-trained neural network — no server upload required.",
+        "howto": ["Upload a photograph using the file picker or drag-and-drop.", "Wait a few seconds while the AI model loads and processes the image.", "View the generated <strong>depth map</strong> alongside your original photo.", "Download the depth map as a PNG for use in 3D modeling, AR, or visual effects."],
+        "when": "Depth maps are used in 3D scene reconstruction, augmented reality, computational photography (portrait mode blur), autonomous vehicle research, and game development. Designers use them to create parallax scrolling effects on websites, and photographers use them to simulate bokeh in post-processing.",
+        "tips": ["Photos with clear foreground and background separation produce the best depth maps.", "The AI model runs on your device — larger images take longer to process but produce finer detail.", "Outdoor scenes with natural depth variation work better than flat surfaces.", "You can use the depth map in Photoshop or Blender as a displacement map for 3D effects.", "No internet connection is needed after the model loads — processing is fully offline."],
+        "faqs": [
+            ("What AI model does this tool use?", "This tool uses a lightweight monocular depth estimation model optimized to run in the browser via WebAssembly and WebGL."),
+            ("Is my image uploaded to a server?", "No. The entire depth estimation process runs locally in your browser. Your image never leaves your device."),
+            ("Can I use depth maps commercially?", "Yes. The output is yours to use however you like, including in commercial projects."),
+        ]
+    },
+    "ai-face-blur": {
+        "what": "AI Face Blur automatically detects all human faces in a photograph and applies a blur effect to anonymize them. It uses a neural network–based face detection model that identifies facial regions with high accuracy, then applies a configurable Gaussian blur to each detected face while leaving the rest of the image untouched. The entire process runs in your browser — your photos are never uploaded.",
+        "howto": ["Upload an image containing one or more faces.", "The AI model automatically detects all visible faces.", "Adjust the <strong>blur intensity</strong> slider to control how strongly faces are obscured.", "Preview the result and download the anonymized image."],
+        "when": "Use face blur when sharing photos on social media where bystanders did not consent to being photographed, when publishing street photography, when creating training data that must comply with privacy regulations (GDPR), or when preparing images for public reports and presentations where individual identities must be protected.",
+        "tips": ["The detector works best on frontal or slightly angled faces; heavily occluded or profile faces may be missed.", "Increase blur intensity for stronger anonymization — a light blur may still allow identification.", "For group photos, all detected faces are blurred simultaneously.", "Processing happens entirely on your device, making it safe for sensitive photos.", "If a face is not detected, try cropping to include the full head and shoulders."],
+        "faqs": [
+            ("Does this tool upload my photos?", "No. Face detection and blurring both happen locally in your browser. No data is sent to any server."),
+            ("Can I selectively blur only some faces?", "Currently all detected faces are blurred. For selective blurring, download the result and manually restore faces in an image editor."),
+            ("What image formats are supported?", "JPEG, PNG, and WebP are all supported. The output is saved as PNG."),
+        ]
+    },
+    "ai-image-caption": {
+        "what": "AI Image Caption uses a vision-language model to generate a natural-language description of the contents of a photograph. It identifies objects, scenes, actions, and relationships in the image and produces a coherent sentence or paragraph describing what the photo shows. This is useful for accessibility (alt text), content management, and social media.",
+        "howto": ["Upload or drag-and-drop an image.", "Wait while the AI model analyzes the visual content.", "Read the generated caption displayed below the image.", "Copy the caption for use as alt text, social media descriptions, or metadata."],
+        "when": "Image captioning is essential for web accessibility — providing meaningful alt text for screen reader users. Content managers use it to auto-generate descriptions for large image libraries. Social media managers use it to draft post captions, and photographers use it to tag and organize their portfolios.",
+        "tips": ["Clear, well-lit photographs produce the most accurate captions.", "The model may not recognize specific people or brand logos — it describes visual content generically.", "Use the generated caption as a starting point and refine it for context-specific accuracy.", "All processing runs locally, so your images remain private.", "For best results, ensure the main subject is prominent and not heavily occluded."],
+        "faqs": [
+            ("How accurate are the generated captions?", "The AI produces generally accurate descriptions of visual content, but may miss subtle details or misidentify uncommon objects. Always review before publishing."),
+            ("Is this suitable for WCAG accessibility alt text?", "The generated captions are a good starting point for alt text, but WCAG recommends describing the purpose of the image in context, not just its visual content."),
+            ("Does it work with screenshots and diagrams?", "It works best with photographs. For screenshots and diagrams, results may be less descriptive."),
+        ]
+    },
+    "ai-image-classifier": {
+        "what": "AI Image Classifier identifies the contents of an image and assigns category labels with confidence scores. It uses a pre-trained image classification model to recognize hundreds of object categories — from animals and vehicles to food and everyday objects. The model runs entirely in your browser for instant, private results.",
+        "howto": ["Upload an image using the file picker or drag-and-drop.", "The AI model processes the image and identifies its contents.", "View the top predicted categories with <strong>confidence percentages</strong>.", "Use the classifications for tagging, sorting, or content moderation."],
+        "when": "Image classification is used for automatic photo organization, content moderation, e-commerce product categorization, wildlife identification, and accessibility tagging. Developers use it to prototype computer vision features before building custom models.",
+        "tips": ["Images with a single clear subject produce the most accurate classifications.", "The model recognizes common objects but may struggle with abstract art or highly specialized items.", "Confidence scores below 50% indicate uncertainty — consider the top three predictions together.", "All processing is local, so sensitive images are never uploaded.", "Try different angles or crops of the same subject to see how classification changes."],
+        "faqs": [
+            ("How many categories can it recognize?", "The model can classify images into hundreds of categories covering animals, vehicles, food, household items, plants, and more."),
+            ("Is my image sent to a server?", "No. Classification runs entirely in your browser using a pre-trained model. Your image stays on your device."),
+            ("Can I use this for commercial purposes?", "Yes. The tool is free to use and the classification results are yours to use however you need."),
+        ]
+    },
+    "ai-object-detection": {
+        "what": "AI Object Detection identifies and locates multiple objects within an image, drawing bounding boxes around each detected item and labeling it with a category name and confidence score. Unlike image classification which labels the entire image, object detection pinpoints exactly where each object appears, making it useful for counting, spatial analysis, and scene understanding.",
+        "howto": ["Upload a photograph containing objects you want to detect.", "The AI model scans the image and identifies all recognizable objects.", "View bounding boxes drawn around each detected object with labels.", "Download the annotated image or review the detection list."],
+        "when": "Object detection is used in inventory counting, retail analytics, security monitoring, autonomous driving research, wildlife surveys, and accessibility tools. Web developers use it to prototype interactive features, and content creators use it to understand scene composition.",
+        "tips": ["Clear, well-lit images with distinct objects produce the best results.", "Overlapping objects may be detected as a single item — try different angles.", "The model works best with common objects like people, cars, animals, and furniture.", "All detection runs in your browser, so no images are uploaded.", "For dense scenes, the model may miss smaller objects — try cropping to specific areas."],
+        "faqs": [
+            ("How many objects can it detect at once?", "The model can detect multiple objects simultaneously, limited mainly by the complexity of the scene and the size of objects."),
+            ("What categories of objects are supported?", "The model recognizes common categories including people, vehicles, animals, furniture, food items, and everyday objects."),
+            ("Is this real-time detection?", "This tool processes uploaded images. For real-time video detection, a dedicated application with webcam access would be needed."),
+        ]
+    },
+    "ai-object-remover": {
+        "what": "AI Object Remover uses inpainting technology to remove unwanted objects from photographs. You select the area containing the object you want to remove, and the AI fills in the gap with content that matches the surrounding background. The result looks natural, as if the object was never there. All processing runs in your browser.",
+        "howto": ["Upload the image containing the object you want to remove.", "Use the brush tool to <strong>paint over</strong> the object you want to erase.", "Click the remove button to let the AI inpaint the selected area.", "Preview the result and download the cleaned image."],
+        "when": "Object removal is useful for cleaning up photographs before publishing — removing photobombers from vacation shots, erasing power lines from landscape photos, removing logos or watermarks from your own images, or cleaning up product photos for e-commerce listings.",
+        "tips": ["Smaller objects on uniform backgrounds are removed most cleanly.", "For complex backgrounds (detailed textures, patterns), results may require touch-up.", "Paint slightly beyond the object edges to ensure complete removal.", "Processing time depends on the size of the selected area and your device performance.", "Your photos never leave your device — all AI processing is local."],
+        "faqs": [
+            ("Can I remove multiple objects from one image?", "Yes. You can paint over multiple areas and remove them all at once, or remove objects one at a time for finer control."),
+            ("Does this work on text and watermarks?", "It can remove text overlays, but results depend on the complexity of the background underneath. Simple backgrounds work best."),
+            ("Is my image uploaded anywhere?", "No. The entire inpainting process runs in your browser. Your image stays on your device."),
+        ]
+    },
+    "ai-paraphraser": {
+        "what": "The AI Paraphrasing Tool rewrites text while preserving its original meaning. It uses a language model to generate alternative phrasings, helping you improve clarity, avoid repetition, adjust tone, or create unique versions of existing content. All processing happens in your browser — your text is never sent to external servers.",
+        "howto": ["Paste or type the text you want to paraphrase into the input area.", "Click <strong>Paraphrase</strong> to generate an alternative version.", "Review the output and make any manual adjustments for accuracy.", "Copy the paraphrased text for use in your document or project."],
+        "when": "Paraphrasing is useful when you need to rewrite content to avoid self-plagiarism, simplify complex language for a broader audience, adjust the formality level of text, or create multiple variations of marketing copy. Students use it to better understand source material by seeing concepts expressed differently.",
+        "tips": ["Always review paraphrased output for factual accuracy — AI can subtly change meaning.", "Short paragraphs (2-5 sentences) produce the most coherent results.", "Use paraphrasing as a starting point, not a final product — human editing improves quality.", "The tool works best with English text; other languages may produce less natural results.", "Never use paraphrasing to present others' work as your own — always cite original sources."],
+        "faqs": [
+            ("Does this tool plagiarize content?", "No. The tool generates genuinely reworded text. However, you are responsible for properly citing original sources regardless of how the text is reworded."),
+            ("Is my text sent to a server?", "No. All paraphrasing happens locally in your browser using an on-device language model."),
+            ("Can I control the tone of the paraphrased text?", "The current version generates a neutral paraphrase. You can manually adjust tone after generating the initial output."),
+        ]
+    },
+    "ai-photo-colorizer": {
+        "what": "AI Photo Colorizer transforms black-and-white photographs into color images using deep learning. The neural network has been trained on millions of color photographs and learned to predict realistic colors for objects, skin tones, skies, and landscapes. It runs entirely in your browser, keeping your photos private.",
+        "howto": ["Upload a grayscale or black-and-white photograph.", "Wait while the AI model analyzes the image and predicts colors.", "View the colorized result alongside the original.", "Download the colorized image in full resolution."],
+        "when": "Photo colorization breathes life into historical photographs, family archives, and vintage images. Genealogy enthusiasts use it to visualize ancestors in color, historians use it for educational presentations, and media producers use it to restore archival footage for documentaries.",
+        "tips": ["High-contrast black-and-white photos with clear details produce the best colorization.", "The AI makes educated guesses about colors — it may not match the original colors exactly.", "Outdoor scenes with sky, grass, and natural elements tend to colorize very well.", "Portraits usually get realistic skin tones, but clothing colors are estimated.", "All processing is local — your family photos are never uploaded to any server."],
+        "faqs": [
+            ("How accurate are the predicted colors?", "The AI produces plausible colors based on patterns learned from millions of images. Skin tones and natural elements are usually accurate, but specific clothing or object colors are educated guesses."),
+            ("Does it work with sepia-toned photos?", "Yes. The model can handle sepia, faded, and desaturated images in addition to pure black-and-white."),
+            ("Can I adjust the colorization?", "The current version produces automatic colorization. For manual adjustments, you can edit the result in any image editor."),
+        ]
+    },
+    "ai-segment": {
+        "what": "AI Image Segmentation divides an image into meaningful regions, identifying and outlining distinct objects and areas. Each segment is highlighted with a different color, showing boundaries between objects like people, animals, furniture, and background elements. This tool uses a segmentation model that runs entirely in your browser.",
+        "howto": ["Upload an image you want to segment.", "The AI model processes the image and identifies distinct regions.", "View the segmentation overlay showing different objects in different colors.", "Download the segmented image for analysis or creative use."],
+        "when": "Image segmentation is used in medical imaging analysis, autonomous driving, video editing (for background replacement), augmented reality, and agricultural monitoring. Designers use it to create creative effects, and developers use it to prototype computer vision features.",
+        "tips": ["Images with clearly distinct objects produce the cleanest segmentation boundaries.", "The model works best with common object categories — specialized domains may need custom models.", "High-resolution images provide finer segmentation boundaries but take longer to process.", "All processing runs locally on your device for complete privacy.", "Use segmentation masks as selection tools in image editing software for precise edits."],
+        "faqs": [
+            ("What is the difference between segmentation and object detection?", "Object detection draws bounding boxes around objects, while segmentation creates pixel-level masks that precisely outline the shape of each object."),
+            ("Is my image sent to any server?", "No. The segmentation model runs entirely in your browser. Your image never leaves your device."),
+            ("Can I export individual segments?", "The tool provides the full segmentation overlay. You can use the mask in an image editor to isolate individual segments."),
+        ]
+    },
+    "ai-sentiment-analysis": {
+        "what": "AI Sentiment Analysis examines text and determines its emotional tone — positive, negative, or neutral — along with a confidence score. It uses a natural language processing model to understand context, sarcasm indicators, and word connotations. The analysis runs entirely in your browser for instant, private results.",
+        "howto": ["Paste or type the text you want to analyze.", "Click <strong>Analyze</strong> to process the text.", "View the sentiment classification (positive, negative, or neutral) with a confidence score.", "Use the results for content analysis, brand monitoring, or customer feedback assessment."],
+        "when": "Sentiment analysis is used in social media monitoring, customer review analysis, brand reputation management, market research, and content strategy. Writers use it to gauge the emotional tone of their drafts, and support teams use it to prioritize negative feedback.",
+        "tips": ["Longer text passages produce more reliable sentiment scores than single words or short phrases.", "Sarcasm and irony can confuse the model — review edge cases manually.", "The tool works best with English text written in a direct style.", "All analysis runs locally, so customer feedback and private communications remain confidential.", "For mixed-sentiment text, the overall score reflects the dominant tone."],
+        "faqs": [
+            ("How accurate is the sentiment analysis?", "The model achieves high accuracy on standard text but may struggle with sarcasm, domain-specific jargon, or heavily nuanced language."),
+            ("Does it analyze text in languages other than English?", "The model is primarily trained on English text. Other languages may produce less reliable results."),
+            ("Is my text stored or sent anywhere?", "No. All processing happens in your browser. Your text is never transmitted to any server."),
+        ]
+    },
+    "ai-speech-to-text": {
+        "what": "AI Speech to Text converts spoken audio into written text using a speech recognition model that runs in your browser. It supports multiple languages and can handle various accents, background noise levels, and speaking speeds. Your audio is processed locally — nothing is uploaded to external servers.",
+        "howto": ["Click the <strong>microphone button</strong> to start recording, or upload an audio file.", "Speak clearly into your microphone at a natural pace.", "The tool transcribes your speech into text in real time.", "Copy or download the transcription when finished."],
+        "when": "Speech to text is invaluable for transcribing interviews, lectures, and meetings; creating subtitles for videos; drafting emails or documents hands-free; and making notes while multitasking. It is also used for accessibility — allowing people who cannot type to create written content.",
+        "tips": ["Speak clearly and at a moderate pace for the best accuracy.", "A quiet environment significantly improves transcription quality.", "Use an external microphone for better audio quality compared to laptop microphones.", "The model handles common accents well but may struggle with heavy regional dialects.", "Your audio is never uploaded — all speech recognition runs on your device."],
+        "faqs": [
+            ("What languages are supported?", "The tool supports English and several other major languages. Language availability depends on the browser's speech recognition capabilities."),
+            ("Is my audio recorded or stored?", "No. Audio is processed in real time in your browser and is not stored or sent to any server."),
+            ("Can I upload pre-recorded audio files?", "Yes, you can upload audio files in common formats like WAV and MP3 for transcription."),
+        ]
+    },
+    "ai-text-summarizer": {
+        "what": "The AI Text Summarizer condenses long documents, articles, and text passages into shorter summaries that capture the key points. It uses a language model to identify the most important sentences and concepts, producing a coherent summary that saves you reading time. All processing runs locally in your browser.",
+        "howto": ["Paste the text you want to summarize into the input area.", "Click <strong>Summarize</strong> to process the text.", "Read the generated summary highlighting the key points.", "Copy the summary for notes, reports, or quick reference."],
+        "when": "Text summarization saves time when reviewing long articles, research papers, reports, or email threads. Students use it to create study notes, professionals use it to quickly digest meeting minutes, and content curators use it to write article abstracts.",
+        "tips": ["Provide at least a few paragraphs of text for meaningful summaries — very short inputs produce minimal output.", "Well-structured text with clear topic sentences produces the best summaries.", "Always verify that the summary captures the critical points — AI may omit nuanced details.", "The tool works best with informational and expository text, not creative writing.", "Your text is never sent to any server — processing is entirely local."],
+        "faqs": [
+            ("How long should the input text be?", "The tool works best with text that is at least 200 words long. Very short inputs may not have enough content to summarize meaningfully."),
+            ("Does it preserve the original meaning?", "The summarizer aims to capture key points accurately, but always review the output to ensure critical details are not omitted."),
+            ("Is my text kept private?", "Yes. All summarization runs in your browser. Your text is never uploaded or stored on any server."),
+        ]
+    },
+    "angle-converter": {
+        "what": "The Angle Converter transforms angle measurements between different units including degrees, radians, gradians (gons), turns, arc minutes, and arc seconds. It is essential for mathematics, engineering, navigation, and astronomy where different conventions are used depending on the field and application.",
+        "howto": ["Enter a numeric value in any angle unit field.", "All other unit fields update <strong>instantly</strong> with the converted values.", "Use the results for trigonometric calculations, navigation, or engineering work.", "Copy any converted value for use in your calculations."],
+        "when": "Use an angle converter when switching between mathematical conventions (radians for calculus, degrees for geometry), programming trigonometric functions (most languages use radians), surveying work (which uses gradians), or astronomical calculations (which use arc minutes and arc seconds).",
+        "tips": ["Remember: 180 degrees equals pi radians. This is the most common conversion in programming.", "Gradians divide a right angle into 100 parts, making them convenient for surveying.", "One full turn equals 360 degrees, 2*pi radians, or 400 gradians.", "Arc minutes and arc seconds are used primarily in navigation and astronomy."],
+        "faqs": [
+            ("What is the difference between degrees and radians?", "Degrees divide a full circle into 360 parts, while radians measure angles as the ratio of arc length to radius. A full circle is 2*pi radians."),
+            ("What are gradians used for?", "Gradians (or gons) divide a right angle into 100 parts, making percentage calculations easier. They are commonly used in surveying and civil engineering."),
+            ("Why do programming languages use radians?", "Radians are the natural unit for calculus and trigonometric functions because they simplify mathematical formulas. Most math libraries expect radian input."),
+        ]
+    },
+    "area-converter": {
+        "what": "The Area Converter transforms measurements between different area units including square meters, square feet, acres, hectares, square kilometers, square miles, square yards, and square inches. It handles both metric and imperial units, making it essential for real estate, land surveying, agriculture, and international property comparisons.",
+        "howto": ["Enter a numeric value in any area unit field.", "All other unit fields update <strong>instantly</strong> with the converted values.", "Use the results for property comparisons, land measurements, or construction calculations.", "Copy any converted value for use in your documents."],
+        "when": "Area conversion is needed when comparing property sizes listed in different unit systems, converting between metric and imperial for international real estate, calculating land area for agricultural planning, or working with construction blueprints that use different measurement standards.",
+        "tips": ["One acre equals 43,560 square feet — a useful figure for US real estate.", "One hectare equals 10,000 square meters or roughly 2.47 acres.", "For quick mental math, 1 square meter is approximately 10.76 square feet.", "All conversions are mathematically precise — no rounding errors in the calculation."],
+        "faqs": [
+            ("How many square feet are in an acre?", "One acre equals exactly 43,560 square feet, or approximately 4,047 square meters."),
+            ("What is the difference between a hectare and an acre?", "A hectare is 10,000 square meters (about 2.47 acres), while an acre is 43,560 square feet (about 0.405 hectares). Hectares are metric; acres are imperial."),
+            ("Is this tool accurate for real estate calculations?", "Yes. The conversions are mathematically exact. However, always verify property measurements with official survey data."),
+        ]
+    },
+    "aspect-ratio-calculator": {
+        "what": "The Aspect Ratio Calculator helps you find and maintain the correct proportions when resizing images, videos, or screen layouts. Enter a width and height to calculate the aspect ratio, or enter a ratio and one dimension to find the other. Common ratios include 16:9 for widescreen video, 4:3 for traditional displays, and 1:1 for social media squares.",
+        "howto": ["Enter the <strong>width</strong> and <strong>height</strong> to calculate the aspect ratio.", "Or enter a target ratio and one dimension to find the other.", "View the simplified ratio (e.g., 1920x1080 becomes 16:9).", "Use the results for image resizing, video editing, or responsive design."],
+        "when": "Aspect ratio calculations are needed when resizing images for social media platforms (each has different requirements), cropping video footage, designing responsive web layouts, choosing monitor resolutions, or preparing print materials at specific proportions.",
+        "tips": ["16:9 is the standard for YouTube, Netflix, and most modern displays.", "Instagram feed posts use 1:1 (square) or 4:5 (portrait).", "When resizing, always maintain aspect ratio to avoid stretching or distortion.", "For responsive web design, use CSS aspect-ratio property with the calculated value."],
+        "faqs": [
+            ("What is the most common aspect ratio for video?", "16:9 is the standard widescreen aspect ratio used by YouTube, Netflix, and most modern displays. It equates to resolutions like 1920x1080 (Full HD) and 3840x2160 (4K)."),
+            ("How do I resize an image without distortion?", "Maintain the aspect ratio by changing only one dimension (width or height) and letting this calculator determine the other. Never stretch an image by setting both dimensions independently."),
+            ("What aspect ratio should I use for social media?", "It varies by platform: Instagram uses 1:1 or 4:5, Twitter/X uses 16:9, Facebook uses 1.91:1, and TikTok uses 9:16 (vertical)."),
+        ]
+    },
+}
+
+# Generate content for remaining tools programmatically
+# Each tool gets unique descriptions based on what it actually does
+
+REMAINING_TOOLS = {
+    "barcode-generator": ("Barcode Generator", "generator", "Create standard barcodes (Code 128, EAN-13, UPC-A, Code 39) from text or numbers", "generating barcodes for inventory, product labels, shipping, or asset tracking", "retail", "Barcode generation"),
+    "base32-encoder": ("Base32 Encoder/Decoder", "encoder", "Encode text to Base32 format or decode Base32 back to text. Base32 uses A-Z and 2-7 characters", "encoding data for systems requiring case-insensitive alphanumeric representation, like TOTP secrets", "encoding", "Base32 encoding"),
+    "blank-line-remover": ("Blank Line Remover", "text", "Remove empty lines and extra whitespace from text documents", "cleaning up copied text, preparing data for processing, or tidying code", "text processing", "blank line removal"),
+    "braille-converter": ("Braille Converter", "encoder", "Convert text to Braille Unicode characters and Braille back to readable text", "creating Braille representations for accessibility, education, or decorative purposes", "accessibility", "Braille conversion"),
+    "break-even-calculator": ("Break-Even Calculator", "financial", "Calculate the point at which total revenue equals total costs, determining how many units you need to sell to cover your expenses", "business planning, pricing strategy, startup financial modeling, or evaluating product viability", "finance", "break-even analysis"),
+    "caesar-cipher": ("Caesar Cipher", "encoder", "Encrypt and decrypt text using the Caesar cipher shift technique, one of the oldest known encryption methods", "learning about classical cryptography, puzzle solving, or demonstrating basic encryption concepts", "cryptography", "Caesar cipher encryption"),
+    "cagr-calculator": ("CAGR Calculator", "financial", "Calculate Compound Annual Growth Rate to measure the mean annual growth rate of an investment over a specified period", "evaluating investment performance, comparing fund returns, or projecting business growth rates", "finance", "CAGR calculation"),
+    "chmod-calculator": ("chmod Calculator", "developer", "Convert between symbolic (rwxr-xr-x) and numeric (755) Unix file permission formats", "setting file permissions on Linux/Unix servers, configuring web server directories, or managing deployment scripts", "system administration", "chmod permissions"),
+    "code-to-image": ("Code to Image", "developer", "Convert source code snippets into beautiful, shareable images with syntax highlighting and customizable themes", "sharing code on social media, creating presentation slides, writing technical blog posts, or documentation", "development", "code screenshot generation"),
+    "color-converter": ("Color Converter", "color", "Convert colors between HEX, RGB, HSL, HSV, and CMYK formats instantly", "switching between color formats for CSS, design tools, print production, or programming", "design", "color format conversion"),
+    "color-name-finder": ("Color Name Finder", "color", "Find the closest named color for any HEX, RGB, or HSL value from a database of hundreds of named colors", "finding descriptive color names for design systems, documentation, or accessibility labels", "design", "color naming"),
+    "color-palette-generator": ("Color Palette Generator", "color", "Generate harmonious color palettes using color theory rules like complementary, analogous, triadic, and split-complementary schemes", "creating cohesive color schemes for websites, apps, brand identities, or interior design", "design", "palette generation"),
+    "contrast-checker": ("WCAG Contrast Checker", "color", "Test foreground and background color combinations against WCAG 2.1 accessibility standards for contrast ratio compliance", "ensuring your website meets accessibility requirements, passing WCAG AA and AAA contrast standards", "accessibility", "contrast ratio testing"),
+    "cooking-converter": ("Cooking Converter", "converter", "Convert between cooking measurements including cups, tablespoons, teaspoons, milliliters, liters, ounces, grams, and pounds", "following recipes from different countries, scaling recipes up or down, or converting between metric and imperial cooking units", "cooking", "cooking unit conversion"),
+    "cron-expression-builder": ("Cron Expression Builder", "developer", "Build cron expressions visually by selecting schedule parameters instead of memorizing cron syntax", "scheduling automated tasks on Linux servers, configuring CI/CD pipelines, or setting up database backups", "system administration", "cron scheduling"),
+    "crontab-reference": ("Crontab Reference", "developer", "A comprehensive reference guide for cron expression syntax with examples of common scheduling patterns", "looking up cron syntax, understanding cron fields, or finding example cron schedules for common tasks", "system administration", "cron syntax reference"),
+    "css-animation-generator": ("CSS Animation Generator", "css", "Create CSS keyframe animations visually with a timeline editor and export production-ready CSS code", "adding animations to websites without writing complex keyframe code manually", "web development", "CSS animation creation"),
+    "css-border-radius-generator": ("CSS Border Radius Generator", "css", "Customize border-radius values for each corner independently to create rounded rectangles, pills, or organic shapes", "creating custom button shapes, card designs, or decorative UI elements with precise corner rounding", "web development", "CSS border-radius"),
+    "css-box-shadow-generator": ("CSS Box Shadow Generator", "css", "Design box shadows visually by adjusting horizontal offset, vertical offset, blur radius, spread radius, and color", "adding depth and elevation effects to cards, buttons, modals, and other UI elements", "web development", "CSS box-shadow design"),
+    "css-columns-generator": ("CSS Columns Generator", "css", "Create multi-column text layouts using CSS columns with configurable column count, gap, and rule properties", "creating newspaper-style layouts, multi-column text sections, or masonry-like content arrangements", "web development", "CSS column layout"),
+    "css-filter-generator": ("CSS Filter Generator", "css", "Apply and combine CSS filter effects like blur, brightness, contrast, grayscale, hue-rotate, invert, saturate, and sepia", "applying visual effects to images and elements without image editing software", "web development", "CSS filter effects"),
+    "css-flexbox-generator": ("CSS Flexbox Generator", "css", "Build flexbox layouts visually by adjusting properties like direction, wrap, justify-content, align-items, and gap", "creating responsive navigation bars, card grids, centering elements, and flexible page layouts", "web development", "CSS Flexbox layout"),
+    "css-formatter": ("CSS Formatter", "developer", "Format and beautify CSS code with proper indentation, consistent spacing, and organized property ordering", "cleaning up minified CSS, standardizing code style across teams, or improving CSS readability", "development", "CSS formatting"),
+    "css-grid-generator": ("CSS Grid Generator", "css", "Design CSS Grid layouts visually with drag-and-drop, configuring rows, columns, gaps, and template areas", "creating complex page layouts, dashboard grids, image galleries, and responsive grid structures", "web development", "CSS Grid layout"),
+    "css-text-shadow-generator": ("CSS Text Shadow Generator", "css", "Create text shadow effects visually by adjusting offset, blur radius, and color for one or multiple shadow layers", "adding depth to headings, creating neon glow effects, or making text stand out against complex backgrounds", "web development", "CSS text-shadow"),
+    "css-transform-generator": ("CSS Transform Generator", "css", "Apply 2D and 3D CSS transforms including translate, rotate, scale, skew, and perspective with visual preview", "creating hover effects, card flips, parallax elements, and interactive UI animations", "web development", "CSS transform"),
+    "css-unit-converter": ("CSS Unit Converter", "css", "Convert between CSS units including px, rem, em, %, vw, vh, pt, and cm with a configurable base font size", "converting pixel designs to responsive units, switching between relative and absolute CSS units", "web development", "CSS unit conversion"),
+    "csv-escape": ("CSV Escape/Unescape", "developer", "Escape special characters in CSV fields (commas, quotes, newlines) or unescape previously escaped CSV data", "preparing data for CSV export, fixing malformed CSV files, or handling fields with special characters", "data processing", "CSV escaping"),
+    "csv-to-json": ("CSV to JSON Converter", "developer", "Convert CSV (Comma-Separated Values) data into JSON format, automatically detecting headers as keys", "transforming spreadsheet exports for web APIs, converting database exports to JSON, or preparing data for JavaScript applications", "data conversion", "CSV to JSON conversion"),
+    "csv-viewer": ("CSV Viewer", "developer", "View and explore CSV files in an interactive table with sorting, filtering, and column statistics", "inspecting CSV data without opening a spreadsheet application, quick data validation, or previewing exports", "data analysis", "CSV viewing"),
+    "data-storage-converter": ("Data Storage Converter", "converter", "Convert between data storage units including bits, bytes, kilobytes, megabytes, gigabytes, terabytes, and petabytes", "understanding file sizes, comparing storage capacities, or converting between binary and decimal storage units", "computing", "data storage conversion"),
+    "date-calculator": ("Date Calculator", "datetime", "Calculate the number of days between two dates, or add/subtract days from a date to find a target date", "counting days until deadlines, calculating project durations, determining delivery dates, or finding future/past dates", "planning", "date calculation"),
+    "diff-checker": ("Diff Checker", "developer", "Compare two pieces of text or code side-by-side and highlight additions, deletions, and changes between them", "reviewing code changes, comparing document versions, verifying configuration edits, or debugging unexpected content changes", "development", "text comparison"),
+    "discount-calculator": ("Discount Calculator", "financial", "Calculate discount amounts, sale prices, and savings percentages for single or stacked discounts", "shopping, comparing deals, calculating markdown prices, or determining wholesale-to-retail pricing", "shopping", "discount calculation"),
+    "duplicate-line-remover": ("Duplicate Line Remover", "text", "Remove duplicate lines from text while optionally preserving the original order of first occurrences", "cleaning data lists, deduplicating log entries, preparing mailing lists, or tidying up copied content", "text processing", "duplicate removal"),
+    "emoji-picker": ("Emoji Picker", "generator", "Browse and search thousands of emojis organized by category, with one-click copy to clipboard", "finding specific emojis for social media posts, documents, code comments, or chat messages", "communication", "emoji selection"),
+    "energy-converter": ("Energy Converter", "converter", "Convert between energy units including joules, calories, kilowatt-hours, BTU, electron-volts, and foot-pounds", "physics calculations, comparing energy sources, understanding nutrition labels, or engineering computations", "science", "energy conversion"),
+    "fake-data-generator": ("Fake Data Generator", "generator", "Generate realistic but fake data including names, emails, addresses, phone numbers, and more for testing", "populating databases with test data, building UI prototypes, testing form validation, or demonstrating features without real user data", "development", "test data generation"),
+    "favicon-generator": ("Favicon Generator", "image", "Create favicons from images in multiple sizes (16x16, 32x32, 48x48, 180x180) for browsers and devices", "adding a site icon visible in browser tabs, bookmarks, and home screens when building or updating a website", "web development", "favicon creation"),
+    "fd-calculator": ("FD Calculator", "financial", "Calculate Fixed Deposit maturity amounts and interest earned with support for simple and compound interest options", "planning fixed deposit investments, comparing bank FD rates, or estimating returns on term deposits", "finance", "fixed deposit calculation"),
+    "find-and-replace": ("Find & Replace", "text", "Search for text patterns in your content and replace them with new text, with support for regular expressions", "bulk-editing text, standardizing terminology across documents, or performing complex pattern-based replacements", "text editing", "find and replace"),
+    "frequency-converter": ("Frequency Converter", "converter", "Convert between frequency units including hertz, kilohertz, megahertz, gigahertz, and RPM", "electronics calculations, understanding wireless specifications, audio engineering, or motor speed conversions", "engineering", "frequency conversion"),
+    "fuel-economy-converter": ("Fuel Economy Converter", "converter", "Convert between fuel economy units including MPG (US), MPG (UK), km/L, and L/100km", "comparing vehicle fuel efficiency across different measurement systems used in various countries", "automotive", "fuel economy conversion"),
+    "gitignore-generator": (".gitignore Generator", "generator", "Generate .gitignore files for various programming languages, frameworks, and IDEs with commonly used patterns", "setting up new projects to exclude build artifacts, dependencies, IDE files, and other non-essential files from Git", "development", ".gitignore creation"),
+    "glassmorphism-generator": ("Glassmorphism Generator", "css", "Create frosted glass UI effects with adjustable transparency, blur, and border properties", "designing modern UI components with the popular glassmorphism trend using backdrop-filter and transparency", "web design", "glassmorphism effects"),
+    "gst-calculator": ("GST Calculator", "financial", "Calculate Goods and Services Tax amounts for inclusive and exclusive pricing with multiple GST slab rates", "Indian business invoicing, determining pre-tax and post-tax prices, or calculating tax liability for different GST slabs", "taxation", "GST calculation"),
+    "headline-analyzer": ("Headline Analyzer", "content", "Analyze headlines for emotional impact, power words, readability, and SEO effectiveness with a composite score", "crafting compelling blog titles, email subject lines, social media posts, or advertising copy that drives clicks", "content marketing", "headline optimization"),
+    "hex-to-rgb": ("HEX to RGB Converter", "color", "Convert hexadecimal color codes to RGB values and vice versa, with support for shorthand hex codes and alpha channels", "switching between HEX colors in CSS and RGB values in design tools, JavaScript, or other programming contexts", "design", "color conversion"),
+    "hourly-to-salary": ("Hourly to Salary Converter", "financial", "Convert between hourly wages and annual salary, factoring in hours per week, weeks per year, and overtime", "comparing job offers quoted in different formats, calculating freelance rates, or budgeting based on hourly work", "employment", "wage conversion"),
+    "htaccess-generator": (".htaccess Generator", "developer", "Generate Apache .htaccess configuration files for redirects, security headers, caching, and URL rewriting", "configuring Apache web servers for redirects, forcing HTTPS, setting cache expiry headers, or blocking specific IPs", "system administration", ".htaccess configuration"),
+    "html-entity-encoder": ("HTML Entity Encoder/Decoder", "encoder", "Convert special characters to HTML entities and decode HTML entities back to readable characters", "preventing XSS attacks by encoding user input, displaying special characters in HTML, or decoding HTML-encoded content", "web security", "HTML entity encoding"),
+    "html-tag-stripper": ("HTML Tag Stripper", "text", "Remove all HTML tags from content while preserving the plain text, with options to keep specific tags", "extracting text from HTML emails, cleaning web-scraped content, or converting HTML to plain text", "text processing", "HTML tag removal"),
+    "html-to-markdown": ("HTML to Markdown Converter", "markdown", "Convert HTML content to Markdown format, preserving headings, links, lists, bold, italic, and code formatting", "migrating web content to Markdown-based systems, converting blog posts for static site generators, or creating documentation", "content conversion", "HTML to Markdown"),
+    "http-status-codes": ("HTTP Status Codes Reference", "network", "A comprehensive reference of all HTTP status codes (1xx-5xx) with descriptions, use cases, and troubleshooting tips", "debugging API responses, understanding server errors, or learning about HTTP protocol status codes", "web development", "HTTP status reference"),
+    "image-cropper": ("Image Cropper", "image", "Crop images to custom dimensions or preset aspect ratios with a visual drag-and-drop interface", "preparing images for social media profiles, creating thumbnails, or cutting images to specific dimensions for web design", "image editing", "image cropping"),
+    "image-format-converter": ("Image Format Converter", "image", "Convert images between formats including JPEG, PNG, WebP, GIF, and BMP entirely in your browser", "optimizing images for web (converting to WebP), converting screenshots to JPEG, or preparing images for specific platform requirements", "image processing", "image format conversion"),
+    "image-to-base64": ("Image to Base64", "image", "Convert images to Base64-encoded strings for embedding directly in HTML, CSS, or JSON", "embedding small icons in CSS data URIs, including images in JSON payloads, or creating self-contained HTML documents", "web development", "image encoding"),
+    "inflation-calculator": ("Inflation Calculator", "financial", "Calculate how inflation erodes purchasing power over time, showing what a past amount is worth today or what current money will be worth in the future", "understanding historical purchasing power, adjusting salaries for inflation, or planning long-term financial goals", "economics", "inflation adjustment"),
+    "ip-address-info": ("IP Address Info", "network", "Display your current IP address along with geolocation, ISP, and network information", "checking your public IP, verifying VPN connections, troubleshooting network issues, or determining geographic location", "networking", "IP lookup"),
+    "irr-calculator": ("IRR Calculator", "financial", "Calculate the Internal Rate of Return for a series of cash flows to evaluate investment profitability", "comparing investment opportunities, evaluating project returns, or performing capital budgeting analysis", "finance", "IRR calculation"),
+    "javascript-formatter": ("JavaScript Formatter", "developer", "Format and beautify JavaScript code with proper indentation, consistent spacing, and clean structure", "cleaning up minified JS, standardizing code style, or improving readability of unfamiliar JavaScript code", "development", "JavaScript formatting"),
+    "json-escape": ("JSON Escape/Unescape", "developer", "Escape special characters in strings for JSON encoding, or unescape JSON-encoded strings back to readable text", "preparing strings with special characters for JSON APIs, fixing malformed JSON, or debugging escaped sequences in API responses", "data processing", "JSON string escaping"),
+    "json-path-finder": ("JSON Path Finder", "developer", "Navigate JSON data interactively and find the JSONPath expression for any value in the structure", "extracting data from complex JSON APIs, building JSONPath queries for data processing pipelines, or debugging nested JSON structures", "development", "JSONPath navigation"),
+    "json-to-go": ("JSON to Go Struct", "developer", "Convert JSON data into Go struct definitions with proper field types, tags, and naming conventions", "quickly creating Go data structures from API responses, converting JSON schemas to Go types, or prototyping Go applications", "Go development", "JSON to Go conversion"),
+    "json-to-python": ("JSON to Python Dict", "developer", "Convert JSON data into Python dictionary syntax with proper Python conventions (True/False/None instead of true/false/null)", "converting API response examples to Python code, creating test fixtures, or migrating data between JavaScript and Python", "Python development", "JSON to Python conversion"),
+    "json-to-typescript": ("JSON to TypeScript", "developer", "Generate TypeScript interfaces and types from JSON data with proper type inference for nested objects and arrays", "creating type-safe API response types, generating interfaces from API documentation, or adding TypeScript types to existing JavaScript projects", "TypeScript development", "JSON to TypeScript conversion"),
+    "json-to-xml": ("JSON to XML Converter", "developer", "Convert JSON data to XML format with proper element nesting, attributes, and encoding", "integrating with legacy XML-based systems, preparing data for SOAP APIs, or converting modern JSON APIs to XML format", "data conversion", "JSON to XML"),
+    "json-to-yaml": ("JSON to YAML Converter", "developer", "Convert JSON data to YAML format for human-readable configuration files", "creating Docker Compose files, Kubernetes manifests, CI/CD configs, or any YAML-based configuration from JSON data", "DevOps", "JSON to YAML conversion"),
+    "json-validator": ("JSON Validator", "developer", "Validate JSON syntax and highlight errors with line numbers and descriptive messages", "checking JSON before sending to APIs, debugging malformed data, or verifying configuration files", "development", "JSON validation"),
+    "jwt-decoder": ("JWT Decoder", "encoder", "Decode JSON Web Tokens to inspect the header, payload, and signature without verification", "debugging authentication issues, inspecting token claims and expiration, or understanding OAuth2 and OIDC token contents", "security", "JWT decoding"),
+    "keyword-density-checker": ("Keyword Density Checker", "seo", "Analyze text to find keyword frequency, density percentages, and prominent phrases for SEO optimization", "optimizing blog posts for target keywords, avoiding keyword stuffing, or analyzing competitor content strategy", "SEO", "keyword analysis"),
+    "length-converter": ("Length Converter", "converter", "Convert between length units including meters, feet, inches, centimeters, kilometers, miles, yards, and nautical miles", "converting measurements for construction, travel distances, height comparisons, or international unit standardization", "measurement", "length conversion"),
+    "line-number-adder": ("Line Number Adder", "text", "Add sequential line numbers to each line of text with configurable starting number and separator style", "preparing code for documentation, creating numbered reference lists, or formatting text for technical discussions", "text processing", "line numbering"),
+    "list-tools": ("List Tools", "text", "Sort, shuffle, reverse, number, deduplicate, and transform lists with multiple formatting options", "organizing data lists, preparing CSV columns, randomizing quiz answers, or formatting text lists for documents", "text processing", "list manipulation"),
+    "loan-comparison-calculator": ("Loan Comparison Calculator", "financial", "Compare multiple loan offers side by side with different interest rates, terms, and fees to find the best deal", "comparing mortgage offers, car loan options, personal loan rates, or refinancing opportunities", "finance", "loan comparison"),
+    "lorem-ipsum-generator": ("Lorem Ipsum Generator", "generator", "Generate placeholder text in various formats including paragraphs, sentences, words, and lists", "filling design mockups, testing page layouts, prototyping UI components, or demonstrating typography", "design", "placeholder text generation"),
+    "margin-calculator": ("Margin Calculator", "financial", "Calculate profit margin, markup percentage, cost, and revenue for business pricing decisions", "setting product prices, analyzing profitability, comparing margin across product lines, or preparing financial reports", "business", "margin calculation"),
+    "markdown-table-generator": ("Markdown Table Generator", "markdown", "Create properly formatted Markdown tables with a visual editor supporting alignment and easy cell editing", "creating tables for GitHub READMEs, documentation, or any Markdown-based content without manual formatting", "documentation", "Markdown table creation"),
+    "meta-tag-generator": ("Meta Tag Generator", "seo", "Generate HTML meta tags for SEO including title, description, Open Graph, Twitter Cards, and canonical URLs", "optimizing web pages for search engines and social media sharing with proper meta tag configuration", "SEO", "meta tag generation"),
+    "morse-code-translator": ("Morse Code Translator", "encoder", "Translate text to Morse code (dots and dashes) and decode Morse code back to readable text", "learning Morse code, encoding messages for educational purposes, or decoding historical Morse transmissions", "communication", "Morse code"),
+    "nato-alphabet": ("NATO Phonetic Alphabet", "encoder", "Convert text to the NATO phonetic alphabet (Alpha, Bravo, Charlie...) for clear verbal communication", "spelling out words clearly over phone or radio, avoiding miscommunication of letters like B/D or M/N", "communication", "phonetic spelling"),
+    "neumorphism-generator": ("Neumorphism Generator", "css", "Create soft UI (neumorphic) effects with adjustable shadow intensity, blur, color, and shape properties", "designing modern neumorphic buttons, cards, and input fields with the soft 3D effect trend", "UI design", "neumorphism effects"),
+    "npv-calculator": ("NPV Calculator", "financial", "Calculate Net Present Value for a series of future cash flows discounted at a given rate to evaluate investment worth", "capital budgeting decisions, evaluating business investments, comparing project alternatives, or financial modeling", "finance", "NPV analysis"),
+    "number-base-converter": ("Number Base Converter", "encoder", "Convert numbers between decimal, binary, octal, and hexadecimal number systems", "programming tasks involving bitwise operations, understanding memory addresses, debugging binary data, or learning computer science", "computing", "number system conversion"),
+    "number-to-words": ("Number to Words", "math", "Convert numeric values to their written word equivalents in English (e.g., 42 becomes 'forty-two')", "writing checks, generating invoices in words, creating legal documents, or accessibility requirements", "document preparation", "number conversion"),
+    "open-graph-preview": ("Open Graph Preview", "seo", "Preview how your web pages will appear when shared on Facebook, Twitter, LinkedIn, and other social platforms", "optimizing social media appearances before publishing, debugging Open Graph meta tags, or testing social share cards", "social media", "Open Graph preview"),
+    "percentage-calculator": ("Percentage Calculator", "financial", "Calculate percentages, percentage changes, percentage of a number, and find what percentage one number is of another", "tip calculations, grade computations, discount math, tax estimates, or statistical analysis", "mathematics", "percentage math"),
+    "placeholder-image-generator": ("Placeholder Image Generator", "image", "Generate placeholder images with custom dimensions, colors, and text for design mockups", "filling image spaces in web prototypes, creating layout mockups, or generating test images for responsive design", "design", "placeholder images"),
+    "power-converter": ("Power Converter", "converter", "Convert between power units including watts, kilowatts, horsepower, BTU/hour, and foot-pounds per second", "comparing engine specifications, understanding appliance power consumption, or engineering calculations", "engineering", "power conversion"),
+    "ppf-calculator": ("PPF Calculator", "financial", "Calculate Public Provident Fund returns with yearly deposits, compound interest, and maturity values for the 15-year tenure", "planning PPF investments for tax savings under Section 80C, estimating long-term returns, or retirement planning in India", "finance", "PPF calculation"),
+    "pressure-converter": ("Pressure Converter", "converter", "Convert between pressure units including Pascal, bar, PSI, atmosphere, torr, and mmHg", "tire pressure conversions, weather data interpretation, engineering calculations, or scientific research", "science", "pressure conversion"),
+    "privacy-policy-generator": ("Privacy Policy Generator", "generator", "Generate a comprehensive privacy policy page for your website based on your data collection practices", "creating legally required privacy policies for websites, apps, or online services that collect user data", "legal", "privacy policy creation"),
+    "punycode-converter": ("Punycode Converter", "encoder", "Convert internationalized domain names (IDN) between Unicode and Punycode (xn--) representation", "registering international domain names, debugging DNS issues with non-ASCII characters, or understanding URL encoding", "networking", "Punycode conversion"),
+    "random-color-generator": ("Random Color Generator", "color", "Generate random colors in HEX, RGB, and HSL formats with options for specific hue ranges and saturation levels", "design inspiration, creating color variations, generating test colors for UI prototypes, or choosing accent colors", "design", "random color creation"),
+    "rd-calculator": ("RD Calculator", "financial", "Calculate Recurring Deposit maturity amounts and total interest earned based on monthly deposit, interest rate, and tenure", "planning recurring deposit investments, comparing RD schemes across banks, or estimating monthly savings growth", "finance", "RD calculation"),
+    "readability-score": ("Readability Score", "seo", "Analyze text readability using Flesch-Kincaid, Gunning Fog, Coleman-Liau, and other standard readability formulas", "ensuring content is appropriate for your target audience reading level, optimizing for SEO, or meeting accessibility standards", "content quality", "readability analysis"),
+    "reading-time-calculator": ("Reading Time Calculator", "text", "Estimate how long it will take to read a piece of text based on average reading speed (200-250 words per minute)", "adding reading time estimates to blog posts, planning presentation content, or gauging document length for readers", "content planning", "reading time estimation"),
+    "robots-txt-generator": ("Robots.txt Generator", "seo", "Create robots.txt files with rules for search engine crawlers including allow, disallow, and sitemap directives", "controlling search engine access to your website, blocking private directories, or specifying sitemap locations", "SEO", "robots.txt creation"),
+    "roi-calculator": ("ROI Calculator", "financial", "Calculate Return on Investment as a percentage by comparing the gain from an investment to its cost", "evaluating marketing campaign effectiveness, comparing investment opportunities, or measuring project returns", "business", "ROI calculation"),
+    "rot13-encoder": ("ROT13 Encoder", "encoder", "Apply ROT13 substitution cipher that shifts each letter 13 positions in the alphabet, or decode ROT13-encoded text", "obscuring spoilers, puzzle creation, or learning about basic substitution ciphers — ROT13 is its own inverse", "cryptography", "ROT13 encoding"),
+    "salary-calculator": ("Salary Calculator", "financial", "Calculate take-home pay after deductions including taxes, insurance, and retirement contributions from gross salary", "understanding net pay from job offers, comparing compensation packages, or budgeting based on actual take-home income", "employment", "salary estimation"),
+    "schema-article": ("Article Schema Generator", "seo", "Generate JSON-LD structured data for articles following Schema.org Article markup standards", "adding rich snippets to blog posts, news articles, or content pages to improve search engine understanding", "SEO", "Article schema markup"),
+    "schema-breadcrumb": ("Breadcrumb Schema Generator", "seo", "Generate BreadcrumbList JSON-LD structured data for navigation breadcrumbs on your website", "adding breadcrumb rich snippets in search results, improving site navigation understanding for search engines", "SEO", "Breadcrumb schema markup"),
+    "schema-event": ("Event Schema Generator", "seo", "Generate JSON-LD structured data for events including dates, locations, performers, and ticket information", "getting event rich snippets in Google search results for conferences, concerts, webinars, or community events", "SEO", "Event schema markup"),
+    "schema-faq": ("FAQ Schema Generator", "seo", "Generate FAQPage JSON-LD structured data for frequently asked questions sections on your pages", "getting FAQ rich snippets in search results that display expandable question-and-answer pairs", "SEO", "FAQ schema markup"),
+    "schema-howto": ("HowTo Schema Generator", "seo", "Generate HowTo JSON-LD structured data for step-by-step instructional content with tools and supplies", "getting how-to rich snippets showing steps in search results for tutorials and guides", "SEO", "HowTo schema markup"),
+    "schema-job-posting": ("Job Posting Schema Generator", "seo", "Generate JobPosting JSON-LD structured data for job listings with salary, location, and requirements", "getting job listing rich snippets in Google for Jobs, improving visibility of career postings", "SEO", "JobPosting schema"),
+    "schema-local-business": ("Local Business Schema Generator", "seo", "Generate LocalBusiness JSON-LD structured data with address, hours, contact info, and geo-coordinates", "getting local business rich snippets in search and maps, improving local SEO visibility", "SEO", "LocalBusiness schema"),
+    "schema-organization": ("Organization Schema Generator", "seo", "Generate Organization JSON-LD structured data with logo, social profiles, contact info, and founding details", "establishing brand identity in search results, enabling knowledge panel information", "SEO", "Organization schema"),
+    "schema-product": ("Product Schema Generator", "seo", "Generate Product JSON-LD structured data with pricing, availability, reviews, and brand information", "getting product rich snippets with prices and ratings in search results for e-commerce pages", "SEO", "Product schema markup"),
+    "schema-recipe": ("Recipe Schema Generator", "seo", "Generate Recipe JSON-LD structured data with ingredients, instructions, nutrition, and cooking times", "getting recipe rich snippets in search results with images, ratings, and cooking details", "SEO", "Recipe schema markup"),
+    "scientific-calculator": ("Scientific Calculator", "math", "Perform advanced mathematical operations including trigonometry, logarithms, exponents, factorials, and constants like pi and e", "academic math, engineering calculations, physics problems, or any computation requiring advanced mathematical functions", "mathematics", "scientific computation"),
+    "serp-preview": ("SERP Preview", "seo", "Preview how your web page will appear in Google search results by entering a title, URL, and meta description", "optimizing search appearance before publishing, testing title and description lengths, or comparing against competitors", "SEO", "search result preview"),
+    "sip-calculator": ("SIP Calculator", "financial", "Calculate returns from Systematic Investment Plan with monthly contributions, expected returns, and investment duration", "planning mutual fund SIP investments, comparing lump sum vs SIP returns, or setting monthly investment goals", "finance", "SIP calculation"),
+    "sitemap-generator": ("XML Sitemap Generator", "seo", "Generate XML sitemaps for your website by entering URLs with optional priority and change frequency settings", "submitting sitemaps to Google Search Console, ensuring all pages are discoverable by search engines", "SEO", "sitemap creation"),
+    "small-text-generator": ("Small Text Generator", "text", "Convert regular text to small caps, superscript, or subscript Unicode characters for decorative formatting", "creating stylized social media bios, decorative headings, or unique text formatting without HTML", "design", "small text conversion"),
+    "social-media-counter": ("Social Media Character Counter", "content", "Count characters for social media platforms with specific limits for Twitter/X (280), Instagram (2200), LinkedIn (3000), and more", "ensuring posts fit within platform character limits, optimizing content length for engagement", "social media", "character counting"),
+    "speed-converter": ("Speed Converter", "converter", "Convert between speed units including km/h, mph, m/s, knots, and feet per second", "comparing vehicle speeds across unit systems, understanding weather wind speeds, or physics calculations", "measurement", "speed conversion"),
+    "sql-escape": ("SQL Escape/Unescape", "developer", "Escape special characters in SQL strings or unescape SQL-encoded values back to plain text", "preparing strings for SQL queries, debugging SQL syntax issues, or understanding escaped characters in database outputs", "database", "SQL string escaping"),
+    "stock-profit-calculator": ("Stock Profit Calculator", "financial", "Calculate profit or loss from stock trades including buy price, sell price, quantity, and brokerage fees", "evaluating trade performance, calculating capital gains, or planning exit strategies for stock investments", "investing", "stock profit calculation"),
+    "string-length-calculator": ("String Length Calculator", "text", "Count the exact number of characters, bytes, words, and lines in a text string with Unicode support", "verifying string lengths for database fields, API input limits, SMS character counts, or programming constraints", "development", "string analysis"),
+    "svg-optimizer": ("SVG Optimizer", "image", "Optimize SVG files by removing unnecessary metadata, comments, and whitespace to reduce file size", "reducing SVG file sizes for faster web loading, cleaning up exported SVGs from design tools, or preparing icons for production", "web optimization", "SVG optimization"),
+    "tailwind-color-picker": ("Tailwind Color Picker", "css", "Browse and search all Tailwind CSS color classes with visual previews, HEX values, and one-click copy", "finding the right Tailwind color class for your design, converting between Tailwind colors and HEX/RGB values", "Tailwind CSS", "Tailwind color reference"),
+    "tax-calculator": ("Tax Calculator", "financial", "Estimate income tax liability based on income, deductions, and applicable tax brackets for basic tax planning", "estimating tax payments, understanding marginal tax rates, planning deductions, or comparing tax scenarios", "taxation", "income tax estimation"),
+    "temperature-converter": ("Temperature Converter", "converter", "Convert between Celsius, Fahrenheit, and Kelvin temperature scales with instant results", "cooking temperature conversions, understanding weather forecasts in different scales, or scientific calculations", "measurement", "temperature conversion"),
+    "terms-generator": ("Terms of Service Generator", "generator", "Generate a terms of service page for your website covering usage rules, intellectual property, and liability", "creating legally required terms of service for websites, apps, or online services", "legal", "terms of service creation"),
+    "text-diff": ("Text Diff", "developer", "Compare two text inputs and visualize the differences with highlighted additions and deletions", "reviewing document changes, comparing code versions, verifying edits in configuration files, or validating content updates", "development", "text comparison"),
+    "text-repeater": ("Text Repeater", "text", "Repeat a text string a specified number of times with configurable separators between repetitions", "generating test data, creating repeated patterns, filling templates, or producing bulk text for testing", "text generation", "text repetition"),
+    "text-reverser": ("Text Reverser", "text", "Reverse text at the character level, word level, or line level for various text manipulation needs", "creating palindrome tests, generating reversed text for puzzles, or debugging string encoding issues", "text processing", "text reversal"),
+    "text-sorter": ("Text Sorter", "text", "Sort lines of text alphabetically, numerically, by length, or in reverse order with case-sensitive options", "organizing lists, sorting data exports, arranging configuration entries, or preparing content for alphabetical indexes", "text processing", "text sorting"),
+    "text-to-ascii-art": ("Text to ASCII Art", "text", "Convert text into large ASCII art characters using various font styles for decorative display", "creating banner text for README files, terminal splash screens, or decorative text for presentations", "creative", "ASCII art generation"),
+    "text-to-binary": ("Text to Binary", "encoder", "Convert text to binary (1s and 0s) representation and decode binary back to readable text", "learning about binary encoding, demonstrating how computers store text, or creating binary-themed designs", "computing", "binary conversion"),
+    "text-to-hex": ("Text to Hex", "encoder", "Convert text to hexadecimal byte representation and decode hex strings back to readable text", "debugging network protocols, analyzing binary data, or understanding character encoding at the byte level", "computing", "hexadecimal conversion"),
+    "text-to-slug": ("Text to Slug", "text", "Convert text into URL-friendly slugs by lowercasing, replacing spaces with hyphens, and removing special characters", "creating SEO-friendly URLs for blog posts, generating file names from titles, or normalizing user input for URL paths", "web development", "slug generation"),
+    "text-to-speech": ("Text to Speech", "content", "Convert written text to spoken audio using your browser's built-in speech synthesis with adjustable voice, speed, and pitch", "proofreading by listening, accessibility testing, creating audio from text content, or language pronunciation practice", "accessibility", "speech synthesis"),
+    "tint-shade-generator": ("Tint & Shade Generator", "color", "Generate lighter tints and darker shades of any color in precise percentage steps for design systems", "creating consistent color scales for UI design, building design system color tokens, or selecting hover/active state colors", "design", "tint/shade creation"),
+    "tip-calculator": ("Tip Calculator", "financial", "Calculate tip amounts and split bills between multiple people with customizable tip percentages", "dining out, splitting group meals, calculating service gratuities, or budgeting restaurant expenses", "everyday math", "tip calculation"),
+    "toml-formatter": ("TOML Formatter", "developer", "Format and beautify TOML configuration files with proper indentation and consistent spacing", "cleaning up Rust Cargo.toml files, Python pyproject.toml, or any TOML configuration file for readability", "development", "TOML formatting"),
+    "unicode-text-formatter": ("Unicode Text Formatter", "text", "Convert regular text to various Unicode styles including bold, italic, script, and monospace using Unicode characters", "creating styled text for social media bios and posts where HTML formatting is not available", "design", "Unicode text styling"),
+    "unix-timestamp-converter": ("Unix Timestamp Converter", "datetime", "Convert between Unix timestamps and human-readable dates in both directions with millisecond precision", "debugging API timestamps, converting epoch values in logs, or generating timestamps for database queries", "development", "timestamp conversion"),
+    "url-parser": ("URL Parser", "network", "Parse URLs into their components including protocol, host, port, path, query parameters, and fragment", "debugging URLs, extracting query parameters, understanding URL structure, or validating URL formatting", "web development", "URL parsing"),
+    "user-agent-parser": ("User Agent Parser", "network", "Parse browser user agent strings to identify the browser name, version, operating system, and device type", "debugging browser-specific issues, analyzing visitor analytics, or testing responsive designs for different user agents", "web development", "user agent analysis"),
+    "utm-link-builder": ("UTM Link Builder", "seo", "Build URLs with UTM tracking parameters for campaign source, medium, name, term, and content tracking in Google Analytics", "tracking marketing campaign performance, measuring social media traffic sources, or analyzing email newsletter clicks", "marketing", "UTM parameter creation"),
+    "volume-converter": ("Volume Converter", "converter", "Convert between volume units including liters, gallons, cups, milliliters, fluid ounces, and cubic meters", "cooking measurements, fuel quantity conversions, or comparing container sizes across measurement systems", "measurement", "volume conversion"),
+    "weight-converter": ("Weight Converter", "converter", "Convert between weight and mass units including kilograms, pounds, ounces, grams, stones, and metric tons", "shipping weight calculations, fitness tracking, cooking measurements, or international unit standardization", "measurement", "weight conversion"),
+    "xml-escape": ("XML Escape/Unescape", "developer", "Escape special characters (&, <, >, \", ') for safe inclusion in XML documents, or unescape XML entities", "preparing content for XML feeds, fixing malformed XML, or handling user input in XML-based APIs", "data processing", "XML escaping"),
+    "xml-formatter": ("XML Formatter", "developer", "Format and beautify XML documents with proper indentation, tag alignment, and attribute formatting", "reading minified XML, debugging API responses, formatting configuration files, or preparing XML for documentation", "development", "XML formatting"),
+    "xml-to-json": ("XML to JSON Converter", "developer", "Convert XML documents to JSON format, mapping elements to objects and attributes to properties", "integrating XML-based legacy systems with modern JSON APIs, migrating data formats, or processing XML feeds in JavaScript", "data conversion", "XML to JSON"),
+    "yaml-formatter": ("YAML Formatter", "developer", "Format and validate YAML documents with proper indentation, consistent style, and syntax checking", "cleaning up Kubernetes manifests, Docker Compose files, CI/CD configurations, or any YAML-based config", "DevOps", "YAML formatting"),
+    "yaml-to-json": ("YAML to JSON Converter", "developer", "Convert YAML documents to JSON format for use in APIs, databases, or applications expecting JSON input", "converting configuration files to JSON for programmatic processing, migrating YAML configs to JSON-based systems", "data conversion", "YAML to JSON"),
+}
+
+
+def generate_help_jsx(tool_slug, tool_info):
+    """Generate helpContent JSX for a tool."""
+    if isinstance(tool_info, dict):
+        # Full custom content
+        what = tool_info["what"]
+        howto_items = "\n".join(f"            <li>{step}</li>" for step in tool_info["howto"])
+        when = tool_info["when"]
+        tips_items = "\n".join(f"            <li>{tip}</li>" for tip in tool_info["tips"])
+        faqs = tool_info["faqs"]
+    else:
+        # Tuple format: (title, type, desc, when, domain, topic)
+        title, ttype, desc, when_use, domain, topic = tool_info
+        what = f"{title} is a free browser-based tool that lets you {desc.lower()}. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately."
+        howto_items = f"""            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>"""
+        when = f"This tool is particularly useful when {when_use}. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this {domain} tool saves time and eliminates the need for desktop software installation."
+        tips_items = f"""            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need {topic.lower()}.</li>"""
+        faqs = [
+            (f"Is this {title.lower()} free to use?", f"Yes, completely free with no usage limits, no sign-up required, and no ads blocking the tool interface."),
+            (f"Is my data safe when using this tool?", "Absolutely. All processing happens entirely in your browser. No data is ever uploaded to or stored on any server. Your content remains on your device at all times."),
+            (f"Does this tool work on mobile devices?", "Yes. The tool is fully responsive and works on smartphones and tablets in any modern browser."),
+        ]
+
+    help_content = f"""      helpContent={{
+        <>
+          <h2>What is This Tool?</h2>
+          <p>{what}</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+{howto_items}
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>{when}</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+{tips_items}
+          </ul>
+        </>
+      }}"""
+
+    faq_items = ",\n        ".join(
+        f"{{ question: '{q.replace(chr(39), chr(92)+chr(39))}', answer: '{a.replace(chr(39), chr(92)+chr(39))}' }}"
+        for q, a in faqs
+    )
+    faqs_content = f"""      faqs={{[
+        {faq_items},
+      ]}}"""
+
+    return help_content, faqs_content
+
+
+def inject_help_content(filepath, tool_slug):
+    """Inject helpContent into a tool page file."""
+    with open(filepath, 'r') as f:
+        content = f.read()
+
+    # Skip if already has helpContent
+    if 'helpContent' in content:
+        return False
+
+    # Get tool info
+    all_tools = {**TOOL_CONTENT, **REMAINING_TOOLS}
+    if tool_slug not in all_tools:
+        return False
+
+    help_jsx, faqs_jsx = generate_help_jsx(tool_slug, all_tools[tool_slug])
+
+    # Find the ToolPage opening tag and inject helpContent before the closing >
+    # Pattern: find "categoryLabel="..."" and add after it
+    # We need to find the last prop before the > that starts children
+
+    # Strategy: Find the line with categoryLabel and add helpContent after it
+    lines = content.split('\n')
+    new_lines = []
+    inserted = False
+    has_faqs = 'faqs={' in content
+
+    for i, line in enumerate(lines):
+        new_lines.append(line)
+        if not inserted and 'categoryLabel=' in line and not has_faqs:
+            # Add helpContent and faqs after categoryLabel
+            new_lines.append(help_jsx)
+            new_lines.append(faqs_jsx)
+            inserted = True
+        elif not inserted and 'categoryLabel=' in line and has_faqs:
+            # Has faqs already, just add helpContent before the faqs
+            new_lines.append(help_jsx)
+            inserted = True
+
+    if not inserted:
+        # Try another approach: find the ToolPage component and inject before children
+        new_lines = []
+        for i, line in enumerate(lines):
+            if not inserted and 'faqs={[' in line and 'helpContent' not in content:
+                new_lines.append(help_jsx)
+                inserted = True
+            new_lines.append(line)
+
+    if inserted:
+        with open(filepath, 'w') as f:
+            f.write('\n'.join(new_lines))
+        return True
+    return False
+
+
+# Process all tools
+tools_dir = TOOLS_DIR
+success = 0
+failed = []
+
+for tool_slug in sorted(os.listdir(tools_dir)):
+    tool_path = os.path.join(tools_dir, tool_slug, 'page.tsx')
+    if not os.path.isfile(tool_path):
+        continue
+
+    # Check if already has helpContent
+    with open(tool_path, 'r') as f:
+        if 'helpContent' in f.read():
+            continue
+
+    # Check if we have content for this tool
+    all_tools = {**TOOL_CONTENT, **REMAINING_TOOLS}
+    if tool_slug not in all_tools:
+        failed.append(tool_slug)
+        continue
+
+    if inject_help_content(tool_path, tool_slug):
+        success += 1
+        print(f"OK: {tool_slug}")
+    else:
+        failed.append(tool_slug)
+        print(f"FAIL: {tool_slug}")
+
+print(f"\nDone: {success} tools updated")
+if failed:
+    print(f"Failed ({len(failed)}): {', '.join(failed)}")

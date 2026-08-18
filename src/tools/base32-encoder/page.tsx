@@ -77,6 +77,32 @@ export default function Base32EncoderTool() {
       description="Encode text to Base32 or decode Base32 to text (RFC 4648)"
       category="encoders"
       categoryLabel="Encoders & Decoders"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>Base32 Encoder/Decoder is a free browser-based tool that lets you encode text to Base32 format or decode Base32 back to text. Base32 uses A-Z and 2-7 characters. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when encoding data for systems requiring case-insensitive alphanumeric representation, like TOTP secrets. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this encoding tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need base32 encoding.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'What is Base32 encoding?', answer: 'Base32 is a binary-to-text encoding scheme defined in RFC 4648 that represents binary data using 32 ASCII characters (A-Z and 2-7). It is less space-efficient than Base64 but uses only uppercase letters and digits, avoiding case-sensitivity issues.' },
         { question: 'What is the difference between Base32 and Base64?', answer: 'Base32 uses 32 characters (A-Z, 2-7) and increases data size by about 60%, while Base64 uses 64 characters (A-Z, a-z, 0-9, +, /) and increases size by about 33%. Base32 is preferred when case-insensitivity is needed.' },

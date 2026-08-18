@@ -242,6 +242,32 @@ export default function AIObjectDetection() {
       description="Detect and label objects in any image using AI. Identifies 80+ object types with bounding boxes \u2014 runs entirely in your browser."
       category="image"
       categoryLabel="Image Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>AI Object Detection identifies and locates multiple objects within an image, drawing bounding boxes around each detected item and labeling it with a category name and confidence score. Unlike image classification which labels the entire image, object detection pinpoints exactly where each object appears, making it useful for counting, spatial analysis, and scene understanding.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Upload a photograph containing objects you want to detect.</li>
+            <li>The AI model scans the image and identifies all recognizable objects.</li>
+            <li>View bounding boxes drawn around each detected object with labels.</li>
+            <li>Download the annotated image or review the detection list.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>Object detection is used in inventory counting, retail analytics, security monitoring, autonomous driving research, wildlife surveys, and accessibility tools. Web developers use it to prototype interactive features, and content creators use it to understand scene composition.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Clear, well-lit images with distinct objects produce the best results.</li>
+            <li>Overlapping objects may be detected as a single item — try different angles.</li>
+            <li>The model works best with common objects like people, cars, animals, and furniture.</li>
+            <li>All detection runs in your browser, so no images are uploaded.</li>
+            <li>For dense scenes, the model may miss smaller objects — try cropping to specific areas.</li>
+          </ul>
+        </>
+      }
       slug="ai-object-detection"
       faqs={[
         {

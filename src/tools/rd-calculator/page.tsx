@@ -49,6 +49,32 @@ export default function RDCalculator() {
       description="Calculate Recurring Deposit maturity amount. Plan your monthly savings with estimated returns."
       category="financial"
       categoryLabel="Financial Calculators"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>RD Calculator is a free browser-based tool that lets you calculate Recurring Deposit maturity amounts and total interest earned based on monthly deposit, interest rate, and tenure. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when planning recurring deposit investments, comparing RD schemes across banks, or estimating monthly savings growth. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this finance tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need rd calculation.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'What is a Recurring Deposit (RD)?', answer: 'A Recurring Deposit is a savings scheme where you deposit a fixed amount every month for a set period and earn compound interest, similar to an FD but with monthly installments.' },
         { question: 'How is RD maturity amount calculated?', answer: 'Each monthly installment earns compound interest (typically quarterly compounding) for its remaining tenure. The maturity amount is the sum of all installments plus their accumulated interest.' },

@@ -155,6 +155,32 @@ export default function AISpeechToText() {
         description="Convert speech to text in real-time using your microphone. Supports 10+ languages — runs entirely in your browser."
         category="text"
         categoryLabel="Text Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>AI Speech to Text converts spoken audio into written text using a speech recognition model that runs in your browser. It supports multiple languages and can handle various accents, background noise levels, and speaking speeds. Your audio is processed locally — nothing is uploaded to external servers.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Click the <strong>microphone button</strong> to start recording, or upload an audio file.</li>
+            <li>Speak clearly into your microphone at a natural pace.</li>
+            <li>The tool transcribes your speech into text in real time.</li>
+            <li>Copy or download the transcription when finished.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>Speech to text is invaluable for transcribing interviews, lectures, and meetings; creating subtitles for videos; drafting emails or documents hands-free; and making notes while multitasking. It is also used for accessibility — allowing people who cannot type to create written content.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Speak clearly and at a moderate pace for the best accuracy.</li>
+            <li>A quiet environment significantly improves transcription quality.</li>
+            <li>Use an external microphone for better audio quality compared to laptop microphones.</li>
+            <li>The model handles common accents well but may struggle with heavy regional dialects.</li>
+            <li>Your audio is never uploaded — all speech recognition runs on your device.</li>
+          </ul>
+        </>
+      }
         slug="ai-speech-to-text"
         faqs={[]}
       >

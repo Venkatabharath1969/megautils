@@ -114,6 +114,32 @@ export default function DiffCheckerTool() {
       description="Compare two texts with unified or side-by-side diff view. Line-level and word-level modes."
       category="developer"
       categoryLabel="Developer Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>Diff Checker is a free browser-based tool that lets you compare two pieces of text or code side-by-side and highlight additions, deletions, and changes between them. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when reviewing code changes, comparing document versions, verifying configuration edits, or debugging unexpected content changes. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this development tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need text comparison.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'What is the difference between unified and side-by-side diff view?', answer: 'Unified view shows changes in a single column with + and - markers, while side-by-side view displays the original and modified text in separate columns for easier visual comparison.' },
         { question: 'What is the difference between line diff and word diff?', answer: 'Line diff highlights entire lines that changed, while word diff highlights the specific words within each line that are different, making small edits much easier to spot.' },

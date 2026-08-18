@@ -40,6 +40,32 @@ export default function CaesarCipherTool() {
       description="Encrypt and decrypt text using Caesar cipher with configurable shift (1-25)"
       category="encoders"
       categoryLabel="Encoders & Decoders"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>Caesar Cipher is a free browser-based tool that lets you encrypt and decrypt text using the Caesar cipher shift technique, one of the oldest known encryption methods. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when learning about classical cryptography, puzzle solving, or demonstrating basic encryption concepts. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this cryptography tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need caesar cipher encryption.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'What is a Caesar cipher?', answer: 'A Caesar cipher is one of the oldest encryption techniques, named after Julius Caesar. It works by shifting each letter in the text by a fixed number of positions in the alphabet.' },
         { question: 'How do I decrypt a Caesar cipher without knowing the shift?', answer: 'Use the brute force table shown below the output. It displays all 25 possible shifts at once, so you can visually scan for the one that produces readable text.' },

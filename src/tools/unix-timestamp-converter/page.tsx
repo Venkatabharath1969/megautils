@@ -74,6 +74,32 @@ export default function UnixTimestampConverterTool() {
       description="Convert Unix timestamps to human-readable dates and vice versa. Auto-detects seconds vs milliseconds."
       category="datetime"
       categoryLabel="Date & Time"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>Unix Timestamp Converter is a free browser-based tool that lets you convert between Unix timestamps and human-readable dates in both directions with millisecond precision. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when debugging API timestamps, converting epoch values in logs, or generating timestamps for database queries. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this development tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need timestamp conversion.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'What is a Unix timestamp?', answer: 'A Unix timestamp is the number of seconds that have elapsed since January 1, 1970, 00:00:00 UTC (the Unix epoch). It is widely used in programming to represent dates and times.' },
         { question: 'What is the difference between Unix timestamp in seconds and milliseconds?', answer: 'A Unix timestamp in seconds is typically 10 digits, while milliseconds is 13 digits. JavaScript uses milliseconds (Date.now()), while most Unix systems use seconds.' },

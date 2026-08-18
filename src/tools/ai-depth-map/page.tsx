@@ -227,6 +227,32 @@ export default function AIDepthMap() {
       description="Generate 3D depth maps from any photo using AI. Create stunning depth effects — runs entirely in your browser."
       category="image"
       categoryLabel="Image Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>A depth map generator uses AI to estimate the relative distance of objects in a photograph from the camera. It produces a grayscale image where lighter pixels represent closer objects and darker pixels represent objects farther away. This technique, called monocular depth estimation, runs entirely in your browser using a pre-trained neural network — no server upload required.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Upload a photograph using the file picker or drag-and-drop.</li>
+            <li>Wait a few seconds while the AI model loads and processes the image.</li>
+            <li>View the generated <strong>depth map</strong> alongside your original photo.</li>
+            <li>Download the depth map as a PNG for use in 3D modeling, AR, or visual effects.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>Depth maps are used in 3D scene reconstruction, augmented reality, computational photography (portrait mode blur), autonomous vehicle research, and game development. Designers use them to create parallax scrolling effects on websites, and photographers use them to simulate bokeh in post-processing.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Photos with clear foreground and background separation produce the best depth maps.</li>
+            <li>The AI model runs on your device — larger images take longer to process but produce finer detail.</li>
+            <li>Outdoor scenes with natural depth variation work better than flat surfaces.</li>
+            <li>You can use the depth map in Photoshop or Blender as a displacement map for 3D effects.</li>
+            <li>No internet connection is needed after the model loads — processing is fully offline.</li>
+          </ul>
+        </>
+      }
       slug="ai-depth-map"
       faqs={[
         {

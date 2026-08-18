@@ -36,7 +36,34 @@ export default function SerpPreviewTool() {
   const truncatedDesc = description.length > 155 ? description.slice(0, 155) + '...' : (description || 'This is the meta description of your page. It will show up in search engine results. Write a compelling description to improve click-through rates.')
 
   return (
-    <ToolPage title="SERP Preview" description="Preview how your page will appear in Google search results. Check title and description lengths." category="seo" categoryLabel="SEO Tools" faqs={[
+    <ToolPage title="SERP Preview" description="Preview how your page will appear in Google search results. Check title and description lengths." category="seo" categoryLabel="SEO Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>SERP Preview is a free browser-based tool that lets you preview how your web page will appear in Google search results by entering a title, URL, and meta description. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when optimizing search appearance before publishing, testing title and description lengths, or comparing against competitors. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this SEO tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need search result preview.</li>
+          </ul>
+        </>
+      }
+ faqs={[
         { question: 'What is a SERP preview?', answer: 'A SERP (Search Engine Results Page) preview shows you exactly how your page title, URL, and meta description will look in Google search results before you publish.' },
         { question: 'What is the ideal title tag length for Google?', answer: 'Google typically displays the first 50-60 characters of a title tag. Keeping your title within 60 characters ensures it won\'t be truncated in search results.' },
         { question: 'How long should a meta description be?', answer: 'Meta descriptions should be between 120 and 155 characters. Google may truncate descriptions longer than 155 characters with an ellipsis.' },

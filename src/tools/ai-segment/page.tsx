@@ -495,6 +495,32 @@ export default function AISegment() {
       description="Click on any object to cut it out. Uses Meta's Segment Anything AI. Runs entirely in your browser — your images never leave your device."
       category="image"
       categoryLabel="Image Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>AI Image Segmentation divides an image into meaningful regions, identifying and outlining distinct objects and areas. Each segment is highlighted with a different color, showing boundaries between objects like people, animals, furniture, and background elements. This tool uses a segmentation model that runs entirely in your browser.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Upload an image you want to segment.</li>
+            <li>The AI model processes the image and identifies distinct regions.</li>
+            <li>View the segmentation overlay showing different objects in different colors.</li>
+            <li>Download the segmented image for analysis or creative use.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>Image segmentation is used in medical imaging analysis, autonomous driving, video editing (for background replacement), augmented reality, and agricultural monitoring. Designers use it to create creative effects, and developers use it to prototype computer vision features.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>Images with clearly distinct objects produce the cleanest segmentation boundaries.</li>
+            <li>The model works best with common object categories — specialized domains may need custom models.</li>
+            <li>High-resolution images provide finer segmentation boundaries but take longer to process.</li>
+            <li>All processing runs locally on your device for complete privacy.</li>
+            <li>Use segmentation masks as selection tools in image editing software for precise edits.</li>
+          </ul>
+        </>
+      }
       slug="ai-segment"
       faqs={[
         {

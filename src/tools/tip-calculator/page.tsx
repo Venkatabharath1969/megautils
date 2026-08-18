@@ -29,6 +29,32 @@ export default function TipCalculator() {
       description="Calculate tips, split bills between friends, and find the total cost per person."
       category="financial"
       categoryLabel="Financial Calculators"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>Tip Calculator is a free browser-based tool that lets you calculate tip amounts and split bills between multiple people with customizable tip percentages. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when dining out, splitting group meals, calculating service gratuities, or budgeting restaurant expenses. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this everyday math tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need tip calculation.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'How much should I tip at a restaurant?', answer: 'In the US, 15-20% is standard for sit-down restaurants. Tip 15% for adequate service, 18% for good service, and 20% or more for excellent service.' },
         { question: 'How do I calculate a tip quickly?', answer: 'For a quick 20% tip, move the decimal one place left (to get 10%) and double it. For 15%, calculate 10% and add half of that amount.' },

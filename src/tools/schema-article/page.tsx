@@ -50,6 +50,32 @@ export default function SchemaArticleTool() {
       description="Generate Article JSON-LD structured data for SEO."
       category="seo"
       categoryLabel="SEO Tools"
+      helpContent={
+        <>
+          <h2>What is This Tool?</h2>
+          <p>Article Schema Generator is a free browser-based tool that lets you generate JSON-LD structured data for articles following Schema.org Article markup standards. It processes everything locally in your browser using JavaScript, so your data never leaves your device. No sign-up, no installation, and no server uploads required — just open the tool and start using it immediately.</p>
+
+          <h2>How to Use This Tool</h2>
+          <ol>
+            <li>Enter your data or content in the <strong>input area</strong>.</li>
+            <li>Configure any available options or settings to match your needs.</li>
+            <li>View the <strong>result instantly</strong> in the output area.</li>
+            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+          </ol>
+
+          <h2>When to Use This Tool</h2>
+          <p>This tool is particularly useful when adding rich snippets to blog posts, news articles, or content pages to improve search engine understanding. Since it runs entirely in your browser, it works offline after the page loads and keeps your data completely private. Whether you are a developer, designer, student, or professional, this SEO tool saves time and eliminates the need for desktop software installation.</p>
+
+          <h2>Tips and Best Practices</h2>
+          <ul>
+            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
+            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
+            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
+            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
+            <li>Bookmark this page for quick access whenever you need article schema markup.</li>
+          </ul>
+        </>
+      }
       faqs={[
         { question: 'What is Article schema markup?', answer: 'Article schema is JSON-LD structured data that tells search engines about your article content, including the headline, author, publish date, and publisher. It helps your pages qualify for rich results in Google Search.' },
         { question: 'Where do I put the Article JSON-LD code?', answer: 'Paste the generated script tag into the <head> section of your HTML page or within the <body>. Google can read JSON-LD regardless of placement, but the <head> is the most common convention.' },
