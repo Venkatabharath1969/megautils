@@ -6,6 +6,7 @@ import { LanguageProvider } from '@/i18n/language-context'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { CommandPalette } from '@/components/command-palette'
+import { CookieConsent } from '@/components/cookie-consent'
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] })
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] })
@@ -97,6 +98,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             }),
           }}
         />
+        {/* Google Consent Mode v2 — must load BEFORE any Google tags */}
+        <script dangerouslySetInnerHTML={{ __html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('consent', 'default', {
+            'ad_storage': 'denied',
+            'analytics_storage': 'denied',
+            'ad_user_data': 'denied',
+            'ad_personalization': 'denied',
+            'wait_for_update': 500,
+          });
+        `}} />
         {/* Google AdSense verification */}
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3062425605979427" crossOrigin="anonymous" />
         {/* Google Analytics 4 */}
@@ -122,6 +135,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <CommandPalette />
             <main id="main-content" className="flex-1">{children}</main>
             <Footer />
+            <CookieConsent />
           </LanguageProvider>
         </ThemeProvider>
         {/* Infolinks Ad Network — temporarily disabled for AdSense approval */}
