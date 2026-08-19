@@ -59,19 +59,28 @@ const statusLabels: Record<FilingStatus, string> = {
   head_of_household: 'Head of Household',
 }
 
+// FICA constants (2024)
+const SS_RATE = 0.062
+const SS_WAGE_BASE = 168600
+const MEDICARE_RATE = 0.0145
+const ADDITIONAL_MEDICARE_RATE = 0.009
+const ADDITIONAL_MEDICARE_THRESHOLD = 200000
+
 export default function TaxCalculator() {
   const [income, setIncome] = useState(85000)
   const [filingStatus, setFilingStatus] = useState<FilingStatus>('single')
   const [useStandardDeduction, setUseStandardDeduction] = useState(true)
   const [customDeduction, setCustomDeduction] = useState(0)
+  const [stateTaxRate, setStateTaxRate] = useState(0)
 
   const result = useMemo(() => {
     const deduction = useStandardDeduction ? standardDeductions[filingStatus] : customDeduction
     const taxableIncome = Math.max(0, income - deduction)
     const statusBrackets = brackets[filingStatus]
 
+    // Federal income tax
     const breakdown: { bracket: string; rate: number; taxableAmount: number; tax: number }[] = []
-    let totalTax = 0
+    let federalTax = 0
     let remaining = taxableIncome
 
     for (const bracket of statusBrackets) {
@@ -79,7 +88,7 @@ export default function TaxCalculator() {
       const bracketWidth = bracket.max === Infinity ? remaining : bracket.max - bracket.min
       const taxableInBracket = Math.min(remaining, bracketWidth)
       const taxInBracket = taxableInBracket * (bracket.rate / 100)
-      totalTax += taxInBracket
+      federalTax += taxInBracket
       remaining -= taxableInBracket
 
       breakdown.push({
@@ -90,12 +99,32 @@ export default function TaxCalculator() {
       })
     }
 
-    const effectiveRate = income > 0 ? (totalTax / income) * 100 : 0
+    // FICA taxes (based on gross income, not taxable income)
+    const socialSecurity = Math.min(income, SS_WAGE_BASE) * SS_RATE
+    const medicareBase = income * MEDICARE_RATE
+    const additionalMedicare = income > ADDITIONAL_MEDICARE_THRESHOLD
+      ? (income - ADDITIONAL_MEDICARE_THRESHOLD) * ADDITIONAL_MEDICARE_RATE
+      : 0
+    const medicare = medicareBase + additionalMedicare
+    const ficaTotal = socialSecurity + medicare
+
+    // State tax (flat percentage of taxable income)
+    const stateTax = taxableIncome * (stateTaxRate / 100)
+
+    // Totals
+    const totalTax = federalTax + stateTax + ficaTotal
+    const effectiveRate = income > 0 ? (federalTax / income) * 100 : 0
+    const combinedEffectiveRate = income > 0 ? (totalTax / income) * 100 : 0
     const marginalRate = statusBrackets.find(b => taxableIncome <= b.max)?.rate ?? 37
     const afterTaxIncome = income - totalTax
 
-    return { deduction, taxableIncome, totalTax, effectiveRate, marginalRate, afterTaxIncome, breakdown }
-  }, [income, filingStatus, useStandardDeduction, customDeduction])
+    return {
+      deduction, taxableIncome, federalTax, stateTax, ficaTotal,
+      socialSecurity, medicare, medicareBase, additionalMedicare,
+      totalTax, effectiveRate, combinedEffectiveRate, marginalRate,
+      afterTaxIncome, breakdown,
+    }
+  }, [income, filingStatus, useStandardDeduction, customDeduction, stateTaxRate])
 
   const fmt = (n: number) =>
     new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n)
@@ -167,21 +196,58 @@ export default function TaxCalculator() {
             )}
           </div>
 
+          <div>
+            <label className="block text-sm font-medium mb-1.5">State Tax Rate (%)</label>
+            <input type="number" min={0} max={15} step={0.1} value={stateTaxRate} onChange={e => setStateTaxRate(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+            <input type="range" min={0} max={15} step={0.1} value={stateTaxRate} onChange={e => setStateTaxRate(Number(e.target.value))} className="w-full mt-2 accent-primary" />
+          </div>
+
           <div className="p-3 rounded-lg bg-muted/50 text-xs text-muted-foreground">
-            Based on 2024 US federal tax brackets. This is an estimate and does not include state taxes, credits, or other adjustments.
+            Based on 2024 US federal tax brackets and FICA rates. FICA includes Social Security (6.2% up to $168,600) and Medicare (1.45% + 0.9% Additional Medicare Tax on income over $200,000).
           </div>
         </div>
 
         {/* Results */}
         <div className="space-y-4">
           <div className="p-5 rounded-xl bg-red-500/10 border border-red-500/20">
-            <div className="text-sm text-muted-foreground mb-1">Estimated Federal Tax</div>
+            <div className="text-sm text-muted-foreground mb-1">Total Tax Burden</div>
             <div className="text-3xl font-bold text-red-600 dark:text-red-400">{fmt(result.totalTax)}</div>
+            <div className="text-sm text-muted-foreground mt-1">Combined Effective Rate: {result.combinedEffectiveRate.toFixed(2)}%</div>
+          </div>
+
+          {/* Tax Breakdown */}
+          <div className="p-4 rounded-xl border border-border space-y-3">
+            <div className="text-sm font-medium mb-1">Tax Breakdown</div>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">Federal Income Tax</span>
+              <span className="text-sm font-semibold text-red-600 dark:text-red-400">{fmt(result.federalTax)}</span>
+            </div>
+            {stateTaxRate > 0 && (
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">State Tax ({stateTaxRate}%)</span>
+                <span className="text-sm font-semibold text-orange-600 dark:text-orange-400">{fmt(result.stateTax)}</span>
+              </div>
+            )}
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-muted-foreground">FICA (SS + Medicare)</span>
+              <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">{fmt(result.ficaTotal)}</span>
+            </div>
+            <div className="pl-4 space-y-1 text-xs text-muted-foreground border-l-2 border-blue-500/30">
+              <div className="flex justify-between"><span>Social Security (6.2%)</span><span>{fmt(result.socialSecurity)}</span></div>
+              <div className="flex justify-between"><span>Medicare (1.45%)</span><span>{fmt(result.medicareBase)}</span></div>
+              {result.additionalMedicare > 0 && (
+                <div className="flex justify-between"><span>Additional Medicare (0.9%)</span><span>{fmt(result.additionalMedicare)}</span></div>
+              )}
+            </div>
+            <div className="border-t border-border pt-2 flex justify-between items-center font-semibold">
+              <span className="text-sm">Total</span>
+              <span className="text-sm text-red-600 dark:text-red-400">{fmt(result.totalTax)}</span>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
-              <div className="text-sm text-muted-foreground mb-1">Effective Tax Rate</div>
+              <div className="text-sm text-muted-foreground mb-1">Federal Effective Rate</div>
               <div className="text-xl font-bold text-blue-600 dark:text-blue-400">{result.effectiveRate.toFixed(2)}%</div>
             </div>
             <div className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
@@ -205,15 +271,19 @@ export default function TaxCalculator() {
           <div className="p-4 rounded-xl border border-border">
             <div className="text-sm font-medium mb-3">Income Breakdown</div>
             <div className="w-full h-8 rounded-full overflow-hidden flex bg-muted">
-              <div className="bg-red-500 h-full transition-all duration-500 flex items-center justify-center text-white text-xs font-medium" style={{ width: `${income > 0 ? (result.totalTax / income) * 100 : 0}%` }}>
-                {income > 0 && (result.totalTax / income) * 100 > 10 && `${((result.totalTax / income) * 100).toFixed(0)}%`}
-              </div>
+              <div className="bg-red-500 h-full transition-all duration-500 flex items-center justify-center text-white text-xs font-medium" style={{ width: `${income > 0 ? (result.federalTax / income) * 100 : 0}%` }} title="Federal Tax" />
+              {stateTaxRate > 0 && (
+                <div className="bg-orange-500 h-full transition-all duration-500" style={{ width: `${income > 0 ? (result.stateTax / income) * 100 : 0}%` }} title="State Tax" />
+              )}
+              <div className="bg-blue-500 h-full transition-all duration-500" style={{ width: `${income > 0 ? (result.ficaTotal / income) * 100 : 0}%` }} title="FICA" />
               <div className="bg-green-500 h-full transition-all duration-500 flex items-center justify-center text-white text-xs font-medium" style={{ width: `${income > 0 ? (result.afterTaxIncome / income) * 100 : 0}%` }}>
                 {income > 0 && (result.afterTaxIncome / income) * 100 > 10 && `${((result.afterTaxIncome / income) * 100).toFixed(0)}%`}
               </div>
             </div>
-            <div className="flex justify-between mt-2 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block" /> Tax</span>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs text-muted-foreground">
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block" /> Federal</span>
+              {stateTaxRate > 0 && <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-orange-500 inline-block" /> State</span>}
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" /> FICA</span>
               <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block" /> Take Home</span>
             </div>
           </div>
@@ -247,7 +317,7 @@ export default function TaxCalculator() {
               <tr className="bg-muted/50 font-semibold">
                 <td className="p-3" colSpan={2}>Total</td>
                 <td className="p-3 text-right">{fmt(result.taxableIncome)}</td>
-                <td className="p-3 text-right text-red-600 dark:text-red-400">{fmt(result.totalTax)}</td>
+                <td className="p-3 text-right text-red-600 dark:text-red-400">{fmt(result.federalTax)}</td>
               </tr>
             </tfoot>
           </table>

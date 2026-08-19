@@ -2,38 +2,70 @@
 
 import { useState, useMemo } from 'react'
 import { ToolPage } from '@/components/tool-page'
+import { ExportButton } from '@/components/export-button'
 
 export default function SIPCalculator() {
   const [monthlyInvestment, setMonthlyInvestment] = useState(10000)
   const [expectedReturn, setExpectedReturn] = useState(12)
   const [timePeriod, setTimePeriod] = useState(10)
+  const [annualStepUp, setAnnualStepUp] = useState(0)
+  const [reverseMode, setReverseMode] = useState(false)
+  const [targetAmount, setTargetAmount] = useState(5000000)
+  const [targetYears, setTargetYears] = useState(10)
+
+  const reverseResult = useMemo(() => {
+    if (!reverseMode) return null
+    const r = expectedReturn / 100 / 12
+    const n = targetYears * 12
+    if (r === 0) return { requiredSIP: Math.round(targetAmount / n) }
+    const requiredSIP = (targetAmount * r) / ((Math.pow(1 + r, n) - 1) * (1 + r))
+    return { requiredSIP: Math.round(requiredSIP) }
+  }, [reverseMode, targetAmount, targetYears, expectedReturn])
 
   const result = useMemo(() => {
     const months = timePeriod * 12
     const r = expectedReturn / 100 / 12
-    const investedAmount = monthlyInvestment * months
+    const stepUpRate = annualStepUp / 100
 
-    let totalValue: number
+    // With step-up: each year the monthly investment increases
+    let totalValue = 0
+    let investedAmount = 0
+    const yearly: { year: number; invested: number; value: number; returns: number; monthlySIP: number }[] = []
+
     if (r === 0) {
-      totalValue = investedAmount
+      for (let y = 1; y <= timePeriod; y++) {
+        const monthlyForYear = monthlyInvestment * Math.pow(1 + stepUpRate, y - 1)
+        investedAmount += monthlyForYear * 12
+        totalValue = investedAmount
+        yearly.push({ year: y, invested: investedAmount, value: totalValue, returns: 0, monthlySIP: Math.round(monthlyForYear) })
+      }
     } else {
-      totalValue = monthlyInvestment * ((Math.pow(1 + r, months) - 1) / r) * (1 + r)
+      // Simulate month by month for accurate step-up calculation
+      let portfolio = 0
+      let totalInvested = 0
+      for (let y = 1; y <= timePeriod; y++) {
+        const monthlyForYear = monthlyInvestment * Math.pow(1 + stepUpRate, y - 1)
+        for (let m = 0; m < 12; m++) {
+          portfolio = (portfolio + monthlyForYear) * (1 + r)
+          totalInvested += monthlyForYear
+        }
+        yearly.push({
+          year: y,
+          invested: totalInvested,
+          value: portfolio,
+          returns: portfolio - totalInvested,
+          monthlySIP: Math.round(monthlyForYear),
+        })
+      }
+      totalValue = portfolio
+      investedAmount = totalInvested
     }
 
     const estimatedReturns = totalValue - investedAmount
     const wealthGainRatio = investedAmount > 0 ? (estimatedReturns / investedAmount) * 100 : 0
 
-    // Yearly breakdown
-    const yearly: { year: number; invested: number; value: number; returns: number }[] = []
-    for (let y = 1; y <= timePeriod; y++) {
-      const m = y * 12
-      const inv = monthlyInvestment * m
-      const val = r === 0 ? inv : monthlyInvestment * ((Math.pow(1 + r, m) - 1) / r) * (1 + r)
-      yearly.push({ year: y, invested: inv, value: val, returns: val - inv })
-    }
-
     return { investedAmount, totalValue, estimatedReturns, wealthGainRatio, yearly }
-  }, [monthlyInvestment, expectedReturn, timePeriod])
+  }, [monthlyInvestment, expectedReturn, timePeriod, annualStepUp])
 
   const fmt = (n: number) =>
     new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(n)
@@ -95,6 +127,47 @@ export default function SIPCalculator() {
             <input type="number" min={1} max={40} value={timePeriod} onChange={(e) => setTimePeriod(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
             <input type="range" min={1} max={40} value={timePeriod} onChange={(e) => setTimePeriod(Number(e.target.value))} className="w-full mt-2 accent-primary" />
           </div>
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Annual Step-Up (%)</label>
+            <input type="number" min={0} max={100} step={1} value={annualStepUp} onChange={(e) => setAnnualStepUp(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+            <input type="range" min={0} max={50} step={1} value={annualStepUp} onChange={(e) => setAnnualStepUp(Number(e.target.value))} className="w-full mt-2 accent-primary" />
+            <p className="text-xs text-muted-foreground mt-1">Increase monthly SIP by this % every year</p>
+          </div>
+
+          {/* Goal-based reverse calculation toggle */}
+          <div className="p-4 rounded-xl border border-border space-y-4">
+            <label className="flex items-center gap-3 cursor-pointer">
+              <button
+                type="button"
+                role="switch"
+                aria-checked={reverseMode}
+                onClick={() => setReverseMode(!reverseMode)}
+                className={`relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors ${reverseMode ? 'bg-primary' : 'bg-muted'}`}
+              >
+                <span className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-lg transition-transform ${reverseMode ? 'translate-x-5' : 'translate-x-0'}`} />
+              </button>
+              <span className="text-sm font-medium">Calculate Required SIP</span>
+            </label>
+            {reverseMode && (
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-sm font-medium mb-1.5">Target Amount</label>
+                  <input type="number" min={1000} value={targetAmount} onChange={(e) => setTargetAmount(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1.5">Time Period (Years)</label>
+                  <input type="number" min={1} max={40} value={targetYears} onChange={(e) => setTargetYears(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+                </div>
+                {reverseResult && (
+                  <div className="p-3 rounded-lg bg-primary/10 border border-primary/20">
+                    <div className="text-xs text-muted-foreground">Required Monthly SIP</div>
+                    <div className="text-xl font-bold text-primary">{fmt(reverseResult.requiredSIP)}</div>
+                    <div className="text-xs text-muted-foreground mt-1">to reach {fmt(targetAmount)} in {targetYears} years at {expectedReturn}% p.a.</div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Results */}
@@ -139,12 +212,21 @@ export default function SIPCalculator() {
 
       {/* Yearly Breakdown */}
       <div className="mt-8">
-        <h3 className="text-lg font-semibold mb-4">Year-by-Year Growth</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold">Year-by-Year Growth</h3>
+          <ExportButton
+            headers={annualStepUp > 0 ? ['Year', 'Monthly SIP', 'Total Invested', 'Returns', 'Total Value'] : ['Year', 'Total Invested', 'Returns', 'Total Value']}
+            rows={result.yearly.map((row) => annualStepUp > 0 ? [row.year, row.monthlySIP, Math.round(row.invested), Math.round(row.returns), Math.round(row.value)] : [row.year, Math.round(row.invested), Math.round(row.returns), Math.round(row.value)])}
+            filename="sip-growth.csv"
+            label="Export CSV"
+          />
+        </div>
         <div className="overflow-x-auto rounded-lg border border-border">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-muted/50">
                 <th className="text-left p-3 font-medium">Year</th>
+                {annualStepUp > 0 && <th className="text-right p-3 font-medium">Monthly SIP</th>}
                 <th className="text-right p-3 font-medium">Invested</th>
                 <th className="text-right p-3 font-medium">Returns</th>
                 <th className="text-right p-3 font-medium">Total Value</th>
@@ -154,6 +236,7 @@ export default function SIPCalculator() {
               {result.yearly.map((row, i) => (
                 <tr key={row.year} className={i % 2 === 0 ? 'bg-card' : 'bg-muted/20'}>
                   <td className="p-3 font-medium">{row.year}</td>
+                  {annualStepUp > 0 && <td className="p-3 text-right text-purple-600 dark:text-purple-400">{fmt(row.monthlySIP)}</td>}
                   <td className="p-3 text-right text-blue-600 dark:text-blue-400">{fmt(row.invested)}</td>
                   <td className="p-3 text-right text-green-600 dark:text-green-400">{fmt(row.returns)}</td>
                   <td className="p-3 text-right font-semibold">{fmt(row.value)}</td>

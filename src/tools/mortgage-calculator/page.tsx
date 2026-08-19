@@ -2,12 +2,16 @@
 
 import { useState, useMemo } from 'react'
 import { ToolPage } from '@/components/tool-page'
+import { ExportButton } from '@/components/export-button'
 
 export default function MortgageCalculator() {
   const [homePrice, setHomePrice] = useState(400000)
   const [downPaymentPct, setDownPaymentPct] = useState(20)
   const [rate, setRate] = useState(6.5)
   const [termYears, setTermYears] = useState(30)
+  const [propertyTax, setPropertyTax] = useState(0)
+  const [homeInsurance, setHomeInsurance] = useState(0)
+  const [extraPayment, setExtraPayment] = useState(0)
 
   const result = useMemo(() => {
     const downPayment = homePrice * (downPaymentPct / 100)
@@ -25,29 +29,77 @@ export default function MortgageCalculator() {
     const totalPayment = monthlyPayment * months
     const totalInterest = totalPayment - loanAmount
 
-    // Amortization schedule (yearly summary)
-    const amortization: { year: number; principalPaid: number; interestPaid: number; balance: number }[] = []
-    let balance = loanAmount
+    const propertyTaxMonthly = propertyTax / 12
+    const homeInsuranceMonthly = homeInsurance / 12
+    const totalMonthlyPayment = monthlyPayment + propertyTaxMonthly + homeInsuranceMonthly
+
+    // Amortization schedule WITHOUT extra payments (baseline)
+    const baseAmortization: { year: number; principalPaid: number; interestPaid: number; balance: number }[] = []
+    let baseBalance = loanAmount
     for (let y = 1; y <= termYears; y++) {
       let yearPrincipal = 0
       let yearInterest = 0
       for (let m = 0; m < 12; m++) {
-        const interestPayment = balance * r
+        if (baseBalance <= 0) break
+        const interestPayment = baseBalance * r
         const principalPayment = monthlyPayment - interestPayment
         yearPrincipal += principalPayment
         yearInterest += interestPayment
-        balance -= principalPayment
+        baseBalance -= principalPayment
       }
-      amortization.push({
+      baseAmortization.push({
         year: y,
         principalPaid: yearPrincipal,
         interestPaid: yearInterest,
-        balance: Math.max(0, balance),
+        balance: Math.max(0, baseBalance),
       })
     }
+    const baseTotalInterest = totalInterest
 
-    return { downPayment, loanAmount, monthlyPayment, totalPayment, totalInterest, amortization }
-  }, [homePrice, downPaymentPct, rate, termYears])
+    // Amortization schedule WITH extra payments
+    const amortization: { year: number; principalPaid: number; interestPaid: number; balance: number }[] = []
+    let balance = loanAmount
+    let totalInterestWithExtra = 0
+    let totalMonthsWithExtra = 0
+    let loanPaidOff = false
+    for (let y = 1; y <= termYears; y++) {
+      let yearPrincipal = 0
+      let yearInterest = 0
+      for (let m = 0; m < 12; m++) {
+        if (balance <= 0) break
+        const interestPayment = balance * r
+        const principalPayment = monthlyPayment - interestPayment + extraPayment
+        const actualPrincipal = Math.min(principalPayment, balance)
+        yearPrincipal += actualPrincipal
+        yearInterest += interestPayment
+        totalInterestWithExtra += interestPayment
+        balance -= actualPrincipal
+        if (!loanPaidOff) totalMonthsWithExtra++
+        if (balance <= 0) {
+          balance = 0
+          loanPaidOff = true
+        }
+      }
+      if (yearPrincipal > 0 || yearInterest > 0) {
+        amortization.push({
+          year: y,
+          principalPaid: yearPrincipal,
+          interestPaid: yearInterest,
+          balance: Math.max(0, balance),
+        })
+      }
+    }
+
+    const monthsSaved = months - totalMonthsWithExtra
+    const interestSaved = baseTotalInterest - totalInterestWithExtra
+
+    return {
+      downPayment, loanAmount, monthlyPayment, totalPayment, totalInterest,
+      propertyTaxMonthly, homeInsuranceMonthly, totalMonthlyPayment,
+      amortization,
+      monthsSaved, interestSaved, totalMonthsWithExtra,
+    }
+  }, [homePrice, downPaymentPct, rate, termYears, propertyTax, homeInsurance, extraPayment])
 
   const fmt = (n: number) =>
     new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n)
@@ -129,13 +181,31 @@ export default function MortgageCalculator() {
               ))}
             </div>
           </div>
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Annual Property Tax ($)</label>
+            <input type="number" min={0} value={propertyTax} onChange={(e) => setPropertyTax(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Annual Home Insurance ($)</label>
+            <input type="number" min={0} value={homeInsurance} onChange={(e) => setHomeInsurance(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Extra Monthly Payment ($)</label>
+            <input type="number" min={0} value={extraPayment} onChange={(e) => setExtraPayment(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+          </div>
         </div>
 
         {/* Results */}
         <div className="space-y-4">
           <div className="p-5 rounded-xl bg-primary/10 border border-primary/20">
-            <div className="text-sm text-muted-foreground mb-1">Monthly Payment</div>
-            <div className="text-3xl font-bold text-primary">{fmt(result.monthlyPayment)}</div>
+            <div className="text-sm text-muted-foreground mb-1">Total Monthly Payment</div>
+            <div className="text-3xl font-bold text-primary">{fmt(result.totalMonthlyPayment)}</div>
+            <div className="mt-2 space-y-0.5 text-sm text-muted-foreground">
+              <div className="flex justify-between"><span>Principal & Interest</span><span>{fmt(result.monthlyPayment)}</span></div>
+              {result.propertyTaxMonthly > 0 && <div className="flex justify-between"><span>+ Property Tax/mo</span><span>{fmt(result.propertyTaxMonthly)}</span></div>}
+              {result.homeInsuranceMonthly > 0 && <div className="flex justify-between"><span>+ Insurance/mo</span><span>{fmt(result.homeInsuranceMonthly)}</span></div>}
+              {(result.propertyTaxMonthly > 0 || result.homeInsuranceMonthly > 0) && <div className="flex justify-between border-t border-border pt-1 font-medium text-foreground"><span>= Total Monthly</span><span>{fmt(result.totalMonthlyPayment)}</span></div>}
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
@@ -157,6 +227,26 @@ export default function MortgageCalculator() {
               <div className="text-xl font-bold text-green-600 dark:text-green-400">{fmt(result.totalPayment + result.downPayment)}</div>
             </div>
           </div>
+          {extraPayment > 0 && result.monthsSaved > 0 && (
+            <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+              <div className="text-sm font-medium text-emerald-700 dark:text-emerald-300 mb-2">Extra Payment Savings</div>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <div className="text-muted-foreground">Interest Saved</div>
+                  <div className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{fmt(result.interestSaved)}</div>
+                </div>
+                <div>
+                  <div className="text-muted-foreground">Time Saved</div>
+                  <div className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
+                    {Math.floor(result.monthsSaved / 12) > 0 && `${Math.floor(result.monthsSaved / 12)} yr `}{result.monthsSaved % 12} mo
+                  </div>
+                </div>
+              </div>
+              <div className="text-xs text-muted-foreground mt-2">
+                Loan paid off in {Math.floor(result.totalMonthsWithExtra / 12)} yr {result.totalMonthsWithExtra % 12} mo instead of {termYears} yr
+              </div>
+            </div>
+          )}
           {/* Breakdown bar */}
           <div className="p-4 rounded-xl border border-border">
             <div className="text-sm font-medium mb-3">Cost Breakdown</div>
@@ -176,7 +266,15 @@ export default function MortgageCalculator() {
 
       {/* Amortization Schedule */}
       <div className="mt-8">
-        <h3 className="text-lg font-semibold mb-4">Amortization Schedule (Yearly)</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold">Amortization Schedule (Yearly)</h3>
+          <ExportButton
+            headers={['Year', 'Principal Paid', 'Interest Paid', 'Remaining Balance']}
+            rows={result.amortization.map((row) => [row.year, Math.round(row.principalPaid), Math.round(row.interestPaid), Math.round(row.balance)])}
+            filename="amortization-schedule.csv"
+            label="Export CSV"
+          />
+        </div>
         <div className="overflow-x-auto rounded-lg border border-border">
           <table className="w-full text-sm">
             <thead>

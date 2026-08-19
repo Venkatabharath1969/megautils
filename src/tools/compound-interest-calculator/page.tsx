@@ -2,34 +2,82 @@
 
 import { useState, useMemo } from 'react'
 import { ToolPage } from '@/components/tool-page'
+import { ExportButton } from '@/components/export-button'
 
-type Frequency = 1 | 2 | 4 | 12 | 365
+type Frequency = 1 | 2 | 4 | 12 | 365 | 'continuous'
 
 export default function CompoundInterestCalculator() {
   const [principal, setPrincipal] = useState(100000)
   const [rate, setRate] = useState(8)
   const [years, setYears] = useState(10)
   const [frequency, setFrequency] = useState<Frequency>(12)
+  const [monthlyContribution, setMonthlyContribution] = useState(0)
 
   const result = useMemo(() => {
     const r = rate / 100
-    const n = frequency
     const t = years
-    const amount = principal * Math.pow(1 + r / n, n * t)
-    const totalInterest = amount - principal
+    const pmt = monthlyContribution
 
-    const breakdown: { year: number; balance: number; interest: number }[] = []
+    let amount: number
+    let totalContributions = principal + pmt * 12 * t
+
+    if (frequency === 'continuous') {
+      // Continuous compounding: A = P × e^(rt)
+      amount = principal * Math.exp(r * t)
+      // For contributions with continuous compounding, integrate: PMT * 12 * (e^(rt) - 1) / r
+      if (r > 0 && pmt > 0) {
+        amount += pmt * 12 * (Math.exp(r * t) - 1) / r
+      } else if (pmt > 0) {
+        amount += pmt * 12 * t
+      }
+    } else {
+      const n = frequency
+      // FV = P(1 + r/n)^(nt) + PMT_adj × [((1 + r/n)^(nt) - 1) / (r/n)]
+      const compoundFactor = Math.pow(1 + r / n, n * t)
+      amount = principal * compoundFactor
+      if (r > 0 && pmt > 0) {
+        // Adjust monthly contribution for compounding frequency
+        const pmtAdj = pmt * 12 / n
+        amount += pmtAdj * (compoundFactor - 1) / (r / n)
+      } else if (pmt > 0) {
+        amount += pmt * 12 * t
+      }
+    }
+
+    const totalInterest = amount - totalContributions
+
+    const breakdown: { year: number; balance: number; interest: number; contributions: number }[] = []
     for (let y = 1; y <= t; y++) {
-      const bal = principal * Math.pow(1 + r / n, n * y)
+      let bal: number
+      const yearContributions = principal + pmt * 12 * y
+      if (frequency === 'continuous') {
+        bal = principal * Math.exp(r * y)
+        if (r > 0 && pmt > 0) {
+          bal += pmt * 12 * (Math.exp(r * y) - 1) / r
+        } else if (pmt > 0) {
+          bal += pmt * 12 * y
+        }
+      } else {
+        const n = frequency
+        const cf = Math.pow(1 + r / n, n * y)
+        bal = principal * cf
+        if (r > 0 && pmt > 0) {
+          const pmtAdj = pmt * 12 / n
+          bal += pmtAdj * (cf - 1) / (r / n)
+        } else if (pmt > 0) {
+          bal += pmt * 12 * y
+        }
+      }
       breakdown.push({
         year: y,
         balance: bal,
-        interest: bal - principal,
+        interest: bal - yearContributions,
+        contributions: yearContributions,
       })
     }
 
-    return { amount, totalInterest, breakdown }
-  }, [principal, rate, years, frequency])
+    return { amount, totalInterest, totalContributions, breakdown }
+  }, [principal, rate, years, frequency, monthlyContribution])
 
   const fmt = (n: number) =>
     new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(n)
@@ -40,6 +88,7 @@ export default function CompoundInterestCalculator() {
     { value: 4, label: 'Quarterly' },
     { value: 12, label: 'Monthly' },
     { value: 365, label: 'Daily' },
+    { value: 'continuous', label: 'Continuous' },
   ]
 
   return (
@@ -156,13 +205,35 @@ export default function CompoundInterestCalculator() {
             <label className="block text-sm font-medium mb-1.5">Compounding Frequency</label>
             <select
               value={frequency}
-              onChange={(e) => setFrequency(Number(e.target.value) as Frequency)}
+              onChange={(e) => {
+                const val = e.target.value
+                setFrequency(val === 'continuous' ? 'continuous' : (Number(val) as Frequency))
+              }}
               className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             >
               {frequencyOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                <option key={String(opt.value)} value={opt.value}>{opt.label}</option>
               ))}
             </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Monthly Contribution ($)</label>
+            <input
+              type="number"
+              min={0}
+              value={monthlyContribution}
+              onChange={(e) => setMonthlyContribution(Number(e.target.value))}
+              className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            />
+            <input
+              type="range"
+              min={0}
+              max={50000}
+              step={100}
+              value={monthlyContribution}
+              onChange={(e) => setMonthlyContribution(Number(e.target.value))}
+              className="w-full mt-2 accent-primary"
+            />
           </div>
         </div>
 
@@ -178,18 +249,18 @@ export default function CompoundInterestCalculator() {
               <div className="text-xl font-bold text-green-600 dark:text-green-400">{fmt(result.totalInterest)}</div>
             </div>
             <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
-              <div className="text-sm text-muted-foreground mb-1">Principal Amount</div>
-              <div className="text-xl font-bold text-blue-600 dark:text-blue-400">{fmt(principal)}</div>
+              <div className="text-sm text-muted-foreground mb-1">Total Contributions</div>
+              <div className="text-xl font-bold text-blue-600 dark:text-blue-400">{fmt(result.totalContributions)}</div>
             </div>
           </div>
 
           {/* Visual breakdown bar */}
           <div className="p-4 rounded-xl border border-border">
-            <div className="text-sm font-medium mb-3">Principal vs Interest</div>
+            <div className="text-sm font-medium mb-3">Contributions vs Interest</div>
             <div className="w-full h-6 rounded-full overflow-hidden flex bg-muted">
               <div
                 className="bg-blue-500 h-full transition-all duration-500"
-                style={{ width: `${(principal / result.amount) * 100}%` }}
+                style={{ width: `${(result.totalContributions / result.amount) * 100}%` }}
               />
               <div
                 className="bg-green-500 h-full transition-all duration-500"
@@ -197,7 +268,7 @@ export default function CompoundInterestCalculator() {
               />
             </div>
             <div className="flex justify-between mt-2 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" /> Principal ({((principal / result.amount) * 100).toFixed(1)}%)</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" /> Contributions ({((result.totalContributions / result.amount) * 100).toFixed(1)}%)</span>
               <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block" /> Interest ({((result.totalInterest / result.amount) * 100).toFixed(1)}%)</span>
             </div>
           </div>
@@ -206,13 +277,30 @@ export default function CompoundInterestCalculator() {
 
       {/* Year-by-Year Breakdown Table */}
       <div className="mt-8">
-        <h3 className="text-lg font-semibold mb-4">Year-by-Year Breakdown</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold">Year-by-Year Breakdown</h3>
+          <ExportButton
+            headers={['Year', 'Balance', 'Total Contributions', 'Interest Earned', 'Year Growth']}
+            rows={result.breakdown.map((row, i) => [
+              row.year,
+              row.balance.toFixed(2),
+              row.contributions.toFixed(2),
+              row.interest.toFixed(2),
+              i === 0
+                ? (row.balance - principal).toFixed(2)
+                : (row.balance - result.breakdown[i - 1].balance).toFixed(2),
+            ])}
+            filename="compound-interest-breakdown.csv"
+            label="Export CSV"
+          />
+        </div>
         <div className="overflow-x-auto rounded-lg border border-border">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-muted/50">
                 <th className="text-left p-3 font-medium">Year</th>
                 <th className="text-right p-3 font-medium">Balance</th>
+                <th className="text-right p-3 font-medium">Total Contributions</th>
                 <th className="text-right p-3 font-medium">Interest Earned</th>
                 <th className="text-right p-3 font-medium">Year Growth</th>
               </tr>
@@ -222,6 +310,7 @@ export default function CompoundInterestCalculator() {
                 <tr key={row.year} className={i % 2 === 0 ? 'bg-card' : 'bg-muted/20'}>
                   <td className="p-3 font-medium">{row.year}</td>
                   <td className="p-3 text-right">{fmt(row.balance)}</td>
+                  <td className="p-3 text-right text-blue-600 dark:text-blue-400">{fmt(row.contributions)}</td>
                   <td className="p-3 text-right text-green-600 dark:text-green-400">{fmt(row.interest)}</td>
                   <td className="p-3 text-right text-muted-foreground">
                     {i === 0 ? fmt(row.balance - principal) : fmt(row.balance - result.breakdown[i - 1].balance)}

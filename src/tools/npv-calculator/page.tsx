@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { ToolPage, CopyButton } from '@/components/tool-page'
 
 export default function NPVCalculator() {
@@ -16,23 +16,91 @@ export default function NPVCalculator() {
   const result = useMemo(() => {
     const r = discountRate / 100
     let pvSum = 0
-    const yearlyPV: { year: number; cashFlow: number; pv: number }[] = []
+    const yearlyPV: { year: number; cashFlow: number; pv: number; cumulativeCF: number; cumulativePV: number }[] = []
+
+    let cumulativeCF = -initialInvestment
+    let cumulativePV = -initialInvestment
 
     for (let i = 0; i < cashFlows.length; i++) {
       const pv = cashFlows[i] / Math.pow(1 + r, i + 1)
       pvSum += pv
-      yearlyPV.push({ year: i + 1, cashFlow: cashFlows[i], pv })
+      cumulativeCF += cashFlows[i]
+      cumulativePV += pv
+      yearlyPV.push({ year: i + 1, cashFlow: cashFlows[i], pv, cumulativeCF, cumulativePV })
     }
 
     const npv = pvSum - initialInvestment
     const totalCashFlows = cashFlows.reduce((s, c) => s + c, 0)
     const profitable = npv > 0
 
-    return { npv, pvSum, totalCashFlows, profitable, yearlyPV }
+    // Profitability Index
+    const profitabilityIndex = initialInvestment > 0 ? pvSum / initialInvestment : 0
+
+    // Payback Period (undiscounted)
+    let paybackPeriod: number | null = null
+    let cumCF = -initialInvestment
+    for (let i = 0; i < cashFlows.length; i++) {
+      const prevCum = cumCF
+      cumCF += cashFlows[i]
+      if (cumCF >= 0 && paybackPeriod === null) {
+        // Interpolate within the year
+        const fraction = cashFlows[i] > 0 ? (-prevCum) / cashFlows[i] : 0
+        paybackPeriod = i + fraction
+      }
+    }
+
+    // Discounted Payback Period
+    let discountedPaybackPeriod: number | null = null
+    let cumPV = -initialInvestment
+    for (let i = 0; i < cashFlows.length; i++) {
+      const prevCum = cumPV
+      const pv = cashFlows[i] / Math.pow(1 + r, i + 1)
+      cumPV += pv
+      if (cumPV >= 0 && discountedPaybackPeriod === null) {
+        const fraction = pv > 0 ? (-prevCum) / pv : 0
+        discountedPaybackPeriod = i + fraction
+      }
+    }
+
+    return { npv, pvSum, totalCashFlows, profitable, yearlyPV, profitabilityIndex, paybackPeriod, discountedPaybackPeriod }
   }, [discountRate, initialInvestment, cashFlows])
 
   const fmt = (n: number) =>
     new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(n)
+
+  const formatPeriod = (years: number | null) => {
+    if (years === null) return 'Never'
+    const wholeYears = Math.floor(years)
+    const months = Math.round((years - wholeYears) * 12)
+    if (months === 0) return `${wholeYears} year${wholeYears !== 1 ? 's' : ''}`
+    return `${wholeYears > 0 ? `${wholeYears} year${wholeYears !== 1 ? 's' : ''} ` : ''}${months} month${months !== 1 ? 's' : ''}`
+  }
+
+  const exportCSV = useCallback(() => {
+    const headers = ['Year', 'Cash Flow', 'Present Value', 'Discount Factor', 'Cumulative CF', 'Cumulative PV']
+    const csvRows = [
+      headers.join(','),
+      ['0 (Investment)', (-initialInvestment).toFixed(2), (-initialInvestment).toFixed(2), '1.0000', (-initialInvestment).toFixed(2), (-initialInvestment).toFixed(2)].join(','),
+      ...result.yearlyPV.map(row =>
+        [
+          row.year,
+          row.cashFlow.toFixed(2),
+          row.pv.toFixed(2),
+          (1 / Math.pow(1 + discountRate / 100, row.year)).toFixed(4),
+          row.cumulativeCF.toFixed(2),
+          row.cumulativePV.toFixed(2),
+        ].join(',')
+      ),
+      ['Total', (result.totalCashFlows - initialInvestment).toFixed(2), result.npv.toFixed(2), '', '', ''].join(','),
+    ]
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'npv-analysis.csv'
+    a.click()
+    URL.revokeObjectURL(url)
+  }, [result, initialInvestment, discountRate])
 
   return (
     <ToolPage
@@ -125,6 +193,27 @@ export default function NPVCalculator() {
             </div>
           </div>
 
+          <div className={`p-4 rounded-xl border ${result.profitabilityIndex >= 1 ? 'bg-green-500/10 border-green-500/20' : 'bg-orange-500/10 border-orange-500/20'}`}>
+            <div className="text-sm text-muted-foreground mb-1">Profitability Index (PI)</div>
+            <div className={`text-xl font-bold ${result.profitabilityIndex >= 1 ? 'text-green-600 dark:text-green-400' : 'text-orange-600 dark:text-orange-400'}`}>
+              {result.profitabilityIndex.toFixed(3)}
+            </div>
+            <div className="text-xs text-muted-foreground mt-1">
+              {result.profitabilityIndex >= 1 ? 'PI > 1: Accept the project' : 'PI < 1: Reject the project'}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="p-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20">
+              <div className="text-sm text-muted-foreground mb-1">Payback Period</div>
+              <div className="text-lg font-bold text-cyan-600 dark:text-cyan-400">{formatPeriod(result.paybackPeriod)}</div>
+            </div>
+            <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20">
+              <div className="text-sm text-muted-foreground mb-1">Discounted Payback</div>
+              <div className="text-lg font-bold text-indigo-600 dark:text-indigo-400">{formatPeriod(result.discountedPaybackPeriod)}</div>
+            </div>
+          </div>
+
           <div className="p-4 rounded-xl bg-muted/50 border border-border">
             <div className="text-sm text-muted-foreground mb-1">Total Undiscounted Cash Flows</div>
             <div className="text-xl font-bold">{fmt(result.totalCashFlows)}</div>
@@ -134,7 +223,10 @@ export default function NPVCalculator() {
 
       {/* Yearly Breakdown */}
       <div className="mt-8">
-        <h3 className="text-lg font-semibold mb-4">Year-by-Year Breakdown</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold">Year-by-Year Breakdown</h3>
+          <button onClick={exportCSV} className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">Export CSV</button>
+        </div>
         <div className="overflow-x-auto rounded-lg border border-border">
           <table className="w-full text-sm">
             <thead>
@@ -143,6 +235,8 @@ export default function NPVCalculator() {
                 <th className="text-right p-3 font-medium">Cash Flow</th>
                 <th className="text-right p-3 font-medium">Present Value</th>
                 <th className="text-right p-3 font-medium">Discount Factor</th>
+                <th className="text-right p-3 font-medium">Cumulative CF</th>
+                <th className="text-right p-3 font-medium">Cumulative PV</th>
               </tr>
             </thead>
             <tbody>
@@ -151,6 +245,8 @@ export default function NPVCalculator() {
                 <td className="p-3 text-right text-red-600 dark:text-red-400">{fmt(-initialInvestment)}</td>
                 <td className="p-3 text-right text-red-600 dark:text-red-400">{fmt(-initialInvestment)}</td>
                 <td className="p-3 text-right">1.0000</td>
+                <td className="p-3 text-right text-red-600 dark:text-red-400">{fmt(-initialInvestment)}</td>
+                <td className="p-3 text-right text-red-600 dark:text-red-400">{fmt(-initialInvestment)}</td>
               </tr>
               {result.yearlyPV.map((row, i) => (
                 <tr key={row.year} className={i % 2 === 0 ? 'bg-card' : 'bg-muted/20'}>
@@ -158,6 +254,8 @@ export default function NPVCalculator() {
                   <td className="p-3 text-right">{fmt(row.cashFlow)}</td>
                   <td className="p-3 text-right text-green-600 dark:text-green-400">{fmt(row.pv)}</td>
                   <td className="p-3 text-right font-mono">{(1 / Math.pow(1 + discountRate / 100, row.year)).toFixed(4)}</td>
+                  <td className={`p-3 text-right ${row.cumulativeCF >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>{fmt(row.cumulativeCF)}</td>
+                  <td className={`p-3 text-right ${row.cumulativePV >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>{fmt(row.cumulativePV)}</td>
                 </tr>
               ))}
             </tbody>
@@ -166,6 +264,8 @@ export default function NPVCalculator() {
                 <td className="p-3">Total</td>
                 <td className="p-3 text-right">{fmt(result.totalCashFlows - initialInvestment)}</td>
                 <td className="p-3 text-right">{fmt(result.npv)}</td>
+                <td className="p-3"></td>
+                <td className="p-3"></td>
                 <td className="p-3"></td>
               </tr>
             </tfoot>

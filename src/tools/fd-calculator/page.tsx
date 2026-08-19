@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { ToolPage } from '@/components/tool-page'
 
 export default function FDCalculator() {
@@ -9,31 +9,62 @@ export default function FDCalculator() {
   const [tenure, setTenure] = useState(12)
   const [tenureType, setTenureType] = useState<'months' | 'years'>('months')
   const [compounding, setCompounding] = useState<'monthly' | 'quarterly' | 'halfyearly' | 'yearly'>('quarterly')
+  const [taxRate, setTaxRate] = useState(0)
+  const [isSeniorCitizen, setIsSeniorCitizen] = useState(false)
 
   const result = useMemo(() => {
     const compoundingMap = { monthly: 12, quarterly: 4, halfyearly: 2, yearly: 1 }
     const n = compoundingMap[compounding]
     const tenureYears = tenureType === 'years' ? tenure : tenure / 12
-    const r = rate / 100
+    const effectiveRate = isSeniorCitizen ? rate + 0.5 : rate
+    const r = effectiveRate / 100
 
     // A = P(1 + r/n)^(nt)
     const maturityAmount = principal * Math.pow(1 + r / n, n * tenureYears)
     const interestEarned = maturityAmount - principal
 
+    // TDS / Tax calculation
+    // TDS threshold: Rs 40,000 for regular, Rs 50,000 for senior citizens
+    const tdsThreshold = isSeniorCitizen ? 50000 : 40000
+    const annualInterest = tenureYears > 0 ? interestEarned / tenureYears : 0
+    const taxableInterestPerYear = Math.max(0, annualInterest - tdsThreshold)
+    const annualTDS = taxableInterestPerYear * (taxRate / 100)
+    const totalTDS = annualTDS * tenureYears
+    const postTaxMaturity = maturityAmount - totalTDS
+    const postTaxInterest = interestEarned - totalTDS
+
     // Quarterly breakdown (up to 20 rows)
     const periods = Math.min(Math.ceil(tenureYears * 4), 80)
-    const quarterly: { quarter: number; value: number }[] = []
+    const quarterly: { quarter: number; value: number; interest: number }[] = []
     for (let q = 1; q <= periods; q++) {
       const t = q / 4
       const val = principal * Math.pow(1 + r / n, n * t)
-      quarterly.push({ quarter: q, value: val })
+      const interest = val - principal
+      quarterly.push({ quarter: q, value: val, interest })
     }
 
-    return { maturityAmount, interestEarned, tenureYears, quarterly }
-  }, [principal, rate, tenure, tenureType, compounding])
+    return { maturityAmount, interestEarned, tenureYears, quarterly, effectiveRate, totalTDS, postTaxMaturity, postTaxInterest, annualInterest, taxableInterestPerYear, annualTDS }
+  }, [principal, rate, tenure, tenureType, compounding, taxRate, isSeniorCitizen])
 
   const fmt = (n: number) =>
     new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(n)
+
+  const exportCSV = useCallback(() => {
+    const headers = ['Quarter', 'Value', 'Interest Earned']
+    const csvRows = [
+      headers.join(','),
+      ...result.quarterly.map(row =>
+        [row.quarter, row.value.toFixed(2), row.interest.toFixed(2)].join(',')
+      ),
+    ]
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'fd-quarterly-breakdown.csv'
+    a.click()
+    URL.revokeObjectURL(url)
+  }, [result.quarterly])
 
   return (
     <ToolPage
@@ -84,9 +115,15 @@ export default function FDCalculator() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1.5">Interest Rate (% per annum)</label>
+            <label className="block text-sm font-medium mb-1.5">
+              Interest Rate (% per annum)
+              {isSeniorCitizen && <span className="text-green-600 dark:text-green-400 ml-1">+0.5% senior citizen bonus applied</span>}
+            </label>
             <input type="number" min={1} max={20} step={0.1} value={rate} onChange={e => setRate(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
             <input type="range" min={1} max={15} step={0.1} value={rate} onChange={e => setRate(Number(e.target.value))} className="w-full mt-2 accent-primary" />
+            {isSeniorCitizen && (
+              <div className="text-xs text-muted-foreground mt-1">Effective rate: {result.effectiveRate.toFixed(1)}%</div>
+            )}
           </div>
 
           <div>
@@ -109,6 +146,23 @@ export default function FDCalculator() {
               <option value="yearly">Yearly</option>
             </select>
           </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1.5">TDS / Tax Rate</label>
+            <select value={taxRate} onChange={e => setTaxRate(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+              <option value={0}>0% (No TDS)</option>
+              <option value={10}>10%</option>
+              <option value={20}>20%</option>
+              <option value={30}>30%</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="flex items-center gap-2 text-sm font-medium cursor-pointer select-none">
+              <input type="checkbox" checked={isSeniorCitizen} onChange={e => setIsSeniorCitizen(e.target.checked)} className="rounded accent-primary" />
+              Senior Citizen (+0.5% rate, TDS threshold Rs 50,000)
+            </label>
+          </div>
         </div>
 
         {/* Results */}
@@ -129,20 +183,67 @@ export default function FDCalculator() {
             </div>
           </div>
 
+          {/* TDS / Tax breakdown */}
+          {taxRate > 0 && (
+            <div className="p-4 rounded-xl border border-border space-y-3">
+              <div className="text-sm font-medium">TDS / Tax Breakdown</div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-muted-foreground">Annual Interest (avg)</span>
+                <span className="font-medium">{fmt(result.annualInterest)}</span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-muted-foreground">TDS Threshold</span>
+                <span className="font-medium">{fmt(isSeniorCitizen ? 50000 : 40000)}</span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-muted-foreground">Taxable Interest / Year</span>
+                <span className="font-medium">{fmt(result.taxableInterestPerYear)}</span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-muted-foreground">Annual TDS ({taxRate}%)</span>
+                <span className="font-medium text-red-600 dark:text-red-400">{fmt(result.annualTDS)}</span>
+              </div>
+              <div className="border-t border-border pt-2 flex justify-between items-center text-sm font-semibold">
+                <span>Total TDS Deducted</span>
+                <span className="text-red-600 dark:text-red-400">{fmt(result.totalTDS)}</span>
+              </div>
+            </div>
+          )}
+
+          {taxRate > 0 && (
+            <div className="p-5 rounded-xl bg-green-500/10 border border-green-500/20">
+              <div className="text-sm text-muted-foreground mb-1">Post-Tax Maturity Amount</div>
+              <div className="text-2xl font-bold text-green-600 dark:text-green-400">{fmt(result.postTaxMaturity)}</div>
+              <div className="text-sm text-muted-foreground mt-1">Post-tax interest: {fmt(result.postTaxInterest)}</div>
+            </div>
+          )}
+
           {/* Visual breakdown */}
           <div className="p-4 rounded-xl border border-border">
-            <div className="text-sm font-medium mb-3">Principal vs Interest</div>
+            <div className="text-sm font-medium mb-3">Principal vs Interest{taxRate > 0 ? ' vs TDS' : ''}</div>
             <div className="w-full h-8 rounded-full overflow-hidden flex bg-muted">
               <div className="bg-blue-500 h-full transition-all duration-500 flex items-center justify-center text-white text-xs font-medium" style={{ width: `${(principal / result.maturityAmount) * 100}%` }}>
                 {((principal / result.maturityAmount) * 100) > 15 && `${((principal / result.maturityAmount) * 100).toFixed(0)}%`}
               </div>
-              <div className="bg-green-500 h-full transition-all duration-500 flex items-center justify-center text-white text-xs font-medium" style={{ width: `${(result.interestEarned / result.maturityAmount) * 100}%` }}>
-                {((result.interestEarned / result.maturityAmount) * 100) > 15 && `${((result.interestEarned / result.maturityAmount) * 100).toFixed(0)}%`}
-              </div>
+              {taxRate > 0 ? (
+                <>
+                  <div className="bg-green-500 h-full transition-all duration-500 flex items-center justify-center text-white text-xs font-medium" style={{ width: `${(result.postTaxInterest / result.maturityAmount) * 100}%` }}>
+                    {((result.postTaxInterest / result.maturityAmount) * 100) > 10 && `${((result.postTaxInterest / result.maturityAmount) * 100).toFixed(0)}%`}
+                  </div>
+                  <div className="bg-red-500 h-full transition-all duration-500 flex items-center justify-center text-white text-xs font-medium" style={{ width: `${(result.totalTDS / result.maturityAmount) * 100}%` }}>
+                    {((result.totalTDS / result.maturityAmount) * 100) > 5 && `${((result.totalTDS / result.maturityAmount) * 100).toFixed(0)}%`}
+                  </div>
+                </>
+              ) : (
+                <div className="bg-green-500 h-full transition-all duration-500 flex items-center justify-center text-white text-xs font-medium" style={{ width: `${(result.interestEarned / result.maturityAmount) * 100}%` }}>
+                  {((result.interestEarned / result.maturityAmount) * 100) > 15 && `${((result.interestEarned / result.maturityAmount) * 100).toFixed(0)}%`}
+                </div>
+              )}
             </div>
-            <div className="flex justify-between mt-2 text-xs text-muted-foreground">
+            <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs text-muted-foreground">
               <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" /> Principal</span>
               <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block" /> Interest</span>
+              {taxRate > 0 && <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block" /> TDS</span>}
             </div>
           </div>
 
@@ -152,6 +253,36 @@ export default function FDCalculator() {
           </div>
         </div>
       </div>
+
+      {/* Quarterly Breakdown */}
+      {result.quarterly.length > 0 && (
+        <div className="mt-8">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold">Quarterly Growth Breakdown</h3>
+            <button onClick={exportCSV} className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">Export CSV</button>
+          </div>
+          <div className="overflow-x-auto rounded-lg border border-border">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-muted/50">
+                  <th className="text-left p-3 font-medium">Quarter</th>
+                  <th className="text-right p-3 font-medium">Value</th>
+                  <th className="text-right p-3 font-medium">Interest Earned</th>
+                </tr>
+              </thead>
+              <tbody>
+                {result.quarterly.map((row, i) => (
+                  <tr key={row.quarter} className={i % 2 === 0 ? 'bg-card' : 'bg-muted/20'}>
+                    <td className="p-3 font-medium">Q{row.quarter}</td>
+                    <td className="p-3 text-right">{fmt(row.value)}</td>
+                    <td className="p-3 text-right text-green-600 dark:text-green-400">{fmt(row.interest)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </ToolPage>
   )
 }

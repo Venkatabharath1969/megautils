@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import { ToolPage } from '@/components/tool-page'
+import { ExportButton } from '@/components/export-button'
 
 export default function EMICalculator() {
   const [loanAmount, setLoanAmount] = useState(2500000)
@@ -14,12 +15,39 @@ export default function EMICalculator() {
     const r = rate / 100 / 12
     if (r === 0) {
       const emi = loanAmount / months
-      return { emi, totalPayment: loanAmount, totalInterest: 0, months }
+      const totalYears = Math.ceil(months / 12)
+      const schedule: { year: number; principal: number; interest: number; balance: number }[] = []
+      let balance = loanAmount
+      for (let y = 1; y <= totalYears; y++) {
+        let yearPrincipal = 0, yearInterest = 0
+        for (let m = 0; m < 12 && balance > 0; m++) {
+          const principalPart = Math.min(emi, balance)
+          yearPrincipal += principalPart
+          balance -= principalPart
+        }
+        schedule.push({ year: y, principal: yearPrincipal, interest: yearInterest, balance: Math.max(0, balance) })
+      }
+      return { emi, totalPayment: loanAmount, totalInterest: 0, months, schedule }
     }
     const emi = (loanAmount * r * Math.pow(1 + r, months)) / (Math.pow(1 + r, months) - 1)
     const totalPayment = emi * months
     const totalInterest = totalPayment - loanAmount
-    return { emi, totalPayment, totalInterest, months }
+    const totalYears = Math.ceil(months / 12)
+    const schedule: { year: number; principal: number; interest: number; balance: number }[] = []
+    let balance = loanAmount
+    const monthlyRate = rate / 100 / 12
+    for (let y = 1; y <= totalYears; y++) {
+      let yearPrincipal = 0, yearInterest = 0
+      for (let m = 0; m < 12 && balance > 0; m++) {
+        const interest = balance * monthlyRate
+        const principalPart = Math.min(emi - interest, balance)
+        yearPrincipal += principalPart
+        yearInterest += interest
+        balance -= principalPart
+      }
+      schedule.push({ year: y, principal: yearPrincipal, interest: yearInterest, balance: Math.max(0, balance) })
+    }
+    return { emi, totalPayment, totalInterest, months, schedule }
   }, [loanAmount, rate, tenure, tenureUnit])
 
   const fmt = (n: number) =>
@@ -164,6 +192,46 @@ export default function EMICalculator() {
           <div className="p-4 rounded-xl border border-border bg-muted/30">
             <div className="text-sm text-muted-foreground">Loan Duration: <span className="font-semibold text-foreground">{result.months} months ({(result.months / 12).toFixed(1)} years)</span></div>
           </div>
+        </div>
+      </div>
+
+      {/* Amortization Schedule */}
+      <div className="mt-8">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold">Year-by-Year Amortization Schedule</h3>
+          <ExportButton
+            headers={['Year', 'Principal Paid', 'Interest Paid', 'Remaining Balance']}
+            rows={result.schedule.map((row) => [
+              row.year,
+              row.principal.toFixed(0),
+              row.interest.toFixed(0),
+              row.balance.toFixed(0),
+            ])}
+            filename="emi-amortization-schedule.csv"
+            label="Export CSV"
+          />
+        </div>
+        <div className="overflow-x-auto rounded-lg border border-border">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-muted/50">
+                <th className="text-left p-3 font-medium">Year</th>
+                <th className="text-right p-3 font-medium">Principal Paid</th>
+                <th className="text-right p-3 font-medium">Interest Paid</th>
+                <th className="text-right p-3 font-medium">Remaining Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {result.schedule.map((row, i) => (
+                <tr key={row.year} className={i % 2 === 0 ? 'bg-card' : 'bg-muted/20'}>
+                  <td className="p-3 font-medium">{row.year}</td>
+                  <td className="p-3 text-right text-blue-600 dark:text-blue-400">{fmt(row.principal)}</td>
+                  <td className="p-3 text-right text-orange-600 dark:text-orange-400">{fmt(row.interest)}</td>
+                  <td className="p-3 text-right">{fmt(row.balance)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </ToolPage>
