@@ -42,6 +42,30 @@ function rgbToHsv(r: number, g: number, b: number): { h: number; s: number; v: n
   return { h: Math.round(h * 360), s: Math.round(s * 100), v: Math.round(v * 100) }
 }
 
+function rgbToCmyk(r: number, g: number, b: number): { c: number; m: number; y: number; k: number } {
+  const rr = r / 255, gg = g / 255, bb = b / 255
+  const k = 1 - Math.max(rr, gg, bb)
+  if (k === 1) return { c: 0, m: 0, y: 0, k: 100 }
+  const c = (1 - rr - k) / (1 - k)
+  const m = (1 - gg - k) / (1 - k)
+  const y = (1 - bb - k) / (1 - k)
+  return {
+    c: Math.round(c * 100),
+    m: Math.round(m * 100),
+    y: Math.round(y * 100),
+    k: Math.round(k * 100),
+  }
+}
+
+function cmykToRgb(c: number, m: number, y: number, k: number): { r: number; g: number; b: number } {
+  c /= 100; m /= 100; y /= 100; k /= 100
+  return {
+    r: Math.round(255 * (1 - c) * (1 - k)),
+    g: Math.round(255 * (1 - m) * (1 - k)),
+    b: Math.round(255 * (1 - y) * (1 - k)),
+  }
+}
+
 function hslToRgb(h: number, s: number, l: number): { r: number; g: number; b: number } {
   h /= 360; s /= 100; l /= 100
   if (s === 0) { const v = Math.round(l * 255); return { r: v, g: v, b: v } }
@@ -78,7 +102,7 @@ function hsvToRgb(h: number, s: number, v: number): { r: number; g: number; b: n
   return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255) }
 }
 
-type Format = 'hex' | 'rgb' | 'hsl' | 'hsv'
+type Format = 'hex' | 'rgb' | 'hsl' | 'hsv' | 'cmyk'
 
 function parseInput(format: Format, value: string): { r: number; g: number; b: number } | null {
   value = value.trim()
@@ -103,35 +127,57 @@ function parseInput(format: Format, value: string): { r: number; g: number; b: n
     if (!m) return null
     return hsvToRgb(+m[1], +m[2], +m[3])
   }
+  if (format === 'cmyk') {
+    const m = value.match(/^(?:cmyk\s*\()?\s*(\d{1,3})%?\s*,\s*(\d{1,3})%?\s*,\s*(\d{1,3})%?\s*,\s*(\d{1,3})%?\s*\)?$/i)
+    if (!m) return null
+    return cmykToRgb(Math.min(100, +m[1]), Math.min(100, +m[2]), Math.min(100, +m[3]), Math.min(100, +m[4]))
+  }
   return null
 }
 
 export default function ColorConverterTool() {
   const [format, setFormat] = useState<Format>('hex')
   const [input, setInput] = useState('#3b82f6')
+  const [alpha, setAlpha] = useState(100)
 
   const rgb = useMemo(() => parseInput(format, input), [format, input])
 
-  const formats: Format[] = ['hex', 'rgb', 'hsl', 'hsv']
+  const formats: Format[] = ['hex', 'rgb', 'hsl', 'hsv', 'cmyk']
   const placeholders: Record<Format, string> = {
     hex: '#3b82f6',
     rgb: '59, 130, 246',
     hsl: '217, 91%, 60%',
     hsv: '217, 76%, 96%',
+    cmyk: '76%, 47%, 0%, 4%',
   }
+
+  const alphaDecimal = Math.round((alpha / 100) * 100) / 100
 
   const results = useMemo(() => {
     if (!rgb) return null
     const { r, g, b } = rgb
     const hsl = rgbToHsl(r, g, b)
     const hsv = rgbToHsv(r, g, b)
-    return {
-      hex: rgbToHex(r, g, b).toUpperCase(),
-      rgb: `rgb(${r}, ${g}, ${b})`,
-      hsl: `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`,
-      hsv: `hsv(${hsv.h}, ${hsv.s}%, ${hsv.v}%)`,
+    const cmyk = rgbToCmyk(r, g, b)
+
+    const out: { key: string; value: string }[] = [
+      { key: 'HEX', value: rgbToHex(r, g, b).toUpperCase() },
+      { key: 'RGB', value: `rgb(${r}, ${g}, ${b})` },
+    ]
+    if (alpha < 100) {
+      out.push({ key: 'RGBA', value: `rgba(${r}, ${g}, ${b}, ${alphaDecimal})` })
     }
-  }, [rgb])
+    out.push({ key: 'HSL', value: `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)` })
+    if (alpha < 100) {
+      out.push({ key: 'HSLA', value: `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, ${alphaDecimal})` })
+    }
+    out.push({ key: 'HSV', value: `hsv(${hsv.h}, ${hsv.s}%, ${hsv.v}%)` })
+    out.push({ key: 'CMYK', value: `cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%)` })
+
+    return out
+  }, [rgb, alpha, alphaDecimal])
+
+  const previewHex = results ? results.find(r => r.key === 'HEX')?.value || '#000' : '#000'
 
   return (
     <ToolPage
@@ -200,13 +246,39 @@ export default function ColorConverterTool() {
             />
           </div>
 
+          {/* Alpha / Opacity Slider */}
+          <div>
+            <label className="text-sm font-medium mb-2 block">Alpha / Opacity: {alpha}%</label>
+            <input
+              type="range"
+              min={0}
+              max={100}
+              value={alpha}
+              onChange={e => setAlpha(Number(e.target.value))}
+              className="w-full accent-primary"
+            />
+            <div className="flex justify-between text-xs text-muted-foreground mt-1">
+              <span>0%</span>
+              <span>100%</span>
+            </div>
+          </div>
+
           {rgb && (
             <div>
               <label className="text-sm font-medium mb-2 block">Preview</label>
-              <div
-                className="w-full h-24 rounded-lg border border-border"
-                style={{ backgroundColor: results?.hex || '#000' }}
-              />
+              <div className="w-full h-24 rounded-lg border border-border relative overflow-hidden">
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    backgroundImage: 'repeating-conic-gradient(#d4d4d4 0% 25%, transparent 0% 50%)',
+                    backgroundSize: '16px 16px',
+                  }}
+                />
+                <div
+                  className="absolute inset-0"
+                  style={{ backgroundColor: previewHex, opacity: alpha / 100 }}
+                />
+              </div>
             </div>
           )}
         </div>
@@ -214,10 +286,10 @@ export default function ColorConverterTool() {
         <div className="space-y-3">
           <label className="text-sm font-medium block">Converted Values</label>
           {!rgb && <p className="text-sm text-muted-foreground">Enter a valid color to see conversions.</p>}
-          {results && Object.entries(results).map(([key, value]) => (
+          {results && results.map(({ key, value }) => (
             <div key={key} className="p-3 rounded-lg bg-muted">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-xs font-semibold text-muted-foreground">{key.toUpperCase()}</span>
+                <span className="text-xs font-semibold text-muted-foreground">{key}</span>
                 <CopyButton text={value} />
               </div>
               <p className="text-sm font-mono">{value}</p>

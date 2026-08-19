@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import { ToolPage, CopyButton } from '@/components/tool-page'
 
 function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
@@ -46,6 +46,21 @@ function rgbToHex(r: number, g: number, b: number): string {
   return '#' + [r, g, b].map(v => Math.max(0, Math.min(255, v)).toString(16).padStart(2, '0')).join('')
 }
 
+function rgbToCmyk(r: number, g: number, b: number): { c: number; m: number; y: number; k: number } {
+  const rr = r / 255, gg = g / 255, bb = b / 255
+  const k = 1 - Math.max(rr, gg, bb)
+  if (k === 1) return { c: 0, m: 0, y: 0, k: 100 }
+  const c = (1 - rr - k) / (1 - k)
+  const m = (1 - gg - k) / (1 - k)
+  const y = (1 - bb - k) / (1 - k)
+  return {
+    c: Math.round(c * 100),
+    m: Math.round(m * 100),
+    y: Math.round(y * 100),
+    k: Math.round(k * 100),
+  }
+}
+
 function parseColorInput(value: string): string | null {
   value = value.trim()
   // HEX
@@ -73,17 +88,54 @@ function parseColorInput(value: string): string | null {
 export default function ColorPickerTool() {
   const [hex, setHex] = useState('#3b82f6')
   const [manualInput, setManualInput] = useState('')
+  const [alpha, setAlpha] = useState(100)
+  const [colorHistory, setColorHistory] = useState<string[]>([])
+  const [eyeDropperSupported, setEyeDropperSupported] = useState(false)
+
+  useEffect(() => {
+    setEyeDropperSupported('EyeDropper' in window)
+  }, [])
+
+  const addToHistory = useCallback((color: string) => {
+    setColorHistory(prev => {
+      const filtered = prev.filter(c => c !== color)
+      return [color, ...filtered].slice(0, 10)
+    })
+  }, [])
+
+  const handleColorChange = useCallback((newHex: string) => {
+    setHex(newHex)
+    addToHistory(newHex)
+  }, [addToHistory])
 
   const rgb = useMemo(() => hexToRgb(hex), [hex])
   const hsl = useMemo(() => rgb ? rgbToHsl(rgb.r, rgb.g, rgb.b) : null, [rgb])
+  const cmyk = useMemo(() => rgb ? rgbToCmyk(rgb.r, rgb.g, rgb.b) : null, [rgb])
 
+  const alphaDecimal = Math.round((alpha / 100) * 100) / 100
   const hexStr = hex.toUpperCase()
   const rgbStr = rgb ? `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})` : ''
+  const rgbaStr = rgb ? `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${alphaDecimal})` : ''
   const hslStr = hsl ? `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)` : ''
+  const hslaStr = hsl ? `hsla(${hsl.h}, ${hsl.s}%, ${hsl.l}%, ${alphaDecimal})` : ''
+  const cmykStr = cmyk ? `cmyk(${cmyk.c}%, ${cmyk.m}%, ${cmyk.y}%, ${cmyk.k}%)` : ''
 
   const handleManualApply = () => {
     const parsed = parseColorInput(manualInput)
-    if (parsed) setHex(parsed)
+    if (parsed) handleColorChange(parsed)
+  }
+
+  const handleEyeDropper = async () => {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const eyeDropper = new (window as any).EyeDropper()
+      const result = await eyeDropper.open()
+      if (result?.sRGBHex) {
+        handleColorChange(result.sRGBHex)
+      }
+    } catch {
+      // User cancelled or API error — silently ignore
+    }
   }
 
   return (
@@ -137,13 +189,25 @@ export default function ColorPickerTool() {
               <input
                 type="color"
                 value={hex}
-                onChange={e => setHex(e.target.value)}
+                onChange={e => handleColorChange(e.target.value)}
                 className="w-20 h-20 rounded-lg border border-border cursor-pointer"
               />
               <div
-                className="flex-1 h-20 rounded-lg border border-border"
-                style={{ backgroundColor: hex }}
-              />
+                className="flex-1 h-20 rounded-lg border border-border relative overflow-hidden"
+              >
+                {/* Checkerboard for alpha visibility */}
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    backgroundImage: 'repeating-conic-gradient(#d4d4d4 0% 25%, transparent 0% 50%)',
+                    backgroundSize: '16px 16px',
+                  }}
+                />
+                <div
+                  className="absolute inset-0"
+                  style={{ backgroundColor: hex, opacity: alpha / 100 }}
+                />
+              </div>
             </div>
           </div>
 
@@ -166,6 +230,52 @@ export default function ColorPickerTool() {
               </button>
             </div>
           </div>
+
+          {/* Alpha / Opacity Slider */}
+          <div>
+            <label className="text-sm font-medium mb-2 block">Opacity / Alpha: {alpha}%</label>
+            <input
+              type="range"
+              min={0}
+              max={100}
+              value={alpha}
+              onChange={e => setAlpha(Number(e.target.value))}
+              className="w-full accent-primary"
+            />
+            <div className="flex justify-between text-xs text-muted-foreground mt-1">
+              <span>0%</span>
+              <span>100%</span>
+            </div>
+          </div>
+
+          {/* EyeDropper */}
+          {eyeDropperSupported && (
+            <button
+              onClick={handleEyeDropper}
+              className="w-full px-4 py-2 rounded-lg bg-secondary text-secondary-foreground border border-border text-sm font-medium hover:bg-muted transition-colors flex items-center justify-center gap-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m2 22 1-1h3l9-9"/><path d="M3 21v-3l9-9"/><path d="m15 6 3.4-3.4a2.1 2.1 0 1 1 3 3L18 9l.4.4a2.1 2.1 0 1 1-3 3l-3.8-3.8a2.1 2.1 0 1 1 3-3l.4.4Z"/></svg>
+              Pick from Screen
+            </button>
+          )}
+
+          {/* Color History */}
+          {colorHistory.length > 0 && (
+            <div>
+              <label className="text-sm font-medium mb-2 block">Recent Colors</label>
+              <div className="flex gap-2 flex-wrap">
+                {colorHistory.map((color, i) => (
+                  <button
+                    key={`${color}-${i}`}
+                    onClick={() => setHex(color)}
+                    title={color.toUpperCase()}
+                    className={`w-8 h-8 rounded-md border-2 cursor-pointer transition-transform hover:scale-110 ${color === hex ? 'border-primary ring-2 ring-primary/30' : 'border-border'}`}
+                    style={{ backgroundColor: color }}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right: Values */}
@@ -188,12 +298,40 @@ export default function ColorPickerTool() {
             <p className="text-sm font-mono">{rgbStr}</p>
           </div>
 
+          {alpha < 100 && (
+            <div className="p-3 rounded-lg bg-muted">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-semibold text-muted-foreground">RGBA</span>
+                <CopyButton text={rgbaStr} />
+              </div>
+              <p className="text-sm font-mono">{rgbaStr}</p>
+            </div>
+          )}
+
           <div className="p-3 rounded-lg bg-muted">
             <div className="flex items-center justify-between mb-1">
               <span className="text-xs font-semibold text-muted-foreground">HSL</span>
               <CopyButton text={hslStr} />
             </div>
             <p className="text-sm font-mono">{hslStr}</p>
+          </div>
+
+          {alpha < 100 && (
+            <div className="p-3 rounded-lg bg-muted">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-semibold text-muted-foreground">HSLA</span>
+                <CopyButton text={hslaStr} />
+              </div>
+              <p className="text-sm font-mono">{hslaStr}</p>
+            </div>
+          )}
+
+          <div className="p-3 rounded-lg bg-muted">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs font-semibold text-muted-foreground">CMYK</span>
+              <CopyButton text={cmykStr} />
+            </div>
+            <p className="text-sm font-mono">{cmykStr}</p>
           </div>
 
           {rgb && (

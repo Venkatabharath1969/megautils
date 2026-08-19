@@ -46,7 +46,7 @@ function hslToHex(h: number, s: number, l: number): string {
   )
 }
 
-type PaletteType = 'complementary' | 'analogous' | 'triadic' | 'tetradic' | 'monochromatic'
+type PaletteType = 'complementary' | 'analogous' | 'triadic' | 'tetradic' | 'monochromatic' | 'split-complementary'
 
 function generatePalette(hex: string, type: PaletteType): { hex: string; label: string }[] {
   const { r, g, b } = hexToRgb(hex)
@@ -77,6 +77,12 @@ function generatePalette(hex: string, type: PaletteType): { hex: string; label: 
         { hex: hslToHex(h + 180, s, l), label: '+180deg' },
         { hex: hslToHex(h + 270, s, l), label: '+270deg' },
       ]
+    case 'split-complementary':
+      return [
+        { hex: hex, label: 'Base' },
+        { hex: hslToHex(h + 150, s, l), label: '+150deg' },
+        { hex: hslToHex(h + 210, s, l), label: '+210deg' },
+      ]
     case 'monochromatic':
       return [
         { hex: hslToHex(h, s, Math.max(0, l - 0.3)), label: 'Darkest' },
@@ -85,6 +91,23 @@ function generatePalette(hex: string, type: PaletteType): { hex: string; label: 
         { hex: hslToHex(h, s, Math.min(1, l + 0.15)), label: 'Lighter' },
         { hex: hslToHex(h, s, Math.min(1, l + 0.3)), label: 'Lightest' },
       ]
+  }
+}
+
+type ExportFormat = 'css' | 'scss' | 'json' | 'tailwind'
+
+function exportPalette(palette: { hex: string; label: string }[], format: ExportFormat): string {
+  const hexes = palette.map(p => p.hex.toLowerCase())
+
+  switch (format) {
+    case 'css':
+      return ':root {\n' + hexes.map((h, i) => `  --color-${i + 1}: ${h};`).join('\n') + '\n}'
+    case 'scss':
+      return hexes.map((h, i) => `$color-${i + 1}: ${h};`).join('\n')
+    case 'json':
+      return JSON.stringify(hexes, null, 2)
+    case 'tailwind':
+      return `// tailwind.config.js\nmodule.exports = {\n  theme: {\n    extend: {\n      colors: {\n        palette: {\n${hexes.map((h, i) => `          '${i + 1}': '${h}',`).join('\n')}\n        },\n      },\n    },\n  },\n}`
   }
 }
 
@@ -97,11 +120,19 @@ export default function ColorPaletteGeneratorTool() {
     { value: 'analogous', label: 'Analogous' },
     { value: 'triadic', label: 'Triadic' },
     { value: 'tetradic', label: 'Tetradic' },
+    { value: 'split-complementary', label: 'Split-Complementary' },
     { value: 'monochromatic', label: 'Monochromatic' },
   ]
 
   const palette = useMemo(() => generatePalette(baseColor, paletteType), [baseColor, paletteType])
   const paletteHexes = palette.map(p => p.hex.toUpperCase()).join(', ')
+
+  const exportFormats: { value: ExportFormat; label: string }[] = [
+    { value: 'css', label: 'CSS' },
+    { value: 'scss', label: 'SCSS' },
+    { value: 'json', label: 'JSON' },
+    { value: 'tailwind', label: 'Tailwind' },
+  ]
 
   return (
     <ToolPage
@@ -207,6 +238,25 @@ export default function ColorPaletteGeneratorTool() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Export Formats */}
+        <div>
+          <label className="text-sm font-medium mb-3 block">Export Palette</label>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {exportFormats.map(ef => {
+              const code = exportPalette(palette, ef.value)
+              return (
+                <div key={ef.value} className="p-3 rounded-lg bg-muted">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-semibold text-muted-foreground">{ef.label}</span>
+                    <CopyButton text={code} />
+                  </div>
+                  <pre className="text-xs font-mono overflow-x-auto max-h-32 whitespace-pre-wrap break-all">{code}</pre>
+                </div>
+              )
+            })}
           </div>
         </div>
       </div>

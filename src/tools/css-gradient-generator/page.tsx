@@ -11,9 +11,28 @@ interface ColorStop {
 
 let nextId = 3
 
+const GRADIENT_PRESETS = [
+  { name: 'Sunset', stops: [{ color: '#FF512F', position: 0 }, { color: '#DD2476', position: 100 }] },
+  { name: 'Ocean', stops: [{ color: '#2193b0', position: 0 }, { color: '#6dd5ed', position: 100 }] },
+  { name: 'Forest', stops: [{ color: '#11998e', position: 0 }, { color: '#38ef7d', position: 100 }] },
+  { name: 'Purple Dream', stops: [{ color: '#8E2DE2', position: 0 }, { color: '#4A00E0', position: 100 }] },
+  { name: 'Peach', stops: [{ color: '#ED4264', position: 0 }, { color: '#FFEDBC', position: 100 }] },
+  { name: 'Sky', stops: [{ color: '#2980B9', position: 0 }, { color: '#6DD5FA', position: 50 }, { color: '#FFFFFF', position: 100 }] },
+  { name: 'Fire', stops: [{ color: '#f12711', position: 0 }, { color: '#f5af19', position: 100 }] },
+  { name: 'Midnight', stops: [{ color: '#232526', position: 0 }, { color: '#414345', position: 100 }] },
+  { name: 'Warm', stops: [{ color: '#F2994A', position: 0 }, { color: '#F2C94C', position: 100 }] },
+  { name: 'Cool', stops: [{ color: '#56CCF2', position: 0 }, { color: '#2F80ED', position: 100 }] },
+  { name: 'Cotton Candy', stops: [{ color: '#D4145A', position: 0 }, { color: '#FBB03B', position: 100 }] },
+  { name: 'Emerald', stops: [{ color: '#348F50', position: 0 }, { color: '#56B4D3', position: 100 }] },
+  { name: 'Slate', stops: [{ color: '#141E30', position: 0 }, { color: '#243B55', position: 100 }] },
+  { name: 'Rose', stops: [{ color: '#ee9ca7', position: 0 }, { color: '#ffdde1', position: 100 }] },
+  { name: 'Aqua', stops: [{ color: '#00d2ff', position: 0 }, { color: '#3a7bd5', position: 100 }] },
+]
+
 export default function CssGradientGeneratorTool() {
-  const [gradientType, setGradientType] = useState<'linear' | 'radial'>('linear')
+  const [gradientType, setGradientType] = useState<'linear' | 'radial' | 'conic'>('linear')
   const [angle, setAngle] = useState(135)
+  const [repeating, setRepeating] = useState(false)
   const [stops, setStops] = useState<ColorStop[]>([
     { id: 1, color: '#3b82f6', position: 0 },
     { id: 2, color: '#8b5cf6', position: 100 },
@@ -41,13 +60,22 @@ export default function CssGradientGeneratorTool() {
     setStops(prev => prev.filter(s => s.id !== id))
   }
 
+  const applyPreset = (presetIndex: number) => {
+    if (presetIndex < 0) return
+    const preset = GRADIENT_PRESETS[presetIndex]
+    const newStops = preset.stops.map((s, i) => ({ id: nextId++, color: s.color, position: s.position }))
+    setStops(newStops)
+  }
+
   const sortedStops = useMemo(() => [...stops].sort((a, b) => a.position - b.position), [stops])
 
   const gradientCSS = useMemo(() => {
     const stopsStr = sortedStops.map(s => `${s.color} ${s.position}%`).join(', ')
-    if (gradientType === 'linear') return `linear-gradient(${angle}deg, ${stopsStr})`
-    return `radial-gradient(circle, ${stopsStr})`
-  }, [gradientType, angle, sortedStops])
+    const prefix = repeating ? 'repeating-' : ''
+    if (gradientType === 'linear') return `${prefix}linear-gradient(${angle}deg, ${stopsStr})`
+    if (gradientType === 'radial') return `${prefix}radial-gradient(circle, ${stopsStr})`
+    return `${prefix}conic-gradient(from ${angle}deg, ${stopsStr})`
+  }, [gradientType, angle, sortedStops, repeating])
 
   const cssCode = `background: ${gradientCSS};`
 
@@ -104,23 +132,49 @@ export default function CssGradientGeneratorTool() {
             <div className="flex gap-2">
               <button onClick={() => setGradientType('linear')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${gradientType === 'linear' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Linear</button>
               <button onClick={() => setGradientType('radial')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${gradientType === 'radial' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Radial</button>
+              <button onClick={() => setGradientType('conic')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${gradientType === 'conic' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Conic</button>
             </div>
           </div>
 
-          {/* Angle (linear only) */}
-          {gradientType === 'linear' && (
+          {/* Repeating Toggle */}
+          <div>
+            <label className="flex items-center gap-2 text-sm font-medium cursor-pointer">
+              <input type="checkbox" checked={repeating} onChange={e => setRepeating(e.target.checked)} className="rounded" />
+              Repeating
+            </label>
+          </div>
+
+          {/* Angle (linear & conic) */}
+          {(gradientType === 'linear' || gradientType === 'conic') && (
             <div>
               <label className="text-sm font-medium mb-2 block">Angle: {angle}deg</label>
               <input type="range" min={0} max={360} value={angle} onChange={e => setAngle(+e.target.value)} className="w-full" />
-              <div className="flex gap-2 flex-wrap mt-2">
-                {presetDirections.map(d => (
-                  <button key={d.label} onClick={() => setAngle(d.angle)} className="px-2 py-1 rounded text-xs border border-border bg-secondary text-secondary-foreground hover:bg-muted transition-colors">
-                    {d.label}
-                  </button>
-                ))}
-              </div>
+              {gradientType === 'linear' && (
+                <div className="flex gap-2 flex-wrap mt-2">
+                  {presetDirections.map(d => (
+                    <button key={d.label} onClick={() => setAngle(d.angle)} className="px-2 py-1 rounded text-xs border border-border bg-secondary text-secondary-foreground hover:bg-muted transition-colors">
+                      {d.label}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           )}
+
+          {/* Presets */}
+          <div>
+            <label className="text-sm font-medium mb-2 block">Presets</label>
+            <select
+              onChange={e => applyPreset(+e.target.value)}
+              defaultValue="-1"
+              className="w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              <option value="-1" disabled>Select a preset...</option>
+              {GRADIENT_PRESETS.map((p, i) => (
+                <option key={p.name} value={i}>{p.name}</option>
+              ))}
+            </select>
+          </div>
 
           {/* Color Stops */}
           <div>
