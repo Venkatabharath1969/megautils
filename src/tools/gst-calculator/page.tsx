@@ -48,10 +48,10 @@ export default function GSTCalculator() {
 
           <h2>How to Use This Tool</h2>
           <ol>
-            <li>Enter your data or content in the <strong>input area</strong>.</li>
-            <li>Configure any available options or settings to match your needs.</li>
-            <li>View the <strong>result instantly</strong> in the output area.</li>
-            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+            <li>Enter the required financial values (amount, rate, duration) in the input fields.</li>
+            <li>Adjust parameters like compounding frequency or tax rate if available.</li>
+            <li>Review the calculated results, charts, and breakdowns displayed below.</li>
+            <li>Use the results for planning — consult a financial advisor for important decisions.</li>
           </ol>
 
           <h2>When to Use This Tool</h2>
@@ -59,11 +59,11 @@ export default function GSTCalculator() {
 
           <h2>Tips and Best Practices</h2>
           <ul>
-            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
-            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
-            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
-            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
-            <li>Bookmark this page for quick access whenever you need gst calculation.</li>
+            <li>Financial calculator results are estimates — always consult a qualified financial advisor before making important decisions.</li>
+            <li>Interest rates should be entered as annual percentages (e.g., enter 7 for 7% per year).</li>
+            <li>Results account for compounding frequency when applicable — check whether your rate compounds monthly, quarterly, or annually.</li>
+            <li>Use the comparison features to evaluate different scenarios side by side.</li>
+            <li>All calculations happen locally in your browser — your financial data stays private.</li>
           </ul>
         </>
       }

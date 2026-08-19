@@ -95,10 +95,10 @@ export default function ChmodCalculatorTool() {
 
           <h2>How to Use This Tool</h2>
           <ol>
-            <li>Enter your data or content in the <strong>input area</strong>.</li>
-            <li>Configure any available options or settings to match your needs.</li>
-            <li>View the <strong>result instantly</strong> in the output area.</li>
-            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+            <li>Paste or type your code or data into the <strong>input panel</strong>.</li>
+            <li>Select any formatting options or conversion targets if available.</li>
+            <li>View the processed output instantly in the <strong>result panel</strong>.</li>
+            <li>Use <strong>Copy</strong> to grab the output or <strong>Download</strong> to save it as a file.</li>
           </ol>
 
           <h2>When to Use This Tool</h2>
@@ -106,11 +106,11 @@ export default function ChmodCalculatorTool() {
 
           <h2>Tips and Best Practices</h2>
           <ul>
-            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
-            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
-            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
-            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
-            <li>Bookmark this page for quick access whenever you need chmod permissions.</li>
+            <li>For large inputs, the tool processes data efficiently in your browser but very large files may take a moment.</li>
+            <li>Use keyboard shortcuts like Ctrl+A to select all output text before copying.</li>
+            <li>The tool preserves your data types and structure during conversion or formatting.</li>
+            <li>Compare the formatted output with the original to verify no data was altered.</li>
+            <li>All processing is client-side — safe for use with proprietary or sensitive code.</li>
           </ul>
         </>
       }

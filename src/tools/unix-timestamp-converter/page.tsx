@@ -81,10 +81,10 @@ export default function UnixTimestampConverterTool() {
 
           <h2>How to Use This Tool</h2>
           <ol>
-            <li>Enter your data or content in the <strong>input area</strong>.</li>
-            <li>Configure any available options or settings to match your needs.</li>
-            <li>View the <strong>result instantly</strong> in the output area.</li>
-            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+            <li>Enter a date, time, or timestamp value in the input field.</li>
+            <li>Select your target format or calculation type.</li>
+            <li>View the converted or calculated result instantly.</li>
+            <li>Copy the result for use in your code, logs, or scheduling systems.</li>
           </ol>
 
           <h2>When to Use This Tool</h2>
@@ -92,11 +92,11 @@ export default function UnixTimestampConverterTool() {
 
           <h2>Tips and Best Practices</h2>
           <ul>
-            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
-            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
-            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
-            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
-            <li>Bookmark this page for quick access whenever you need timestamp conversion.</li>
+            <li>Unix timestamps are always in UTC — local time zone conversions are applied automatically when relevant.</li>
+            <li>Be careful with time zone differences when converting between formats for international applications.</li>
+            <li>The tool handles leap years, daylight saving time transitions, and month-length variations correctly.</li>
+            <li>For programming, remember that JavaScript uses millisecond timestamps while Unix traditionally uses seconds.</li>
+            <li>All date calculations run locally with no server dependency.</li>
           </ul>
         </>
       }

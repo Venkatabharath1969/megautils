@@ -65,10 +65,10 @@ export default function TintShadeGeneratorTool() {
 
           <h2>How to Use This Tool</h2>
           <ol>
-            <li>Enter your data or content in the <strong>input area</strong>.</li>
-            <li>Configure any available options or settings to match your needs.</li>
-            <li>View the <strong>result instantly</strong> in the output area.</li>
-            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+            <li>Pick a color using the visual color picker or enter a value in any format (HEX, RGB, HSL).</li>
+            <li>View instant conversions across all supported color formats.</li>
+            <li>Use the generated palette, contrast ratios, or name suggestions as needed.</li>
+            <li>Copy any color value with one click for use in your design or code.</li>
           </ol>
 
           <h2>When to Use This Tool</h2>
@@ -76,11 +76,11 @@ export default function TintShadeGeneratorTool() {
 
           <h2>Tips and Best Practices</h2>
           <ul>
-            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
-            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
-            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
-            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
-            <li>Bookmark this page for quick access whenever you need tint/shade creation.</li>
+            <li>Use the HEX format for CSS and web design, RGB for programmatic color manipulation, and HSL for intuitive hue adjustments.</li>
+            <li>Always check contrast ratios against WCAG guidelines when choosing text and background color combinations.</li>
+            <li>Save color palettes by bookmarking the page or copying values to your design system documentation.</li>
+            <li>Consider color blindness accessibility — test your palette with a contrast checker tool.</li>
+            <li>All color processing runs locally with no server communication required.</li>
           </ul>
         </>
       }

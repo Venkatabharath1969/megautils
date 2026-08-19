@@ -6,7 +6,7 @@ import { COMPARISONS } from '@/lib/comparison-data'
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://utilsnow.com'
 
-  // All 177 tool slugs (alphabetical)
+  // All 194 tool slugs (alphabetical)
   const tools = [
     'age-calculator', 'ai-bg-remover', 'ai-content-detector', 'ai-depth-map', 'ai-face-blur', 'ai-grammar-checker', 'ai-image-caption', 'ai-image-classifier', 'ai-image-upscaler', 'ai-object-detection', 'ai-ocr', 'ai-object-remover', 'ai-paraphraser', 'ai-photo-colorizer', 'ai-segment', 'ai-sentiment-analysis', 'ai-speech-to-text', 'ai-text-summarizer', 'angle-converter', 'area-converter', 'aspect-ratio-calculator',
     'barcode-generator', 'base32-encoder', 'base64-encoder', 'blank-line-remover',
@@ -73,6 +73,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/contact`, lastModified: new Date('2026-08-04'), changeFrequency: 'monthly', priority: 0.5 },
     { url: `${baseUrl}/privacy`, lastModified: new Date('2026-08-09'), changeFrequency: 'monthly', priority: 0.4 },
     { url: `${baseUrl}/terms`, lastModified: new Date('2026-08-04'), changeFrequency: 'monthly', priority: 0.4 },
+    { url: `${baseUrl}/cookies`, lastModified: new Date('2026-08-09'), changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${baseUrl}/disclaimer`, lastModified: new Date('2026-08-19'), changeFrequency: 'yearly', priority: 0.3 },
     { url: `${baseUrl}/blog`, lastModified: siteLastModified, changeFrequency: 'daily', priority: 0.8 },
     ...categories.map(cat => ({
       url: `${baseUrl}/category/${cat}`,

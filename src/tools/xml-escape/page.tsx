@@ -55,10 +55,10 @@ export default function XmlEscapeTool() {
 
           <h2>How to Use This Tool</h2>
           <ol>
-            <li>Enter your data or content in the <strong>input area</strong>.</li>
-            <li>Configure any available options or settings to match your needs.</li>
-            <li>View the <strong>result instantly</strong> in the output area.</li>
-            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+            <li>Paste or type the string value you want to process in the input field.</li>
+            <li>Select the specific operation — escape, unescape, test, or generate.</li>
+            <li>Review the processed output and any match highlights or validation results.</li>
+            <li>Copy the result for direct use in your code or queries.</li>
           </ol>
 
           <h2>When to Use This Tool</h2>
@@ -66,11 +66,11 @@ export default function XmlEscapeTool() {
 
           <h2>Tips and Best Practices</h2>
           <ul>
-            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
-            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
-            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
-            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
-            <li>Bookmark this page for quick access whenever you need xml escaping.</li>
+            <li>Escape characters correctly before inserting strings into code to prevent syntax errors and security vulnerabilities.</li>
+            <li>Different languages and formats have different escaping rules — select the correct mode for your use case.</li>
+            <li>Test escaped strings in a safe environment before using them in production queries or code.</li>
+            <li>The tool handles edge cases like nested quotes, backslashes, and null bytes correctly.</li>
+            <li>All processing is client-side — safe to use with database queries containing sensitive data.</li>
           </ul>
         </>
       }

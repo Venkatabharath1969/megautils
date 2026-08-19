@@ -140,10 +140,10 @@ export default function ScientificCalculatorTool() {
 
           <h2>How to Use This Tool</h2>
           <ol>
-            <li>Enter your data or content in the <strong>input area</strong>.</li>
-            <li>Configure any available options or settings to match your needs.</li>
-            <li>View the <strong>result instantly</strong> in the output area.</li>
-            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+            <li>Enter the required numeric values or expressions in the input fields.</li>
+            <li>Select the operation or calculation type if multiple options exist.</li>
+            <li>View the result, intermediate steps, and any visual representations.</li>
+            <li>Copy the result for use in your work, assignments, or reports.</li>
           </ol>
 
           <h2>When to Use This Tool</h2>
@@ -151,11 +151,11 @@ export default function ScientificCalculatorTool() {
 
           <h2>Tips and Best Practices</h2>
           <ul>
-            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
-            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
-            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
-            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
-            <li>Bookmark this page for quick access whenever you need scientific computation.</li>
+            <li>Results are calculated to high precision but displayed values may be rounded for readability.</li>
+            <li>For scientific notation, the tool handles very large and very small numbers correctly.</li>
+            <li>Double-check results for critical calculations — this tool is an aid, not a replacement for professional verification.</li>
+            <li>The calculator supports standard mathematical operations and common constants like pi and e.</li>
+            <li>All computation runs locally in your browser with no server dependency.</li>
           </ul>
         </>
       }

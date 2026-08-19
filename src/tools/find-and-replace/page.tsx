@@ -57,10 +57,10 @@ export default function FindAndReplaceTool() {
 
           <h2>How to Use This Tool</h2>
           <ol>
-            <li>Enter your data or content in the <strong>input area</strong>.</li>
-            <li>Configure any available options or settings to match your needs.</li>
-            <li>View the <strong>result instantly</strong> in the output area.</li>
-            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+            <li>Paste or type your text content into the input area.</li>
+            <li>Select the operation or transformation you want to apply.</li>
+            <li>View the processed text <strong>instantly</strong> in the output area.</li>
+            <li>Copy the result or download it for use in your documents or projects.</li>
           </ol>
 
           <h2>When to Use This Tool</h2>
@@ -68,11 +68,11 @@ export default function FindAndReplaceTool() {
 
           <h2>Tips and Best Practices</h2>
           <ul>
-            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
-            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
-            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
-            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
-            <li>Bookmark this page for quick access whenever you need find and replace.</li>
+            <li>For very long documents, processing is instant but rendering the output may take a brief moment.</li>
+            <li>The tool handles Unicode text correctly, including accented characters, CJK scripts, and emoji.</li>
+            <li>Use the undo function in your browser (Ctrl+Z) if you need to revert input changes.</li>
+            <li>Combine multiple text operations by copying the output of one tool into the input of another.</li>
+            <li>No text is stored or transmitted — all processing runs locally in your browser.</li>
           </ul>
         </>
       }

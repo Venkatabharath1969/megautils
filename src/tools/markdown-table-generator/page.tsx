@@ -100,10 +100,10 @@ export default function MarkdownTableGeneratorTool() {
 
           <h2>How to Use This Tool</h2>
           <ol>
-            <li>Enter your data or content in the <strong>input area</strong>.</li>
-            <li>Configure any available options or settings to match your needs.</li>
-            <li>View the <strong>result instantly</strong> in the output area.</li>
-            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+            <li>Enter or paste your Markdown or HTML content in the editor.</li>
+            <li>See the converted output or live preview update as you type.</li>
+            <li>Adjust formatting using the toolbar or keyboard shortcuts.</li>
+            <li>Copy the output or export it in your preferred format.</li>
           </ol>
 
           <h2>When to Use This Tool</h2>
@@ -111,11 +111,11 @@ export default function MarkdownTableGeneratorTool() {
 
           <h2>Tips and Best Practices</h2>
           <ul>
-            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
-            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
-            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
-            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
-            <li>Bookmark this page for quick access whenever you need markdown table creation.</li>
+            <li>The live preview updates as you type, showing exactly how your Markdown will render.</li>
+            <li>Use the toolbar buttons for quick formatting or learn the keyboard shortcuts for faster editing.</li>
+            <li>The tool supports GitHub Flavored Markdown (GFM) including tables, task lists, and strikethrough.</li>
+            <li>Export options let you save your work as HTML or copy the raw Markdown for pasting elsewhere.</li>
+            <li>All content stays in your browser — nothing is saved to or transmitted through any server.</li>
           </ul>
         </>
       }

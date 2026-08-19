@@ -43,10 +43,10 @@ export default function TextToBinaryTool() {
 
           <h2>How to Use This Tool</h2>
           <ol>
-            <li>Enter your data or content in the <strong>input area</strong>.</li>
-            <li>Configure any available options or settings to match your needs.</li>
-            <li>View the <strong>result instantly</strong> in the output area.</li>
-            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+            <li>Choose your operation mode — <strong>encode</strong> or <strong>decode</strong>.</li>
+            <li>Paste or type your input text in the source field.</li>
+            <li>The converted result appears <strong>instantly</strong> in the output field.</li>
+            <li>Copy the result for use in your code, API requests, or documents.</li>
           </ol>
 
           <h2>When to Use This Tool</h2>
@@ -54,11 +54,11 @@ export default function TextToBinaryTool() {
 
           <h2>Tips and Best Practices</h2>
           <ul>
-            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
-            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
-            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
-            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
-            <li>Bookmark this page for quick access whenever you need binary conversion.</li>
+            <li>Encoding is NOT encryption — encoded data can be decoded by anyone. Never use encoding to protect sensitive information.</li>
+            <li>UTF-8 characters, emojis, and special symbols are fully supported in both encoding and decoding.</li>
+            <li>When decoding, ensure the input is complete — partial or corrupted encoded strings may produce unexpected results.</li>
+            <li>Check for unwanted whitespace or line breaks that may have been introduced during copy-paste operations.</li>
+            <li>Processing is entirely local — your data never leaves your browser.</li>
           </ul>
         </>
       }

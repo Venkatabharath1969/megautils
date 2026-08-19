@@ -54,10 +54,10 @@ export default function CssBorderRadiusGeneratorTool() {
 
           <h2>How to Use This Tool</h2>
           <ol>
-            <li>Enter your data or content in the <strong>input area</strong>.</li>
-            <li>Configure any available options or settings to match your needs.</li>
-            <li>View the <strong>result instantly</strong> in the output area.</li>
-            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+            <li>Use the visual controls (sliders, color pickers, toggles) to design your effect.</li>
+            <li>See the <strong>live preview</strong> update in real time as you adjust settings.</li>
+            <li>Review the generated <strong>CSS code</strong> in the code panel below.</li>
+            <li>Click <strong>Copy CSS</strong> to paste the code directly into your stylesheet.</li>
           </ol>
 
           <h2>When to Use This Tool</h2>
@@ -65,11 +65,11 @@ export default function CssBorderRadiusGeneratorTool() {
 
           <h2>Tips and Best Practices</h2>
           <ul>
-            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
-            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
-            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
-            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
-            <li>Bookmark this page for quick access whenever you need css border-radius.</li>
+            <li>Copy the generated CSS directly into your project stylesheet — it is production-ready.</li>
+            <li>Test the effect in multiple browsers since some CSS properties have varying support.</li>
+            <li>Combine multiple generators (e.g., gradient + box-shadow) for layered visual effects.</li>
+            <li>Use CSS custom properties (variables) to make generated values easy to update later.</li>
+            <li>All code generation happens in your browser — no external dependencies required.</li>
           </ul>
         </>
       }

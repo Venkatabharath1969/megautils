@@ -89,10 +89,10 @@ export default function PlaceholderImageGeneratorTool() {
 
           <h2>How to Use This Tool</h2>
           <ol>
-            <li>Enter your data or content in the <strong>input area</strong>.</li>
-            <li>Configure any available options or settings to match your needs.</li>
-            <li>View the <strong>result instantly</strong> in the output area.</li>
-            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+            <li>Upload your image using the <strong>file picker</strong> or drag and drop.</li>
+            <li>Configure output settings such as size, format, or quality level.</li>
+            <li>Preview the result and compare it with the original if available.</li>
+            <li>Download the processed image to your device.</li>
           </ol>
 
           <h2>When to Use This Tool</h2>
@@ -100,11 +100,11 @@ export default function PlaceholderImageGeneratorTool() {
 
           <h2>Tips and Best Practices</h2>
           <ul>
-            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
-            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
-            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
-            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
-            <li>Bookmark this page for quick access whenever you need placeholder images.</li>
+            <li>Supported input formats typically include JPEG, PNG, WebP, and GIF — check specific format notes below the tool.</li>
+            <li>Larger images produce higher quality output but take longer to process in the browser.</li>
+            <li>The original image is never modified — all processing creates a new output file.</li>
+            <li>For batch processing, use the tool repeatedly — each image is handled independently.</li>
+            <li>Your images are never uploaded to any server — all processing happens on your device.</li>
           </ul>
         </>
       }

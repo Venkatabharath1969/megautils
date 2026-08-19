@@ -146,10 +146,10 @@ export default function UserAgentParserTool() {
 
           <h2>How to Use This Tool</h2>
           <ol>
-            <li>Enter your data or content in the <strong>input area</strong>.</li>
-            <li>Configure any available options or settings to match your needs.</li>
-            <li>View the <strong>result instantly</strong> in the output area.</li>
-            <li>Use the <strong>Copy</strong> or <strong>Download</strong> button to save your result.</li>
+            <li>Enter the URL, IP address, or network value you want to analyze.</li>
+            <li>The tool parses and displays all extracted components and details.</li>
+            <li>Review the structured breakdown of each element.</li>
+            <li>Copy specific values or the full analysis for your documentation.</li>
           </ol>
 
           <h2>When to Use This Tool</h2>
@@ -157,11 +157,11 @@ export default function UserAgentParserTool() {
 
           <h2>Tips and Best Practices</h2>
           <ul>
-            <li>All processing happens locally in your browser — your data is never sent to any server, making it safe for sensitive content.</li>
-            <li>The tool works on any modern browser including Chrome, Firefox, Safari, and Edge on both desktop and mobile devices.</li>
-            <li>No account or sign-up is required — the tool is completely free with no usage limits.</li>
-            <li>Use the Copy button to quickly transfer results to your clipboard for pasting into other applications.</li>
-            <li>Bookmark this page for quick access whenever you need user agent analysis.</li>
+            <li>URLs and IP addresses are parsed locally — no external lookups are made unless explicitly stated.</li>
+            <li>The tool follows standard RFCs for URL parsing and network protocol interpretation.</li>
+            <li>Use the parsed components to debug routing issues, API endpoints, or DNS configurations.</li>
+            <li>Sensitive URLs containing authentication tokens are safe to paste — nothing leaves your browser.</li>
+            <li>Results are formatted for easy copying into documentation or bug reports.</li>
           </ul>
         </>
       }

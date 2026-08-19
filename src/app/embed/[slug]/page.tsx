@@ -28,7 +28,7 @@ export default async function EmbedToolPage({ params }: Props) {
         >
           UtilsNow
         </a>
-        <span>&mdash; 191 Free Tools</span>
+        <span>&mdash; 194 Free Tools</span>
       </div>
     </div>
   )
