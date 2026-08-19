@@ -7,22 +7,56 @@ interface MatchInfo {
   fullMatch: string
   index: number
   groups: string[]
+  namedGroups: Record<string, string> | null
 }
+
+const COMMON_PATTERNS = [
+  { label: 'Select a pattern...', pattern: '', flags: { g: true, i: false, m: false, s: false, u: false, d: false } },
+  { label: 'Email', pattern: '^[\\w.-]+@[\\w.-]+\\.\\w{2,}$', flags: { g: false, i: true, m: true, s: false, u: false, d: false } },
+  { label: 'URL', pattern: 'https?://[\\w.-]+(?:/[\\w.-]*)*', flags: { g: true, i: false, m: false, s: false, u: false, d: false } },
+  { label: 'IP Address', pattern: '\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b', flags: { g: true, i: false, m: false, s: false, u: false, d: false } },
+  { label: 'Phone', pattern: '\\+?\\d{1,3}[-.\\s]?\\(?\\d{3}\\)?[-.\\s]?\\d{3,4}[-.\\s]?\\d{4}', flags: { g: true, i: false, m: false, s: false, u: false, d: false } },
+  { label: 'Date (YYYY-MM-DD)', pattern: '\\d{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12]\\d|3[01])', flags: { g: true, i: false, m: false, s: false, u: false, d: false } },
+  { label: 'HTML Tag', pattern: '<([a-z]+)(?:\\s[^>]*)?>.*?</\\1>', flags: { g: true, i: true, m: false, s: true, u: false, d: false } },
+  { label: 'Hex Color', pattern: '#(?:[0-9a-fA-F]{3}){1,2}', flags: { g: true, i: false, m: false, s: false, u: false, d: false } },
+  { label: 'UUID', pattern: '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}', flags: { g: true, i: true, m: false, s: false, u: false, d: false } },
+  { label: 'Credit Card', pattern: '\\b(?:\\d[ -]*?){13,16}\\b', flags: { g: true, i: false, m: false, s: false, u: false, d: false } },
+  { label: 'SSN (US)', pattern: '\\b\\d{3}-\\d{2}-\\d{4}\\b', flags: { g: true, i: false, m: false, s: false, u: false, d: false } },
+  { label: 'ZIP Code (US)', pattern: '\\b\\d{5}(?:-\\d{4})?\\b', flags: { g: true, i: false, m: false, s: false, u: false, d: false } },
+  { label: 'IPv6 Address', pattern: '(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}', flags: { g: true, i: false, m: false, s: false, u: false, d: false } },
+]
 
 export default function RegexTesterTool() {
   const [pattern, setPattern] = useState('')
   const [testString, setTestString] = useState('')
+  const [replacePattern, setReplacePattern] = useState('')
   const [flagG, setFlagG] = useState(true)
   const [flagI, setFlagI] = useState(false)
   const [flagM, setFlagM] = useState(false)
   const [flagS, setFlagS] = useState(false)
+  const [flagU, setFlagU] = useState(false)
+  const [flagD, setFlagD] = useState(false)
 
-  const { matches, error, highlighted } = useMemo(() => {
-    if (!pattern || !testString) return { matches: [] as MatchInfo[], error: '', highlighted: testString }
+  const handlePatternSelect = (index: number) => {
+    const preset = COMMON_PATTERNS[index]
+    if (!preset || index === 0) return
+    setPattern(preset.pattern)
+    setFlagG(preset.flags.g)
+    setFlagI(preset.flags.i)
+    setFlagM(preset.flags.m)
+    setFlagS(preset.flags.s)
+    setFlagU(preset.flags.u)
+    setFlagD(preset.flags.d)
+  }
+
+  const { matches, error, highlighted, executionTime, replaceResult } = useMemo(() => {
+    if (!pattern || !testString) return { matches: [] as MatchInfo[], error: '', highlighted: testString, executionTime: null as number | null, replaceResult: null as string | null }
     try {
-      const flags = (flagG ? 'g' : '') + (flagI ? 'i' : '') + (flagM ? 'm' : '') + (flagS ? 's' : '')
+      const flags = (flagG ? 'g' : '') + (flagI ? 'i' : '') + (flagM ? 'm' : '') + (flagS ? 's' : '') + (flagU ? 'u' : '') + (flagD ? 'd' : '')
       const regex = new RegExp(pattern, flags)
       const matchList: MatchInfo[] = []
+
+      const t0 = performance.now()
 
       if (flagG) {
         let m: RegExpExecArray | null
@@ -31,6 +65,7 @@ export default function RegexTesterTool() {
             fullMatch: m[0],
             index: m.index,
             groups: m.slice(1),
+            namedGroups: m.groups ? { ...m.groups } : null,
           })
           if (m[0].length === 0) regex.lastIndex++ // prevent infinite loop
         }
@@ -41,9 +76,12 @@ export default function RegexTesterTool() {
             fullMatch: m[0],
             index: m.index,
             groups: m.slice(1),
+            namedGroups: m.groups ? { ...m.groups } : null,
           })
         }
       }
+
+      const t1 = performance.now()
 
       // Build highlighted text
       let hl = ''
@@ -55,11 +93,22 @@ export default function RegexTesterTool() {
       }
       hl += testString.slice(lastIdx)
 
-      return { matches: matchList, error: '', highlighted: hl }
+      // Compute replace result if replace pattern is provided
+      let replResult: string | null = null
+      if (replacePattern !== '') {
+        try {
+          const replRegex = new RegExp(pattern, flags)
+          replResult = testString.replace(replRegex, replacePattern)
+        } catch {
+          replResult = null
+        }
+      }
+
+      return { matches: matchList, error: '', highlighted: hl, executionTime: t1 - t0, replaceResult: replResult }
     } catch (e) {
-      return { matches: [] as MatchInfo[], error: e instanceof Error ? e.message : 'Invalid regex', highlighted: testString }
+      return { matches: [] as MatchInfo[], error: e instanceof Error ? e.message : 'Invalid regex', highlighted: testString, executionTime: null, replaceResult: null }
     }
-  }, [pattern, testString, flagG, flagI, flagM, flagS])
+  }, [pattern, testString, flagG, flagI, flagM, flagS, flagU, flagD, replacePattern])
 
   return (
     <ToolPage
@@ -106,6 +155,20 @@ export default function RegexTesterTool() {
       ]}
     >
       <div className="space-y-4">
+        {/* Common Patterns dropdown */}
+        <div>
+          <label className="text-sm font-medium block mb-1">Common Patterns</label>
+          <select
+            onChange={(e) => handlePatternSelect(Number(e.target.value))}
+            defaultValue={0}
+            className="w-full px-3 py-2 text-sm rounded-md border border-input bg-tool-bg focus:outline-none focus:ring-2 focus:ring-ring"
+          >
+            {COMMON_PATTERNS.map((p, i) => (
+              <option key={i} value={i}>{p.label}{i > 0 ? ` — ${p.pattern}` : ''}</option>
+            ))}
+          </select>
+        </div>
+
         {/* Pattern input */}
         <div>
           <label className="text-sm font-medium block mb-1">Pattern</label>
@@ -130,6 +193,8 @@ export default function RegexTesterTool() {
             { flag: 'i', label: 'Case Insensitive', checked: flagI, set: setFlagI },
             { flag: 'm', label: 'Multiline', checked: flagM, set: setFlagM },
             { flag: 's', label: 'Dotall', checked: flagS, set: setFlagS },
+            { flag: 'u', label: 'Unicode', checked: flagU, set: setFlagU },
+            { flag: 'd', label: 'Has Indices', checked: flagD, set: setFlagD },
           ].map((f) => (
             <label key={f.flag} className="flex items-center gap-1.5 text-sm">
               <input type="checkbox" checked={f.checked} onChange={(e) => f.set(e.target.checked)} className="rounded border-border" />
@@ -143,46 +208,87 @@ export default function RegexTesterTool() {
         <div>
           <div className="flex items-center justify-between mb-1">
             <span className="text-sm font-medium">Test String</span>
-            <ClearButton onClear={() => { setTestString(''); setPattern('') }} />
+            <ClearButton onClear={() => { setTestString(''); setPattern(''); setReplacePattern('') }} />
           </div>
           <ToolTextarea value={testString} onChange={setTestString} placeholder="Enter text to test against..." rows={6} />
         </div>
 
+        {/* Replace pattern */}
+        <div>
+          <label className="text-sm font-medium block mb-1">Replace (optional)</label>
+          <input
+            type="text"
+            value={replacePattern}
+            onChange={(e) => setReplacePattern(e.target.value)}
+            placeholder="Replacement pattern — supports $1, $2, $&, $`, $' tokens..."
+            className="w-full px-3 py-2 text-sm font-mono rounded-md border border-input bg-tool-bg focus:outline-none focus:ring-2 focus:ring-ring"
+          />
+        </div>
+
         {/* Results */}
         {pattern && testString && !error && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div>
-              <span className="text-sm font-medium block mb-2">
-                Highlighted Matches ({matches.length} match{matches.length !== 1 ? 'es' : ''})
-              </span>
-              <div className="p-3 rounded-lg bg-muted font-mono text-sm whitespace-pre-wrap break-all max-h-64 overflow-y-auto">
-                {highlighted}
+          <div className="space-y-4">
+            {/* Execution time */}
+            {executionTime !== null && (
+              <div className="text-xs text-muted-foreground">
+                Matched in {executionTime < 0.1 ? '<0.1' : executionTime.toFixed(1)}ms
               </div>
-            </div>
-            <div>
-              <span className="text-sm font-medium block mb-2">Match Details</span>
-              <div className="space-y-2 max-h-64 overflow-y-auto">
-                {matches.length === 0 && (
-                  <div className="p-3 rounded-lg bg-muted text-sm text-muted-foreground">No matches found</div>
-                )}
-                {matches.map((m, i) => (
-                  <div key={i} className="p-2 rounded-lg bg-muted text-sm">
-                    <div className="font-mono">
-                      <span className="text-muted-foreground">Match {i + 1} </span>
-                      <span className="text-xs text-muted-foreground">(index {m.index})</span>
-                      : <span className="text-primary font-medium">&quot;{m.fullMatch}&quot;</span>
-                    </div>
-                    {m.groups.length > 0 && (
-                      <div className="mt-1 text-xs text-muted-foreground">
-                        {m.groups.map((g, gi) => (
-                          <span key={gi} className="mr-2">Group {gi + 1}: <span className="text-foreground">&quot;{g}&quot;</span></span>
-                        ))}
+            )}
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div>
+                <span className="text-sm font-medium block mb-2">
+                  Highlighted Matches ({matches.length} match{matches.length !== 1 ? 'es' : ''})
+                </span>
+                <div className="p-3 rounded-lg bg-muted font-mono text-sm whitespace-pre-wrap break-all max-h-64 overflow-y-auto">
+                  {highlighted}
+                </div>
+              </div>
+              <div>
+                <span className="text-sm font-medium block mb-2">Match Details</span>
+                <div className="space-y-2 max-h-64 overflow-y-auto">
+                  {matches.length === 0 && (
+                    <div className="p-3 rounded-lg bg-muted text-sm text-muted-foreground">No matches found</div>
+                  )}
+                  {matches.map((m, i) => (
+                    <div key={i} className="p-2 rounded-lg bg-muted text-sm">
+                      <div className="font-mono">
+                        <span className="text-muted-foreground">Match {i + 1} </span>
+                        <span className="text-xs text-muted-foreground">(index {m.index})</span>
+                        : <span className="text-primary font-medium">&quot;{m.fullMatch}&quot;</span>
                       </div>
-                    )}
-                  </div>
-                ))}
+                      {m.groups.length > 0 && (
+                        <div className="mt-1 text-xs text-muted-foreground">
+                          {m.groups.map((g, gi) => (
+                            <span key={gi} className="mr-2">Group {gi + 1}: <span className="text-foreground">&quot;{g}&quot;</span></span>
+                          ))}
+                        </div>
+                      )}
+                      {m.namedGroups && Object.keys(m.namedGroups).length > 0 && (
+                        <div className="mt-1 text-xs text-muted-foreground border-t border-border pt-1">
+                          <span className="font-medium text-muted-foreground">Named Groups: </span>
+                          {Object.entries(m.namedGroups).map(([name, value]) => (
+                            <span key={name} className="mr-2">
+                              <span className="text-blue-500 dark:text-blue-400">{name}</span>: <span className="text-foreground">&quot;{value}&quot;</span>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
+
+            {/* Replace result */}
+            {replaceResult !== null && (
+              <div>
+                <span className="text-sm font-medium block mb-2">Replacement Result</span>
+                <div className="p-3 rounded-lg bg-muted font-mono text-sm whitespace-pre-wrap break-all max-h-64 overflow-y-auto">
+                  {replaceResult}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

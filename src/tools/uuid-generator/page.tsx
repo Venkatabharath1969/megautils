@@ -12,20 +12,115 @@ function generateUUIDv4(): string {
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`
 }
 
+function generateUUIDv7(): string {
+  const now = Date.now()
+  const bytes = new Uint8Array(16)
+  crypto.getRandomValues(bytes)
+
+  // Embed 48-bit Unix millisecond timestamp in bytes 0-5
+  bytes[0] = (now / 2 ** 40) & 0xff
+  bytes[1] = (now / 2 ** 32) & 0xff
+  bytes[2] = (now / 2 ** 24) & 0xff
+  bytes[3] = (now / 2 ** 16) & 0xff
+  bytes[4] = (now / 2 ** 8) & 0xff
+  bytes[5] = now & 0xff
+
+  // Set version to 7 (0111) in byte 6
+  bytes[6] = (bytes[6] & 0x0f) | 0x70
+  // Set variant to 10 in byte 8
+  bytes[8] = (bytes[8] & 0x3f) | 0x80
+
+  const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`
+}
+
+function parseUUID(input: string): {
+  valid: boolean
+  version?: number
+  variant?: string
+  timestamp?: string
+  formatted?: string
+} {
+  const cleaned = input.trim().replace(/-/g, '').toLowerCase()
+  if (!/^[0-9a-f]{32}$/.test(cleaned)) {
+    return { valid: false }
+  }
+
+  const formatted = `${cleaned.slice(0, 8)}-${cleaned.slice(8, 12)}-${cleaned.slice(12, 16)}-${cleaned.slice(16, 20)}-${cleaned.slice(20)}`
+
+  // Version is the high nibble of byte 6 (chars 12-13)
+  const version = parseInt(cleaned[12], 16)
+
+  // Variant is determined by the high bits of byte 8 (chars 16-17)
+  const variantByte = parseInt(cleaned.slice(16, 18), 16)
+  let variant: string
+  if ((variantByte & 0x80) === 0) {
+    variant = 'NCS (reserved)'
+  } else if ((variantByte & 0xc0) === 0x80) {
+    variant = 'RFC 4122 / RFC 9562'
+  } else if ((variantByte & 0xe0) === 0xc0) {
+    variant = 'Microsoft (reserved)'
+  } else {
+    variant = 'Future (reserved)'
+  }
+
+  let timestamp: string | undefined
+
+  // Extract timestamp for v1
+  if (version === 1) {
+    // v1 timestamp: time_low (0-7), time_mid (8-11), time_hi (13-15) — skipping version nibble
+    const timeHi = cleaned.slice(13, 16)
+    const timeMid = cleaned.slice(8, 12)
+    const timeLow = cleaned.slice(0, 8)
+    const ticks = BigInt('0x' + timeHi + timeMid + timeLow)
+    // UUID v1 epoch is Oct 15, 1582. Offset to Unix epoch in 100ns intervals.
+    const unixOffset = BigInt('122192928000000000')
+    const unixNs100 = ticks - unixOffset
+    const unixMs = Number(unixNs100 / BigInt(10000))
+    if (unixMs > 0 && unixMs < 1e16) {
+      timestamp = new Date(unixMs).toISOString()
+    }
+  }
+
+  // Extract timestamp for v7
+  if (version === 7) {
+    // v7: first 48 bits (bytes 0-5) are Unix millisecond timestamp
+    const msHex = cleaned.slice(0, 12)
+    const ms = parseInt(msHex, 16)
+    if (ms > 0 && ms < 1e16) {
+      timestamp = new Date(ms).toISOString()
+    }
+  }
+
+  return { valid: true, version, variant, timestamp, formatted }
+}
+
 export default function UuidGeneratorTool() {
   const [quantity, setQuantity] = useState(1)
   const [uuids, setUuids] = useState<string[]>([])
   const [uuidCase, setUuidCase] = useState<'lower' | 'upper'>('lower')
+  const [uuidVersion, setUuidVersion] = useState<'v4' | 'v7'>('v4')
+  const [removeHyphens, setRemoveHyphens] = useState(false)
+
+  // Parser state
+  const [parseInput, setParseInput] = useState('')
+  const [parseResult, setParseResult] = useState<ReturnType<typeof parseUUID> | null>(null)
 
   const generate = useCallback(() => {
     const clamped = Math.max(1, Math.min(100, quantity))
     const result: string[] = []
     for (let i = 0; i < clamped; i++) {
-      const uuid = generateUUIDv4()
+      let uuid = uuidVersion === 'v7' ? generateUUIDv7() : generateUUIDv4()
+      if (removeHyphens) uuid = uuid.replace(/-/g, '')
       result.push(uuidCase === 'upper' ? uuid.toUpperCase() : uuid)
     }
     setUuids(result)
-  }, [quantity, uuidCase])
+  }, [quantity, uuidCase, uuidVersion, removeHyphens])
+
+  const handleParse = useCallback(() => {
+    if (!parseInput.trim()) return
+    setParseResult(parseUUID(parseInput))
+  }, [parseInput])
 
   const allText = uuids.join('\n')
 
@@ -73,7 +168,19 @@ export default function UuidGeneratorTool() {
         { question: 'Are UUIDs generated here cryptographically secure?', answer: 'Yes. This tool uses the Web Crypto API (crypto.getRandomValues) to generate random bytes, ensuring the UUIDs are suitable for security-sensitive applications.' },
       ]}
     >
+      {/* Generator Controls */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
+        <div className="flex items-center gap-2">
+          <label className="text-sm font-medium">Version:</label>
+          <div className="flex gap-2">
+            <button onClick={() => setUuidVersion('v4')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${uuidVersion === 'v4' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>
+              v4
+            </button>
+            <button onClick={() => setUuidVersion('v7')} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${uuidVersion === 'v7' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>
+              v7
+            </button>
+          </div>
+        </div>
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium">Count:</label>
           <input
@@ -93,11 +200,21 @@ export default function UuidGeneratorTool() {
             UPPERCASE
           </button>
         </div>
+        <label className="flex items-center gap-2 text-sm">
+          <input
+            type="checkbox"
+            checked={removeHyphens}
+            onChange={(e) => setRemoveHyphens(e.target.checked)}
+            className="rounded border-border"
+          />
+          Remove hyphens
+        </label>
         <button onClick={generate} className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
           Generate
         </button>
       </div>
 
+      {/* Generated UUIDs */}
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium">Generated UUIDs</span>
         <div className="flex gap-1.5">
@@ -120,6 +237,58 @@ export default function UuidGeneratorTool() {
           ))}
         </div>
       )}
+
+      {/* UUID Parser */}
+      <div className="mt-8 pt-6 border-t border-border">
+        <h3 className="text-sm font-medium mb-3">Parse UUID</h3>
+        <div className="flex gap-2 mb-3">
+          <input
+            type="text"
+            value={parseInput}
+            onChange={(e) => { setParseInput(e.target.value); setParseResult(null) }}
+            placeholder="Paste a UUID to parse (e.g. 550e8400-e29b-41d4-a716-446655440000)"
+            className="flex-1 px-3 py-2 text-sm font-mono rounded-md border border-input bg-tool-bg focus:outline-none focus:ring-2 focus:ring-ring"
+          />
+          <button
+            onClick={handleParse}
+            disabled={!parseInput.trim()}
+            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Parse
+          </button>
+        </div>
+
+        {parseResult && (
+          <div className="p-4 rounded-lg bg-muted space-y-2">
+            {!parseResult.valid ? (
+              <p className="text-sm text-red-500 font-medium">Invalid UUID format. Must be 32 hexadecimal characters (with or without hyphens).</p>
+            ) : (
+              <>
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1.5 text-sm">
+                  <span className="text-muted-foreground">Valid</span>
+                  <span className="font-medium text-green-600 dark:text-green-400">Yes</span>
+
+                  <span className="text-muted-foreground">Formatted</span>
+                  <code className="font-mono text-xs">{parseResult.formatted}</code>
+
+                  <span className="text-muted-foreground">Version</span>
+                  <span className="font-medium">{parseResult.version}</span>
+
+                  <span className="text-muted-foreground">Variant</span>
+                  <span className="font-medium">{parseResult.variant}</span>
+
+                  {parseResult.timestamp && (
+                    <>
+                      <span className="text-muted-foreground">Timestamp</span>
+                      <span className="font-medium">{parseResult.timestamp}</span>
+                    </>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+      </div>
     </ToolPage>
   )
 }

@@ -1,7 +1,20 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, ClearButton } from '@/components/tool-page'
+
+const CLAIM_DESCRIPTIONS: Record<string, string> = {
+  sub: 'Subject (user identifier)',
+  iss: 'Issuer',
+  aud: 'Audience',
+  exp: 'Expiration Time',
+  iat: 'Issued At',
+  nbf: 'Not Before',
+  jti: 'JWT ID',
+  scope: 'Scope/Permissions',
+  name: 'Full Name',
+  email: 'Email Address',
+}
 
 function base64UrlDecode(str: string): string {
   // Convert base64url to base64
@@ -24,11 +37,32 @@ function formatTimestamp(ts: number): string {
   return date.toLocaleString() + ' (' + date.toISOString() + ')'
 }
 
+function formatCountdown(diffMs: number): string {
+  const absDiff = Math.abs(diffMs)
+  const totalSeconds = Math.floor(absDiff / 1000)
+  const hours = Math.floor(totalSeconds / 3600)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
+  const seconds = totalSeconds % 60
+
+  const parts: string[] = []
+  if (hours > 0) parts.push(`${hours}h`)
+  if (minutes > 0) parts.push(`${minutes}m`)
+  parts.push(`${seconds}s`)
+
+  if (diffMs > 0) {
+    return `Expires in ${parts.join(' ')}`
+  } else {
+    return `Expired ${parts.join(' ')} ago`
+  }
+}
+
 interface JwtResult {
   header: string
   payload: string
+  payloadObj: Record<string, unknown>
   signature: string
   isExpired: boolean | null
+  expTimestamp: number | null
   expiresAt: string | null
   issuedAt: string | null
   notBefore: string | null
@@ -58,12 +92,14 @@ function decodeJwt(token: string): JwtResult {
   const now = Math.floor(Date.now() / 1000)
 
   let isExpired: boolean | null = null
+  let expTimestamp: number | null = null
   let expiresAt: string | null = null
   let issuedAt: string | null = null
   let notBefore: string | null = null
 
   if (typeof payload.exp === 'number') {
     isExpired = payload.exp < now
+    expTimestamp = payload.exp
     expiresAt = formatTimestamp(payload.exp)
   }
   if (typeof payload.iat === 'number') {
@@ -76,8 +112,10 @@ function decodeJwt(token: string): JwtResult {
   return {
     header: JSON.stringify(header, null, 2),
     payload: JSON.stringify(payload, null, 2),
+    payloadObj: payload,
     signature: parts[2],
     isExpired,
+    expTimestamp,
     expiresAt,
     issuedAt,
     notBefore,
@@ -86,21 +124,55 @@ function decodeJwt(token: string): JwtResult {
 
 export default function JwtDecoderTool() {
   const [input, setInput] = useState('')
-  const [result, setResult] = useState<JwtResult | null>(null)
-  const [error, setError] = useState('')
+  const [countdown, setCountdown] = useState<string | null>(null)
 
-  const decode = () => {
+  // Real-time decode via useMemo
+  const { result, error } = useMemo(() => {
+    const trimmed = input.trim()
+    if (!trimmed) return { result: null as JwtResult | null, error: '' }
     try {
-      if (!input.trim()) throw new Error('Please enter a JWT token')
-      setResult(decodeJwt(input))
-      setError('')
+      return { result: decodeJwt(trimmed), error: '' }
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Invalid JWT')
-      setResult(null)
+      return { result: null as JwtResult | null, error: e instanceof Error ? e.message : 'Invalid JWT' }
     }
-  }
+  }, [input])
 
-  const clear = () => { setInput(''); setResult(null); setError('') }
+  // Live expiry countdown
+  useEffect(() => {
+    if (!result?.expTimestamp) {
+      setCountdown(null)
+      return
+    }
+
+    const update = () => {
+      const diffMs = result.expTimestamp! * 1000 - Date.now()
+      setCountdown(formatCountdown(diffMs))
+    }
+    update()
+    const interval = setInterval(update, 1000)
+    return () => clearInterval(interval)
+  }, [result?.expTimestamp])
+
+  const clear = () => { setInput('') }
+
+  // Render claim descriptions for payload keys
+  const renderClaimDescriptions = (payloadObj: Record<string, unknown>) => {
+    const entries = Object.keys(payloadObj).filter(k => CLAIM_DESCRIPTIONS[k])
+    if (entries.length === 0) return null
+    return (
+      <div className="mt-3 space-y-1">
+        <span className="text-xs font-medium text-muted-foreground block mb-1">Claim Descriptions</span>
+        <div className="flex flex-wrap gap-2">
+          {entries.map(key => (
+            <span key={key} className="inline-flex items-center gap-1 px-2 py-1 rounded bg-muted text-xs">
+              <code className="font-mono text-primary">{key}</code>
+              <span className="text-muted-foreground">— {CLAIM_DESCRIPTIONS[key]}</span>
+            </span>
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <ToolPage
@@ -149,23 +221,22 @@ export default function JwtDecoderTool() {
         <ToolTextarea
           value={input}
           onChange={setInput}
-          placeholder="Paste your JWT token here...\neyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.signature"
+          placeholder="Paste your JWT token here — decodes automatically as you type...&#10;eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.signature"
           rows={4}
         />
       </div>
 
       {error && <div className="mt-3 p-3 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 text-sm font-mono">{error}</div>}
 
-      <button onClick={decode} className="mt-4 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
-        Decode JWT
-      </button>
-
       {result && (
         <div className="mt-6 space-y-4">
           {/* Token Status */}
           {result.isExpired !== null && (
             <div className={`p-3 rounded-lg text-sm font-medium ${result.isExpired ? 'bg-red-500/10 text-red-600 dark:text-red-400' : 'bg-green-500/10 text-green-600 dark:text-green-400'}`}>
-              {result.isExpired ? 'Token is EXPIRED' : 'Token is VALID (not expired)'}
+              <div>{result.isExpired ? 'Token is EXPIRED' : 'Token is VALID (not expired)'}</div>
+              {countdown && (
+                <div className="mt-1 text-xs font-mono opacity-80">{countdown}</div>
+              )}
             </div>
           )}
 
@@ -208,6 +279,7 @@ export default function JwtDecoderTool() {
                 <CopyButton text={result.payload} />
               </div>
               <ToolTextarea value={result.payload} readOnly rows={8} />
+              {renderClaimDescriptions(result.payloadObj)}
             </div>
           </div>
 
