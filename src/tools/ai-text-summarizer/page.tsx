@@ -115,6 +115,7 @@ export default function AITextSummarizer() {
   const [input, setInput] = useState('')
   const [preset, setPreset] = useState<LengthPreset>('medium')
   const [customCount, setCustomCount] = useState(5)
+  const [bulletMode, setBulletMode] = useState(false)
 
   const targetCount = preset === 'custom' ? customCount : PRESET_COUNTS[preset]
 
@@ -228,6 +229,10 @@ export default function AITextSummarizer() {
               </button>
             ))}
           </div>
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" checked={bulletMode} onChange={(e) => setBulletMode(e.target.checked)} className="rounded border-border" />
+            Bullet point output
+          </label>
           {preset === 'custom' && (
             <div className="flex items-center gap-3">
               <input
@@ -268,9 +273,9 @@ export default function AITextSummarizer() {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium">Summary</span>
-                <CopyButton text={result.summaryText} />
+                <CopyButton text={bulletMode ? result.sentences.map(s => `• ${s}`).join('\n') : result.summaryText} />
               </div>
-              <ToolTextarea value={result.summaryText} readOnly rows={6} />
+              <ToolTextarea value={bulletMode ? result.sentences.map(s => `• ${s}`).join('\n') : result.summaryText} readOnly rows={6} />
             </div>
 
             {/* Key points */}

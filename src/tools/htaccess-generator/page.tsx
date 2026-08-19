@@ -21,6 +21,7 @@ export default function HtaccessGeneratorTool() {
   const [enableGzip, setEnableGzip] = useState(false)
   const [enableCaching, setEnableCaching] = useState(false)
   const [blockHotlinking, setBlockHotlinking] = useState(false)
+  const [securityHeaders, setSecurityHeaders] = useState(false)
   const [nextId, setNextId] = useState(1)
 
   const addRedirect = useCallback(() => {
@@ -122,8 +123,21 @@ export default function HtaccessGeneratorTool() {
       lines.push('')
     }
 
+    if (securityHeaders) {
+      lines.push('# Security Headers')
+      lines.push('<IfModule mod_headers.c>')
+      lines.push('  Header set X-Frame-Options "SAMEORIGIN"')
+      lines.push('  Header set X-Content-Type-Options "nosniff"')
+      lines.push('  Header set X-XSS-Protection "1; mode=block"')
+      lines.push('  Header set Referrer-Policy "strict-origin-when-cross-origin"')
+      lines.push('  Header set Permissions-Policy "geolocation=(), microphone=(), camera=()"')
+      lines.push('  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"')
+      lines.push('</IfModule>')
+      lines.push('')
+    }
+
     return lines.join('\n').trim()
-  }, [forceHttps, wwwMode, redirects, error404, error403, error500, enableGzip, enableCaching, blockHotlinking])
+  }, [forceHttps, wwwMode, redirects, error404, error403, error500, enableGzip, enableCaching, blockHotlinking, securityHeaders])
 
   const clear = () => {
     setForceHttps(false)
@@ -135,6 +149,7 @@ export default function HtaccessGeneratorTool() {
     setEnableGzip(false)
     setEnableCaching(false)
     setBlockHotlinking(false)
+    setSecurityHeaders(false)
   }
 
   return (
@@ -204,6 +219,11 @@ export default function HtaccessGeneratorTool() {
             <label className="inline-flex items-center gap-2 text-sm cursor-pointer">
               <input type="checkbox" checked={blockHotlinking} onChange={(e) => setBlockHotlinking(e.target.checked)} className="rounded accent-primary" />
               Block Image Hotlinking
+            </label>
+            <br />
+            <label className="inline-flex items-center gap-2 text-sm cursor-pointer">
+              <input type="checkbox" checked={securityHeaders} onChange={(e) => setSecurityHeaders(e.target.checked)} className="rounded accent-primary" />
+              Security Headers (X-Frame-Options, X-Content-Type-Options, XSS Protection, Referrer-Policy)
             </label>
           </div>
 

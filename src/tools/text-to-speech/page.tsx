@@ -136,7 +136,13 @@ export default function TextToSpeechTool() {
           <ToolTextarea value={text} onChange={setText} placeholder="Enter the text you want to convert to speech..." rows={12} />
 
           <div className="text-xs text-muted-foreground">
-            {text.length} characters | ~{Math.ceil(text.split(/\s+/).filter(Boolean).length / 150)} min at normal speed
+            {text.length} characters | {text.split(/\s+/).filter(Boolean).length} words
+            {text.trim() && (() => {
+              const words = text.split(/\s+/).filter(Boolean).length
+              const minutes = words / (rate * 150)
+              if (minutes < 1) return ` | Est. duration: ${Math.round(minutes * 60)}s at ${rate}x`
+              return ` | Est. duration: ${minutes.toFixed(1)} min at ${rate}x`
+            })()}
           </div>
         </div>
 

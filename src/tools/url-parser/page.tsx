@@ -39,7 +39,27 @@ function parseUrl(input: string): ParsedURL | null {
 }
 
 export default function UrlParserTool() {
+  const [toolMode, setToolMode] = useState<'parse' | 'build'>('parse')
   const [input, setInput] = useState('https://example.com:8080/path/page?name=John&age=30&city=NYC#section1')
+
+  // Build mode state
+  const [buildProtocol, setBuildProtocol] = useState('https')
+  const [buildHost, setBuildHost] = useState('')
+  const [buildPort, setBuildPort] = useState('')
+  const [buildPath, setBuildPath] = useState('')
+  const [buildHash, setBuildHash] = useState('')
+  const [buildParams, setBuildParams] = useState<{ key: string; value: string }[]>([{ key: '', value: '' }])
+
+  const builtUrl = useMemo(() => {
+    if (!buildHost) return ''
+    let url = `${buildProtocol}://${buildHost}`
+    if (buildPort) url += `:${buildPort}`
+    if (buildPath) url += buildPath.startsWith('/') ? buildPath : `/${buildPath}`
+    const validParams = buildParams.filter(p => p.key.trim())
+    if (validParams.length > 0) url += '?' + validParams.map(p => `${encodeURIComponent(p.key)}=${encodeURIComponent(p.value)}`).join('&')
+    if (buildHash) url += buildHash.startsWith('#') ? buildHash : `#${buildHash}`
+    return url
+  }, [buildProtocol, buildHost, buildPort, buildPath, buildHash, buildParams])
 
   const parsed = useMemo(() => parseUrl(input), [input])
 
@@ -95,6 +115,66 @@ export default function UrlParserTool() {
       ]}
     >
       <div className="max-w-3xl mx-auto space-y-6">
+        {/* Mode tabs */}
+        <div className="flex gap-2">
+          <button onClick={() => setToolMode('parse')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${toolMode === 'parse' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Parse URL</button>
+          <button onClick={() => setToolMode('build')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${toolMode === 'build' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Build URL</button>
+        </div>
+
+        {toolMode === 'build' && (
+          <div className="space-y-4">
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <label className="block text-xs font-medium mb-1">Protocol</label>
+                <select value={buildProtocol} onChange={e => setBuildProtocol(e.target.value)} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+                  <option value="https">https</option>
+                  <option value="http">http</option>
+                  <option value="ftp">ftp</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium mb-1">Host</label>
+                <input type="text" value={buildHost} onChange={e => setBuildHost(e.target.value)} placeholder="example.com" className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+              </div>
+              <div>
+                <label className="block text-xs font-medium mb-1">Port</label>
+                <input type="text" value={buildPort} onChange={e => setBuildPort(e.target.value)} placeholder="8080" className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-medium mb-1">Path</label>
+                <input type="text" value={buildPath} onChange={e => setBuildPath(e.target.value)} placeholder="/api/users" className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+              </div>
+              <div>
+                <label className="block text-xs font-medium mb-1">Hash / Fragment</label>
+                <input type="text" value={buildHash} onChange={e => setBuildHash(e.target.value)} placeholder="#section1" className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-medium mb-1">Query Parameters</label>
+              {buildParams.map((p, i) => (
+                <div key={i} className="flex gap-2 mb-2">
+                  <input type="text" value={p.key} onChange={e => { const u = [...buildParams]; u[i] = { ...u[i], key: e.target.value }; setBuildParams(u) }} placeholder="key" className="flex-1 h-9 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+                  <input type="text" value={p.value} onChange={e => { const u = [...buildParams]; u[i] = { ...u[i], value: e.target.value }; setBuildParams(u) }} placeholder="value" className="flex-1 h-9 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+                  {buildParams.length > 1 && <button onClick={() => setBuildParams(buildParams.filter((_, j) => j !== i))} className="text-red-500 text-xs px-2">Remove</button>}
+                </div>
+              ))}
+              <button onClick={() => setBuildParams([...buildParams, { key: '', value: '' }])} className="text-xs text-primary hover:underline">+ Add Parameter</button>
+            </div>
+            {builtUrl && (
+              <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-medium text-muted-foreground">Generated URL</span>
+                  <CopyButton text={builtUrl} />
+                </div>
+                <div className="font-mono text-sm break-all">{builtUrl}</div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {toolMode === 'parse' && <>
         {/* Input */}
         <div>
           <label className="block text-sm font-medium mb-1.5">Enter URL</label>
@@ -167,6 +247,7 @@ export default function UrlParserTool() {
             )}
           </>
         )}
+        </>}
       </div>
     </ToolPage>
   )

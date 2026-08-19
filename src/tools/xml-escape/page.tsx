@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, ClearButton } from '@/components/tool-page'
 
 const XML_ENTITIES: [RegExp, string][] = [
@@ -37,14 +37,14 @@ function xmlUnescape(str: string): string {
 
 export default function XmlEscapeTool() {
   const [input, setInput] = useState('')
-  const [output, setOutput] = useState('')
   const [mode, setMode] = useState<'escape' | 'unescape'>('escape')
 
-  const process = () => {
-    setOutput(mode === 'escape' ? xmlEscape(input) : xmlUnescape(input))
-  }
+  const output = useMemo(() => {
+    if (!input) return ''
+    return mode === 'escape' ? xmlEscape(input) : xmlUnescape(input)
+  }, [input, mode])
 
-  const clear = () => { setInput(''); setOutput('') }
+  const clear = () => { setInput('') }
 
   return (
     <ToolPage title="XML Escape / Unescape" description="Escape or unescape XML special characters like ampersand, angle brackets, quotes, and apostrophes." category="string" categoryLabel="String Utilities"
@@ -101,9 +101,7 @@ export default function XmlEscapeTool() {
         </div>
       </div>
 
-      <button onClick={process} className="mt-4 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
-        {mode === 'escape' ? 'Escape XML' : 'Unescape XML'}
-      </button>
+
     </ToolPage>
   )
 }

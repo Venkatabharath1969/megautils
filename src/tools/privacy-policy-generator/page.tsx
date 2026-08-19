@@ -11,8 +11,10 @@ function generatePolicy(data: {
   usesAnalytics: boolean
   thirdPartyServices: string
   effectiveDate: string
+  gdprCompliance: boolean
+  dpoEmail: string
 }): string {
-  const { companyName, websiteUrl, contactEmail, collectsCookies, usesAnalytics, thirdPartyServices, effectiveDate } = data
+  const { companyName, websiteUrl, contactEmail, collectsCookies, usesAnalytics, thirdPartyServices, effectiveDate, gdprCompliance, dpoEmail } = data
   const company = companyName || '[Company Name]'
   const url = websiteUrl || '[Website URL]'
   const email = contactEmail || '[Contact Email]'
@@ -92,7 +94,20 @@ ${usesAnalytics ? '10' : '9'}. CHANGES TO THIS PRIVACY POLICY
 
 We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Effective Date" at the top.
 
-${usesAnalytics ? '11' : '10'}. CONTACT US
+${gdprCompliance ? `${usesAnalytics ? '11' : '10'}. GDPR COMPLIANCE (EEA USERS)
+
+If you are a resident of the European Economic Area (EEA), you have certain data protection rights under the General Data Protection Regulation (GDPR).
+
+Data Controller: ${company}, contactable at ${email}.
+${dpoEmail ? `Data Protection Officer: ${dpoEmail}` : ''}
+
+Legal Basis for Processing: We process your personal data based on (a) your consent, (b) the performance of a contract, (c) compliance with legal obligations, or (d) our legitimate interests.
+
+International Data Transfers: Your information may be transferred to and processed in countries outside the EEA. We ensure adequate safeguards are in place, such as Standard Contractual Clauses, to protect your data.
+
+You have the right to lodge a complaint with your local data protection supervisory authority if you believe we have not complied with applicable data protection laws.
+
+` : ''}${gdprCompliance ? (usesAnalytics ? '12' : '11') : (usesAnalytics ? '11' : '10')}. CONTACT US
 
 If you have any questions about this Privacy Policy, please contact us:
 
@@ -108,6 +123,8 @@ export default function PrivacyPolicyGeneratorTool() {
   const [collectsCookies, setCollectsCookies] = useState(true)
   const [usesAnalytics, setUsesAnalytics] = useState(true)
   const [thirdPartyServices, setThirdPartyServices] = useState('Google Analytics, Google AdSense')
+  const [gdprCompliance, setGdprCompliance] = useState(false)
+  const [dpoEmail, setDpoEmail] = useState('')
   const [effectiveDate, setEffectiveDate] = useState(() => new Date().toISOString().split('T')[0])
 
   const output = useMemo(() => {
@@ -119,8 +136,10 @@ export default function PrivacyPolicyGeneratorTool() {
       usesAnalytics,
       thirdPartyServices,
       effectiveDate,
+      gdprCompliance,
+      dpoEmail,
     })
-  }, [companyName, websiteUrl, contactEmail, collectsCookies, usesAnalytics, thirdPartyServices, effectiveDate])
+  }, [companyName, websiteUrl, contactEmail, collectsCookies, usesAnalytics, thirdPartyServices, effectiveDate, gdprCompliance, dpoEmail])
 
   const clear = () => {
     setCompanyName('')
@@ -241,7 +260,29 @@ export default function PrivacyPolicyGeneratorTool() {
               />
               Website uses analytics
             </label>
+            <label className="inline-flex items-center gap-2 text-sm cursor-pointer">
+              <input
+                type="checkbox"
+                checked={gdprCompliance}
+                onChange={(e) => setGdprCompliance(e.target.checked)}
+                className="rounded accent-primary"
+              />
+              GDPR compliance (EU users)
+            </label>
           </div>
+
+          {gdprCompliance && (
+            <div>
+              <label className="text-sm font-medium mb-1 block">DPO Email (optional)</label>
+              <input
+                type="email"
+                value={dpoEmail}
+                onChange={(e) => setDpoEmail(e.target.value)}
+                placeholder="dpo@example.com"
+                className="w-full h-9 px-3 rounded-md border border-input bg-card text-sm"
+              />
+            </div>
+          )}
 
           <div>
             <label className="text-sm font-medium mb-1 block">Third-Party Services (comma-separated)</label>

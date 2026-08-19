@@ -19,6 +19,19 @@ export default function WordCounterTool() {
     return { words, chars, charsNoSpaces, sentences, paragraphs, lines, readingTime, speakingTime }
   }, [text])
 
+  const topWords = useMemo(() => {
+    const trimmed = text.trim()
+    if (!trimmed) return []
+    const freq = new Map<string, number>()
+    const words = trimmed.toLowerCase().replace(/[^a-z0-9\s'-]/g, '').split(/\s+/).filter(w => w.length > 1)
+    for (const w of words) {
+      freq.set(w, (freq.get(w) || 0) + 1)
+    }
+    return Array.from(freq.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+  }, [text])
+
   return (
     <ToolPage
       title="Word Counter"
@@ -84,6 +97,40 @@ export default function WordCounterTool() {
         <ClearButton onClear={() => setText('')} />
       </div>
       <ToolTextarea value={text} onChange={setText} placeholder="Start typing or paste your text here..." rows={12} />
+
+      {topWords.length > 0 && (
+        <div className="mt-4">
+          <h3 className="text-sm font-semibold mb-2">Top 10 Most Used Words</h3>
+          <div className="rounded-lg border border-border overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-muted/50 border-b border-border">
+                  <th className="text-left p-2 font-medium text-muted-foreground w-10">#</th>
+                  <th className="text-left p-2 font-medium text-muted-foreground">Word</th>
+                  <th className="text-right p-2 font-medium text-muted-foreground w-20">Count</th>
+                  <th className="p-2 font-medium text-muted-foreground">Frequency</th>
+                </tr>
+              </thead>
+              <tbody>
+                {topWords.map(([word, count], i) => (
+                  <tr key={word} className="border-b border-border last:border-0">
+                    <td className="p-2 text-muted-foreground">{i + 1}</td>
+                    <td className="p-2 font-mono font-medium">{word}</td>
+                    <td className="p-2 text-right">{count}</td>
+                    <td className="p-2">
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 h-2 rounded-full bg-muted overflow-hidden">
+                          <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${(count / topWords[0][1]) * 100}%` }} />
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </ToolPage>
   )
 }

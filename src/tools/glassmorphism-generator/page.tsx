@@ -17,6 +17,7 @@ export default function GlassmorphismGeneratorTool() {
   const [bgColor, setBgColor] = useState('#ffffff')
   const [borderOpacity, setBorderOpacity] = useState(0.18)
   const [borderRadius, setBorderRadius] = useState(16)
+  const [saturation, setSaturation] = useState(180)
   const [sceneBg, setSceneBg] = useState('linear-gradient(135deg, #667eea 0%, #764ba2 100%)')
   const [sceneBgPreset, setSceneBgPreset] = useState(0)
 
@@ -32,13 +33,17 @@ export default function GlassmorphismGeneratorTool() {
   const glassBackground = hexToRgba(bgColor, transparency)
   const glassBorder = hexToRgba(bgColor, borderOpacity)
 
+  const backdropValue = saturation !== 100
+    ? `blur(${blur}px) saturate(${saturation}%)`
+    : `blur(${blur}px)`
+
   const cssCode = useMemo(() => [
     `background: ${glassBackground};`,
-    `backdrop-filter: blur(${blur}px);`,
-    `-webkit-backdrop-filter: blur(${blur}px);`,
+    `backdrop-filter: ${backdropValue};`,
+    `-webkit-backdrop-filter: ${backdropValue};`,
     `border-radius: ${borderRadius}px;`,
     `border: 1px solid ${glassBorder};`,
-  ].join('\n'), [glassBackground, blur, borderRadius, glassBorder])
+  ].join('\n'), [glassBackground, backdropValue, borderRadius, glassBorder])
 
   return (
     <ToolPage
@@ -85,6 +90,11 @@ export default function GlassmorphismGeneratorTool() {
           <div>
             <label className="text-sm font-medium mb-2 block">Blur: {blur}px</label>
             <input type="range" min={0} max={30} value={blur} onChange={e => setBlur(+e.target.value)} className="w-full" />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium mb-2 block">Saturation: {saturation}%</label>
+            <input type="range" min={0} max={300} step={5} value={saturation} onChange={e => setSaturation(+e.target.value)} className="w-full" />
           </div>
 
           <div>
@@ -143,8 +153,8 @@ export default function GlassmorphismGeneratorTool() {
                 className="relative z-10 p-6 mx-auto max-w-xs"
                 style={{
                   background: glassBackground,
-                  backdropFilter: `blur(${blur}px)`,
-                  WebkitBackdropFilter: `blur(${blur}px)`,
+                  backdropFilter: backdropValue,
+                  WebkitBackdropFilter: backdropValue,
                   borderRadius: `${borderRadius}px`,
                   border: `1px solid ${glassBorder}`,
                 }}

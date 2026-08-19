@@ -5,13 +5,39 @@ import { ToolPage, ToolTextarea, CopyButton, ClearButton } from '@/components/to
 
 export default function BlankLineRemoverTool() {
   const [input, setInput] = useState('')
+  const [collapseMode, setCollapseMode] = useState(false)
+  const [trimTrailing, setTrimTrailing] = useState(false)
 
   const { output, removed } = useMemo(() => {
     if (!input) return { output: '', removed: 0 }
-    const lines = input.split('\n')
+    let text = input
+    if (trimTrailing) {
+      text = text.split('\n').map(line => line.trimEnd()).join('\n')
+    }
+    const lines = text.split('\n')
+    if (collapseMode) {
+      const result: string[] = []
+      let prevBlank = false
+      let removedCount = 0
+      for (const line of lines) {
+        const isBlank = line.trim().length === 0
+        if (isBlank) {
+          if (prevBlank) {
+            removedCount++
+          } else {
+            result.push('')
+          }
+          prevBlank = true
+        } else {
+          result.push(line)
+          prevBlank = false
+        }
+      }
+      return { output: result.join('\n'), removed: removedCount }
+    }
     const filtered = lines.filter((line) => line.trim().length > 0)
     return { output: filtered.join('\n'), removed: lines.length - filtered.length }
-  }, [input])
+  }, [input, collapseMode, trimTrailing])
 
   return (
     <ToolPage
@@ -51,10 +77,20 @@ export default function BlankLineRemoverTool() {
         { question: 'Will removing blank lines affect my other formatting?', answer: 'No, only completely empty or whitespace-only lines are removed. All other lines remain unchanged with their original content and indentation.' },
       ]}
     >
+      <div className="flex flex-wrap items-center gap-4 mb-4">
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" checked={collapseMode} onChange={(e) => setCollapseMode(e.target.checked)} className="rounded border-border" />
+          Collapse to single blank line
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" checked={trimTrailing} onChange={(e) => setTrimTrailing(e.target.checked)} className="rounded border-border" />
+          Trim trailing whitespace
+        </label>
+      </div>
       {input && (
         <div className="mb-4 p-3 rounded-lg bg-muted text-center">
           <span className="text-sm text-muted-foreground">
-            Removed <span className="font-bold text-primary">{removed}</span> blank line{removed !== 1 ? 's' : ''}
+            {collapseMode ? 'Collapsed' : 'Removed'} <span className="font-bold text-primary">{removed}</span> blank line{removed !== 1 ? 's' : ''}
           </span>
         </div>
       )}

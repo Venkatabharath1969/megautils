@@ -249,6 +249,18 @@ export default function ImageResizerTool() {
                 </div>
               </div>
 
+              {/* Percentage resize */}
+              <div>
+                <label className="text-sm font-medium mb-1.5 block">Resize by %</label>
+                <div className="flex flex-wrap gap-1.5">
+                  {[25, 50, 75, 100, 125, 150, 200].map(pct => (
+                    <button key={pct} onClick={() => { const w = Math.round(originalWidth * pct / 100); const h = Math.round(originalHeight * pct / 100); setWidth(w); setHeight(h); setResizedUrl(null) }} className={`px-2 py-1 text-xs rounded-md border transition-colors ${width === Math.round(originalWidth * pct / 100) && height === Math.round(originalHeight * pct / 100) ? 'bg-primary text-primary-foreground border-primary' : 'border-border hover:bg-muted'}`}>
+                      {pct}%
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Preset sizes */}
               <div>
                 <label className="text-sm font-medium mb-1.5 block">Preset Sizes</label>

@@ -23,7 +23,9 @@ export default function InflationCalculator() {
       breakdown.push({ year: y, futurePrice: fp, purchasingPower: pp, lostValue: currentAmount - pp })
     }
 
-    return { futureValue, purchasingPower, purchasingPowerLoss, purchasingPowerLossPct, costMultiplier, breakdown }
+    const yearsToHalf = inflationRate > 0 ? 72 / inflationRate : Infinity
+
+    return { futureValue, purchasingPower, purchasingPowerLoss, purchasingPowerLossPct, costMultiplier, breakdown, yearsToHalf }
   }, [currentAmount, inflationRate, years])
 
   const fmt = (n: number) =>
@@ -131,6 +133,17 @@ export default function InflationCalculator() {
           </div>
         </div>
       </div>
+
+      {/* Rule of 72 */}
+      {inflationRate > 0 && isFinite(result.yearsToHalf) && (
+        <div className="mt-6 p-5 rounded-xl bg-amber-500/10 border border-amber-500/20">
+          <div className="text-sm font-medium text-amber-700 dark:text-amber-400 mb-1">Rule of 72</div>
+          <div className="text-lg font-bold text-amber-700 dark:text-amber-300">
+            At {inflationRate}% inflation, money loses half its value in ~{result.yearsToHalf.toFixed(1)} years.
+          </div>
+          <div className="text-xs text-muted-foreground mt-1">The Rule of 72 estimates how long it takes for purchasing power to halve: 72 / inflation rate.</div>
+        </div>
+      )}
 
       {/* Yearly Breakdown */}
       <div className="mt-8">

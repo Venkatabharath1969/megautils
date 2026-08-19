@@ -18,6 +18,9 @@ export default function SocialMediaCounterTool() {
   const [text, setText] = useState('')
 
   const charCount = useMemo(() => text.length, [text])
+  const wordCount = useMemo(() => text.trim() ? text.trim().split(/\s+/).length : 0, [text])
+  const hashtagCount = useMemo(() => (text.match(/#\w+/g) || []).length, [text])
+  const mentionCount = useMemo(() => (text.match(/@\w+/g) || []).length, [text])
 
   return (
     <ToolPage title="Social Media Character Counter" description="Check your text against character limits for Twitter/X, LinkedIn, Instagram, Facebook, TikTok, Threads, and YouTube." category="content" categoryLabel="Content Tools"
@@ -59,6 +62,23 @@ export default function SocialMediaCounterTool() {
           <ClearButton onClear={() => setText('')} />
         </div>
         <ToolTextarea value={text} onChange={setText} placeholder="Type or paste your social media post here..." rows={6} />
+
+        {text.trim() && (
+          <div className="flex flex-wrap gap-3">
+            <div className="px-3 py-1.5 rounded-lg bg-muted text-sm">
+              <span className="text-muted-foreground">Characters: </span><strong>{charCount.toLocaleString()}</strong>
+            </div>
+            <div className="px-3 py-1.5 rounded-lg bg-muted text-sm">
+              <span className="text-muted-foreground">Words: </span><strong>{wordCount}</strong>
+            </div>
+            <div className="px-3 py-1.5 rounded-lg bg-muted text-sm">
+              <span className="text-muted-foreground">#Hashtags: </span><strong>{hashtagCount}</strong>
+            </div>
+            <div className="px-3 py-1.5 rounded-lg bg-muted text-sm">
+              <span className="text-muted-foreground">@Mentions: </span><strong>{mentionCount}</strong>
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {PLATFORMS.map(platform => {

@@ -21,6 +21,7 @@ export default function PlaceholderImageGeneratorTool() {
   const [bgColor, setBgColor] = useState('#cccccc')
   const [textColor, setTextColor] = useState('#666666')
   const [customText, setCustomText] = useState('')
+  const [pattern, setPattern] = useState<'none' | 'grid' | 'dots' | 'diagonal'>('none')
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const displayText = customText || `${width} x ${height}`
 
@@ -33,6 +34,26 @@ export default function PlaceholderImageGeneratorTool() {
     // Background
     ctx.fillStyle = bgColor
     ctx.fillRect(0, 0, width, height)
+
+    // Pattern
+    if (pattern !== 'none') {
+      ctx.strokeStyle = textColor
+      ctx.globalAlpha = 0.15
+      ctx.lineWidth = 1
+      if (pattern === 'grid') {
+        const spacing = 20
+        for (let x = spacing; x < width; x += spacing) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke() }
+        for (let y = spacing; y < height; y += spacing) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke() }
+      } else if (pattern === 'dots') {
+        ctx.fillStyle = textColor
+        const spacing = 16
+        for (let x = spacing; x < width; x += spacing) { for (let y = spacing; y < height; y += spacing) { ctx.beginPath(); ctx.arc(x, y, 2, 0, Math.PI * 2); ctx.fill() } }
+      } else if (pattern === 'diagonal') {
+        const spacing = 16
+        for (let i = -height; i < width + height; i += spacing) { ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i + height, height); ctx.stroke() }
+      }
+      ctx.globalAlpha = 1
+    }
 
     // Text
     const fontSize = Math.max(12, Math.min(width, height) / 8)
@@ -48,7 +69,7 @@ export default function PlaceholderImageGeneratorTool() {
     ctx.strokeRect(1, 1, width - 2, height - 2)
 
     setPreviewUrl(canvas.toDataURL('image/png'))
-  }, [width, height, bgColor, textColor, displayText])
+  }, [width, height, bgColor, textColor, displayText, pattern])
 
   // Auto-generate on mount
   useEffect(() => { generate() }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -216,6 +237,15 @@ export default function PlaceholderImageGeneratorTool() {
               placeholder={`Default: ${width} x ${height}`}
               className="w-full h-9 px-3 rounded-md border border-input bg-card text-sm"
             />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium mb-1.5 block">Background Pattern</label>
+            <div className="flex gap-2">
+              {(['none', 'grid', 'dots', 'diagonal'] as const).map(p => (
+                <button key={p} onClick={() => setPattern(p)} className={`px-3 py-1.5 rounded-md text-xs font-medium capitalize transition-colors ${pattern === p ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>{p === 'none' ? 'Solid' : p}</button>
+              ))}
+            </div>
           </div>
 
           <div className="flex flex-wrap gap-2">

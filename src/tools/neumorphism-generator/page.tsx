@@ -51,9 +51,18 @@ export default function NeumorphismGeneratorTool() {
   const [blur, setBlur] = useState(20)
   const [shape, setShape] = useState<ShapeType>('flat')
   const [lightSource, setLightSource] = useState<LightSource>('top-left')
+  const [darkMode, setDarkMode] = useState(false)
+
+  const effectiveBaseColor = useMemo(() => {
+    if (!darkMode) return baseColor
+    // Invert the lightness of the base color for dark mode
+    const hsl = hexToHSL(baseColor)
+    const invertedL = Math.max(5, Math.min(95, 100 - hsl.l))
+    return hslToHex(hsl.h, hsl.s, invertedL)
+  }, [baseColor, darkMode])
 
   const result = useMemo(() => {
-    const hsl = hexToHSL(baseColor)
+    const hsl = hexToHSL(effectiveBaseColor)
 
     const lightColor = hslToHex(hsl.h, hsl.s, Math.min(100, hsl.l + intensity))
     const darkColor = hslToHex(hsl.h, hsl.s, Math.max(0, hsl.l - intensity))
@@ -72,7 +81,7 @@ export default function NeumorphismGeneratorTool() {
 
     if (shape === 'pressed') {
       boxShadow = `inset ${dir.x * distance}px ${dir.y * distance}px ${blur}px ${darkColor}, inset ${-dir.x * distance}px ${-dir.y * distance}px ${blur}px ${lightColor}`
-      background = baseColor
+      background = effectiveBaseColor
     } else {
       boxShadow = `${dir.x * distance}px ${dir.y * distance}px ${blur}px ${darkColor}, ${-dir.x * distance}px ${-dir.y * distance}px ${blur}px ${lightColor}`
 
@@ -81,7 +90,7 @@ export default function NeumorphismGeneratorTool() {
       } else if (shape === 'convex') {
         background = `linear-gradient(${lightSource === 'top-left' ? '145deg' : lightSource === 'top-right' ? '215deg' : lightSource === 'bottom-left' ? '35deg' : '325deg'}, ${lightColor}, ${darkColor})`
       } else {
-        background = baseColor
+        background = effectiveBaseColor
       }
     }
 
@@ -92,7 +101,7 @@ export default function NeumorphismGeneratorTool() {
     ].join('\n')
 
     return { boxShadow, background, cssCode, lightColor, darkColor }
-  }, [baseColor, borderRadius, distance, intensity, blur, shape, lightSource])
+  }, [effectiveBaseColor, borderRadius, distance, intensity, blur, shape, lightSource])
 
   const shapes: { value: ShapeType; label: string }[] = [
     { value: 'flat', label: 'Flat' },
@@ -155,7 +164,16 @@ export default function NeumorphismGeneratorTool() {
             <div className="flex items-center gap-2">
               <input type="color" value={baseColor} onChange={e => setBaseColor(e.target.value)} className="w-10 h-10 rounded border border-border cursor-pointer" />
               <input type="text" value={baseColor} onChange={e => setBaseColor(e.target.value)} className="w-28 rounded border border-input bg-transparent px-2 py-1 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-ring" />
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                className={`ml-auto px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${darkMode ? 'bg-gray-800 text-white' : 'bg-secondary text-secondary-foreground border border-border'}`}
+              >
+                {darkMode ? '☀️ Light' : '🌙 Dark'}
+              </button>
             </div>
+            {darkMode && (
+              <p className="text-xs text-muted-foreground mt-1">Dark mode: lightness inverted to {effectiveBaseColor}</p>
+            )}
           </div>
 
           <div>
@@ -210,7 +228,7 @@ export default function NeumorphismGeneratorTool() {
         <div className="space-y-4">
           <div>
             <label className="text-sm font-medium mb-2 block">Preview</label>
-            <div className="rounded-lg border border-border p-8 flex items-center justify-center" style={{ background: baseColor, minHeight: 320 }}>
+            <div className="rounded-lg border border-border p-8 flex items-center justify-center" style={{ background: effectiveBaseColor, minHeight: 320 }}>
               <div
                 style={{
                   width: size,

@@ -7,6 +7,7 @@ export default function PPFCalculator() {
   const [annualDeposit, setAnnualDeposit] = useState(150000)
   const [ppfRate, setPpfRate] = useState(7.1)
   const [years, setYears] = useState(15)
+  const [taxBracket, setTaxBracket] = useState(30)
 
   const result = useMemo(() => {
     const r = ppfRate / 100
@@ -24,8 +25,13 @@ export default function PPFCalculator() {
     const maturityValue = balance
     const totalInterest = maturityValue - totalDeposits
 
-    return { maturityValue, totalDeposits, totalInterest, yearly }
-  }, [annualDeposit, ppfRate, years])
+    // Section 80C tax savings
+    const eligible80C = Math.min(annualDeposit, 150000)
+    const annualTaxSaved = eligible80C * taxBracket / 100
+    const totalTaxSaved = annualTaxSaved * years
+
+    return { maturityValue, totalDeposits, totalInterest, yearly, annualTaxSaved, totalTaxSaved, eligible80C }
+  }, [annualDeposit, ppfRate, years, taxBracket])
 
   const fmt = (n: number) =>
     new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(n)
@@ -92,6 +98,17 @@ export default function PPFCalculator() {
             <input type="range" min={15} max={50} value={years} onChange={e => setYears(Number(e.target.value))} className="w-full mt-2 accent-primary" />
             <div className="text-xs text-muted-foreground mt-1">Min lock-in: 15 years. Can extend in 5-year blocks.</div>
           </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Tax Bracket (%)</label>
+            <select value={taxBracket} onChange={e => setTaxBracket(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+              <option value={0}>0% (No Tax)</option>
+              <option value={10}>10%</option>
+              <option value={20}>20%</option>
+              <option value={30}>30%</option>
+            </select>
+            <div className="text-xs text-muted-foreground mt-1">For Section 80C tax savings calculation</div>
+          </div>
         </div>
 
         {/* Results */}
@@ -134,6 +151,17 @@ export default function PPFCalculator() {
             <div className="text-sm text-muted-foreground mb-1">Wealth Multiplier</div>
             <div className="text-xl font-bold text-purple-600 dark:text-purple-400">{(result.maturityValue / result.totalDeposits).toFixed(2)}x your investment</div>
           </div>
+
+          {taxBracket > 0 && (
+            <div className="p-4 rounded-xl bg-teal-500/10 border border-teal-500/20">
+              <div className="text-sm font-medium text-teal-700 dark:text-teal-400 mb-2">Section 80C Tax Savings</div>
+              <div className="space-y-1 text-sm">
+                <div className="flex justify-between"><span className="text-muted-foreground">Eligible amount (per year)</span><span className="font-medium">{fmt(result.eligible80C)}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Annual tax saved ({taxBracket}%)</span><span className="font-medium text-teal-600 dark:text-teal-400">{fmt(result.annualTaxSaved)}</span></div>
+                <div className="flex justify-between border-t border-border pt-1"><span className="font-medium">Total tax saved ({years} yrs)</span><span className="font-bold text-teal-600 dark:text-teal-400">{fmt(result.totalTaxSaved)}</span></div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

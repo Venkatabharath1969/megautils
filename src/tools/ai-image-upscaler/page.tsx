@@ -205,6 +205,16 @@ export default function AIImageUpscaler() {
               </div>
             )}
 
+            {/* Processing quality note */}
+            {originalImage && originalSize.w > 0 && status !== 'processing' && status !== 'done' && (
+              <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20 text-sm text-blue-700 dark:text-blue-300">
+                <strong>Image: {originalSize.w} x {originalSize.h}</strong> ({(originalSize.w * originalSize.h / 1e6).toFixed(1)}MP) &rarr; Output: {originalSize.w * 2} x {originalSize.h * 2}
+                <div className="text-xs mt-1 text-blue-600 dark:text-blue-400">
+                  Estimated time: {originalSize.w * originalSize.h < 250000 ? '~5-10 seconds' : originalSize.w * originalSize.h < 1000000 ? '~15-30 seconds' : originalSize.w * originalSize.h < 4000000 ? '~1-2 minutes' : '~3-5 minutes (large image)'}
+                </div>
+              </div>
+            )}
+
             {/* Processing progress */}
             {status === 'processing' && (
               <div className="space-y-2">

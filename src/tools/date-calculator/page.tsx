@@ -14,6 +14,8 @@ export default function DateCalculatorTool() {
   const [months, setMonths] = useState('0')
   const [years, setYears] = useState('1')
 
+  const [businessDaysOnly, setBusinessDaysOnly] = useState(false)
+
   // Between mode
   const [dateA, setDateA] = useState(() => new Date().toISOString().split('T')[0])
   const [dateB, setDateB] = useState(() => {
@@ -70,8 +72,18 @@ export default function DateCalculatorTool() {
       eMonths += 12
     }
 
+    // Calculate business days
+    let businessDays = 0
+    const cursor = new Date(start)
+    while (cursor < end) {
+      const day = cursor.getDay()
+      if (day !== 0 && day !== 6) businessDays++
+      cursor.setDate(cursor.getDate() + 1)
+    }
+
     return {
       totalDays,
+      businessDays,
       totalWeeks,
       totalMonths,
       totalYears,
@@ -182,6 +194,12 @@ export default function DateCalculatorTool() {
               </div>
             </div>
 
+            <label className="flex items-center gap-2 text-sm cursor-pointer">
+              <input type="checkbox" checked={businessDaysOnly} onChange={e => setBusinessDaysOnly(e.target.checked)} className="rounded border-input" />
+              <span className="font-medium">Business days mode</span>
+              <span className="text-xs text-muted-foreground">(exclude Sat &amp; Sun)</span>
+            </label>
+
             {betweenResult && (
               <>
                 <div className="p-5 rounded-xl bg-primary/10 border border-primary/20 text-center">
@@ -193,9 +211,17 @@ export default function DateCalculatorTool() {
                   </div>
                 </div>
 
+                {businessDaysOnly && (
+                  <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 text-center">
+                    <div className="text-sm text-muted-foreground mb-1">Business Days</div>
+                    <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{betweenResult.businessDays.toLocaleString()}</div>
+                    <div className="text-xs text-muted-foreground mt-1">weekdays only (Mon-Fri)</div>
+                  </div>
+                )}
+
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {[
-                    { label: 'Total Days', value: betweenResult.totalDays.toLocaleString() },
+                    { label: businessDaysOnly ? 'Business Days' : 'Total Days', value: businessDaysOnly ? betweenResult.businessDays.toLocaleString() : betweenResult.totalDays.toLocaleString() },
                     { label: 'Total Weeks', value: betweenResult.totalWeeks.toLocaleString() },
                     { label: 'Total Months', value: `~${betweenResult.totalMonths}` },
                     { label: 'Total Years', value: betweenResult.totalYears },

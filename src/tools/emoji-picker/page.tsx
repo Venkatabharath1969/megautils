@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import { ToolPage } from '@/components/tool-page'
 import { Check, Copy, Search } from 'lucide-react'
 
@@ -261,6 +261,14 @@ export default function EmojiPickerTool() {
   const [copiedEmoji, setCopiedEmoji] = useState<string | null>(null)
   const [recentlyCopied, setRecentlyCopied] = useState<string[]>([])
 
+  // Load recently used from localStorage
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('utilsnow-recent-emojis')
+      if (stored) setRecentlyCopied(JSON.parse(stored))
+    } catch { /* ignore */ }
+  }, [])
+
   const filtered = useMemo(() => {
     return EMOJIS.filter((e) => {
       const matchesCategory = category === 'All' || e.category === category
@@ -274,6 +282,7 @@ export default function EmojiPickerTool() {
     setCopiedEmoji(emoji)
     setRecentlyCopied((prev) => {
       const next = [emoji, ...prev.filter(e => e !== emoji)].slice(0, 20)
+      try { localStorage.setItem('utilsnow-recent-emojis', JSON.stringify(next)) } catch { /* ignore */ }
       return next
     })
     setTimeout(() => setCopiedEmoji(null), 1500)

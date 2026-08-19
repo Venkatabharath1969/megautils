@@ -77,6 +77,87 @@ const presets: AnimationPreset[] = [
   to { transform: scale(1); opacity: 1; }
 }`,
   },
+  {
+    name: 'fadeOut',
+    label: 'Fade Out',
+    keyframes: `@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}`,
+  },
+  {
+    name: 'slideDown',
+    label: 'Slide Down',
+    keyframes: `@keyframes slideDown {
+  from { transform: translateY(-30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}`,
+  },
+  {
+    name: 'slideRight',
+    label: 'Slide Right',
+    keyframes: `@keyframes slideRight {
+  from { transform: translateX(-30px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}`,
+  },
+  {
+    name: 'wobble',
+    label: 'Wobble',
+    keyframes: `@keyframes wobble {
+  0% { transform: translateX(0); }
+  15% { transform: translateX(-15px) rotate(-5deg); }
+  30% { transform: translateX(10px) rotate(3deg); }
+  45% { transform: translateX(-8px) rotate(-3deg); }
+  60% { transform: translateX(5px) rotate(2deg); }
+  75% { transform: translateX(-3px) rotate(-1deg); }
+  100% { transform: translateX(0); }
+}`,
+  },
+  {
+    name: 'rubberBand',
+    label: 'Rubber Band',
+    keyframes: `@keyframes rubberBand {
+  0% { transform: scale(1); }
+  30% { transform: scaleX(1.25) scaleY(0.75); }
+  40% { transform: scaleX(0.75) scaleY(1.25); }
+  50% { transform: scaleX(1.15) scaleY(0.85); }
+  65% { transform: scaleX(0.95) scaleY(1.05); }
+  75% { transform: scaleX(1.05) scaleY(0.95); }
+  100% { transform: scale(1); }
+}`,
+  },
+  {
+    name: 'heartbeat',
+    label: 'Heartbeat',
+    keyframes: `@keyframes heartbeat {
+  0% { transform: scale(1); }
+  14% { transform: scale(1.3); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.3); }
+  70% { transform: scale(1); }
+}`,
+  },
+  {
+    name: 'flash',
+    label: 'Flash',
+    keyframes: `@keyframes flash {
+  0%, 50%, 100% { opacity: 1; }
+  25%, 75% { opacity: 0; }
+}`,
+  },
+  {
+    name: 'swing',
+    label: 'Swing',
+    keyframes: `@keyframes swing {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(15deg); }
+  40% { transform: rotate(-10deg); }
+  60% { transform: rotate(5deg); }
+  80% { transform: rotate(-5deg); }
+  100% { transform: rotate(0deg); }
+}`,
+  },
 ]
 
 const timingFunctions = ['ease', 'linear', 'ease-in', 'ease-out', 'ease-in-out']

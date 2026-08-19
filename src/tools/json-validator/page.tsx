@@ -127,14 +127,13 @@ function validateJson(input: string): ValidationResult {
 
 export default function JsonValidatorTool() {
   const [input, setInput] = useState('')
-  const [hasValidated, setHasValidated] = useState(false)
 
   const result = useMemo(() => {
-    if (!hasValidated) return null
+    if (!input.trim()) return null
     return validateJson(input)
-  }, [input, hasValidated])
+  }, [input])
 
-  const clear = () => { setInput(''); setHasValidated(false) }
+  const clear = () => { setInput('') }
 
   return (
     <ToolPage
@@ -182,18 +181,11 @@ export default function JsonValidatorTool() {
         </div>
         <ToolTextarea
           value={input}
-          onChange={(v) => { setInput(v); setHasValidated(false) }}
+          onChange={setInput}
           placeholder='Paste JSON to validate...\n{"key": "value"}'
           rows={14}
         />
       </div>
-
-      <button
-        onClick={() => setHasValidated(true)}
-        className="mt-4 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
-      >
-        Validate JSON
-      </button>
 
       {result && (
         <div className="mt-4">

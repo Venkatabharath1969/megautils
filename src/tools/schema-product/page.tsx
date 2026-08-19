@@ -12,6 +12,9 @@ export default function SchemaProductTool() {
   const [price, setPrice] = useState('')
   const [currency, setCurrency] = useState('USD')
   const [availability, setAvailability] = useState('InStock')
+  const [gtin, setGtin] = useState('')
+  const [mpn, setMpn] = useState('')
+  const [isbn, setIsbn] = useState('')
   const [ratingValue, setRatingValue] = useState('')
   const [reviewCount, setReviewCount] = useState('')
 
@@ -25,6 +28,9 @@ export default function SchemaProductTool() {
     if (image) schema.image = image
     if (brand) schema.brand = { '@type': 'Brand', name: brand }
     if (sku) schema.sku = sku
+    if (gtin) schema.gtin = gtin
+    if (mpn) schema.mpn = mpn
+    if (isbn) schema.isbn = isbn
     if (price) {
       schema.offers = {
         '@type': 'Offer',
@@ -41,10 +47,11 @@ export default function SchemaProductTool() {
       }
     }
     return `<script type="application/ld+json">\n${JSON.stringify(schema, null, 2)}\n</script>`
-  }, [name, description, image, brand, sku, price, currency, availability, ratingValue, reviewCount])
+  }, [name, description, image, brand, sku, gtin, mpn, isbn, price, currency, availability, ratingValue, reviewCount])
 
   const clear = () => {
     setName(''); setDescription(''); setImage(''); setBrand(''); setSku('')
+    setGtin(''); setMpn(''); setIsbn('')
     setPrice(''); setCurrency('USD'); setAvailability('InStock')
     setRatingValue(''); setReviewCount('')
   }
@@ -116,6 +123,20 @@ export default function SchemaProductTool() {
             <div>
               <label className="block text-sm font-medium mb-1">SKU</label>
               <input type="text" value={sku} onChange={e => setSku(e.target.value)} placeholder="SKU-12345" className={inputClass} />
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <div>
+              <label className="block text-sm font-medium mb-1">GTIN</label>
+              <input type="text" value={gtin} onChange={e => setGtin(e.target.value)} placeholder="0123456789012" className={inputClass} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">MPN</label>
+              <input type="text" value={mpn} onChange={e => setMpn(e.target.value)} placeholder="ABC-123" className={inputClass} />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">ISBN</label>
+              <input type="text" value={isbn} onChange={e => setIsbn(e.target.value)} placeholder="978-3-16-148410-0" className={inputClass} />
             </div>
           </div>
           <div className="grid grid-cols-3 gap-3">

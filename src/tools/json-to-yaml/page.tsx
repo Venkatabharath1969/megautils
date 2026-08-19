@@ -3,8 +3,8 @@
 import { useState } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, DownloadButton, ClearButton } from '@/components/tool-page'
 
-function toYaml(value: unknown, indent: number = 0): string {
-  const pad = '  '.repeat(indent)
+function toYaml(value: unknown, indent: number = 0, indentSize: number = 2): string {
+  const pad = ' '.repeat(indentSize).repeat(indent)
   if (value === null || value === undefined) return 'null'
   if (typeof value === 'boolean') return value ? 'true' : 'false'
   if (typeof value === 'number') return String(value)
@@ -25,13 +25,14 @@ function toYaml(value: unknown, indent: number = 0): string {
   }
   if (Array.isArray(value)) {
     if (value.length === 0) return '[]'
+    const childPad = ' '.repeat(indentSize)
     return value.map((item) => {
       if (typeof item === 'object' && item !== null) {
-        const inner = toYaml(item, indent + 1)
+        const inner = toYaml(item, indent + 1, indentSize)
         const lines = inner.split('\n')
-        return `${pad}- ${lines[0]}\n${lines.slice(1).map(l => `${pad}  ${l}`).join('\n')}`.replace(/\n\s*$/,'')
+        return `${pad}- ${lines[0]}\n${lines.slice(1).map(l => `${pad}${childPad}${l}`).join('\n')}`.replace(/\n\s*$/,'')
       }
-      return `${pad}- ${toYaml(item, indent + 1)}`
+      return `${pad}- ${toYaml(item, indent + 1, indentSize)}`
     }).join('\n')
   }
   if (typeof value === 'object') {
@@ -40,10 +41,10 @@ function toYaml(value: unknown, indent: number = 0): string {
     return entries.map(([key, val]) => {
       const safeKey = /[:#\s]/.test(key) || key === '' ? JSON.stringify(key) : key
       if (typeof val === 'object' && val !== null) {
-        const inner = toYaml(val, indent + 1)
+        const inner = toYaml(val, indent + 1, indentSize)
         return `${pad}${safeKey}:\n${inner}`
       }
-      return `${pad}${safeKey}: ${toYaml(val, indent + 1)}`
+      return `${pad}${safeKey}: ${toYaml(val, indent + 1, indentSize)}`
     }).join('\n')
   }
   return String(value)
@@ -53,11 +54,12 @@ export default function JsonToYamlTool() {
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('')
   const [error, setError] = useState('')
+  const [indentSize, setIndentSize] = useState(2)
 
   const convert = () => {
     try {
       const parsed = JSON.parse(input)
-      setOutput(toYaml(parsed))
+      setOutput(toYaml(parsed, 0, indentSize))
       setError('')
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Invalid JSON')
@@ -125,9 +127,15 @@ export default function JsonToYamlTool() {
         </div>
       </div>
       {error && <div className="mt-3 p-3 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 text-sm font-mono">{error}</div>}
-      <button onClick={convert} className="mt-4 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
-        Convert to YAML
-      </button>
+      <div className="flex flex-wrap items-center gap-3 mt-4">
+        <button onClick={convert} className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
+          Convert to YAML
+        </button>
+        <select value={indentSize} onChange={(e) => setIndentSize(Number(e.target.value))} className="h-9 px-3 rounded-md border border-input bg-card text-sm">
+          <option value={2}>2 spaces</option>
+          <option value={4}>4 spaces</option>
+        </select>
+      </div>
     </ToolPage>
   )
 }

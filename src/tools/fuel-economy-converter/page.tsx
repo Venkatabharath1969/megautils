@@ -117,6 +117,19 @@ export default function FuelEconomyConverterTool() {
         </div>
       </div>
 
+      {result && (() => {
+        const from = units.find(u => u.value === fromUnit)!
+        const to = units.find(u => u.value === toUnit)!
+        const oneKml = toKmL(1, from)
+        const converted = fromKmL(oneKml, to)
+        return (
+          <div className="mt-4 p-3 rounded-lg bg-muted/50 border border-border text-sm">
+            <span className="font-medium text-muted-foreground">Formula: </span>
+            <span className="font-mono">1 {from.label.split(' (')[0]} = {converted.toLocaleString('en-US', { maximumFractionDigits: 6 })} {to.label.split(' (')[0]}</span>
+          </div>
+        )
+      })()}
+
       {input && !isNaN(parseFloat(input)) && parseFloat(input) > 0 && (
         <div className="mt-8">
           <h3 className="text-sm font-semibold mb-3">All Conversions</h3>

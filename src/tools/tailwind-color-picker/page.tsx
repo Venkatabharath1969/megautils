@@ -40,9 +40,35 @@ function isDark(hex: string): boolean {
   return (r * 299 + g * 587 + b * 114) / 1000 < 128
 }
 
+function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+  const clean = hex.replace('#', '')
+  if (!/^[0-9a-f]{6}$/i.test(clean)) return null
+  return { r: parseInt(clean.substring(0, 2), 16), g: parseInt(clean.substring(2, 4), 16), b: parseInt(clean.substring(4, 6), 16) }
+}
+
+function findNearestTailwind(hex: string): { name: string; shade: string; hex: string; distance: number } | null {
+  const input = hexToRgb(hex)
+  if (!input) return null
+  let best = { name: '', shade: '', hex: '', distance: Infinity }
+  for (const name of colorNames) {
+    for (const shade of shades) {
+      const twHex = tailwindColors[name][shade]
+      const tw = hexToRgb(twHex)
+      if (!tw) continue
+      const dist = Math.sqrt((input.r - tw.r) ** 2 + (input.g - tw.g) ** 2 + (input.b - tw.b) ** 2)
+      if (dist < best.distance) {
+        best = { name, shade, hex: twHex, distance: dist }
+      }
+    }
+  }
+  return best.distance < Infinity ? best : null
+}
+
 export default function TailwindColorPickerTool() {
   const [search, setSearch] = useState('')
   const [copiedKey, setCopiedKey] = useState('')
+  const [nearestHex, setNearestHex] = useState('')
+  const [nearestResult, setNearestResult] = useState<ReturnType<typeof findNearestTailwind>>(null)
 
   const filteredColors = colorNames.filter(name =>
     name.toLowerCase().includes(search.toLowerCase())
@@ -52,6 +78,16 @@ export default function TailwindColorPickerTool() {
     await navigator.clipboard.writeText(text)
     setCopiedKey(key)
     setTimeout(() => setCopiedKey(''), 2000)
+  }
+
+  const handleNearestSearch = (value: string) => {
+    setNearestHex(value)
+    const cleaned = value.startsWith('#') ? value : `#${value}`
+    if (/^#[0-9a-f]{6}$/i.test(cleaned)) {
+      setNearestResult(findNearestTailwind(cleaned))
+    } else {
+      setNearestResult(null)
+    }
   }
 
   return (
@@ -92,6 +128,39 @@ export default function TailwindColorPickerTool() {
         { question: 'Can I customize the default Tailwind color palette?', answer: 'Yes, you can extend or override the default colors in your Tailwind configuration file (tailwind.config.js or v4 CSS theme) by adding custom color values.' },
       ]}
     >
+      {/* Find Nearest Tailwind Color */}
+      <div className="mb-6 p-4 rounded-lg bg-muted/50 border border-border">
+        <h3 className="text-sm font-semibold mb-2">Find Nearest Tailwind Color</h3>
+        <div className="flex items-center gap-3 flex-wrap">
+          <input
+            type="text"
+            value={nearestHex}
+            onChange={e => handleNearestSearch(e.target.value)}
+            placeholder="Enter any hex (e.g. #ff6347)"
+            className="w-48 h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-ring"
+          />
+          {nearestResult && (
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-lg border border-border" style={{ backgroundColor: nearestHex.startsWith('#') ? nearestHex : `#${nearestHex}` }} />
+                <span className="text-sm text-muted-foreground">→</span>
+                <div className="w-10 h-10 rounded-lg border border-border" style={{ backgroundColor: nearestResult.hex }} />
+              </div>
+              <div className="text-sm">
+                <p className="font-semibold capitalize">{nearestResult.name}-{nearestResult.shade}</p>
+                <p className="text-xs text-muted-foreground font-mono">{nearestResult.hex} · Distance: {nearestResult.distance.toFixed(1)}</p>
+              </div>
+              <button
+                onClick={() => handleCopy(`bg-${nearestResult!.name}-${nearestResult!.shade}`, 'nearest')}
+                className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors"
+              >
+                {copiedKey === 'nearest' ? 'Copied!' : 'Copy Class'}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
       <div className="mb-6">
         <input
           type="text"

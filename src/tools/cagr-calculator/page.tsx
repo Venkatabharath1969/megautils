@@ -4,11 +4,28 @@ import { useState, useMemo } from 'react'
 import { ToolPage } from '@/components/tool-page'
 
 export default function CAGRCalculator() {
+  const [mode, setMode] = useState<'calculate' | 'reverse'>('calculate')
   const [beginningValue, setBeginningValue] = useState(50000)
   const [endingValue, setEndingValue] = useState(125000)
   const [years, setYears] = useState(5)
+  const [targetCagr, setTargetCagr] = useState(20)
 
   const result = useMemo(() => {
+    if (mode === 'reverse') {
+      // Given beginning value and CAGR, calculate ending value
+      const projectedEnd = beginningValue * Math.pow(1 + targetCagr / 100, years)
+      const profitLoss = projectedEnd - beginningValue
+      const absoluteReturn = beginningValue > 0 ? ((projectedEnd - beginningValue) / beginningValue) * 100 : 0
+      const isProfit = profitLoss >= 0
+
+      const trajectory: { year: number; value: number }[] = []
+      for (let y = 0; y <= years; y++) {
+        trajectory.push({ year: y, value: beginningValue * Math.pow(1 + targetCagr / 100, y) })
+      }
+
+      return { cagr: targetCagr, absoluteReturn, profitLoss, isProfit, trajectory, projectedEnd }
+    }
+
     let cagr = 0
     if (beginningValue > 0 && years > 0) {
       cagr = (Math.pow(endingValue / beginningValue, 1 / years) - 1) * 100
@@ -26,8 +43,8 @@ export default function CAGRCalculator() {
       })
     }
 
-    return { cagr, absoluteReturn, profitLoss, isProfit, trajectory }
-  }, [beginningValue, endingValue, years])
+    return { cagr, absoluteReturn, profitLoss, isProfit, trajectory, projectedEnd: endingValue }
+  }, [mode, beginningValue, endingValue, years, targetCagr])
 
   const fmt = (n: number) =>
     new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n)
@@ -70,6 +87,16 @@ export default function CAGRCalculator() {
         { question: 'What is a good CAGR for investments?', answer: 'Historical stock market CAGR is around 7-10% annually after inflation. A good CAGR depends on your investment type, risk tolerance, and market conditions.' },
       ]}
     >
+      {/* Mode toggle */}
+      <div className="flex gap-2 mb-6">
+        <button onClick={() => setMode('calculate')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'calculate' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border hover:bg-muted'}`}>
+          Calculate CAGR
+        </button>
+        <button onClick={() => setMode('reverse')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'reverse' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border hover:bg-muted'}`}>
+          Project Future Value
+        </button>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Inputs */}
         <div className="space-y-5">
@@ -78,11 +105,19 @@ export default function CAGRCalculator() {
             <input type="number" min={1} value={beginningValue} onChange={(e) => setBeginningValue(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
             <input type="range" min={100} max={1000000} step={100} value={beginningValue} onChange={(e) => setBeginningValue(Number(e.target.value))} className="w-full mt-2 accent-primary" />
           </div>
-          <div>
-            <label className="block text-sm font-medium mb-1.5">Ending Value ($)</label>
-            <input type="number" min={0} value={endingValue} onChange={(e) => setEndingValue(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
-            <input type="range" min={0} max={5000000} step={100} value={endingValue} onChange={(e) => setEndingValue(Number(e.target.value))} className="w-full mt-2 accent-primary" />
-          </div>
+          {mode === 'calculate' ? (
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Ending Value ($)</label>
+              <input type="number" min={0} value={endingValue} onChange={(e) => setEndingValue(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+              <input type="range" min={0} max={5000000} step={100} value={endingValue} onChange={(e) => setEndingValue(Number(e.target.value))} className="w-full mt-2 accent-primary" />
+            </div>
+          ) : (
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Expected CAGR (%)</label>
+              <input type="number" min={-50} max={200} step={0.5} value={targetCagr} onChange={(e) => setTargetCagr(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+              <input type="range" min={1} max={50} step={0.5} value={targetCagr} onChange={(e) => setTargetCagr(Number(e.target.value))} className="w-full mt-2 accent-primary" />
+            </div>
+          )}
           <div>
             <label className="block text-sm font-medium mb-1.5">Number of Years</label>
             <input type="number" min={1} max={50} value={years} onChange={(e) => setYears(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
@@ -115,8 +150,8 @@ export default function CAGRCalculator() {
               <div className="text-xl font-bold text-purple-600 dark:text-purple-400">{fmt(beginningValue)}</div>
             </div>
             <div className="p-4 rounded-xl bg-primary/10 border border-primary/20">
-              <div className="text-sm text-muted-foreground mb-1">Ending Value</div>
-              <div className="text-xl font-bold text-primary">{fmt(endingValue)}</div>
+              <div className="text-sm text-muted-foreground mb-1">{mode === 'reverse' ? 'Projected Value' : 'Ending Value'}</div>
+              <div className="text-xl font-bold text-primary">{fmt(result.projectedEnd)}</div>
             </div>
           </div>
 

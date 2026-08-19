@@ -3,8 +3,21 @@
 import { useState } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, DownloadButton, ClearButton } from '@/components/tool-page'
 
-function formatCss(css: string, indentSize: number = 2): string {
-  const pad = ' '.repeat(indentSize)
+function sortCssProperties(css: string): string {
+  // Sort properties alphabetically within each rule block
+  return css.replace(/\{([^}]*)\}/g, (match, block: string) => {
+    const lines = block.split('\n').map(l => l.trim()).filter(Boolean)
+    const sorted = lines.sort((a, b) => {
+      const propA = a.replace(/^\s*/, '').split(':')[0]?.trim() || ''
+      const propB = b.replace(/^\s*/, '').split(':')[0]?.trim() || ''
+      return propA.localeCompare(propB)
+    })
+    return '{\n' + sorted.map(l => '  ' + l).join('\n') + '\n}'
+  })
+}
+
+function formatCss(css: string, indentStr: string = '  '): string {
+  const pad = indentStr
   let result = ''
   let indent = 0
   let inString: string | null = null
@@ -130,11 +143,15 @@ export default function CssFormatterTool() {
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('')
   const [error, setError] = useState('')
-  const [indent, setIndent] = useState(2)
+  const [indent, setIndent] = useState('2')
+  const [sortProperties, setSortProperties] = useState(false)
 
   const format = () => {
     try {
-      setOutput(formatCss(input, indent))
+      const indentStr = indent === 'tab' ? '\t' : ' '.repeat(Number(indent))
+      let result = formatCss(input, indentStr)
+      if (sortProperties) result = sortCssProperties(result)
+      setOutput(result)
       setError('')
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Error formatting CSS')
@@ -220,10 +237,20 @@ export default function CssFormatterTool() {
         <button onClick={minify} className="px-4 py-2 rounded-lg bg-secondary text-secondary-foreground text-sm font-medium hover:bg-secondary/80 transition-colors border border-border">
           Minify
         </button>
-        <select value={indent} onChange={(e) => setIndent(Number(e.target.value))} className="h-9 px-3 rounded-md border border-input bg-card text-sm">
-          <option value={2}>2 spaces</option>
-          <option value={4}>4 spaces</option>
+        <select value={indent} onChange={(e) => setIndent(e.target.value)} className="h-9 px-3 rounded-md border border-input bg-card text-sm">
+          <option value="2">2 spaces</option>
+          <option value="4">4 spaces</option>
+          <option value="tab">Tab</option>
         </select>
+        <label className="flex items-center gap-2 text-sm font-medium cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={sortProperties}
+            onChange={(e) => setSortProperties(e.target.checked)}
+            className="rounded border-input"
+          />
+          Sort Properties
+        </label>
       </div>
     </ToolPage>
   )

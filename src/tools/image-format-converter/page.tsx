@@ -8,6 +8,7 @@ const FORMATS = [
   { value: 'image/png', label: 'PNG', ext: 'png' },
   { value: 'image/jpeg', label: 'JPG', ext: 'jpg' },
   { value: 'image/webp', label: 'WebP', ext: 'webp' },
+  { value: 'image/avif', label: 'AVIF', ext: 'avif' },
 ]
 
 export default function ImageFormatConverterTool() {
@@ -18,7 +19,18 @@ export default function ImageFormatConverterTool() {
   const [quality, setQuality] = useState(0.9)
   const [convertedUrl, setConvertedUrl] = useState<string | null>(null)
   const [convertedSize, setConvertedSize] = useState(0)
+  const [avifSupported, setAvifSupported] = useState(true)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // Check AVIF support on mount
+  useState(() => {
+    if (typeof document !== 'undefined') {
+      const canvas = document.createElement('canvas')
+      canvas.width = 1; canvas.height = 1
+      const result = canvas.toDataURL('image/avif')
+      setAvifSupported(result.startsWith('data:image/avif'))
+    }
+  })
 
   const handleFile = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -162,12 +174,16 @@ export default function ImageFormatConverterTool() {
                     <button
                       key={f.value}
                       onClick={() => { setFormat(f.value); setConvertedUrl(null) }}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${format === f.value ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}
+                      disabled={f.value === 'image/avif' && !avifSupported}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${format === f.value ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'} ${f.value === 'image/avif' && !avifSupported ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
                       {f.label}
                     </button>
                   ))}
                 </div>
+                {format === 'image/avif' && !avifSupported && (
+                  <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">AVIF is not supported in your browser. Try Chrome 85+ or Firefox 93+.</p>
+                )}
               </div>
 
               {showQuality && (

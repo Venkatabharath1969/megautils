@@ -15,6 +15,7 @@ const bases: { key: Base; label: string; radix: number; prefix: string; validCha
 export default function NumberBaseConverterTool() {
   const [inputBase, setInputBase] = useState<Base>('decimal')
   const [inputValue, setInputValue] = useState('255')
+  const [customBase, setCustomBase] = useState('7')
 
   const conversions = useMemo(() => {
     const base = bases.find((b) => b.key === inputBase)!
@@ -30,13 +31,20 @@ export default function NumberBaseConverterTool() {
       return { error: 'Invalid number' }
     }
 
+    const customRadix = parseInt(customBase, 10)
+    const customResult = customRadix >= 2 && customRadix <= 36
+      ? decimalVal.toString(customRadix).toUpperCase()
+      : null
+
     return {
       binary: decimalVal.toString(2),
       octal: decimalVal.toString(8),
       decimal: decimalVal.toString(10),
       hexadecimal: decimalVal.toString(16).toUpperCase(),
+      custom: customResult,
+      customRadix: customRadix >= 2 && customRadix <= 36 ? customRadix : null,
     }
-  }, [inputValue, inputBase])
+  }, [inputValue, inputBase, customBase])
 
   const isError = conversions && 'error' in conversions
   const results = conversions && !isError ? conversions : null
@@ -150,8 +158,38 @@ export default function NumberBaseConverterTool() {
                 </div>
               )
             })}
+            {results.custom !== null && results.custom !== undefined && (
+              <div className="flex items-center justify-between p-4 rounded-xl border border-border bg-muted/30">
+                <div className="min-w-0 flex-1">
+                  <div className="text-xs text-muted-foreground mb-1">Custom (Base {results.customRadix})</div>
+                  <div className="text-lg font-mono font-semibold break-all">{results.custom}</div>
+                </div>
+                <div className="ml-3 shrink-0">
+                  <CopyButton text={results.custom} />
+                </div>
+              </div>
+            )}
           </div>
         )}
+
+        {/* Custom base input */}
+        <div className="p-4 rounded-xl bg-muted/30 border border-border">
+          <h3 className="text-sm font-semibold mb-2">Custom Base Conversion</h3>
+          <div className="flex items-center gap-3">
+            <label className="text-sm text-muted-foreground">Base (2-36):</label>
+            <input
+              type="number"
+              min={2}
+              max={36}
+              value={customBase}
+              onChange={(e) => setCustomBase(e.target.value)}
+              className="w-20 h-9 px-3 rounded-lg border border-input bg-tool-bg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-ring"
+            />
+            {(parseInt(customBase, 10) < 2 || parseInt(customBase, 10) > 36 || isNaN(parseInt(customBase, 10))) && (
+              <span className="text-xs text-red-500">Must be 2-36</span>
+            )}
+          </div>
+        </div>
 
         {/* Quick reference */}
         <div className="p-4 rounded-xl bg-muted/30 border border-border">

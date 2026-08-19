@@ -23,6 +23,14 @@ export default function SchemaFaqTool() {
     if (pairs.length > 1) setPairs(pairs.filter((_, i) => i !== index))
   }
 
+  const movePair = (index: number, direction: 'up' | 'down') => {
+    const newIndex = direction === 'up' ? index - 1 : index + 1
+    if (newIndex < 0 || newIndex >= pairs.length) return
+    const updated = [...pairs]
+    ;[updated[index], updated[newIndex]] = [updated[newIndex], updated[index]]
+    setPairs(updated)
+  }
+
   const output = useMemo(() => {
     const validPairs = pairs.filter(p => p.question.trim() || p.answer.trim())
     const schema: Record<string, unknown> = {
@@ -94,9 +102,13 @@ export default function SchemaFaqTool() {
             <div key={i} className="p-3 rounded-lg border border-border space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-muted-foreground">Q&A #{i + 1}</span>
-                {pairs.length > 1 && (
-                  <button onClick={() => removePair(i)} className="text-xs text-red-500 hover:text-red-700 font-medium">Remove</button>
-                )}
+                <div className="flex items-center gap-1">
+                  <button onClick={() => movePair(i, 'up')} disabled={i === 0} className="p-1 rounded text-xs text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed" title="Move up">&#9650;</button>
+                  <button onClick={() => movePair(i, 'down')} disabled={i === pairs.length - 1} className="p-1 rounded text-xs text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:cursor-not-allowed" title="Move down">&#9660;</button>
+                  {pairs.length > 1 && (
+                    <button onClick={() => removePair(i)} className="text-xs text-red-500 hover:text-red-700 font-medium ml-1">Remove</button>
+                  )}
+                </div>
               </div>
               <input type="text" value={pair.question} onChange={e => updatePair(i, 'question', e.target.value)} placeholder="Question..." className={inputClass} />
               <textarea value={pair.answer} onChange={e => updatePair(i, 'answer', e.target.value)} placeholder="Answer..." rows={2} className={inputClass} />

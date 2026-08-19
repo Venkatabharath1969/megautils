@@ -141,6 +141,19 @@ export default function LengthConverterTool() {
         </div>
       </div>
 
+      {/* Formula display */}
+      {result && (() => {
+        const from = units.find(u => u.value === fromUnit)!
+        const to = units.find(u => u.value === toUnit)!
+        const factor = (from.toMeters / to.toMeters)
+        return (
+          <div className="mt-4 p-3 rounded-lg bg-muted/50 border border-border text-sm">
+            <span className="font-medium text-muted-foreground">Formula: </span>
+            <span className="font-mono">1 {from.label.split(' (')[0]} = {factor.toLocaleString('en-US', { maximumFractionDigits: 8 })} {to.label.split(' (')[0]}{to.label.split(' (')[0] !== from.label.split(' (')[0] ? 's' : ''}</span>
+          </div>
+        )
+      })()}
+
       {/* Quick reference table */}
       {input && !isNaN(parseFloat(input)) && (
         <div className="mt-8">

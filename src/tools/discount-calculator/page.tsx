@@ -11,6 +11,7 @@ export default function DiscountCalculator() {
   const [discountPct, setDiscountPct] = useState(25)
   const [finalPrice, setFinalPrice] = useState(150)
   const [secondDiscount, setSecondDiscount] = useState(0)
+  const [salesTaxRate, setSalesTaxRate] = useState(0)
 
   const result = useMemo(() => {
     if (mode === 'discount') {
@@ -20,6 +21,8 @@ export default function DiscountCalculator() {
       const final = priceAfterFirst - secondDiscountAmount
       const totalSaved = originalPrice - final
       const effectiveDiscount = originalPrice > 0 ? (totalSaved / originalPrice) * 100 : 0
+      const taxAmount = final * (salesTaxRate / 100)
+      const finalWithTax = final + taxAmount
 
       return {
         discountAmount,
@@ -28,10 +31,14 @@ export default function DiscountCalculator() {
         effectiveDiscount,
         secondDiscountAmount,
         originalPrice,
+        taxAmount,
+        finalWithTax,
       }
     } else {
       const original = discountPct < 100 ? finalPrice / (1 - discountPct / 100) : 0
       const discountAmount = original - finalPrice
+      const taxAmount = finalPrice * (salesTaxRate / 100)
+      const finalWithTax = finalPrice + taxAmount
       return {
         discountAmount,
         finalPrice,
@@ -39,9 +46,11 @@ export default function DiscountCalculator() {
         effectiveDiscount: discountPct,
         secondDiscountAmount: 0,
         originalPrice: original,
+        taxAmount,
+        finalWithTax,
       }
     }
-  }, [mode, originalPrice, discountPct, finalPrice, secondDiscount])
+  }, [mode, originalPrice, discountPct, finalPrice, secondDiscount, salesTaxRate])
 
   const fmt = (n: number) =>
     new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(n)
@@ -113,6 +122,11 @@ export default function DiscountCalculator() {
                 <input type="number" min={0} max={100} step={0.5} value={secondDiscount} onChange={(e) => setSecondDiscount(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
                 <input type="range" min={0} max={100} step={1} value={secondDiscount} onChange={(e) => setSecondDiscount(Number(e.target.value))} className="w-full mt-2 accent-primary" />
               </div>
+              <div>
+                <label className="block text-sm font-medium mb-1.5">Sales Tax (%) <span className="text-muted-foreground">- optional</span></label>
+                <input type="number" min={0} max={30} step={0.25} value={salesTaxRate} onChange={(e) => setSalesTaxRate(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+                <input type="range" min={0} max={15} step={0.25} value={salesTaxRate} onChange={(e) => setSalesTaxRate(Number(e.target.value))} className="w-full mt-2 accent-primary" />
+              </div>
             </>
           ) : (
             <>
@@ -124,6 +138,10 @@ export default function DiscountCalculator() {
                 <label className="block text-sm font-medium mb-1.5">Discount That Was Applied (%)</label>
                 <input type="number" min={0} max={99.99} step={0.5} value={discountPct} onChange={(e) => setDiscountPct(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
                 <input type="range" min={0} max={99} step={1} value={discountPct} onChange={(e) => setDiscountPct(Number(e.target.value))} className="w-full mt-2 accent-primary" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1.5">Sales Tax (%) <span className="text-muted-foreground">- optional</span></label>
+                <input type="number" min={0} max={30} step={0.25} value={salesTaxRate} onChange={(e) => setSalesTaxRate(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
               </div>
             </>
           )}
@@ -138,9 +156,16 @@ export default function DiscountCalculator() {
             </div>
           )}
           <div className="p-5 rounded-xl bg-primary/10 border border-primary/20">
-            <div className="text-sm text-muted-foreground mb-1">You Pay</div>
+            <div className="text-sm text-muted-foreground mb-1">You Pay {salesTaxRate > 0 ? '(before tax)' : ''}</div>
             <div className="text-3xl font-bold text-primary">{fmt(result.finalPrice)}</div>
           </div>
+          {salesTaxRate > 0 && (
+            <div className="p-5 rounded-xl bg-purple-500/10 border border-purple-500/20">
+              <div className="text-sm text-muted-foreground mb-1">Final Price (with {salesTaxRate}% tax)</div>
+              <div className="text-3xl font-bold text-purple-600 dark:text-purple-400">{fmt(result.finalWithTax)}</div>
+              <div className="text-xs text-muted-foreground mt-1">Tax: {fmt(result.taxAmount)}</div>
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 rounded-xl bg-green-500/10 border border-green-500/20">
               <div className="text-sm text-muted-foreground mb-1">You Save</div>

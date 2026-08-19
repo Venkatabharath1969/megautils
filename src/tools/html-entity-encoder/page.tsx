@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, ClearButton } from '@/components/tool-page'
 
 const NAMED_ENTITIES: Record<string, string> = {
@@ -27,11 +27,13 @@ for (const [char, entity] of Object.entries(NAMED_ENTITIES)) {
   REVERSE_ENTITIES[entity] = char
 }
 
-function encodeHtmlEntities(text: string, mode: 'named' | 'numeric'): string {
+function encodeHtmlEntities(text: string, mode: 'named' | 'numeric' | 'hex'): string {
   let result = ''
   for (const char of text) {
     if (mode === 'named' && NAMED_ENTITIES[char]) {
       result += NAMED_ENTITIES[char]
+    } else if (mode === 'hex' && (char.charCodeAt(0) > 127 || NAMED_ENTITIES[char])) {
+      result += '&#x' + char.charCodeAt(0).toString(16).toUpperCase() + ';'
     } else if (char.charCodeAt(0) > 127 || (mode === 'numeric' && NAMED_ENTITIES[char])) {
       result += '&#' + char.charCodeAt(0) + ';'
     } else if (NAMED_ENTITIES[char]) {
@@ -66,26 +68,23 @@ function decodeHtmlEntities(text: string): string {
 
 export default function HtmlEntityEncoderTool() {
   const [input, setInput] = useState('')
-  const [output, setOutput] = useState('')
   const [mode, setMode] = useState<'encode' | 'decode'>('encode')
-  const [entityMode, setEntityMode] = useState<'named' | 'numeric'>('named')
-  const [error, setError] = useState('')
+  const [entityMode, setEntityMode] = useState<'named' | 'numeric' | 'hex'>('named')
 
-  const process = () => {
+  const { output, error } = useMemo(() => {
+    if (!input) return { output: '', error: '' }
     try {
       if (mode === 'encode') {
-        setOutput(encodeHtmlEntities(input, entityMode))
+        return { output: encodeHtmlEntities(input, entityMode), error: '' }
       } else {
-        setOutput(decodeHtmlEntities(input))
+        return { output: decodeHtmlEntities(input), error: '' }
       }
-      setError('')
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Error processing input')
-      setOutput('')
+      return { output: '', error: e instanceof Error ? e.message : 'Error processing input' }
     }
-  }
+  }, [input, mode, entityMode])
 
-  const clear = () => { setInput(''); setOutput(''); setError('') }
+  const clear = () => { setInput('') }
 
   return (
     <ToolPage title="HTML Entity Encoder / Decoder" description="Encode special characters to HTML entities or decode entities back to text" category="encoders" categoryLabel="Encoders & Decoders"
@@ -137,11 +136,12 @@ export default function HtmlEntityEncoderTool() {
         {mode === 'encode' && (
           <select
             value={entityMode}
-            onChange={(e) => setEntityMode(e.target.value as 'named' | 'numeric')}
+            onChange={(e) => setEntityMode(e.target.value as 'named' | 'numeric' | 'hex')}
             className="h-9 px-3 rounded-md border border-input bg-card text-sm"
           >
             <option value="named">Named Entities (&amp;amp;)</option>
             <option value="numeric">Numeric Entities (&amp;#38;)</option>
+            <option value="hex">Hex Entities (&amp;#x26;)</option>
           </select>
         )}
       </div>
@@ -169,10 +169,6 @@ export default function HtmlEntityEncoderTool() {
       </div>
 
       {error && <div className="mt-3 p-3 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 text-sm font-mono">{error}</div>}
-
-      <button onClick={process} className="mt-4 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
-        {mode === 'encode' ? 'Encode Entities' : 'Decode Entities'}
-      </button>
     </ToolPage>
   )
 }

@@ -95,13 +95,19 @@ export default function MetaTagGeneratorTool() {
             <div>
               <label className="block text-sm font-medium mb-1">Page Title</label>
               <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="My Awesome Website" className="w-full rounded-lg border border-input bg-tool-bg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
-              <div className="text-xs text-muted-foreground mt-1">{title.length}/60 characters</div>
+              <div className="mt-1 flex items-center gap-2">
+                <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${title.length === 0 ? 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400' : title.length <= 50 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : title.length <= 60 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}>{title.length}/60</span>
+                {title.length > 60 && <span className="text-xs text-red-500 font-medium">Title too long</span>}
+              </div>
             </div>
 
             <div>
               <label className="block text-sm font-medium mb-1">Meta Description</label>
               <textarea value={description} onChange={e => setDescription(e.target.value)} placeholder="A brief description of your page..." rows={3} className="w-full rounded-lg border border-input bg-tool-bg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
-              <div className="text-xs text-muted-foreground mt-1">{description.length}/155 characters</div>
+              <div className="mt-1 flex items-center gap-2">
+                <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${description.length === 0 ? 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400' : description.length <= 155 ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : description.length <= 160 ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}>{description.length}/160</span>
+                {description.length > 160 && <span className="text-xs text-red-500 font-medium">Description too long</span>}
+              </div>
             </div>
 
             <div>

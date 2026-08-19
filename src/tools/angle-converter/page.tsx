@@ -107,6 +107,18 @@ export default function AngleConverterTool() {
         </div>
       </div>
 
+      {result && (() => {
+        const from = units.find(u => u.value === fromUnit)!
+        const to = units.find(u => u.value === toUnit)!
+        const factor = from.toDeg / to.toDeg
+        return (
+          <div className="mt-4 p-3 rounded-lg bg-muted/50 border border-border text-sm">
+            <span className="font-medium text-muted-foreground">Formula: </span>
+            <span className="font-mono">1 {from.label.split(' (')[0]} = {factor.toLocaleString('en-US', { maximumFractionDigits: 8 })} {to.label.split(' (')[0]}</span>
+          </div>
+        )
+      })()}
+
       {input && !isNaN(parseFloat(input)) && (
         <div className="mt-8">
           <h3 className="text-sm font-semibold mb-3">All Conversions</h3>

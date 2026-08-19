@@ -135,6 +135,27 @@ export default function TipCalculator() {
               <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block" /> Tip ({fmt(result.tipAmount)})</span>
             </div>
           </div>
+
+          {/* Tip Comparison Table */}
+          <div className="p-4 rounded-xl border border-border bg-muted/30">
+            <div className="text-sm font-medium mb-3">Tip Comparison</div>
+            <div className="space-y-1.5">
+              {[10, 15, 18, 20, 25].map((pct) => {
+                const tip = billAmount * (pct / 100)
+                const total = billAmount + tip
+                const perPerson = splitCount > 0 ? total / splitCount : total
+                const isActive = pct === tipPct
+                return (
+                  <button key={pct} onClick={() => setTipPct(pct)} className={`w-full flex items-center justify-between p-2 rounded-lg text-sm transition-colors ${isActive ? 'bg-primary/10 border border-primary/30 font-medium' : 'hover:bg-muted'}`}>
+                    <span className={isActive ? 'text-primary font-semibold' : 'text-muted-foreground'}>{pct}%</span>
+                    <span className="text-muted-foreground">Tip: {fmt(tip)}</span>
+                    <span className="font-medium">Total: {fmt(total)}</span>
+                    {splitCount > 1 && <span className="text-xs text-muted-foreground">{fmt(perPerson)}/ea</span>}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
         </div>
       </div>
     </ToolPage>

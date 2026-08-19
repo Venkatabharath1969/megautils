@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, ClearButton } from '@/components/tool-page'
 
 function mysqlEscape(str: string): string {
@@ -45,19 +45,19 @@ function postgresUnescape(str: string): string {
 
 export default function SqlEscapeTool() {
   const [input, setInput] = useState('')
-  const [output, setOutput] = useState('')
   const [mode, setMode] = useState<'escape' | 'unescape'>('escape')
   const [dialect, setDialect] = useState<'mysql' | 'postgres'>('mysql')
 
-  const process = () => {
+  const output = useMemo(() => {
+    if (!input) return ''
     if (mode === 'escape') {
-      setOutput(dialect === 'mysql' ? mysqlEscape(input) : postgresEscape(input))
+      return dialect === 'mysql' ? mysqlEscape(input) : postgresEscape(input)
     } else {
-      setOutput(dialect === 'mysql' ? mysqlUnescape(input) : postgresUnescape(input))
+      return dialect === 'mysql' ? mysqlUnescape(input) : postgresUnescape(input)
     }
-  }
+  }, [input, mode, dialect])
 
-  const clear = () => { setInput(''); setOutput('') }
+  const clear = () => { setInput('') }
 
   return (
     <ToolPage title="SQL String Escape / Unescape" description="Escape or unescape strings for SQL queries. Supports MySQL and PostgreSQL modes." category="string" categoryLabel="String Utilities"
@@ -114,9 +114,7 @@ export default function SqlEscapeTool() {
         </div>
       </div>
 
-      <button onClick={process} className="mt-4 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
-        {mode === 'escape' ? 'Escape String' : 'Unescape String'}
-      </button>
+
     </ToolPage>
   )
 }

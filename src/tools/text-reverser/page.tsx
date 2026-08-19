@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, ClearButton } from '@/components/tool-page'
 
-type ReverseMode = 'characters' | 'words' | 'lines'
+type ReverseMode = 'characters' | 'words' | 'lines' | 'letters-in-words'
 
 export default function TextReverserTool() {
   const [input, setInput] = useState('')
@@ -18,14 +18,26 @@ export default function TextReverserTool() {
         return input.split('\n').map((line) => line.split(/\s+/).reverse().join(' ')).join('\n')
       case 'lines':
         return input.split('\n').reverse().join('\n')
+      case 'letters-in-words':
+        return input.split('\n').map((line) =>
+          line.split(/(\s+)/).map(part => /\s/.test(part) ? part : [...part].reverse().join('')).join('')
+        ).join('\n')
       default:
         return input
     }
   }, [input, mode])
 
+  const isPalindrome = useMemo(() => {
+    if (!input.trim()) return false
+    const cleaned = input.toLowerCase().replace(/[^a-z0-9]/g, '')
+    if (cleaned.length < 2) return false
+    return cleaned === [...cleaned].reverse().join('')
+  }, [input])
+
   const modes: { value: ReverseMode; label: string }[] = [
     { value: 'characters', label: 'Characters' },
-    { value: 'words', label: 'Words' },
+    { value: 'words', label: 'Word Order' },
+    { value: 'letters-in-words', label: 'Letters in Words' },
     { value: 'lines', label: 'Lines' },
   ]
 
@@ -74,6 +86,11 @@ export default function TextReverserTool() {
           </button>
         ))}
       </div>
+      {input.trim() && (
+        <div className={`mb-4 p-3 rounded-lg text-sm text-center ${isPalindrome ? 'bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/30' : 'bg-muted text-muted-foreground'}`}>
+          {isPalindrome ? 'This text is a palindrome!' : 'Not a palindrome'}
+        </div>
+      )}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
           <div className="flex items-center justify-between mb-2">

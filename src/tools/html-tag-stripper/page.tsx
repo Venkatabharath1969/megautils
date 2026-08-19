@@ -27,14 +27,26 @@ function stripHtmlTags(html: string, preserveBreaks: boolean): string {
   return result.trim()
 }
 
+function extractUrls(html: string): string {
+  const urls: string[] = []
+  const regex = /<a\s[^>]*href\s*=\s*["']([^"']*)["'][^>]*>/gi
+  let match: RegExpExecArray | null
+  while ((match = regex.exec(html)) !== null) {
+    urls.push(match[1])
+  }
+  return urls.join('\n')
+}
+
 export default function HtmlTagStripperTool() {
   const [input, setInput] = useState('')
   const [preserveBreaks, setPreserveBreaks] = useState(true)
+  const [extractUrlsMode, setExtractUrlsMode] = useState(false)
 
   const output = useMemo(() => {
     if (!input) return ''
+    if (extractUrlsMode) return extractUrls(input)
     return stripHtmlTags(input, preserveBreaks)
-  }, [input, preserveBreaks])
+  }, [input, preserveBreaks, extractUrlsMode])
 
   return (
     <ToolPage title="HTML Tag Stripper" description="Strip all HTML tags from text and keep only the text content." category="text" categoryLabel="Text Tools"
@@ -69,10 +81,14 @@ export default function HtmlTagStripperTool() {
         { question: 'Does stripping HTML tags also remove HTML entities?', answer: 'Yes, common HTML entities like &amp;, &lt;, &gt;, &quot;, and &nbsp; are automatically decoded back to their plain text equivalents.' },
         { question: 'Can I keep line breaks when removing HTML tags?', answer: 'Yes, enable the "Preserve line breaks" option to convert block-level tags like p, div, br, and headings into newline characters.' },
       ]}>
-      <div className="flex items-center gap-3 mb-4">
+      <div className="flex flex-wrap items-center gap-3 mb-4">
         <label className="flex items-center gap-1.5 text-sm cursor-pointer">
-          <input type="checkbox" checked={preserveBreaks} onChange={e => setPreserveBreaks(e.target.checked)} className="rounded border-input" />
+          <input type="checkbox" checked={preserveBreaks} onChange={e => setPreserveBreaks(e.target.checked)} disabled={extractUrlsMode} className="rounded border-input" />
           Preserve line breaks
+        </label>
+        <label className="flex items-center gap-1.5 text-sm cursor-pointer">
+          <input type="checkbox" checked={extractUrlsMode} onChange={e => setExtractUrlsMode(e.target.checked)} className="rounded border-input" />
+          Extract URLs from links
         </label>
       </div>
 

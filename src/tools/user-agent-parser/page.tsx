@@ -188,12 +188,17 @@ export default function UserAgentParserTool() {
         <div>
           <div className="flex items-center justify-between mb-1.5">
             <label className="text-sm font-medium">User Agent String</label>
-            <button
-              onClick={() => setInput(currentUA)}
-              className="text-xs text-primary hover:underline"
-            >
-              Use current browser
-            </button>
+            <div className="flex items-center gap-2">
+              <select onChange={e => { if (e.target.value) setInput(e.target.value) }} className="h-7 px-2 rounded-md border border-input bg-tool-bg text-xs focus:outline-none" defaultValue="">
+                <option value="" disabled>Quick presets...</option>
+                <option value="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36">Chrome (Windows)</option>
+                <option value="Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0">Firefox (Linux)</option>
+                <option value="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15">Safari (macOS)</option>
+                <option value="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0">Edge (Windows)</option>
+                <option value="Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)">Googlebot</option>
+              </select>
+              <button onClick={() => setInput(currentUA)} className="text-xs text-primary hover:underline">Use current</button>
+            </div>
           </div>
           <textarea
             value={input}

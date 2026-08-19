@@ -14,6 +14,22 @@ interface ShadowLayer {
   inset: boolean
 }
 
+interface ShadowPreset {
+  name: string
+  layers: Omit<ShadowLayer, 'id'>[]
+}
+
+const shadowPresets: ShadowPreset[] = [
+  { name: 'Material 1', layers: [{ offsetX: 0, offsetY: 1, blur: 3, spread: 0, color: '#000000', opacity: 0.12, inset: false }, { offsetX: 0, offsetY: 1, blur: 2, spread: 0, color: '#000000', opacity: 0.24, inset: false }] },
+  { name: 'Material 2', layers: [{ offsetX: 0, offsetY: 3, blur: 6, spread: 0, color: '#000000', opacity: 0.16, inset: false }, { offsetX: 0, offsetY: 3, blur: 6, spread: 0, color: '#000000', opacity: 0.23, inset: false }] },
+  { name: 'Material 3', layers: [{ offsetX: 0, offsetY: 10, blur: 20, spread: 0, color: '#000000', opacity: 0.19, inset: false }, { offsetX: 0, offsetY: 6, blur: 6, spread: 0, color: '#000000', opacity: 0.23, inset: false }] },
+  { name: 'Material 4', layers: [{ offsetX: 0, offsetY: 14, blur: 28, spread: -5, color: '#000000', opacity: 0.25, inset: false }, { offsetX: 0, offsetY: 10, blur: 10, spread: 0, color: '#000000', opacity: 0.22, inset: false }] },
+  { name: 'Tailwind sm', layers: [{ offsetX: 0, offsetY: 1, blur: 2, spread: 0, color: '#000000', opacity: 0.05, inset: false }] },
+  { name: 'Tailwind md', layers: [{ offsetX: 0, offsetY: 4, blur: 6, spread: -1, color: '#000000', opacity: 0.1, inset: false }, { offsetX: 0, offsetY: 2, blur: 4, spread: -2, color: '#000000', opacity: 0.1, inset: false }] },
+  { name: 'Tailwind lg', layers: [{ offsetX: 0, offsetY: 10, blur: 15, spread: -3, color: '#000000', opacity: 0.1, inset: false }, { offsetX: 0, offsetY: 4, blur: 6, spread: -4, color: '#000000', opacity: 0.1, inset: false }] },
+  { name: 'Tailwind xl', layers: [{ offsetX: 0, offsetY: 20, blur: 25, spread: -5, color: '#000000', opacity: 0.1, inset: false }, { offsetX: 0, offsetY: 8, blur: 10, spread: -6, color: '#000000', opacity: 0.1, inset: false }] },
+]
+
 let nextId = 2
 
 function hexToRgba(hex: string, opacity: number): string {
@@ -34,6 +50,11 @@ export default function CssBoxShadowGeneratorTool() {
     { id: 1, offsetX: 4, offsetY: 4, blur: 15, spread: 0, color: '#000000', opacity: 0.2, inset: false },
   ])
   const [boxColor, setBoxColor] = useState('#ffffff')
+
+  const applyPreset = (preset: ShadowPreset) => {
+    const newLayers = preset.layers.map(l => ({ ...l, id: nextId++ }))
+    setLayers(newLayers)
+  }
 
   const addLayer = () => {
     setLayers(prev => [...prev, { id: nextId++, offsetX: 0, offsetY: 4, blur: 10, spread: 0, color: '#000000', opacity: 0.15, inset: false }])
@@ -93,6 +114,20 @@ export default function CssBoxShadowGeneratorTool() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Controls */}
         <div className="space-y-4">
+          <div>
+            <label className="text-sm font-medium mb-2 block">Presets</label>
+            <select
+              onChange={e => { const idx = +e.target.value; if (idx >= 0) applyPreset(shadowPresets[idx]) }}
+              defaultValue={-1}
+              className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              <option value={-1} disabled>Select a preset...</option>
+              {shadowPresets.map((p, i) => (
+                <option key={p.name} value={i}>{p.name}</option>
+              ))}
+            </select>
+          </div>
+
           <div className="flex items-center justify-between">
             <label className="text-sm font-medium">Shadow Layers</label>
             <button onClick={addLayer} className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors">

@@ -13,6 +13,14 @@ const LANGUAGES = [
   { code: 'chi_sim', label: 'Chinese (Simplified)' },
   { code: 'jpn', label: 'Japanese' },
   { code: 'kor', label: 'Korean' },
+  { code: 'ara', label: 'Arabic' },
+  { code: 'tha', label: 'Thai' },
+  { code: 'vie', label: 'Vietnamese' },
+  { code: 'tur', label: 'Turkish' },
+  { code: 'ind', label: 'Indonesian' },
+  { code: 'por', label: 'Portuguese' },
+  { code: 'ita', label: 'Italian' },
+  { code: 'rus', label: 'Russian' },
 ]
 
 export default function AIOCR() {

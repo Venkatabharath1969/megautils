@@ -44,6 +44,15 @@ function convert(text: string, map: Record<string, string>): string {
   return [...text].map(ch => map[ch] || ch).join('')
 }
 
+function toFullwidth(text: string): string {
+  return [...text].map(ch => {
+    const code = ch.charCodeAt(0)
+    if (code === 32) return '\u3000' // fullwidth space
+    if (code >= 33 && code <= 126) return String.fromCharCode(code + 0xFEE0)
+    return ch
+  }).join('')
+}
+
 export default function SmallTextGeneratorTool() {
   const [input, setInput] = useState('')
 
@@ -53,6 +62,7 @@ export default function SmallTextGeneratorTool() {
       { label: 'Superscript', value: convert(input, SUPERSCRIPT_MAP) },
       { label: 'Subscript', value: convert(input, SUBSCRIPT_MAP) },
       { label: 'Small Caps', value: convert(input.toLowerCase(), SMALL_CAPS_MAP) },
+      { label: 'Fullwidth', value: toFullwidth(input) },
     ]
   }, [input])
 

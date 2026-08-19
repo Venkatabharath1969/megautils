@@ -112,6 +112,12 @@ export default function SitemapGeneratorTool() {
               </div>
             </div>
 
+            {urlsText.trim() && urlsText.split('\n').some(l => l.trim() && !l.trim().startsWith('http')) && (
+              <div className="p-2.5 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-xs text-yellow-700 dark:text-yellow-400">
+                Some URLs don&apos;t start with http:// or https:// &mdash; they will be auto-prefixed with https://
+              </div>
+            )}
+
             <button onClick={parseUrls} disabled={!urlsText.trim()} className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50">
               Generate Sitemap
             </button>

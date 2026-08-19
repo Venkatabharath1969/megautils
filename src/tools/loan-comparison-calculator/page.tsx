@@ -7,6 +7,7 @@ interface LoanInputs {
   amount: number
   rate: number
   tenure: number
+  processingFee: number
 }
 
 function calcLoan(loan: LoanInputs) {
@@ -14,17 +15,38 @@ function calcLoan(loan: LoanInputs) {
   const n = loan.tenure * 12
   if (r === 0) {
     const emi = loan.amount / n
-    return { emi, totalPayment: loan.amount, totalInterest: 0, months: n }
+    const totalCostWithFees = loan.amount + loan.processingFee
+    // Effective APR when rate is 0 but there are fees
+    const effectiveAPR = loan.processingFee > 0 && n > 0
+      ? ((totalCostWithFees / loan.amount) - 1) / (loan.tenure) * 100
+      : 0
+    return { emi, totalPayment: loan.amount, totalInterest: 0, months: n, processingFee: loan.processingFee, effectiveAPR }
   }
   const emi = (loan.amount * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1)
   const totalPayment = emi * n
   const totalInterest = totalPayment - loan.amount
-  return { emi, totalPayment, totalInterest, months: n }
+
+  // Effective APR: factor in processing fee by treating net loan amount as (amount - fee)
+  const netProceeds = loan.amount - loan.processingFee
+  let effectiveAPR = loan.rate
+  if (loan.processingFee > 0 && netProceeds > 0) {
+    // Use bisection to find rate where EMI for netProceeds equals actual EMI
+    let lo = loan.rate / 100 / 12
+    let hi = loan.rate * 3 / 100 / 12
+    for (let iter = 0; iter < 100; iter++) {
+      const mid = (lo + hi) / 2
+      const testEmi = (netProceeds * mid * Math.pow(1 + mid, n)) / (Math.pow(1 + mid, n) - 1)
+      if (testEmi < emi) lo = mid; else hi = mid
+    }
+    effectiveAPR = ((lo + hi) / 2) * 12 * 100
+  }
+
+  return { emi, totalPayment, totalInterest, months: n, processingFee: loan.processingFee, effectiveAPR }
 }
 
 export default function LoanComparisonCalculator() {
-  const [loan1, setLoan1] = useState<LoanInputs>({ amount: 300000, rate: 6.5, tenure: 30 })
-  const [loan2, setLoan2] = useState<LoanInputs>({ amount: 300000, rate: 5.75, tenure: 15 })
+  const [loan1, setLoan1] = useState<LoanInputs>({ amount: 300000, rate: 6.5, tenure: 30, processingFee: 0 })
+  const [loan2, setLoan2] = useState<LoanInputs>({ amount: 300000, rate: 5.75, tenure: 15, processingFee: 0 })
 
   const result = useMemo(() => {
     const r1 = calcLoan(loan1)
@@ -100,6 +122,10 @@ export default function LoanComparisonCalculator() {
             <input type="number" min={1} max={40} value={loan1.tenure} onChange={(e) => setLoan1({ ...loan1, tenure: Number(e.target.value) })} className={inputCls} />
             <input type="range" min={1} max={40} value={loan1.tenure} onChange={(e) => setLoan1({ ...loan1, tenure: Number(e.target.value) })} className="w-full mt-2 accent-blue-500" />
           </div>
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Processing Fee ($)</label>
+            <input type="number" min={0} step={100} value={loan1.processingFee} onChange={(e) => setLoan1({ ...loan1, processingFee: Number(e.target.value) })} className={inputCls} />
+          </div>
         </div>
 
         {/* Loan 2 */}
@@ -118,6 +144,10 @@ export default function LoanComparisonCalculator() {
             <label className="block text-sm font-medium mb-1.5">Loan Term (Years)</label>
             <input type="number" min={1} max={40} value={loan2.tenure} onChange={(e) => setLoan2({ ...loan2, tenure: Number(e.target.value) })} className={inputCls} />
             <input type="range" min={1} max={40} value={loan2.tenure} onChange={(e) => setLoan2({ ...loan2, tenure: Number(e.target.value) })} className="w-full mt-2 accent-orange-500" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Processing Fee ($)</label>
+            <input type="number" min={0} step={100} value={loan2.processingFee} onChange={(e) => setLoan2({ ...loan2, processingFee: Number(e.target.value) })} className={inputCls} />
           </div>
         </div>
       </div>
@@ -172,6 +202,24 @@ export default function LoanComparisonCalculator() {
               <td className="p-3 text-right">{result.r2.months} months</td>
               <td className="p-3 text-right font-medium">{Math.abs(result.r1.months - result.r2.months)} months</td>
             </tr>
+            {(loan1.processingFee > 0 || loan2.processingFee > 0) && (
+              <>
+                <tr className="bg-card">
+                  <td className="p-3 font-medium">Processing Fee</td>
+                  <td className="p-3 text-right">{fmt(result.r1.processingFee)}</td>
+                  <td className="p-3 text-right">{fmt(result.r2.processingFee)}</td>
+                  <td className="p-3 text-right font-medium">{fmt(Math.abs(result.r1.processingFee - result.r2.processingFee))}</td>
+                </tr>
+                <tr className="bg-muted/20">
+                  <td className="p-3 font-medium">Effective APR</td>
+                  <td className="p-3 text-right font-medium text-purple-600 dark:text-purple-400">{result.r1.effectiveAPR.toFixed(3)}%</td>
+                  <td className="p-3 text-right font-medium text-purple-600 dark:text-purple-400">{result.r2.effectiveAPR.toFixed(3)}%</td>
+                  <td className={`p-3 text-right font-medium ${result.r1.effectiveAPR > result.r2.effectiveAPR ? 'text-red-600 dark:text-red-400' : 'text-green-600 dark:text-green-400'}`}>
+                    {Math.abs(result.r1.effectiveAPR - result.r2.effectiveAPR).toFixed(3)}%
+                  </td>
+                </tr>
+              </>
+            )}
           </tbody>
         </table>
       </div>

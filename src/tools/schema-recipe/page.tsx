@@ -17,6 +17,7 @@ export default function SchemaRecipeTool() {
   const [ratingValue, setRatingValue] = useState('')
   const [reviewCount, setReviewCount] = useState('')
   const [calories, setCalories] = useState('')
+  const [diets, setDiets] = useState<string[]>([])
   const [ingredients, setIngredients] = useState<string[]>([''])
   const [instructions, setInstructions] = useState<string[]>([''])
 
@@ -36,6 +37,7 @@ export default function SchemaRecipeTool() {
     if (cuisine) schema.recipeCuisine = cuisine
     if (category) schema.recipeCategory = category
     if (calories) schema.nutrition = { '@type': 'NutritionInformation', calories: `${calories} calories` }
+    if (diets.length > 0) schema.suitableForDiet = diets.map(d => `https://schema.org/${d}`)
 
     const validIngredients = ingredients.filter(i => i.trim())
     if (validIngredients.length > 0) schema.recipeIngredient = validIngredients
@@ -58,13 +60,13 @@ export default function SchemaRecipeTool() {
     }
 
     return `<script type="application/ld+json">\n${JSON.stringify(schema, null, 2)}\n</script>`
-  }, [name, description, image, author, prepTime, cookTime, totalTime, servings, cuisine, category, ratingValue, reviewCount, calories, ingredients, instructions])
+  }, [name, description, image, author, prepTime, cookTime, totalTime, servings, cuisine, category, ratingValue, reviewCount, calories, diets, ingredients, instructions])
 
   const clear = () => {
     setName(''); setDescription(''); setImage(''); setAuthor('')
     setPrepTime(''); setCookTime(''); setTotalTime(''); setServings('')
     setCuisine(''); setCategory(''); setRatingValue(''); setReviewCount('')
-    setCalories(''); setIngredients(['']); setInstructions([''])
+    setCalories(''); setDiets([]); setIngredients(['']); setInstructions([''])
   }
 
   const inputClass = 'w-full rounded-lg border border-input bg-tool-bg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring'
@@ -172,6 +174,18 @@ export default function SchemaRecipeTool() {
             <div>
               <label className="block text-sm font-medium mb-1">Calories</label>
               <input type="number" min="0" value={calories} onChange={e => setCalories(e.target.value)} placeholder="350" className={inputClass} />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Suitable for Diet</label>
+            <div className="flex flex-wrap gap-2">
+              {['GlutenFreeDiet', 'VeganDiet', 'VegetarianDiet', 'LowCalorieDiet', 'DiabeticDiet', 'HalalDiet', 'KosherDiet', 'LowFatDiet'].map(diet => (
+                <label key={diet} className="flex items-center gap-1.5 text-xs cursor-pointer">
+                  <input type="checkbox" checked={diets.includes(diet)} onChange={e => { if (e.target.checked) setDiets([...diets, diet]); else setDiets(diets.filter(d => d !== diet)) }} className="rounded border-input" />
+                  {diet.replace('Diet', '')}
+                </label>
+              ))}
             </div>
           </div>
 

@@ -147,6 +147,18 @@ export default function DataStorageConverterTool() {
         </div>
       </div>
 
+      {result && (() => {
+        const from = units.find(u => u.value === fromUnit)!
+        const to = units.find(u => u.value === toUnit)!
+        const factor = from.toBits / to.toBits
+        return (
+          <div className="mt-4 p-3 rounded-lg bg-muted/50 border border-border text-sm">
+            <span className="font-medium text-muted-foreground">Formula: </span>
+            <span className="font-mono">1 {from.label.split(' (')[0]} = {factor.toLocaleString('en-US', { maximumFractionDigits: 8 })} {to.label.split(' (')[0]}</span>
+          </div>
+        )
+      })()}
+
       {/* Full conversion table */}
       {input && !isNaN(parseFloat(input)) && (
         <div className="mt-8">

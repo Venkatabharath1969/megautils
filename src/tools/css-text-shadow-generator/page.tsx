@@ -3,6 +3,15 @@
 import { useState, useMemo } from 'react'
 import { ToolPage, CopyButton } from '@/components/tool-page'
 
+interface TextShadowLayer {
+  id: number
+  offsetX: number
+  offsetY: number
+  blur: number
+  color: string
+  opacity: number
+}
+
 function hexToRgba(hex: string, opacity: number): string {
   const clean = hex.replace('#', '')
   const r = parseInt(clean.substring(0, 2), 16)
@@ -11,20 +20,58 @@ function hexToRgba(hex: string, opacity: number): string {
   return `rgba(${r}, ${g}, ${b}, ${opacity})`
 }
 
+function layerToCSS(l: TextShadowLayer): string {
+  return `${l.offsetX}px ${l.offsetY}px ${l.blur}px ${hexToRgba(l.color, l.opacity)}`
+}
+
+let nextLayerId = 2
+
+interface TextShadowPreset {
+  name: string
+  layers: Omit<TextShadowLayer, 'id'>[]
+  textColor?: string
+  bgColor?: string
+}
+
+const textShadowPresets: TextShadowPreset[] = [
+  { name: 'Neon Glow', layers: [{ offsetX: 0, offsetY: 0, blur: 7, color: '#00ff00', opacity: 1 }, { offsetX: 0, offsetY: 0, blur: 10, color: '#00ff00', opacity: 0.8 }, { offsetX: 0, offsetY: 0, blur: 21, color: '#00ff00', opacity: 0.6 }, { offsetX: 0, offsetY: 0, blur: 42, color: '#00ff00', opacity: 0.4 }], textColor: '#ffffff', bgColor: '#111111' },
+  { name: '3D Emboss', layers: [{ offsetX: 1, offsetY: 1, blur: 0, color: '#ffffff', opacity: 0.6 }, { offsetX: -1, offsetY: -1, blur: 0, color: '#000000', opacity: 0.3 }], textColor: '#888888', bgColor: '#cccccc' },
+  { name: 'Long Shadow', layers: [{ offsetX: 1, offsetY: 1, blur: 0, color: '#000000', opacity: 0.15 }, { offsetX: 2, offsetY: 2, blur: 0, color: '#000000', opacity: 0.13 }, { offsetX: 3, offsetY: 3, blur: 0, color: '#000000', opacity: 0.11 }, { offsetX: 4, offsetY: 4, blur: 0, color: '#000000', opacity: 0.09 }, { offsetX: 5, offsetY: 5, blur: 0, color: '#000000', opacity: 0.07 }], textColor: '#ffffff', bgColor: '#3b82f6' },
+  { name: 'Letterpress', layers: [{ offsetX: 0, offsetY: 1, blur: 0, color: '#ffffff', opacity: 0.5 }, { offsetX: 0, offsetY: -1, blur: 0, color: '#000000', opacity: 0.3 }], textColor: '#555555', bgColor: '#aaaaaa' },
+  { name: 'Outline', layers: [{ offsetX: -1, offsetY: -1, blur: 0, color: '#000000', opacity: 1 }, { offsetX: 1, offsetY: -1, blur: 0, color: '#000000', opacity: 1 }, { offsetX: -1, offsetY: 1, blur: 0, color: '#000000', opacity: 1 }, { offsetX: 1, offsetY: 1, blur: 0, color: '#000000', opacity: 1 }], textColor: '#ffffff', bgColor: '#3b82f6' },
+]
+
 export default function CssTextShadowGeneratorTool() {
-  const [offsetX, setOffsetX] = useState(2)
-  const [offsetY, setOffsetY] = useState(2)
-  const [blur, setBlur] = useState(4)
-  const [color, setColor] = useState('#000000')
-  const [opacity, setOpacity] = useState(0.5)
+  const [layers, setLayers] = useState<TextShadowLayer[]>([
+    { id: 1, offsetX: 2, offsetY: 2, blur: 4, color: '#000000', opacity: 0.5 },
+  ])
   const [textColor, setTextColor] = useState('#1f2937')
   const [bgColor, setBgColor] = useState('#ffffff')
   const [sampleText, setSampleText] = useState('The quick brown fox jumps over the lazy dog')
   const [fontSize, setFontSize] = useState(32)
 
+  const addLayer = () => {
+    setLayers(prev => [...prev, { id: nextLayerId++, offsetX: 0, offsetY: 2, blur: 4, color: '#000000', opacity: 0.3 }])
+  }
+
+  const removeLayer = (id: number) => {
+    if (layers.length <= 1) return
+    setLayers(prev => prev.filter(l => l.id !== id))
+  }
+
+  const updateLayer = (id: number, field: keyof TextShadowLayer, value: number | string) => {
+    setLayers(prev => prev.map(l => l.id === id ? { ...l, [field]: value } : l))
+  }
+
+  const applyPreset = (preset: TextShadowPreset) => {
+    setLayers(preset.layers.map(l => ({ ...l, id: nextLayerId++ })))
+    if (preset.textColor) setTextColor(preset.textColor)
+    if (preset.bgColor) setBgColor(preset.bgColor)
+  }
+
   const shadowCSS = useMemo(
-    () => `${offsetX}px ${offsetY}px ${blur}px ${hexToRgba(color, opacity)}`,
-    [offsetX, offsetY, blur, color, opacity]
+    () => layers.map(layerToCSS).join(', '),
+    [layers]
   )
 
   const cssCode = `text-shadow: ${shadowCSS};`
@@ -71,30 +118,55 @@ export default function CssTextShadowGeneratorTool() {
         {/* Controls */}
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium mb-2 block">Offset X: {offsetX}px</label>
-            <input type="range" min={-50} max={50} value={offsetX} onChange={e => setOffsetX(+e.target.value)} className="w-full" />
+            <label className="text-sm font-medium mb-2 block">Effect Presets</label>
+            <div className="flex flex-wrap gap-2">
+              {textShadowPresets.map(p => (
+                <button key={p.name} onClick={() => applyPreset(p)} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-secondary text-secondary-foreground border border-border hover:bg-muted transition-colors">{p.name}</button>
+              ))}
+            </div>
           </div>
-          <div>
-            <label className="text-sm font-medium mb-2 block">Offset Y: {offsetY}px</label>
-            <input type="range" min={-50} max={50} value={offsetY} onChange={e => setOffsetY(+e.target.value)} className="w-full" />
+
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium">Shadow Layers</label>
+            <button onClick={addLayer} className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors">+ Add Layer</button>
           </div>
-          <div>
-            <label className="text-sm font-medium mb-2 block">Blur: {blur}px</label>
-            <input type="range" min={0} max={50} value={blur} onChange={e => setBlur(+e.target.value)} className="w-full" />
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-xs text-muted-foreground mb-1 block">Shadow Color</label>
-              <div className="flex items-center gap-2">
-                <input type="color" value={color} onChange={e => setColor(e.target.value)} className="w-8 h-8 rounded border border-border cursor-pointer" />
-                <input type="text" value={color} onChange={e => setColor(e.target.value)} className="w-20 rounded border border-input bg-transparent px-2 py-1 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-ring" />
+
+          {layers.map((layer, idx) => (
+            <div key={layer.id} className="p-3 rounded-lg bg-muted space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-muted-foreground">Layer {idx + 1}</span>
+                {layers.length > 1 && (
+                  <button onClick={() => removeLayer(layer.id)} className="text-red-500 hover:text-red-700 text-xs font-bold">Remove</button>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs text-muted-foreground">Offset X: {layer.offsetX}px</label>
+                  <input type="range" min={-50} max={50} value={layer.offsetX} onChange={e => updateLayer(layer.id, 'offsetX', +e.target.value)} className="w-full" />
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground">Offset Y: {layer.offsetY}px</label>
+                  <input type="range" min={-50} max={50} value={layer.offsetY} onChange={e => updateLayer(layer.id, 'offsetY', +e.target.value)} className="w-full" />
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground">Blur: {layer.blur}px</label>
+                  <input type="range" min={0} max={50} value={layer.blur} onChange={e => updateLayer(layer.id, 'blur', +e.target.value)} className="w-full" />
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground">Opacity: {Math.round(layer.opacity * 100)}%</label>
+                  <input type="range" min={0} max={100} value={layer.opacity * 100} onChange={e => updateLayer(layer.id, 'opacity', +e.target.value / 100)} className="w-full" />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground">Color</label>
+                <div className="flex items-center gap-2 mt-1">
+                  <input type="color" value={layer.color} onChange={e => updateLayer(layer.id, 'color', e.target.value)} className="w-8 h-8 rounded border border-border cursor-pointer" />
+                  <input type="text" value={layer.color} onChange={e => updateLayer(layer.id, 'color', e.target.value)} className="w-20 rounded border border-input bg-transparent px-2 py-1 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-ring" />
+                </div>
               </div>
             </div>
-            <div>
-              <label className="text-xs text-muted-foreground mb-1 block">Opacity: {Math.round(opacity * 100)}%</label>
-              <input type="range" min={0} max={100} value={opacity * 100} onChange={e => setOpacity(+e.target.value / 100)} className="w-full mt-2" />
-            </div>
-          </div>
+          ))}
+
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-xs text-muted-foreground mb-1 block">Text Color</label>

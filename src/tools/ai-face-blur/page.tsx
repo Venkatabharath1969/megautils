@@ -137,6 +137,7 @@ export default function AIFaceBlurTool() {
   const [faceCount, setFaceCount] = useState(0)
   const [blurStyle, setBlurStyle] = useState<BlurStyle>('pixelate')
   const [intensity, setIntensity] = useState(10)
+  const [sensitivity, setSensitivity] = useState(0.5)
   const [resultImage, setResultImage] = useState<string | null>(null)
   const [originalFileName, setOriginalFileName] = useState('')
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -230,7 +231,7 @@ export default function AIFaceBlurTool() {
         // Detect faces
         const detections = await faceapi.detectAllFaces(
           img,
-          new faceapi.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: 0.5 })
+          new faceapi.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: sensitivity })
         )
 
         const boxes = detections.map((d) => ({
@@ -511,6 +512,27 @@ export default function AIFaceBlurTool() {
                     </div>
                   </div>
                 )}
+
+                {/* Detection sensitivity slider */}
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm font-medium">Detection Sensitivity</label>
+                    <span className="text-xs text-muted-foreground tabular-nums">{sensitivity.toFixed(1)}</span>
+                  </div>
+                  <input
+                    type="range"
+                    min={0.3}
+                    max={0.9}
+                    step={0.1}
+                    value={sensitivity}
+                    onChange={(e) => setSensitivity(Number(e.target.value))}
+                    className="w-full accent-primary"
+                  />
+                  <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                    <span>More faces (0.3)</span>
+                    <span>Fewer false positives (0.9)</span>
+                  </div>
+                </div>
 
                 {/* Re-apply button for manual trigger */}
                 <button

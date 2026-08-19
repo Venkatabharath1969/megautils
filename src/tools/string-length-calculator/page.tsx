@@ -12,7 +12,9 @@ export default function StringLengthCalculatorTool() {
     const byteLength = new TextEncoder().encode(input).length // UTF-8 byte length
     const wordCount = input.trim() ? input.trim().split(/\s+/).length : 0
     const lineCount = input ? input.split('\n').length : 0
-    return { charCount, utf16Length, byteLength, wordCount, lineCount }
+    const urlEncodedLength = encodeURIComponent(input).length
+    const base64Length = input ? Math.ceil(byteLength / 3) * 4 : 0
+    return { charCount, utf16Length, byteLength, wordCount, lineCount, urlEncodedLength, base64Length }
   }, [input])
 
   return (
@@ -53,13 +55,15 @@ export default function StringLengthCalculatorTool() {
         { question: 'How are words counted?', answer: 'Words are counted by splitting text on whitespace, so any sequence of non-space characters separated by spaces, tabs, or newlines counts as one word.' },
       ]}
     >
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3 mb-4">
         {[
           { label: 'Characters', value: stats.charCount },
           { label: 'UTF-8 Bytes', value: stats.byteLength },
           { label: 'UTF-16 Length', value: stats.utf16Length },
           { label: 'Words', value: stats.wordCount },
           { label: 'Lines', value: stats.lineCount },
+          { label: 'URL-Encoded', value: stats.urlEncodedLength },
+          { label: 'Base64', value: stats.base64Length },
         ].map((s) => (
           <div key={s.label} className="p-3 rounded-lg bg-muted text-center">
             <div className="text-xl font-bold text-primary">{s.value}</div>

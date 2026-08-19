@@ -12,7 +12,7 @@ function escapeXml(str: string): string {
     .replace(/'/g, '&apos;')
 }
 
-function jsonToXml(value: unknown, tagName: string, indent: string): string {
+function jsonToXml(value: unknown, tagName: string, indent: string, indentUnit: string): string {
   if (value === null || value === undefined) {
     return `${indent}<${tagName} />\n`
   }
@@ -20,18 +20,22 @@ function jsonToXml(value: unknown, tagName: string, indent: string): string {
     return `${indent}<${tagName}>${escapeXml(String(value))}</${tagName}>\n`
   }
   if (Array.isArray(value)) {
-    return value.map((item) => jsonToXml(item, tagName, indent)).join('')
+    return value.map((item) => jsonToXml(item, tagName, indent, indentUnit)).join('')
   }
   if (typeof value === 'object') {
     const entries = Object.entries(value as Record<string, unknown>)
     let inner = ''
     for (const [key, val] of entries) {
       const safeKey = key.replace(/[^a-zA-Z0-9_.-]/g, '_').replace(/^(\d)/, '_$1')
-      inner += jsonToXml(val, safeKey, indent + '  ')
+      inner += jsonToXml(val, safeKey, indent + indentUnit, indentUnit)
     }
     return `${indent}<${tagName}>\n${inner}${indent}</${tagName}>\n`
   }
   return ''
+}
+
+function minifyXml(xml: string): string {
+  return xml.replace(/>\s+</g, '><').replace(/\s+/g, ' ').trim()
 }
 
 export default function JsonToXmlTool() {
@@ -39,12 +43,16 @@ export default function JsonToXmlTool() {
   const [output, setOutput] = useState('')
   const [rootTag, setRootTag] = useState('root')
   const [error, setError] = useState('')
+  const [indentSize, setIndentSize] = useState(2)
+  const [minified, setMinified] = useState(false)
 
   const convert = () => {
     try {
       setError('')
       const parsed = JSON.parse(input)
-      const xml = `<?xml version="1.0" encoding="UTF-8"?>\n${jsonToXml(parsed, rootTag || 'root', '')}`
+      const indentUnit = ' '.repeat(indentSize)
+      let xml = `<?xml version="1.0" encoding="UTF-8"?>\n${jsonToXml(parsed, rootTag || 'root', '', indentUnit)}`
+      if (minified) xml = minifyXml(xml)
       setOutput(xml)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Invalid JSON input')
@@ -88,15 +96,30 @@ export default function JsonToXmlTool() {
         { question: 'Are special characters escaped in the XML output?', answer: 'Yes, characters like &, <, >, ", and apostrophes are automatically escaped to their XML entity equivalents for valid XML output.' },
         { question: 'Can I customize the root XML element name?', answer: 'Yes, use the Root Element Name field to set any custom tag name for the outermost XML element instead of the default "root".' },
       ]}>
-      <div className="mb-4">
-        <label className="text-sm font-medium">Root Element Name</label>
-        <input
-          type="text"
-          value={rootTag}
-          onChange={(e) => setRootTag(e.target.value)}
-          className="ml-2 px-3 py-1.5 rounded-md border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-          placeholder="root"
-        />
+      <div className="mb-4 flex flex-wrap items-center gap-4">
+        <div>
+          <label className="text-sm font-medium">Root Element Name</label>
+          <input
+            type="text"
+            value={rootTag}
+            onChange={(e) => setRootTag(e.target.value)}
+            className="ml-2 px-3 py-1.5 rounded-md border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            placeholder="root"
+          />
+        </div>
+        <select value={indentSize} onChange={(e) => setIndentSize(Number(e.target.value))} className="h-9 px-3 rounded-md border border-input bg-card text-sm">
+          <option value={2}>2 spaces</option>
+          <option value={4}>4 spaces</option>
+        </select>
+        <label className="flex items-center gap-2 text-sm font-medium cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={minified}
+            onChange={(e) => setMinified(e.target.checked)}
+            className="rounded border-input"
+          />
+          Minified
+        </label>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>

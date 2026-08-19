@@ -3,11 +3,24 @@
 import { useState, useEffect, useMemo } from 'react'
 import { ToolPage, CopyButton } from '@/components/tool-page'
 
+const TIMEZONES = [
+  { value: 'UTC', label: 'UTC', iana: 'UTC' },
+  { value: 'EST', label: 'EST (New York)', iana: 'America/New_York' },
+  { value: 'CST', label: 'CST (Chicago)', iana: 'America/Chicago' },
+  { value: 'PST', label: 'PST (Los Angeles)', iana: 'America/Los_Angeles' },
+  { value: 'IST', label: 'IST (India)', iana: 'Asia/Kolkata' },
+  { value: 'CET', label: 'CET (Berlin)', iana: 'Europe/Berlin' },
+  { value: 'JST', label: 'JST (Tokyo)', iana: 'Asia/Tokyo' },
+  { value: 'AEST', label: 'AEST (Sydney)', iana: 'Australia/Sydney' },
+  { value: 'GMT', label: 'GMT (London)', iana: 'Europe/London' },
+]
+
 export default function UnixTimestampConverterTool() {
   const [now, setNow] = useState(Math.floor(Date.now() / 1000))
   const [input, setInput] = useState('')
   const [mode, setMode] = useState<'toDate' | 'toTimestamp'>('toDate')
   const [dateInput, setDateInput] = useState('')
+  const [timezone, setTimezone] = useState('UTC')
 
   // Live clock
   useEffect(() => {
@@ -28,16 +41,18 @@ export default function UnixTimestampConverterTool() {
 
     if (isNaN(date.getTime())) return null
 
+    const tz = TIMEZONES.find(t => t.value === timezone)?.iana || 'UTC'
     return {
       isMs,
       iso: date.toISOString(),
       utc: date.toUTCString(),
-      local: date.toLocaleString(),
-      date: date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }),
-      time: date.toLocaleTimeString(),
+      local: date.toLocaleString('en-US', { timeZone: tz }),
+      date: date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: tz }),
+      time: date.toLocaleTimeString('en-US', { timeZone: tz }),
       relative: getRelativeTime(date),
+      tzLabel: timezone,
     }
-  }, [input])
+  }, [input, timezone])
 
   // Convert date -> timestamp
   const dateResult = useMemo(() => {
@@ -144,6 +159,12 @@ export default function UnixTimestampConverterTool() {
                 placeholder="e.g. 1700000000 or 1700000000000"
                 className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-ring"
               />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Display Timezone</label>
+              <select value={timezone} onChange={e => setTimezone(e.target.value)} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+                {TIMEZONES.map(tz => <option key={tz.value} value={tz.value}>{tz.label}</option>)}
+              </select>
             </div>
 
             {timestampResult && (

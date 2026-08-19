@@ -51,19 +51,40 @@ const FONT: Record<string, string[]> = {
   ':': ['     ', '  #  ', '     ', '  #  ', '     '],
 }
 
-function textToAsciiArt(text: string): string {
+// 3-line tall small block font
+const FONT_SMALL: Record<string, string[]> = {
+  A: ['###', '# #', '###'], B: ['## ', '###', '## '], C: ['###', '#  ', '###'],
+  D: ['## ', '# #', '## '], E: ['###', '## ', '###'], F: ['###', '## ', '#  '],
+  G: ['###', '# #', '###'], H: ['# #', '###', '# #'], I: ['###', ' # ', '###'],
+  J: ['###', ' # ', '## '], K: ['# #', '## ', '# #'], L: ['#  ', '#  ', '###'],
+  M: ['# #', '###', '# #'], N: ['# #', '###', '# #'], O: ['###', '# #', '###'],
+  P: ['###', '###', '#  '], Q: ['###', '# #', '## '], R: ['###', '## ', '# #'],
+  S: ['###', ' # ', '###'], T: ['###', ' # ', ' # '], U: ['# #', '# #', '###'],
+  V: ['# #', '# #', ' # '], W: ['# #', '###', '# #'], X: ['# #', ' # ', '# #'],
+  Y: ['# #', ' # ', ' # '], Z: ['###', ' # ', '###'],
+  '0': ['###', '# #', '###'], '1': [' # ', '## ', '###'], '2': ['###', ' ##', '###'],
+  '3': ['###', ' ##', '###'], '4': ['# #', '###', '  #'], '5': ['###', '## ', '###'],
+  '6': ['###', '## ', '###'], '7': ['###', '  #', '  #'], '8': ['###', '###', '###'],
+  '9': ['###', '###', '  #'],
+  ' ': ['   ', '   ', '   '], '!': [' # ', ' # ', ' # '], '.': ['   ', '   ', ' # '],
+  '-': ['   ', '###', '   '], '?': ['###', ' # ', ' # '], ',': ['   ', '   ', ' # '],
+}
+
+function textToAsciiArt(text: string, font: Record<string, string[]>): string {
   const upper = text.toUpperCase()
-  const lines: string[][] = [[], [], [], [], []]
+  const rowCount = font['A']?.length || 5
+  const lines: string[][] = Array.from({ length: rowCount }, () => [])
 
   for (const ch of upper) {
-    const glyph = FONT[ch]
+    const glyph = font[ch]
     if (glyph) {
-      for (let row = 0; row < 5; row++) {
+      for (let row = 0; row < rowCount; row++) {
         lines[row].push(glyph[row])
       }
     } else {
-      for (let row = 0; row < 5; row++) {
-        lines[row].push('     ')
+      const w = rowCount === 5 ? '     ' : '   '
+      for (let row = 0; row < rowCount; row++) {
+        lines[row].push(w)
       }
     }
   }
@@ -73,11 +94,12 @@ function textToAsciiArt(text: string): string {
 
 export default function TextToAsciiArtTool() {
   const [input, setInput] = useState('')
+  const [fontStyle, setFontStyle] = useState<'large' | 'small'>('large')
 
   const output = useMemo(() => {
     if (!input) return ''
-    return textToAsciiArt(input)
-  }, [input])
+    return textToAsciiArt(input, fontStyle === 'large' ? FONT : FONT_SMALL)
+  }, [input, fontStyle])
 
   return (
     <ToolPage title="Text to ASCII Art" description="Convert text to ASCII art using a simple block font. Supports A-Z, 0-9, and common punctuation." category="text" categoryLabel="Text Tools"
@@ -114,7 +136,13 @@ export default function TextToAsciiArtTool() {
       ]}>
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium">Input Text</span>
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-medium">Input Text</span>
+            <div className="flex gap-1">
+              <button onClick={() => setFontStyle('large')} className={`px-3 py-1 rounded text-xs font-medium transition-colors ${fontStyle === 'large' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Large</button>
+              <button onClick={() => setFontStyle('small')} className={`px-3 py-1 rounded text-xs font-medium transition-colors ${fontStyle === 'small' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Small</button>
+            </div>
+          </div>
           <ClearButton onClear={() => setInput('')} />
         </div>
         <input type="text" value={input} onChange={e => setInput(e.target.value)} placeholder="HELLO" className="w-full rounded-lg border border-input bg-tool-bg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />

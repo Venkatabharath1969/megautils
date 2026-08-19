@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef, useCallback } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, DownloadButton, ClearButton } from '@/components/tool-page'
+import { Upload } from 'lucide-react'
 
 function optimizeSvg(svg: string, options: {
   removeComments: boolean
@@ -81,7 +82,16 @@ export default function SvgOptimizerTool() {
   const optimizedSize = new Blob([output]).size
   const savings = originalSize > 0 ? ((1 - optimizedSize / originalSize) * 100).toFixed(1) : '0'
 
-  const clear = () => setInput('')
+  const svgFileRef = useRef<HTMLInputElement>(null)
+  const handleSvgFile = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (ev) => setInput(ev.target?.result as string)
+    reader.readAsText(file)
+  }, [])
+
+  const clear = () => { setInput(''); if (svgFileRef.current) svgFileRef.current.value = '' }
 
   const options = [
     { label: 'Remove comments', checked: removeComments, set: setRemoveComments },
@@ -131,6 +141,15 @@ export default function SvgOptimizerTool() {
         { question: 'Is it safe to remove SVG metadata?', answer: 'Yes, for web use. Metadata elements like <title>, <desc>, and editor-specific attributes are not needed for rendering and can be safely stripped.' },
       ]}
     >
+      {/* File upload */}
+      <div className="mb-4">
+        <label className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card hover:bg-muted cursor-pointer transition-colors text-sm font-medium">
+          <Upload className="h-4 w-4" />
+          Upload SVG File
+          <input ref={svgFileRef} type="file" accept=".svg" onChange={handleSvgFile} className="hidden" />
+        </label>
+      </div>
+
       {/* Options */}
       <div className="flex flex-wrap gap-x-4 gap-y-2 mb-4">
         {options.map((opt) => (
@@ -185,6 +204,20 @@ export default function SvgOptimizerTool() {
       {output && (
         <div className="mt-4 p-3 rounded-lg bg-green-500/10 text-green-600 dark:text-green-400 text-sm">
           Saved <strong>{(originalSize - optimizedSize).toLocaleString()} bytes</strong> ({savings}% reduction)
+        </div>
+      )}
+
+      {/* Before/After SVG preview */}
+      {input && output && input.includes('<svg') && (
+        <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <span className="text-xs font-medium text-muted-foreground mb-1 block">Before</span>
+            <div className="border border-border rounded-lg p-3 bg-white dark:bg-gray-950 flex items-center justify-center min-h-[120px]" dangerouslySetInnerHTML={{ __html: input }} />
+          </div>
+          <div>
+            <span className="text-xs font-medium text-muted-foreground mb-1 block">After</span>
+            <div className="border border-border rounded-lg p-3 bg-white dark:bg-gray-950 flex items-center justify-center min-h-[120px]" dangerouslySetInnerHTML={{ __html: output }} />
+          </div>
         </div>
       )}
     </ToolPage>

@@ -474,7 +474,7 @@ interface ParaphraseResult {
   inputWordCount: number
 }
 
-function paraphrase(text: string, mode: ParaphraseMode): ParaphraseResult {
+function paraphrase(text: string, mode: ParaphraseMode, preserveTerms: Set<string> = new Set()): ParaphraseResult {
   if (!text.trim()) {
     return { text: '', changes: [], outputWordCount: 0, inputWordCount: 0 }
   }
@@ -553,6 +553,12 @@ function paraphrase(text: string, mode: ParaphraseMode): ParaphraseResult {
         return token
       }
 
+      // Skip preserved terms
+      if (preserveTerms.has(lower)) {
+        globalWordIndex++
+        return token
+      }
+
       let replacement: string | null = null
 
       // 1. Try mode-specific word map first
@@ -609,11 +615,15 @@ const MODE_OPTIONS: { key: ParaphraseMode; label: string; desc: string }[] = [
 export default function AIParaphraser() {
   const [input, setInput] = useState('')
   const [mode, setMode] = useState<ParaphraseMode>('standard')
+  const [preserveTermsInput, setPreserveTermsInput] = useState('')
 
   const result = useMemo(() => {
     if (!input.trim()) return null
-    return paraphrase(input, mode)
-  }, [input, mode])
+    const terms = new Set(
+      preserveTermsInput.split(',').map(t => t.trim().toLowerCase()).filter(Boolean)
+    )
+    return paraphrase(input, mode, terms)
+  }, [input, mode, preserveTermsInput])
 
   const clear = useCallback(() => {
     setInput('')
@@ -713,6 +723,18 @@ export default function AIParaphraser() {
           placeholder="Paste or type your text here to paraphrase..."
           rows={10}
         />
+
+        {/* Preserve terms */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium">Preserve Terms (comma-separated words that won&apos;t be replaced)</label>
+          <input
+            type="text"
+            value={preserveTermsInput}
+            onChange={(e) => setPreserveTermsInput(e.target.value)}
+            placeholder="e.g. API, JavaScript, React"
+            className="w-full h-9 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+          />
+        </div>
 
         {/* Mode selector */}
         <div className="space-y-3">

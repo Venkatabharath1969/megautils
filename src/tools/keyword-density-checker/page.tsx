@@ -24,17 +24,21 @@ function extractNgrams(words: string[], n: number): PhraseEntry[] {
     .slice(0, 25)
 }
 
+const STOP_WORDS = new Set(['the', 'a', 'an', 'is', 'in', 'to', 'of', 'and', 'for', 'on', 'it', 'at', 'by', 'as', 'or', 'be', 'this', 'that', 'with', 'from', 'are', 'was', 'were', 'has', 'have', 'had', 'not', 'but', 'what', 'all', 'can', 'her', 'his', 'one', 'our', 'out', 'you', 'its', 'do', 'no', 'if', 'so', 'up', 'we', 'my', 'me', 'he', 'she', 'they', 'them'])
+
 export default function KeywordDensityCheckerTool() {
   const [text, setText] = useState('')
   const [targetKeyword, setTargetKeyword] = useState('')
   const [activeTab, setActiveTab] = useState<1 | 2 | 3>(1)
+  const [filterStopWords, setFilterStopWords] = useState(false)
 
   const analysis = useMemo(() => {
     if (!text.trim()) return { words: [], totalWords: 0, unigrams: [], bigrams: [], trigrams: [], targetCount: 0, targetDensity: 0 }
 
     const cleaned = text.toLowerCase().replace(/[^a-z0-9\s]/g, '')
-    const words = cleaned.split(/\s+/).filter(Boolean)
-    const totalWords = words.length
+    const allWords = cleaned.split(/\s+/).filter(Boolean)
+    const words = filterStopWords ? allWords.filter(w => !STOP_WORDS.has(w)) : allWords
+    const totalWords = allWords.length
 
     const unigrams = extractNgrams(words, 1)
     const bigrams = extractNgrams(words, 2)
@@ -57,7 +61,7 @@ export default function KeywordDensityCheckerTool() {
     }
 
     return { words, totalWords, unigrams, bigrams, trigrams, targetCount, targetDensity }
-  }, [text, targetKeyword])
+  }, [text, targetKeyword, filterStopWords])
 
   const currentData = activeTab === 1 ? analysis.unigrams : activeTab === 2 ? analysis.bigrams : analysis.trigrams
 
@@ -106,6 +110,12 @@ export default function KeywordDensityCheckerTool() {
             <label className="block text-sm font-medium mb-1">Target Keyword</label>
             <input type="text" value={targetKeyword} onChange={e => setTargetKeyword(e.target.value)} placeholder="e.g. content marketing" className="w-full rounded-lg border border-input bg-tool-bg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
           </div>
+
+          <label className="flex items-center gap-2 text-sm cursor-pointer">
+            <input type="checkbox" checked={filterStopWords} onChange={e => setFilterStopWords(e.target.checked)} className="rounded border-input" />
+            <span className="font-medium">Filter stop words</span>
+            <span className="text-xs text-muted-foreground">(the, a, is, in, to, of, and, for...)</span>
+          </label>
 
           {targetKeyword.trim() && analysis.totalWords > 0 && (
             <div className="p-4 rounded-lg bg-muted">

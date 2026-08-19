@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, ClearButton } from '@/components/tool-page'
 
 function jsonEscape(str: string): string {
@@ -47,18 +47,18 @@ function jsonUnescape(str: string): string {
 
 export default function JsonEscapeTool() {
   const [input, setInput] = useState('')
-  const [output, setOutput] = useState('')
   const [mode, setMode] = useState<'escape' | 'unescape'>('escape')
 
-  const process = () => {
+  const output = useMemo(() => {
+    if (!input) return ''
     try {
-      setOutput(mode === 'escape' ? jsonEscape(input) : jsonUnescape(input))
+      return mode === 'escape' ? jsonEscape(input) : jsonUnescape(input)
     } catch {
-      setOutput('Error processing input')
+      return 'Error processing input'
     }
-  }
+  }, [input, mode])
 
-  const clear = () => { setInput(''); setOutput('') }
+  const clear = () => { setInput('') }
 
   return (
     <ToolPage title="JSON String Escape / Unescape" description="Escape or unescape strings for use in JSON. Handles quotes, backslashes, newlines, tabs, and Unicode." category="string" categoryLabel="String Utilities"
@@ -114,10 +114,6 @@ export default function JsonEscapeTool() {
           <ToolTextarea value={output} readOnly placeholder="Result will appear here..." rows={10} />
         </div>
       </div>
-
-      <button onClick={process} className="mt-4 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
-        {mode === 'escape' ? 'Escape String' : 'Unescape String'}
-      </button>
     </ToolPage>
   )
 }

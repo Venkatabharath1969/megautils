@@ -64,6 +64,23 @@ function toConstantCase(str: string): string {
     .join('_')
 }
 
+function toSwapCase(str: string): string {
+  return [...str].map(ch => {
+    if (ch >= 'a' && ch <= 'z') return ch.toUpperCase()
+    if (ch >= 'A' && ch <= 'Z') return ch.toLowerCase()
+    return ch
+  }).join('')
+}
+
+function toDotCase(str: string): string {
+  return str
+    .replace(/[^a-zA-Z0-9\s]/g, ' ')
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((w) => w.toLowerCase())
+    .join('.')
+}
+
 export default function CaseConverterTool() {
   const [input, setInput] = useState('')
 
@@ -79,6 +96,8 @@ export default function CaseConverterTool() {
       { label: 'kebab-case', value: toKebabCase(input) },
       { label: 'PascalCase', value: toPascalCase(input) },
       { label: 'CONSTANT_CASE', value: toConstantCase(input) },
+      { label: 'sWAP cASE', value: toSwapCase(input) },
+      { label: 'dot.case', value: toDotCase(input) },
     ]
   }, [input])
 

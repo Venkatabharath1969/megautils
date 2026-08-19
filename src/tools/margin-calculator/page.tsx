@@ -179,6 +179,39 @@ export default function MarginCalculator() {
           </div>
         </div>
       </div>
+
+      {/* Markup to Margin Reference Table */}
+      <div className="mt-8">
+        <h3 className="text-lg font-semibold mb-4">Markup to Margin Reference Table</h3>
+        <div className="overflow-x-auto rounded-lg border border-border">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="bg-muted/50">
+                <th className="text-left p-3 font-medium">Markup %</th>
+                <th className="text-right p-3 font-medium">Margin %</th>
+                <th className="text-right p-3 font-medium">Multiplier</th>
+                <th className="text-left p-3 font-medium">Example</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { markup: 20, margin: 16.67, mult: 1.20, example: '$60 cost → $72 sell' },
+                { markup: 25, margin: 20.00, mult: 1.25, example: '$60 cost → $75 sell' },
+                { markup: 33.33, margin: 25.00, mult: 1.33, example: '$60 cost → $80 sell' },
+                { markup: 50, margin: 33.33, mult: 1.50, example: '$60 cost → $90 sell' },
+                { markup: 100, margin: 50.00, mult: 2.00, example: '$60 cost → $120 sell' },
+              ].map((row, i) => (
+                <tr key={row.markup} className={i % 2 === 0 ? 'bg-card' : 'bg-muted/20'}>
+                  <td className="p-3 font-medium text-orange-600 dark:text-orange-400">{row.markup}%</td>
+                  <td className="p-3 text-right font-medium text-primary">{row.margin.toFixed(2)}%</td>
+                  <td className="p-3 text-right text-muted-foreground">{row.mult.toFixed(2)}x</td>
+                  <td className="p-3 text-muted-foreground">{row.example}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </ToolPage>
   )
 }

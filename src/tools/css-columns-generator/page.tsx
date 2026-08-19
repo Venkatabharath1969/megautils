@@ -10,6 +10,7 @@ export default function CssColumnsGeneratorTool() {
   const [ruleWidth, setRuleWidth] = useState(1)
   const [ruleColor, setRuleColor] = useState('#e2e8f0')
   const [columnWidth, setColumnWidth] = useState('')
+  const [columnFill, setColumnFill] = useState<'balance' | 'auto'>('balance')
 
   const sampleText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
 
@@ -25,11 +26,12 @@ Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium dolor
       rules.push(`column-count: ${columnCount};`)
     }
     rules.push(`column-gap: ${columnGap}px;`)
+    rules.push(`column-fill: ${columnFill};`)
     if (ruleStyle !== 'none') {
       rules.push(`column-rule: ${ruleWidth}px ${ruleStyle} ${ruleColor};`)
     }
     return `.multi-column {\n  ${rules.join('\n  ')}\n}`
-  }, [columnCount, columnGap, ruleStyle, ruleWidth, ruleColor, columnWidth])
+  }, [columnCount, columnGap, ruleStyle, ruleWidth, ruleColor, columnWidth, columnFill])
 
   const previewStyle: React.CSSProperties = useMemo(() => {
     const style: React.CSSProperties = {
@@ -45,8 +47,9 @@ Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium dolor
       style.columnRuleWidth = `${ruleWidth}px`
       style.columnRuleColor = ruleColor
     }
+    style.columnFill = columnFill
     return style
-  }, [columnCount, columnGap, ruleStyle, ruleWidth, ruleColor, columnWidth])
+  }, [columnCount, columnGap, ruleStyle, ruleWidth, ruleColor, columnWidth, columnFill])
 
   return (
     <ToolPage
@@ -107,6 +110,15 @@ Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium dolor
           <div>
             <label className="text-sm font-medium block mb-1">Column Gap: {columnGap}px</label>
             <input type="range" min={0} max={60} value={columnGap} onChange={(e) => setColumnGap(Number(e.target.value))} className="w-full" />
+          </div>
+          <div>
+            <label className="text-sm font-medium block mb-1">Column Fill</label>
+            <div className="flex gap-2">
+              {(['balance', 'auto'] as const).map(v => (
+                <button key={v} onClick={() => setColumnFill(v)} className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${columnFill === v ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>{v}</button>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">Balance distributes content equally; auto fills columns sequentially</p>
           </div>
           <div>
             <label className="text-sm font-medium block mb-1">Rule Style</label>

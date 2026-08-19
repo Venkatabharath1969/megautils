@@ -121,7 +121,7 @@ export default function MorseCodeTranslatorTool() {
       <details className="mt-4">
         <summary className="text-sm font-medium cursor-pointer text-muted-foreground hover:text-foreground">Morse Code Reference</summary>
         <div className="mt-2 grid grid-cols-4 sm:grid-cols-6 md:grid-cols-9 gap-2">
-          {Object.entries(CHAR_TO_MORSE).slice(0, 36).map(([char, code]) => (
+          {Object.entries(CHAR_TO_MORSE).map(([char, code]) => (
             <div key={char} className="p-2 rounded bg-muted text-center">
               <div className="font-bold text-sm">{char}</div>
               <div className="text-xs text-muted-foreground font-mono">{code}</div>

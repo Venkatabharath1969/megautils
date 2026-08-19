@@ -355,6 +355,54 @@ export default function AIContentDetectorTool() {
               </div>
             </div>
 
+            {/* Per-sentence highlighting */}
+            {(() => {
+              const sentences = text
+                .replace(/([.!?])\s+/g, '$1|SPLIT|')
+                .split('|SPLIT|')
+                .map(s => s.trim())
+                .filter(s => s.length > 0)
+              if (sentences.length > 1) {
+                return (
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-semibold">Per-Sentence Analysis</h3>
+                    <div className="p-3 rounded-lg border border-border bg-muted/30 text-sm leading-relaxed whitespace-pre-wrap">
+                      {sentences.map((sentence, i) => {
+                        const words = sentence.split(/\s+/).filter(Boolean)
+                        const wordCount = words.length
+                        if (wordCount < 5) return <span key={i}>{sentence}{' '}</span>
+                        const lowerWords = words.map(w => w.toLowerCase().replace(/[^a-z'-]/g, '')).filter(w => w.length > 0)
+                        const uniqueRatio = new Set(lowerWords).size / Math.max(lowerWords.length, 1)
+                        const transCount = lowerWords.filter(w => TRANSITION_WORDS.includes(w)).length
+                        const transDensity = transCount / (wordCount / 100)
+                        const starterWord = words[0]?.toLowerCase().replace(/[^a-z]/g, '') || ''
+                        const commonStarter = COMMON_AI_STARTERS.includes(starterWord) ? 1 : 0
+                        let sentScore = 0
+                        if (uniqueRatio < 0.5) sentScore += 30
+                        else if (uniqueRatio < 0.7) sentScore += 15
+                        if (transDensity > 3) sentScore += 25
+                        else if (transDensity > 1.5) sentScore += 10
+                        if (commonStarter) sentScore += 10
+                        if (wordCount >= 15 && wordCount <= 25) sentScore += 15
+                        const color = sentScore >= 40
+                          ? 'bg-red-500/20 border-b-2 border-red-500/40'
+                          : sentScore >= 20
+                            ? 'bg-yellow-500/15 border-b-2 border-yellow-500/30'
+                            : 'bg-green-500/10 border-b-2 border-green-500/30'
+                        return <span key={i} className={`${color} rounded px-0.5`} title={`AI-likeness: ${sentScore}%`}>{sentence}{' '}</span>
+                      })}
+                    </div>
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                      <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-green-500/30" /> Likely human</span>
+                      <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-yellow-500/30" /> Mixed</span>
+                      <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-red-500/30" /> AI-like</span>
+                    </div>
+                  </div>
+                )
+              }
+              return null
+            })()}
+
             {/* Disclaimer */}
             <div className="p-3 rounded-lg bg-muted/50 border border-border text-xs text-muted-foreground">
               <strong>Disclaimer:</strong> This tool uses statistical heuristics, not a trained AI model. Results are estimates, not proof. Heavily edited AI text may appear human, and formulaic human writing may appear AI-generated. Always use multiple signals before drawing conclusions.

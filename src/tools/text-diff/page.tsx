@@ -61,11 +61,17 @@ export default function TextDiffTool() {
   const [left, setLeft] = useState('')
   const [right, setRight] = useState('')
   const [showDiff, setShowDiff] = useState(false)
+  const [ignoreWhitespace, setIgnoreWhitespace] = useState(false)
 
   const diff = useMemo(() => {
     if (!showDiff) return []
+    if (ignoreWhitespace) {
+      const trimLeft = left.split('\n').map(l => l.trim()).join('\n')
+      const trimRight = right.split('\n').map(l => l.trim()).join('\n')
+      return computeDiff(trimLeft, trimRight)
+    }
     return computeDiff(left, right)
-  }, [left, right, showDiff])
+  }, [left, right, showDiff, ignoreWhitespace])
 
   const stats = useMemo(() => {
     const added = diff.filter(d => d.type === 'added').length
@@ -121,12 +127,23 @@ export default function TextDiffTool() {
         </div>
       </div>
 
-      <button
-        onClick={() => setShowDiff(true)}
-        className="mt-4 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
-      >
-        Compare
-      </button>
+      <div className="flex flex-wrap items-center gap-3 mt-4">
+        <button
+          onClick={() => setShowDiff(true)}
+          className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+        >
+          Compare
+        </button>
+        <label className="flex items-center gap-2 text-sm font-medium cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={ignoreWhitespace}
+            onChange={(e) => { setIgnoreWhitespace(e.target.checked); setShowDiff(false) }}
+            className="rounded border-input"
+          />
+          Ignore whitespace
+        </label>
+      </div>
 
       {showDiff && (
         <div className="mt-4">

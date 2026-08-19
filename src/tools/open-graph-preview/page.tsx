@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ToolPage, ClearButton } from '@/components/tool-page'
+import { ToolPage, ClearButton, CopyButton } from '@/components/tool-page'
 
 export default function OpenGraphPreviewTool() {
   const [ogTitle, setOgTitle] = useState('')
@@ -87,6 +87,28 @@ export default function OpenGraphPreviewTool() {
             <label className="block text-sm font-medium mb-1">Page URL</label>
             <input type="url" value={ogUrl} onChange={e => setOgUrl(e.target.value)} placeholder="https://example.com/page" className="w-full rounded-lg border border-input bg-tool-bg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
           </div>
+
+          {(ogTitle || ogDescription || ogImage || ogUrl) && (
+            <div className="p-3 rounded-lg bg-muted space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-muted-foreground">Generated OG Tags</span>
+                <CopyButton text={[
+                  ogTitle && `<meta property="og:title" content="${ogTitle}" />`,
+                  ogDescription && `<meta property="og:description" content="${ogDescription}" />`,
+                  ogImage && `<meta property="og:image" content="${ogImage}" />`,
+                  ogUrl && `<meta property="og:url" content="${ogUrl}" />`,
+                  '<meta property="og:type" content="website" />',
+                ].filter(Boolean).join('\n')} />
+              </div>
+              <pre className="text-xs font-mono text-muted-foreground whitespace-pre-wrap">{[
+                ogTitle && `<meta property="og:title" content="${ogTitle}" />`,
+                ogDescription && `<meta property="og:description" content="${ogDescription}" />`,
+                ogImage && `<meta property="og:image" content="${ogImage}" />`,
+                ogUrl && `<meta property="og:url" content="${ogUrl}" />`,
+                '<meta property="og:type" content="website" />',
+              ].filter(Boolean).join('\n')}</pre>
+            </div>
+          )}
         </div>
 
         {/* Previews */}

@@ -35,7 +35,26 @@ export default function SchemaBreadcrumbTool() {
     return `<script type="application/ld+json">\n${JSON.stringify(schema, null, 2)}\n</script>`
   }, [items])
 
-  const clear = () => setItems([{ name: 'Home', url: 'https://example.com' }, { name: '', url: '' }])
+  const [autoUrl, setAutoUrl] = useState('')
+
+  const autoFromUrl = () => {
+    try {
+      const urlStr = autoUrl.startsWith('http') ? autoUrl : `https://${autoUrl}`
+      const u = new URL(urlStr)
+      const segments = u.pathname.split('/').filter(Boolean)
+      const newItems: BreadcrumbItem[] = [{ name: 'Home', url: `${u.origin}` }]
+      let path = ''
+      for (const seg of segments) {
+        path += `/${seg}`
+        const name = seg.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+        newItems.push({ name, url: `${u.origin}${path}` })
+      }
+      if (newItems.length < 2) newItems.push({ name: '', url: '' })
+      setItems(newItems)
+    } catch { /* ignore invalid URLs */ }
+  }
+
+  const clear = () => { setItems([{ name: 'Home', url: 'https://example.com' }, { name: '', url: '' }]); setAutoUrl('') }
 
   const inputClass = 'w-full rounded-lg border border-input bg-tool-bg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring'
 
@@ -82,6 +101,11 @@ export default function SchemaBreadcrumbTool() {
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold">Breadcrumb Path</h2>
             <ClearButton onClear={clear} />
+          </div>
+
+          <div className="flex gap-2">
+            <input type="url" value={autoUrl} onChange={e => setAutoUrl(e.target.value)} placeholder="Paste a URL to auto-generate breadcrumbs" className={inputClass} />
+            <button onClick={autoFromUrl} disabled={!autoUrl.trim()} className="px-3 py-2 rounded-lg bg-primary text-primary-foreground text-xs font-medium whitespace-nowrap hover:bg-primary/90 transition-colors disabled:opacity-50">Auto from URL</button>
           </div>
 
           {items.map((item, i) => (

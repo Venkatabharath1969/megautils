@@ -49,31 +49,42 @@ type GenType = 'paragraphs' | 'sentences' | 'words'
 export default function LoremIpsumGeneratorTool() {
   const [genType, setGenType] = useState<GenType>('paragraphs')
   const [count, setCount] = useState(3)
+  const [startClassic, setStartClassic] = useState(true)
   const [output, setOutput] = useState('')
 
   const generate = () => {
+    const CLASSIC_OPENING = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
     const clamped = Math.max(1, Math.min(100, count))
+    let result = ''
     switch (genType) {
       case 'paragraphs': {
         const paragraphs: string[] = []
         for (let i = 0; i < clamped; i++) paragraphs.push(generateParagraph())
-        setOutput(paragraphs.join('\n\n'))
+        result = paragraphs.join('\n\n')
         break
       }
       case 'sentences': {
         const sentences: string[] = []
         for (let i = 0; i < clamped; i++) sentences.push(generateSentence())
-        setOutput(sentences.join(' '))
+        result = sentences.join(' ')
         break
       }
       case 'words': {
         const words: string[] = []
         for (let i = 0; i < clamped; i++) words.push(randomWord())
         words[0] = words[0].charAt(0).toUpperCase() + words[0].slice(1)
-        setOutput(words.join(' ') + '.')
+        result = words.join(' ') + '.'
         break
       }
     }
+    if (startClassic && result) {
+      // Replace the first sentence with the classic opening
+      const firstPeriod = result.indexOf('.')
+      if (firstPeriod > 0) {
+        result = CLASSIC_OPENING + ' ' + result.slice(firstPeriod + 2)
+      }
+    }
+    setOutput(result)
   }
 
   const types: { value: GenType; label: string }[] = [
@@ -140,6 +151,10 @@ export default function LoremIpsumGeneratorTool() {
             className="w-20 px-3 py-1.5 text-sm rounded-md border border-input bg-tool-bg focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
+        <label className="flex items-center gap-1.5 text-sm cursor-pointer">
+          <input type="checkbox" checked={startClassic} onChange={e => setStartClassic(e.target.checked)} className="rounded border-input" />
+          Start with &quot;Lorem ipsum...&quot;
+        </label>
         <button onClick={generate} className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
           Generate
         </button>

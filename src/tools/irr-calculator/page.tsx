@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import { ToolPage } from '@/components/tool-page'
+import { ExportButton } from '@/components/export-button'
 
 function calculateIRR(initialInvestment: number, cashFlows: number[]): number | null {
   // Bisection method to find IRR
@@ -41,6 +42,8 @@ function calculateIRR(initialInvestment: number, cashFlows: number[]): number | 
 export default function IRRCalculator() {
   const [initialInvestment, setInitialInvestment] = useState(100000)
   const [cashFlows, setCashFlows] = useState<number[]>([30000, 35000, 40000, 45000, 50000])
+  const [financeRate, setFinanceRate] = useState(10)
+  const [reinvestmentRate, setReinvestmentRate] = useState(12)
 
   const addYear = () => setCashFlows(prev => [...prev, 0])
   const removeYear = (idx: number) => setCashFlows(prev => prev.filter((_, i) => i !== idx))
@@ -62,8 +65,33 @@ export default function IRRCalculator() {
       ratesNPV.push({ rate: r, npv })
     }
 
-    return { irr, totalCashFlows, totalProfit, ratesNPV }
-  }, [initialInvestment, cashFlows])
+    // Calculate MIRR
+    const n = cashFlows.length
+    const fRate = financeRate / 100
+    const rRate = reinvestmentRate / 100
+
+    // FV of positive cash flows compounded at reinvestment rate
+    let fvPositives = 0
+    for (let i = 0; i < cashFlows.length; i++) {
+      if (cashFlows[i] > 0) {
+        fvPositives += cashFlows[i] * Math.pow(1 + rRate, n - i - 1)
+      }
+    }
+
+    // PV of negative cash flows discounted at finance rate (include initial investment)
+    let pvNegatives = initialInvestment
+    for (let i = 0; i < cashFlows.length; i++) {
+      if (cashFlows[i] < 0) {
+        pvNegatives += Math.abs(cashFlows[i]) / Math.pow(1 + fRate, i + 1)
+      }
+    }
+
+    const mirr = pvNegatives > 0 && n > 0
+      ? (Math.pow(fvPositives / pvNegatives, 1 / n) - 1) * 100
+      : null
+
+    return { irr, totalCashFlows, totalProfit, ratesNPV, mirr }
+  }, [initialInvestment, cashFlows, financeRate, reinvestmentRate])
 
   const fmt = (n: number) =>
     new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(n)
@@ -132,6 +160,18 @@ export default function IRRCalculator() {
               ))}
             </div>
           </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Finance Rate (%)</label>
+              <input type="number" min={0} max={100} step={0.5} value={financeRate} onChange={e => setFinanceRate(Number(e.target.value))} className="w-full h-9 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Reinvestment Rate (%)</label>
+              <input type="number" min={0} max={100} step={0.5} value={reinvestmentRate} onChange={e => setReinvestmentRate(Number(e.target.value))} className="w-full h-9 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground">Used for Modified IRR (MIRR) calculation</p>
         </div>
 
         {/* Results */}
@@ -163,12 +203,28 @@ export default function IRRCalculator() {
             <div className="text-sm text-muted-foreground mb-1">Total Undiscounted Profit</div>
             <div className={`text-xl font-bold ${result.totalProfit >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>{fmt(result.totalProfit)}</div>
           </div>
+
+          <div className={`p-4 rounded-xl border ${result.mirr !== null && result.mirr > 0 ? 'bg-teal-500/10 border-teal-500/20' : 'bg-orange-500/10 border-orange-500/20'}`}>
+            <div className="text-sm text-muted-foreground mb-1">Modified IRR (MIRR)</div>
+            <div className={`text-xl font-bold ${result.mirr !== null && result.mirr > 0 ? 'text-teal-600 dark:text-teal-400' : 'text-orange-600 dark:text-orange-400'}`}>
+              {result.mirr !== null ? `${result.mirr.toFixed(2)}%` : 'N/A'}
+            </div>
+            <div className="text-xs text-muted-foreground mt-1">Finance: {financeRate}% | Reinvestment: {reinvestmentRate}%</div>
+          </div>
         </div>
       </div>
 
       {/* NPV at Different Rates */}
       <div className="mt-8">
-        <h3 className="text-lg font-semibold mb-4">NPV at Different Discount Rates</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold">NPV at Different Discount Rates</h3>
+          <ExportButton
+            headers={['Discount Rate', 'NPV', 'Status']}
+            rows={result.ratesNPV.map(row => [`${row.rate}%`, row.npv.toFixed(2), row.npv >= 0 ? 'Profitable' : 'Not Profitable'])}
+            filename="irr-npv-analysis.csv"
+            label="Export CSV"
+          />
+        </div>
         <div className="overflow-x-auto rounded-lg border border-border">
           <table className="w-full text-sm">
             <thead>

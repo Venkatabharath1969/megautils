@@ -10,6 +10,7 @@ export default function CssBorderRadiusGeneratorTool() {
   const [topRight, setTopRight] = useState(16)
   const [bottomRight, setBottomRight] = useState(16)
   const [bottomLeft, setBottomLeft] = useState(16)
+  const [unit, setUnit] = useState<'px' | '%'>('px')
   const [boxSize] = useState(200)
   const [boxColor, setBoxColor] = useState('#3b82f6')
 
@@ -27,18 +28,20 @@ export default function CssBorderRadiusGeneratorTool() {
     ? { tl: allCorners, tr: allCorners, br: allCorners, bl: allCorners }
     : { tl: topLeft, tr: topRight, br: bottomRight, bl: bottomLeft }
 
+  const maxVal = unit === '%' ? 50 : 100
+
   const borderRadiusValue = useMemo(() => {
     const { tl, tr, br, bl } = values
-    if (tl === tr && tr === br && br === bl) return `${tl}px`
-    return `${tl}px ${tr}px ${br}px ${bl}px`
-  }, [values])
+    if (tl === tr && tr === br && br === bl) return `${tl}${unit}`
+    return `${tl}${unit} ${tr}${unit} ${br}${unit} ${bl}${unit}`
+  }, [values, unit])
 
   const shorthandCSS = `border-radius: ${borderRadiusValue};`
   const longhandCSS = [
-    `border-top-left-radius: ${values.tl}px;`,
-    `border-top-right-radius: ${values.tr}px;`,
-    `border-bottom-right-radius: ${values.br}px;`,
-    `border-bottom-left-radius: ${values.bl}px;`,
+    `border-top-left-radius: ${values.tl}${unit};`,
+    `border-top-right-radius: ${values.tr}${unit};`,
+    `border-bottom-right-radius: ${values.br}${unit};`,
+    `border-bottom-left-radius: ${values.bl}${unit};`,
   ].join('\n')
 
   return (
@@ -82,35 +85,41 @@ export default function CssBorderRadiusGeneratorTool() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Controls */}
         <div className="space-y-4">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <label className="flex items-center gap-2 text-sm">
               <input type="checkbox" checked={linked} onChange={e => { setLinked(e.target.checked); if (e.target.checked) handleAllChange(allCorners) }} className="rounded" />
               Link all corners
             </label>
+            <div className="flex items-center gap-1 ml-auto">
+              <label className="text-xs text-muted-foreground mr-1">Unit:</label>
+              {(['px', '%'] as const).map(u => (
+                <button key={u} onClick={() => setUnit(u)} className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${unit === u ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>{u}</button>
+              ))}
+            </div>
           </div>
 
           {linked ? (
             <div>
-              <label className="text-sm font-medium mb-2 block">All Corners: {allCorners}px</label>
-              <input type="range" min={0} max={100} value={allCorners} onChange={e => handleAllChange(+e.target.value)} className="w-full" />
+              <label className="text-sm font-medium mb-2 block">All Corners: {allCorners}{unit}</label>
+              <input type="range" min={0} max={maxVal} value={Math.min(allCorners, maxVal)} onChange={e => handleAllChange(+e.target.value)} className="w-full" />
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-xs text-muted-foreground mb-1 block">Top Left: {topLeft}px</label>
-                <input type="range" min={0} max={100} value={topLeft} onChange={e => setTopLeft(+e.target.value)} className="w-full" />
+                <label className="text-xs text-muted-foreground mb-1 block">Top Left: {topLeft}{unit}</label>
+                <input type="range" min={0} max={maxVal} value={Math.min(topLeft, maxVal)} onChange={e => setTopLeft(+e.target.value)} className="w-full" />
               </div>
               <div>
-                <label className="text-xs text-muted-foreground mb-1 block">Top Right: {topRight}px</label>
-                <input type="range" min={0} max={100} value={topRight} onChange={e => setTopRight(+e.target.value)} className="w-full" />
+                <label className="text-xs text-muted-foreground mb-1 block">Top Right: {topRight}{unit}</label>
+                <input type="range" min={0} max={maxVal} value={Math.min(topRight, maxVal)} onChange={e => setTopRight(+e.target.value)} className="w-full" />
               </div>
               <div>
-                <label className="text-xs text-muted-foreground mb-1 block">Bottom Left: {bottomLeft}px</label>
-                <input type="range" min={0} max={100} value={bottomLeft} onChange={e => setBottomLeft(+e.target.value)} className="w-full" />
+                <label className="text-xs text-muted-foreground mb-1 block">Bottom Left: {bottomLeft}{unit}</label>
+                <input type="range" min={0} max={maxVal} value={Math.min(bottomLeft, maxVal)} onChange={e => setBottomLeft(+e.target.value)} className="w-full" />
               </div>
               <div>
-                <label className="text-xs text-muted-foreground mb-1 block">Bottom Right: {bottomRight}px</label>
-                <input type="range" min={0} max={100} value={bottomRight} onChange={e => setBottomRight(+e.target.value)} className="w-full" />
+                <label className="text-xs text-muted-foreground mb-1 block">Bottom Right: {bottomRight}{unit}</label>
+                <input type="range" min={0} max={maxVal} value={Math.min(bottomRight, maxVal)} onChange={e => setBottomRight(+e.target.value)} className="w-full" />
               </div>
             </div>
           )}

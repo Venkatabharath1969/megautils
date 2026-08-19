@@ -9,6 +9,9 @@ export default function StockProfitCalculator() {
   const [quantity, setQuantity] = useState(100)
   const [buyCommission, setBuyCommission] = useState(9.99)
   const [sellCommission, setSellCommission] = useState(9.99)
+  const [holdingPeriod, setHoldingPeriod] = useState<'short' | 'long'>('long')
+  const [taxRate, setTaxRate] = useState(15)
+  const [dividendIncome, setDividendIncome] = useState(0)
 
   const result = useMemo(() => {
     const totalBuyCost = buyPrice * quantity + buyCommission
@@ -19,8 +22,16 @@ export default function StockProfitCalculator() {
     const totalCommissions = buyCommission + sellCommission
     const profitable = profitLoss > 0
 
-    return { totalBuyCost, totalSellRevenue, profitLoss, roi, breakEvenPrice, totalCommissions, profitable }
-  }, [buyPrice, sellPrice, quantity, buyCommission, sellCommission])
+    // Capital gains tax
+    const taxableGain = Math.max(0, profitLoss)
+    const capitalGainsTax = taxableGain * (taxRate / 100)
+    const dividendTax = dividendIncome * (taxRate / 100)
+    const totalTax = capitalGainsTax + dividendTax
+    const netProfitAfterTax = profitLoss + dividendIncome - totalTax
+    const totalReturn = profitLoss + dividendIncome
+
+    return { totalBuyCost, totalSellRevenue, profitLoss, roi, breakEvenPrice, totalCommissions, profitable, capitalGainsTax, dividendTax, totalTax, netProfitAfterTax, totalReturn }
+  }, [buyPrice, sellPrice, quantity, buyCommission, sellCommission, taxRate, dividendIncome])
 
   const fmt = (n: number) =>
     new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(n)
@@ -94,6 +105,26 @@ export default function StockProfitCalculator() {
               <input type="number" min={0} step={0.01} value={sellCommission} onChange={e => setSellCommission(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
             </div>
           </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Holding Period</label>
+            <select value={holdingPeriod} onChange={e => setHoldingPeriod(e.target.value as 'short' | 'long')} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+              <option value="short">Short-term (less than 1 year)</option>
+              <option value="long">Long-term (1 year or more)</option>
+            </select>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Tax Rate (%)</label>
+              <input type="number" min={0} max={50} step={0.5} value={taxRate} onChange={e => setTaxRate(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+              <p className="text-xs text-muted-foreground mt-1">{holdingPeriod === 'short' ? 'Ordinary income rate' : 'Long-term capital gains rate'}</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Dividend Income ($)</label>
+              <input type="number" min={0} step={0.01} value={dividendIncome} onChange={e => setDividendIncome(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+            </div>
+          </div>
         </div>
 
         {/* Results */}
@@ -136,6 +167,32 @@ export default function StockProfitCalculator() {
               <span className={`font-bold font-mono ${sellPrice >= buyPrice ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
                 {sellPrice >= buyPrice ? '+' : ''}{fmt(sellPrice - buyPrice)} ({buyPrice > 0 ? ((sellPrice - buyPrice) / buyPrice * 100).toFixed(2) : '0.00'}%)
               </span>
+            </div>
+            {dividendIncome > 0 && (
+              <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+                <span className="text-sm text-muted-foreground">Dividend Income</span>
+                <span className="font-bold font-mono text-green-600 dark:text-green-400">{fmt(dividendIncome)}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Tax Breakdown */}
+          <div className="p-4 rounded-xl border border-border bg-muted/30">
+            <div className="text-sm font-medium mb-3">Tax & After-Tax Summary ({holdingPeriod === 'short' ? 'Short-term' : 'Long-term'} @ {taxRate}%)</div>
+            <div className="space-y-2 text-sm">
+              {result.capitalGainsTax > 0 && (
+                <div className="flex justify-between"><span className="text-muted-foreground">Capital Gains Tax</span><span className="font-medium text-red-600 dark:text-red-400">-{fmt(result.capitalGainsTax)}</span></div>
+              )}
+              {dividendIncome > 0 && (
+                <div className="flex justify-between"><span className="text-muted-foreground">Dividend Tax</span><span className="font-medium text-red-600 dark:text-red-400">-{fmt(result.dividendTax)}</span></div>
+              )}
+              {result.totalTax > 0 && (
+                <div className="flex justify-between border-t border-border pt-1"><span className="text-muted-foreground">Total Tax</span><span className="font-medium text-red-600 dark:text-red-400">-{fmt(result.totalTax)}</span></div>
+              )}
+              <div className={`flex justify-between border-t border-border pt-1 ${result.netProfitAfterTax >= 0 ? '' : ''}`}>
+                <span className="font-medium">Net Profit After Tax</span>
+                <span className={`font-bold ${result.netProfitAfterTax >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>{fmt(result.netProfitAfterTax)}</span>
+              </div>
             </div>
           </div>
         </div>

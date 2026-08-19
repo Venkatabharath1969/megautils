@@ -107,6 +107,7 @@ const PRESETS: Preset[] = [
 export default function GitignoreGeneratorTool() {
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [customPatterns, setCustomPatterns] = useState('')
+  const [presetSearch, setPresetSearch] = useState('')
 
   const output = useMemo(() => {
     if (selected.size === 0 && !customPatterns.trim()) return ''
@@ -190,8 +191,10 @@ export default function GitignoreGeneratorTool() {
             <ClearButton onClear={clear} />
           </div>
 
+          <input type="text" value={presetSearch} onChange={e => setPresetSearch(e.target.value)} placeholder="Search presets..." className="w-full h-9 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-            {PRESETS.map((p) => (
+            {PRESETS.filter(p => !presetSearch.trim() || p.name.toLowerCase().includes(presetSearch.toLowerCase()) || p.patterns.some(pat => pat.toLowerCase().includes(presetSearch.toLowerCase()))).map((p) => (
               <button
                 key={p.id}
                 onClick={() => toggle(p.id)}

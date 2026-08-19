@@ -3,10 +3,42 @@
 import { useState, useMemo } from 'react'
 import { ToolPage } from '@/components/tool-page'
 
+type FilingStatus = 'single' | 'married_joint'
+
+const federalBrackets: Record<FilingStatus, { min: number; max: number; rate: number }[]> = {
+  single: [
+    { min: 0, max: 11600, rate: 10 },
+    { min: 11600, max: 47150, rate: 12 },
+    { min: 47150, max: 100525, rate: 22 },
+    { min: 100525, max: 191950, rate: 24 },
+    { min: 191950, max: 243725, rate: 32 },
+    { min: 243725, max: 609350, rate: 35 },
+    { min: 609350, max: Infinity, rate: 37 },
+  ],
+  married_joint: [
+    { min: 0, max: 23200, rate: 10 },
+    { min: 23200, max: 94300, rate: 12 },
+    { min: 94300, max: 201050, rate: 22 },
+    { min: 201050, max: 383900, rate: 24 },
+    { min: 383900, max: 487450, rate: 32 },
+    { min: 487450, max: 731200, rate: 35 },
+    { min: 731200, max: Infinity, rate: 37 },
+  ],
+}
+
+const standardDeductions: Record<FilingStatus, number> = {
+  single: 14600,
+  married_joint: 29200,
+}
+
+const SS_RATE = 0.062
+const SS_WAGE_BASE = 168600
+const MEDICARE_RATE = 0.0145
+
 export default function SalaryCalculator() {
   const [grossSalary, setGrossSalary] = useState(75000)
   const [isAnnual, setIsAnnual] = useState(true)
-  const [taxRate, setTaxRate] = useState(22)
+  const [filingStatus, setFilingStatus] = useState<FilingStatus>('single')
   const [deductions, setDeductions] = useState(500)
   const [retirement, setRetirement] = useState(6)
 
@@ -15,20 +47,41 @@ export default function SalaryCalculator() {
     const monthlyGross = isAnnual ? grossSalary / 12 : grossSalary
 
     const annualRetirement = annualGross * (retirement / 100)
-    const taxableIncome = annualGross - annualRetirement
-    const annualTax = taxableIncome * (taxRate / 100)
+    const stdDeduction = standardDeductions[filingStatus]
+    const taxableIncome = Math.max(0, annualGross - annualRetirement - stdDeduction)
     const annualDeductions = isAnnual ? deductions : deductions * 12
 
-    const annualNet = annualGross - annualTax - annualRetirement - annualDeductions
+    // Progressive federal income tax
+    let federalTax = 0
+    let remaining = taxableIncome
+    for (const bracket of federalBrackets[filingStatus]) {
+      if (remaining <= 0) break
+      const bracketWidth = bracket.max === Infinity ? remaining : bracket.max - bracket.min
+      const taxableInBracket = Math.min(remaining, bracketWidth)
+      federalTax += taxableInBracket * (bracket.rate / 100)
+      remaining -= taxableInBracket
+    }
+
+    // FICA taxes
+    const socialSecurity = Math.min(annualGross, SS_WAGE_BASE) * SS_RATE
+    const medicare = annualGross * MEDICARE_RATE
+    const ficaTotal = socialSecurity + medicare
+
+    const totalTax = federalTax + ficaTotal
+    const annualNet = annualGross - totalTax - annualRetirement - annualDeductions
     const monthlyNet = annualNet / 12
-    const effectiveTaxRate = annualGross > 0 ? (annualTax / annualGross) * 100 : 0
+    const effectiveTaxRate = annualGross > 0 ? (totalTax / annualGross) * 100 : 0
     const takeHomePct = annualGross > 0 ? (annualNet / annualGross) * 100 : 0
 
     return {
       annualGross,
       monthlyGross,
-      annualTax,
-      monthlyTax: annualTax / 12,
+      federalTax,
+      ficaTotal,
+      socialSecurity,
+      medicare,
+      annualTax: totalTax,
+      monthlyTax: totalTax / 12,
       annualRetirement,
       monthlyRetirement: annualRetirement / 12,
       annualDeductions,
@@ -41,8 +94,10 @@ export default function SalaryCalculator() {
       weeklyNet: annualNet / 52,
       dailyNet: annualNet / 260,
       hourlyNet: annualNet / 2080,
+      stdDeduction,
+      taxableIncome,
     }
-  }, [grossSalary, isAnnual, taxRate, deductions, retirement])
+  }, [grossSalary, isAnnual, filingStatus, deductions, retirement])
 
   const fmt = (n: number) =>
     new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(n)
@@ -103,9 +158,12 @@ export default function SalaryCalculator() {
             <input type="range" min={isAnnual ? 10000 : 1000} max={isAnnual ? 500000 : 50000} step={isAnnual ? 1000 : 100} value={grossSalary} onChange={(e) => setGrossSalary(Number(e.target.value))} className="w-full mt-2 accent-primary" />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1.5">Tax Rate (%)</label>
-            <input type="number" min={0} max={60} step={0.5} value={taxRate} onChange={(e) => setTaxRate(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
-            <input type="range" min={0} max={50} step={0.5} value={taxRate} onChange={(e) => setTaxRate(Number(e.target.value))} className="w-full mt-2 accent-primary" />
+            <label className="block text-sm font-medium mb-1.5">Filing Status</label>
+            <select value={filingStatus} onChange={(e) => setFilingStatus(e.target.value as FilingStatus)} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+              <option value="single">Single</option>
+              <option value="married_joint">Married Filing Jointly</option>
+            </select>
+            <p className="text-xs text-muted-foreground mt-1">2024 US progressive brackets + FICA</p>
           </div>
           <div>
             <label className="block text-sm font-medium mb-1.5">Retirement Contribution (%)</label>
@@ -130,12 +188,22 @@ export default function SalaryCalculator() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20">
-              <div className="text-sm text-muted-foreground mb-1">Total Tax (Annual)</div>
-              <div className="text-xl font-bold text-red-600 dark:text-red-400">{fmt(result.annualTax)}</div>
+              <div className="text-sm text-muted-foreground mb-1">Federal Tax</div>
+              <div className="text-xl font-bold text-red-600 dark:text-red-400">{fmt(result.federalTax)}</div>
             </div>
+            <div className="p-4 rounded-xl bg-orange-500/10 border border-orange-500/20">
+              <div className="text-sm text-muted-foreground mb-1">FICA (SS + Medicare)</div>
+              <div className="text-xl font-bold text-orange-600 dark:text-orange-400">{fmt(result.ficaTotal)}</div>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
             <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
               <div className="text-sm text-muted-foreground mb-1">Effective Tax Rate</div>
               <div className="text-xl font-bold text-blue-600 dark:text-blue-400">{result.effectiveTaxRate.toFixed(1)}%</div>
+            </div>
+            <div className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
+              <div className="text-sm text-muted-foreground mb-1">Std. Deduction</div>
+              <div className="text-xl font-bold text-purple-600 dark:text-purple-400">{fmt(result.stdDeduction)}</div>
             </div>
           </div>
 
@@ -144,15 +212,15 @@ export default function SalaryCalculator() {
             <div className="text-sm font-medium mb-3">Salary Breakdown</div>
             <div className="w-full h-8 rounded-full overflow-hidden flex bg-muted">
               <div className="bg-green-500 h-full transition-all duration-500" style={{ width: `${result.takeHomePct}%` }} />
-              <div className="bg-red-500 h-full transition-all duration-500" style={{ width: `${result.effectiveTaxRate}%` }} />
+              <div className="bg-red-500 h-full transition-all duration-500" style={{ width: `${result.annualGross > 0 ? (result.federalTax / result.annualGross) * 100 : 0}%` }} />
+              <div className="bg-orange-500 h-full transition-all duration-500" style={{ width: `${result.annualGross > 0 ? (result.ficaTotal / result.annualGross) * 100 : 0}%` }} />
               <div className="bg-blue-500 h-full transition-all duration-500" style={{ width: `${retirement}%` }} />
-              <div className="bg-orange-500 h-full transition-all duration-500" style={{ width: `${result.annualGross > 0 ? (result.annualDeductions / result.annualGross) * 100 : 0}%` }} />
             </div>
             <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs text-muted-foreground">
               <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block" /> Take-Home</span>
-              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block" /> Tax</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block" /> Federal Tax</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-orange-500 inline-block" /> FICA</span>
               <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" /> Retirement</span>
-              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-orange-500 inline-block" /> Deductions</span>
             </div>
           </div>
 

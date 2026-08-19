@@ -54,12 +54,38 @@ export default function AgeCalculatorTool() {
     // Day of week born
     const bornDay = birthDate.toLocaleDateString('en-US', { weekday: 'long' })
 
+    // Zodiac sign
+    const zodiacSigns = [
+      { sign: 'Capricorn', symbol: '\u2651', start: [1, 1], end: [1, 19] },
+      { sign: 'Aquarius', symbol: '\u2652', start: [1, 20], end: [2, 18] },
+      { sign: 'Pisces', symbol: '\u2653', start: [2, 19], end: [3, 20] },
+      { sign: 'Aries', symbol: '\u2648', start: [3, 21], end: [4, 19] },
+      { sign: 'Taurus', symbol: '\u2649', start: [4, 20], end: [5, 20] },
+      { sign: 'Gemini', symbol: '\u264A', start: [5, 21], end: [6, 20] },
+      { sign: 'Cancer', symbol: '\u264B', start: [6, 21], end: [7, 22] },
+      { sign: 'Leo', symbol: '\u264C', start: [7, 23], end: [8, 22] },
+      { sign: 'Virgo', symbol: '\u264D', start: [8, 23], end: [9, 22] },
+      { sign: 'Libra', symbol: '\u264E', start: [9, 23], end: [10, 22] },
+      { sign: 'Scorpio', symbol: '\u264F', start: [10, 23], end: [11, 21] },
+      { sign: 'Sagittarius', symbol: '\u2650', start: [11, 22], end: [12, 21] },
+      { sign: 'Capricorn', symbol: '\u2651', start: [12, 22], end: [12, 31] },
+    ]
+    const bMonth = birthDate.getMonth() + 1
+    const bDay = birthDate.getDate()
+    const zodiac = zodiacSigns.find(z => {
+      const afterStart = bMonth > z.start[0] || (bMonth === z.start[0] && bDay >= z.start[1])
+      const beforeEnd = bMonth < z.end[0] || (bMonth === z.end[0] && bDay <= z.end[1])
+      return afterStart && beforeEnd
+    }) || zodiacSigns[0]
+
     return {
       years, months, days,
       totalDays, totalWeeks, totalMonths, totalHours, totalMinutes,
       daysUntilBirthday, turningAge,
       bornDay,
       nextBirthdayDate: nextBirthday,
+      zodiacSign: zodiac.sign,
+      zodiacSymbol: zodiac.symbol,
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dob, Math.floor(Date.now() / 1000)])
@@ -134,7 +160,9 @@ export default function AgeCalculatorTool() {
                   <div className="text-xs text-muted-foreground">Days</div>
                 </div>
               </div>
-              <div className="text-sm text-muted-foreground mt-3">Born on a {result.bornDay}</div>
+              <div className="text-sm text-muted-foreground mt-3">
+                Born on a {result.bornDay} &middot; <span className="inline-flex items-center gap-1">{result.zodiacSymbol} {result.zodiacSign}</span>
+              </div>
             </div>
 
             {/* Birthday countdown */}

@@ -3,22 +3,33 @@
 import { useState, useMemo } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, ClearButton } from '@/components/tool-page'
 
-function toSlug(text: string): string {
-  return text
+type SepType = '-' | '_' | '.'
+
+function toSlug(text: string, separator: string, maxLength: number): string {
+  let slug = text
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
-    .replace(/[^a-z0-9\s-]/g, '')   // Remove special chars
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
     .trim()
-    .replace(/\s+/g, '-')           // Spaces to hyphens
-    .replace(/-+/g, '-')            // Collapse multiple hyphens
-    .replace(/^-|-$/g, '')          // Trim leading/trailing hyphens
+    .replace(/\s+/g, separator)
+    .replace(new RegExp(`[${separator.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}]+`, 'g'), separator)
+    .replace(new RegExp(`^[${separator.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}]|[${separator.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}]$`, 'g'), '')
+
+  if (maxLength > 0 && slug.length > maxLength) {
+    slug = slug.slice(0, maxLength)
+    const lastSep = slug.lastIndexOf(separator)
+    if (lastSep > 0) slug = slug.slice(0, lastSep)
+  }
+  return slug
 }
 
 export default function TextToSlugTool() {
   const [input, setInput] = useState('')
+  const [separator, setSeparator] = useState<SepType>('-')
+  const [maxLength, setMaxLength] = useState(0)
 
-  const slug = useMemo(() => toSlug(input), [input])
+  const slug = useMemo(() => toSlug(input, separator, maxLength), [input, separator, maxLength])
 
   return (
     <ToolPage
@@ -59,6 +70,28 @@ export default function TextToSlugTool() {
         { question: 'Why are slugs important for SEO?', answer: 'Clean, descriptive slugs help search engines understand page content and improve click-through rates by making URLs readable to users.' },
       ]}
     >
+      <div className="flex flex-wrap items-center gap-4 mb-4">
+        <div className="flex items-center gap-2">
+          <label className="text-sm font-medium">Separator:</label>
+          <select value={separator} onChange={e => setSeparator(e.target.value as SepType)} className="h-9 px-3 rounded-md border border-input bg-card text-sm">
+            <option value="-">Hyphen (-)</option>
+            <option value="_">Underscore (_)</option>
+            <option value=".">Dot (.)</option>
+          </select>
+        </div>
+        <div className="flex items-center gap-2">
+          <label className="text-sm font-medium">Max length:</label>
+          <input
+            type="number"
+            min={0}
+            max={500}
+            value={maxLength || ''}
+            onChange={(e) => setMaxLength(parseInt(e.target.value) || 0)}
+            placeholder="No limit"
+            className="w-24 h-9 px-3 rounded-md border border-input bg-card text-sm"
+          />
+        </div>
+      </div>
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium">Input Text</span>
         <ClearButton onClear={() => setInput('')} />

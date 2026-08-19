@@ -16,6 +16,7 @@ export default function FindAndReplaceTool() {
   const [pairs, setPairs] = useState<ReplacePair[]>([{ id: nextId++, find: '', replace: '' }])
   const [caseSensitive, setCaseSensitive] = useState(true)
   const [useRegex, setUseRegex] = useState(false)
+  const [wholeWord, setWholeWord] = useState(false)
 
   const addPair = () => setPairs([...pairs, { id: nextId++, find: '', replace: '' }])
   const removePair = (id: number) => {
@@ -33,7 +34,9 @@ export default function FindAndReplaceTool() {
       if (!pair.find) continue
       try {
         const flags = 'g' + (caseSensitive ? '' : 'i')
-        const pattern = useRegex ? new RegExp(pair.find, flags) : new RegExp(pair.find.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), flags)
+        let source = useRegex ? pair.find : pair.find.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+        if (wholeWord && !useRegex) source = '\\b' + source + '\\b'
+        const pattern = new RegExp(source, flags)
         const matches = result.match(pattern)
         if (matches) total += matches.length
         result = result.replace(pattern, pair.replace)
@@ -42,7 +45,7 @@ export default function FindAndReplaceTool() {
       }
     }
     return { output: result, totalReplacements: total }
-  }, [input, pairs, caseSensitive, useRegex])
+  }, [input, pairs, caseSensitive, useRegex, wholeWord])
 
   return (
     <ToolPage
@@ -91,6 +94,10 @@ export default function FindAndReplaceTool() {
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" checked={useRegex} onChange={(e) => setUseRegex(e.target.checked)} className="rounded border-border" />
           Use Regex
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" checked={wholeWord} onChange={(e) => setWholeWord(e.target.checked)} disabled={useRegex} className="rounded border-border" />
+          Whole word
         </label>
         {totalReplacements > 0 && (
           <span className="text-xs text-muted-foreground">{totalReplacements} replacement{totalReplacements !== 1 ? 's' : ''} made</span>

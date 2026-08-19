@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, ClearButton } from '@/components/tool-page'
 
-type SortMode = 'az' | 'za' | 'length-asc' | 'length-desc' | 'random' | 'reverse'
+type SortMode = 'az' | 'za' | 'natural' | 'length-asc' | 'length-desc' | 'random' | 'reverse'
 
 export default function TextSorterTool() {
   const [input, setInput] = useState('')
@@ -19,6 +19,9 @@ export default function TextSorterTool() {
         break
       case 'za':
         sorted = [...lines].sort((a, b) => b.localeCompare(a))
+        break
+      case 'natural':
+        sorted = [...lines].sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
         break
       case 'length-asc':
         sorted = [...lines].sort((a, b) => a.length - b.length)
@@ -41,6 +44,7 @@ export default function TextSorterTool() {
   const modes: { value: SortMode; label: string }[] = [
     { value: 'az', label: 'A \u2192 Z' },
     { value: 'za', label: 'Z \u2192 A' },
+    { value: 'natural', label: 'Natural' },
     { value: 'length-asc', label: 'Length \u2191' },
     { value: 'length-desc', label: 'Length \u2193' },
     { value: 'random', label: 'Shuffle' },

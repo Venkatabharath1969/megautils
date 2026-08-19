@@ -7,6 +7,7 @@ export default function BreakEvenCalculator() {
   const [fixedCosts, setFixedCosts] = useState(50000)
   const [variableCostPerUnit, setVariableCostPerUnit] = useState(25)
   const [sellingPricePerUnit, setSellingPricePerUnit] = useState(50)
+  const [targetProfit, setTargetProfit] = useState(0)
 
   const result = useMemo(() => {
     const contributionMargin = sellingPricePerUnit - variableCostPerUnit
@@ -34,8 +35,16 @@ export default function BreakEvenCalculator() {
       }
     }
 
-    return { breakEvenUnits, breakEvenRevenue, contributionMargin, contributionMarginPct, isValid, scenarios }
-  }, [fixedCosts, variableCostPerUnit, sellingPricePerUnit])
+    // Target profit calculation
+    const requiredUnitsForProfit = contributionMargin > 0 && targetProfit > 0
+      ? Math.ceil((fixedCosts + targetProfit) / contributionMargin)
+      : null
+    const requiredRevenueForProfit = requiredUnitsForProfit !== null
+      ? requiredUnitsForProfit * sellingPricePerUnit
+      : null
+
+    return { breakEvenUnits, breakEvenRevenue, contributionMargin, contributionMarginPct, isValid, scenarios, requiredUnitsForProfit, requiredRevenueForProfit }
+  }, [fixedCosts, variableCostPerUnit, sellingPricePerUnit, targetProfit])
 
   const fmt = (n: number) =>
     new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(n)
@@ -98,6 +107,12 @@ export default function BreakEvenCalculator() {
             <input type="number" min={0} step={0.01} value={sellingPricePerUnit} onChange={(e) => setSellingPricePerUnit(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
             <input type="range" min={0} max={1000} step={0.5} value={sellingPricePerUnit} onChange={(e) => setSellingPricePerUnit(Number(e.target.value))} className="w-full mt-2 accent-primary" />
           </div>
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Target Profit ($) <span className="text-muted-foreground">- optional</span></label>
+            <input type="number" min={0} value={targetProfit} onChange={(e) => setTargetProfit(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+            <input type="range" min={0} max={500000} step={1000} value={targetProfit} onChange={(e) => setTargetProfit(Number(e.target.value))} className="w-full mt-2 accent-primary" />
+            <p className="text-xs text-muted-foreground mt-1">How many units to reach your desired profit</p>
+          </div>
 
           {!result.isValid && (
             <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-sm">
@@ -131,6 +146,15 @@ export default function BreakEvenCalculator() {
               <div className="text-xl font-bold text-purple-600 dark:text-purple-400">{result.contributionMarginPct.toFixed(1)}%</div>
             </div>
           </div>
+
+          {/* Target Profit */}
+          {result.requiredUnitsForProfit !== null && targetProfit > 0 && (
+            <div className="p-4 rounded-xl bg-teal-500/10 border border-teal-500/20">
+              <div className="text-sm text-muted-foreground mb-1">Units for {fmt(targetProfit)} Profit</div>
+              <div className="text-xl font-bold text-teal-600 dark:text-teal-400">{result.requiredUnitsForProfit.toLocaleString()} units</div>
+              <div className="text-xs text-muted-foreground mt-1">Revenue needed: {fmt(result.requiredRevenueForProfit!)}</div>
+            </div>
+          )}
 
           {/* Per unit breakdown */}
           <div className="p-4 rounded-xl border border-border bg-muted/30">

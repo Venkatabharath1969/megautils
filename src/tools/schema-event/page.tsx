@@ -16,6 +16,7 @@ export default function SchemaEventTool() {
   const [offerAvailability, setOfferAvailability] = useState('InStock')
   const [offerUrl, setOfferUrl] = useState('')
   const [performerName, setPerformerName] = useState('')
+  const [eventStatus, setEventStatus] = useState('EventScheduled')
   const [eventMode, setEventMode] = useState<'Offline' | 'Online' | 'Mixed'>('Offline')
 
   const output = useMemo(() => {
@@ -37,6 +38,7 @@ export default function SchemaEventTool() {
       Online: 'https://schema.org/OnlineEventAttendanceMode',
       Mixed: 'https://schema.org/MixedEventAttendanceMode',
     }
+    schema.eventStatus = `https://schema.org/${eventStatus}`
     schema.eventAttendanceMode = attendanceMap[eventMode]
 
     if (eventMode === 'Online') {
@@ -62,13 +64,13 @@ export default function SchemaEventTool() {
     }
 
     return `<script type="application/ld+json">\n${JSON.stringify(schema, null, 2)}\n</script>`
-  }, [eventName, startDate, endDate, locationName, locationAddress, description, image, offerPrice, offerCurrency, offerAvailability, offerUrl, performerName, eventMode])
+  }, [eventName, startDate, endDate, locationName, locationAddress, description, image, offerPrice, offerCurrency, offerAvailability, offerUrl, performerName, eventStatus, eventMode])
 
   const clear = () => {
     setEventName(''); setStartDate(''); setEndDate(''); setLocationName('')
     setLocationAddress(''); setDescription(''); setImage(''); setOfferPrice('')
     setOfferCurrency('USD'); setOfferAvailability('InStock'); setOfferUrl('')
-    setPerformerName(''); setEventMode('Offline')
+    setPerformerName(''); setEventStatus('EventScheduled'); setEventMode('Offline')
   }
 
   const inputClass = 'w-full rounded-lg border border-input bg-tool-bg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring'
@@ -129,6 +131,17 @@ export default function SchemaEventTool() {
           <div>
             <label className="block text-sm font-medium mb-1">Image URL</label>
             <input type="url" value={image} onChange={e => setImage(e.target.value)} placeholder="https://example.com/event.jpg" className={inputClass} />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Event Status</label>
+            <select value={eventStatus} onChange={e => setEventStatus(e.target.value)} className="w-full rounded-lg border border-input bg-tool-bg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+              <option value="EventScheduled">Scheduled</option>
+              <option value="EventCancelled">Cancelled</option>
+              <option value="EventPostponed">Postponed</option>
+              <option value="EventRescheduled">Rescheduled</option>
+              <option value="EventMovedOnline">Moved Online</option>
+            </select>
           </div>
 
           <div className="grid grid-cols-2 gap-3">

@@ -14,14 +14,14 @@ const INLINE_ELEMENTS = new Set([
   'span', 'strong', 'sub', 'sup', 'time', 'u', 'var'
 ])
 
-function formatHtml(html: string, indentSize: number = 2): string {
+function formatHtml(html: string, indentStr: string = '  '): string {
   // Normalize whitespace between tags but preserve text
   const stripped = html.replace(/>\s+</g, '><').trim()
   const tokens = stripped.match(/<[^>]+>|[^<]+/g)
   if (!tokens) throw new Error('Could not parse HTML')
 
   let indent = 0
-  const pad = ' '.repeat(indentSize)
+  const pad = indentStr
   const lines: string[] = []
 
   for (let i = 0; i < tokens.length; i++) {
@@ -91,11 +91,12 @@ export default function HtmlFormatterTool() {
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('')
   const [error, setError] = useState('')
-  const [indent, setIndent] = useState(2)
+  const [indent, setIndent] = useState('2')
 
   const format = () => {
     try {
-      setOutput(formatHtml(input, indent))
+      const indentStr = indent === 'tab' ? '\t' : ' '.repeat(Number(indent))
+      setOutput(formatHtml(input, indentStr))
       setError('')
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Invalid HTML')
@@ -188,9 +189,10 @@ export default function HtmlFormatterTool() {
         <button onClick={minify} className="px-4 py-2 rounded-lg bg-secondary text-secondary-foreground text-sm font-medium hover:bg-secondary/80 transition-colors border border-border">
           Minify
         </button>
-        <select value={indent} onChange={(e) => setIndent(Number(e.target.value))} className="h-9 px-3 rounded-md border border-input bg-card text-sm">
-          <option value={2}>2 spaces</option>
-          <option value={4}>4 spaces</option>
+        <select value={indent} onChange={(e) => setIndent(e.target.value)} className="h-9 px-3 rounded-md border border-input bg-card text-sm">
+          <option value="2">2 spaces</option>
+          <option value="4">4 spaces</option>
+          <option value="tab">Tab</option>
         </select>
       </div>
     </ToolPage>

@@ -66,12 +66,14 @@ export default function XmlToJsonTool() {
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('')
   const [error, setError] = useState('')
+  const [jsonIndent, setJsonIndent] = useState<string>('2')
 
   const convert = () => {
     try {
       setError('')
       const parsed = xmlToJson(input.trim())
-      setOutput(JSON.stringify(parsed, null, 2))
+      const indentVal = jsonIndent === 'minified' ? undefined : Number(jsonIndent)
+      setOutput(JSON.stringify(parsed, null, indentVal))
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Invalid XML input')
       setOutput('')
@@ -134,9 +136,16 @@ export default function XmlToJsonTool() {
         </div>
       </div>
       {error && <div className="mt-3 p-3 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 text-sm font-mono">{error}</div>}
-      <button onClick={convert} className="mt-4 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
-        Convert to JSON
-      </button>
+      <div className="flex flex-wrap items-center gap-3 mt-4">
+        <button onClick={convert} className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
+          Convert to JSON
+        </button>
+        <select value={jsonIndent} onChange={(e) => setJsonIndent(e.target.value)} className="h-9 px-3 rounded-md border border-input bg-card text-sm">
+          <option value="2">2 spaces</option>
+          <option value="4">4 spaces</option>
+          <option value="minified">Minified</option>
+        </select>
+      </div>
     </ToolPage>
   )
 }

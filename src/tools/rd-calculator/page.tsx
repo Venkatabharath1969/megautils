@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import { ToolPage } from '@/components/tool-page'
+import { ExportButton } from '@/components/export-button'
 
 export default function RDCalculator() {
   const [monthlyDeposit, setMonthlyDeposit] = useState(5000)
@@ -148,7 +149,15 @@ export default function RDCalculator() {
 
       {/* Quarterly Breakdown */}
       <div className="mt-8">
-        <h3 className="text-lg font-semibold mb-4">Growth Over Time</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold">Growth Over Time</h3>
+          <ExportButton
+            headers={['Month', 'Total Deposited', 'Accumulated Value', 'Interest Earned']}
+            rows={result.monthly.filter((_, i) => i % 3 === 2 || i === result.monthly.length - 1).map(row => [row.month, row.deposited, Math.round(row.value), Math.round(row.value - row.deposited)])}
+            filename="rd-growth-table.csv"
+            label="Export CSV"
+          />
+        </div>
         <div className="overflow-x-auto rounded-lg border border-border">
           <table className="w-full text-sm">
             <thead>

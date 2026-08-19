@@ -21,6 +21,55 @@ function caesarShift(text: string, shift: number): string {
     .join('')
 }
 
+const ENGLISH_FREQ: Record<string, number> = {
+  a: 8.167, b: 1.492, c: 2.782, d: 4.253, e: 12.702, f: 2.228, g: 2.015,
+  h: 6.094, i: 6.966, j: 0.153, k: 0.772, l: 4.025, m: 2.406, n: 6.749,
+  o: 7.507, p: 1.929, q: 0.095, r: 5.987, s: 6.327, t: 9.056, u: 2.758,
+  v: 0.978, w: 2.360, x: 0.150, y: 1.974, z: 0.074,
+}
+
+function getLetterFrequencies(text: string): Record<string, number> {
+  const freq: Record<string, number> = {}
+  let total = 0
+  for (const ch of text.toLowerCase()) {
+    if (ch >= 'a' && ch <= 'z') {
+      freq[ch] = (freq[ch] || 0) + 1
+      total++
+    }
+  }
+  if (total === 0) return freq
+  for (const key of Object.keys(freq)) {
+    freq[key] = (freq[key] / total) * 100
+  }
+  return freq
+}
+
+function chiSquared(freq: Record<string, number>): number {
+  let chi = 0
+  for (let i = 0; i < 26; i++) {
+    const letter = String.fromCharCode(97 + i)
+    const observed = freq[letter] || 0
+    const expected = ENGLISH_FREQ[letter]
+    chi += ((observed - expected) ** 2) / expected
+  }
+  return chi
+}
+
+function autoDetectShift(text: string): number {
+  let bestShift = 0
+  let bestChi = Infinity
+  for (let s = 0; s < 26; s++) {
+    const shifted = caesarShift(text, s)
+    const freq = getLetterFrequencies(shifted)
+    const chi = chiSquared(freq)
+    if (chi < bestChi) {
+      bestChi = chi
+      bestShift = s
+    }
+  }
+  return bestShift
+}
+
 export default function CaesarCipherTool() {
   const [input, setInput] = useState('')
   const [shift, setShift] = useState(13)
@@ -31,6 +80,17 @@ export default function CaesarCipherTool() {
     const effectiveShift = mode === 'encrypt' ? shift : -shift
     return caesarShift(input, effectiveShift)
   }, [input, shift, mode])
+
+  const letterFreq = useMemo(() => getLetterFrequencies(input), [input])
+
+  const handleAutoDetect = () => {
+    const detected = autoDetectShift(input)
+    // autoDetectShift finds the shift that makes text look like English
+    // So if text is encrypted with shift N, caesarShift(text, 26-N) gives English
+    // detected is the shift that produces English, so decrypt shift = detected
+    setShift(detected === 0 ? 0 : 26 - detected)
+    setMode('decrypt')
+  }
 
   const clear = () => setInput('')
 
@@ -107,6 +167,38 @@ export default function CaesarCipherTool() {
           <ToolTextarea value={output} readOnly placeholder="Result will appear here..." rows={10} />
         </div>
       </div>
+
+      {/* Frequency Analysis */}
+      {input && Object.keys(letterFreq).length > 0 && (
+        <div className="mt-6">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-semibold">Letter Frequency Analysis</h3>
+            <button
+              onClick={handleAutoDetect}
+              className="px-3 py-1.5 text-xs font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              Auto-detect Shift
+            </button>
+          </div>
+          <div className="flex items-end gap-0.5 h-32 p-3 rounded-lg bg-muted/30 border border-border">
+            {'abcdefghijklmnopqrstuvwxyz'.split('').map((letter) => {
+              const pct = letterFreq[letter] || 0
+              const maxPct = Math.max(...Object.values(letterFreq), 1)
+              const height = (pct / maxPct) * 100
+              return (
+                <div key={letter} className="flex-1 flex flex-col items-center justify-end h-full">
+                  <div
+                    className="w-full bg-primary/70 rounded-t-sm min-h-[1px] transition-all"
+                    style={{ height: `${height}%` }}
+                    title={`${letter.toUpperCase()}: ${pct.toFixed(1)}%`}
+                  />
+                  <span className="text-[8px] text-muted-foreground mt-0.5 leading-none">{letter.toUpperCase()}</span>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
 
       {/* All shifts preview */}
       {input && (

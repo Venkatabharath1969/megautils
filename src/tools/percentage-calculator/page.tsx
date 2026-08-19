@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react'
 import { ToolPage, CopyButton } from '@/components/tool-page'
 
-type Mode = 'whatIs' | 'isWhat' | 'change'
+type Mode = 'whatIs' | 'isWhat' | 'change' | 'increase' | 'decrease'
 
 export default function PercentageCalculatorTool() {
   const [mode, setMode] = useState<Mode>('whatIs')
@@ -24,13 +24,19 @@ export default function PercentageCalculatorTool() {
       case 'change':
         if (va === 0) return { value: 0, label: 'Cannot calculate from zero' }
         return { value: ((vb - va) / Math.abs(va)) * 100, label: `Change from ${va} to ${vb}` }
+      case 'increase':
+        return { value: va * (1 + vb / 100), label: `${va} increased by ${vb}%` }
+      case 'decrease':
+        return { value: va * (1 - vb / 100), label: `${va} decreased by ${vb}%` }
     }
   }, [a, b, mode])
 
   const modes: { key: Mode; label: string; aLabel: string; bLabel: string; desc: string }[] = [
     { key: 'whatIs', label: 'What is X% of Y?', aLabel: 'Percentage (X%)', bLabel: 'Number (Y)', desc: 'Calculate a percentage of a number' },
     { key: 'isWhat', label: 'X is what % of Y?', aLabel: 'Number (X)', bLabel: 'Total (Y)', desc: 'Find what percentage X is of Y' },
-    { key: 'change', label: '% Change from X to Y', aLabel: 'From (X)', bLabel: 'To (Y)', desc: 'Calculate percentage change between two numbers' },
+    { key: 'change', label: '% Change', aLabel: 'From (X)', bLabel: 'To (Y)', desc: 'Calculate percentage change between two numbers' },
+    { key: 'increase', label: 'Increase by %', aLabel: 'Number (X)', bLabel: 'Increase by (Y%)', desc: 'Increase X by Y percent' },
+    { key: 'decrease', label: 'Decrease by %', aLabel: 'Number (X)', bLabel: 'Decrease by (Y%)', desc: 'Decrease X by Y percent' },
   ]
 
   const currentMode = modes.find((m) => m.key === mode)!
@@ -123,7 +129,7 @@ export default function PercentageCalculatorTool() {
             <div className="text-sm text-muted-foreground mb-1">{result.label}</div>
             <div className="flex items-center gap-3">
               <div className="text-3xl font-bold text-primary">
-                {mode === 'whatIs'
+                {mode === 'whatIs' || mode === 'increase' || mode === 'decrease'
                   ? result.value.toLocaleString('en-US', { maximumFractionDigits: 6 })
                   : `${result.value.toLocaleString('en-US', { maximumFractionDigits: 4 })}%`}
               </div>

@@ -3,6 +3,9 @@
 import { useState, useMemo } from 'react'
 import { ToolPage, CopyButton } from '@/components/tool-page'
 
+const originXOptions = ['left', 'center', 'right']
+const originYOptions = ['top', 'center', 'bottom']
+
 export default function CSSTransformGeneratorTool() {
   const [rotate, setRotate] = useState(0)
   const [scaleX, setScaleX] = useState(1)
@@ -11,6 +14,9 @@ export default function CSSTransformGeneratorTool() {
   const [skewY, setSkewY] = useState(0)
   const [translateX, setTranslateX] = useState(0)
   const [translateY, setTranslateY] = useState(0)
+  const [originX, setOriginX] = useState('center')
+  const [originY, setOriginY] = useState('center')
+  const [perspective, setPerspective] = useState(0)
 
   const resetAll = () => {
     setRotate(0)
@@ -20,18 +26,24 @@ export default function CSSTransformGeneratorTool() {
     setSkewY(0)
     setTranslateX(0)
     setTranslateY(0)
+    setOriginX('center')
+    setOriginY('center')
+    setPerspective(0)
   }
 
   const transformCSS = useMemo(() => {
     const parts: string[] = []
+    if (perspective > 0) parts.push(`perspective(${perspective}px)`)
     if (rotate !== 0) parts.push(`rotate(${rotate}deg)`)
     if (scaleX !== 1 || scaleY !== 1) parts.push(`scale(${scaleX}, ${scaleY})`)
     if (skewX !== 0 || skewY !== 0) parts.push(`skew(${skewX}deg, ${skewY}deg)`)
     if (translateX !== 0 || translateY !== 0) parts.push(`translate(${translateX}px, ${translateY}px)`)
     return parts.length > 0 ? parts.join(' ') : 'none'
-  }, [rotate, scaleX, scaleY, skewX, skewY, translateX, translateY])
+  }, [rotate, scaleX, scaleY, skewX, skewY, translateX, translateY, perspective])
 
-  const cssCode = `transform: ${transformCSS};`
+  const transformOriginValue = `${originX} ${originY}`
+  const originCSS = originX === 'center' && originY === 'center' ? '' : `\ntransform-origin: ${transformOriginValue};`
+  const cssCode = `transform: ${transformCSS};${originCSS}`
 
   const controls = [
     { label: 'Rotate', value: rotate, set: setRotate, min: -360, max: 360, step: 1, unit: 'deg' },
@@ -109,6 +121,32 @@ export default function CSSTransformGeneratorTool() {
               />
             </div>
           ))}
+
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <label className="text-sm font-medium">Perspective</label>
+              <span className="text-xs text-muted-foreground font-mono">{perspective === 0 ? 'none' : `${perspective}px`}</span>
+            </div>
+            <input type="range" min={0} max={2000} step={10} value={perspective} onChange={e => setPerspective(+e.target.value)} className="w-full" />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium mb-2 block">Transform Origin</label>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs text-muted-foreground mb-1 block">X Axis</label>
+                <select value={originX} onChange={e => setOriginX(e.target.value)} className="w-full h-9 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+                  {originXOptions.map(o => <option key={o} value={o}>{o}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground mb-1 block">Y Axis</label>
+                <select value={originY} onChange={e => setOriginY(e.target.value)} className="w-full h-9 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+                  {originYOptions.map(o => <option key={o} value={o}>{o}</option>)}
+                </select>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Preview & Code */}
@@ -131,7 +169,7 @@ export default function CSSTransformGeneratorTool() {
                 {/* Transformed element */}
                 <div
                   className="w-24 h-24 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-sm font-medium shadow-lg transition-transform duration-200"
-                  style={{ transform: transformCSS === 'none' ? undefined : transformCSS }}
+                  style={{ transform: transformCSS === 'none' ? undefined : transformCSS, transformOrigin: transformOriginValue }}
                 >
                   Element
                 </div>

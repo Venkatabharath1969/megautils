@@ -44,13 +44,32 @@ function textColorForBg(hex: string): string {
 
 export default function TintShadeGeneratorTool() {
   const [baseColor, setBaseColor] = useState('#3b82f6')
+  const [stepCount, setStepCount] = useState(10)
+  const [copiedVars, setCopiedVars] = useState(false)
 
-  const tints = useMemo(() => generateTints(baseColor, 10), [baseColor])
-  const shades = useMemo(() => generateShades(baseColor, 10), [baseColor])
+  const tints = useMemo(() => generateTints(baseColor, stepCount), [baseColor, stepCount])
+  const shades = useMemo(() => generateShades(baseColor, stepCount), [baseColor, stepCount])
 
   const allTintsHex = tints.map(c => c.toUpperCase()).join(', ')
   const allShadesHex = shades.map(c => c.toUpperCase()).join(', ')
-  const fullScale = [...shades.reverse(), baseColor, ...tints]
+  const fullScale = [...[...shades].reverse(), baseColor, ...tints]
+
+  const cssCustomProperties = useMemo(() => {
+    const allColors = [...[...shades].reverse(), baseColor, ...tints]
+    const totalSteps = allColors.length
+    const lines: string[] = []
+    allColors.forEach((color, i) => {
+      const step = Math.round((i / (totalSteps - 1)) * 900) + 50
+      lines.push(`  --color-${step}: ${color.toUpperCase()};`)
+    })
+    return `:root {\n${lines.join('\n')}\n}`
+  }, [shades, baseColor, tints])
+
+  const copyCSSVars = async () => {
+    await navigator.clipboard.writeText(cssCustomProperties)
+    setCopiedVars(true)
+    setTimeout(() => setCopiedVars(false), 2000)
+  }
 
   return (
     <ToolPage
@@ -93,21 +112,31 @@ export default function TintShadeGeneratorTool() {
     >
       <div className="space-y-6">
         {/* Base Color Input */}
-        <div>
-          <label className="text-sm font-medium mb-2 block">Base Color</label>
-          <div className="flex items-center gap-3">
-            <input
-              type="color"
-              value={baseColor}
-              onChange={e => setBaseColor(e.target.value)}
-              className="w-12 h-12 rounded border border-border cursor-pointer"
-            />
-            <input
-              type="text"
-              value={baseColor}
-              onChange={e => { if (/^#[0-9a-f]{6}$/i.test(e.target.value)) setBaseColor(e.target.value) }}
-              className="w-28 rounded-lg border border-input bg-transparent px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-ring"
-            />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="text-sm font-medium mb-2 block">Base Color</label>
+            <div className="flex items-center gap-3">
+              <input
+                type="color"
+                value={baseColor}
+                onChange={e => setBaseColor(e.target.value)}
+                className="w-12 h-12 rounded border border-border cursor-pointer"
+              />
+              <input
+                type="text"
+                value={baseColor}
+                onChange={e => { if (/^#[0-9a-f]{6}$/i.test(e.target.value)) setBaseColor(e.target.value) }}
+                className="w-28 rounded-lg border border-input bg-transparent px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-ring"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="text-sm font-medium mb-2 block">Steps: {stepCount}</label>
+            <div className="flex items-center gap-2">
+              {[5, 10, 15, 20].map(v => (
+                <button key={v} onClick={() => setStepCount(v)} className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${stepCount === v ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>{v}</button>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -139,7 +168,7 @@ export default function TintShadeGeneratorTool() {
                   style={{ backgroundColor: color }}
                 >
                   <span className="text-[9px] font-mono font-bold" style={{ color: textColorForBg(color) }}>
-                    {(((i + 1) / 11) * 100).toFixed(0)}%
+                    {(((i + 1) / (stepCount + 1)) * 100).toFixed(0)}%
                   </span>
                 </div>
                 <div className="p-1 text-center">
@@ -164,7 +193,7 @@ export default function TintShadeGeneratorTool() {
                   style={{ backgroundColor: color }}
                 >
                   <span className="text-[9px] font-mono font-bold" style={{ color: textColorForBg(color) }}>
-                    {(((i + 1) / 11) * 100).toFixed(0)}%
+                    {(((i + 1) / (stepCount + 1)) * 100).toFixed(0)}%
                   </span>
                 </div>
                 <div className="p-1 text-center">
@@ -173,6 +202,17 @@ export default function TintShadeGeneratorTool() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* CSS Custom Properties Export */}
+        <div>
+          <div className="flex items-center justify-between mb-3">
+            <label className="text-sm font-medium">CSS Custom Properties</label>
+            <button onClick={copyCSSVars} className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors">
+              {copiedVars ? 'Copied!' : 'Copy CSS Variables'}
+            </button>
+          </div>
+          <pre className="p-3 rounded-lg bg-muted text-sm font-mono whitespace-pre overflow-x-auto max-h-48">{cssCustomProperties}</pre>
         </div>
       </div>
     </ToolPage>

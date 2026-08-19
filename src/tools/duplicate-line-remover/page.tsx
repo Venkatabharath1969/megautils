@@ -6,24 +6,33 @@ import { ToolPage, ToolTextarea, CopyButton, ClearButton } from '@/components/to
 export default function DuplicateLineRemoverTool() {
   const [input, setInput] = useState('')
   const [caseSensitive, setCaseSensitive] = useState(true)
+  const [trimWhitespace, setTrimWhitespace] = useState(false)
+  const [showDuplicatesOnly, setShowDuplicatesOnly] = useState(false)
 
   const { output, removed } = useMemo(() => {
     if (!input) return { output: '', removed: 0 }
     const lines = input.split('\n')
-    const seen = new Set<string>()
+    const seen = new Map<string, number>()
     const unique: string[] = []
+    const duplicates: string[] = []
     let removedCount = 0
     for (const line of lines) {
-      const key = caseSensitive ? line : line.toLowerCase()
-      if (seen.has(key)) {
+      let key = caseSensitive ? line : line.toLowerCase()
+      if (trimWhitespace) key = key.trim()
+      const count = seen.get(key) || 0
+      seen.set(key, count + 1)
+      if (count > 0) {
         removedCount++
+        duplicates.push(line)
       } else {
-        seen.add(key)
         unique.push(line)
       }
     }
+    if (showDuplicatesOnly) {
+      return { output: duplicates.join('\n'), removed: removedCount }
+    }
     return { output: unique.join('\n'), removed: removedCount }
-  }, [input, caseSensitive])
+  }, [input, caseSensitive, trimWhitespace, showDuplicatesOnly])
 
   return (
     <ToolPage
@@ -64,10 +73,18 @@ export default function DuplicateLineRemoverTool() {
         { question: 'Can I remove duplicates from a large text file?', answer: 'Yes, this tool processes text entirely in your browser with no upload limits, so it handles large texts efficiently.' },
       ]}
     >
-      <div className="flex items-center gap-4 mb-4">
+      <div className="flex flex-wrap items-center gap-4 mb-4">
         <label className="flex items-center gap-2 text-sm">
           <input type="checkbox" checked={caseSensitive} onChange={(e) => setCaseSensitive(e.target.checked)} className="rounded border-border" />
           Case-sensitive
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" checked={trimWhitespace} onChange={(e) => setTrimWhitespace(e.target.checked)} className="rounded border-border" />
+          Trim whitespace before comparing
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" checked={showDuplicatesOnly} onChange={(e) => setShowDuplicatesOnly(e.target.checked)} className="rounded border-border" />
+          Show only duplicates
         </label>
         {input && (
           <span className="text-xs text-muted-foreground">

@@ -51,6 +51,13 @@ export default function CssUnitConverterTool() {
   const [viewportWidth, setViewportWidth] = useState(1920)
   const [viewportHeight, setViewportHeight] = useState(1080)
 
+  // Clamp calculator
+  const [clampMin, setClampMin] = useState('16px')
+  const [clampPreferred, setClampPreferred] = useState('4vw')
+  const [clampMax, setClampMax] = useState('24px')
+  const clampValue = `clamp(${clampMin}, ${clampPreferred}, ${clampMax})`
+  const [clampCopied, setClampCopied] = useState(false)
+
   const units: Unit[] = ['px', 'rem', 'em', 'pt', '%', 'vw', 'vh']
 
   const conversions = useMemo(() => {
@@ -172,6 +179,35 @@ export default function CssUnitConverterTool() {
                 ))}
               </div>
             )}
+          </div>
+        </div>
+
+        {/* Clamp Calculator */}
+        <div className="p-4 rounded-lg bg-muted/50 border border-border">
+          <label className="text-sm font-medium mb-3 block">CSS clamp() Calculator</label>
+          <p className="text-xs text-muted-foreground mb-3">Generate responsive values that scale between a minimum and maximum, using a preferred fluid value.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+            <div>
+              <label className="text-xs text-muted-foreground mb-1 block">Min Value</label>
+              <input type="text" value={clampMin} onChange={e => setClampMin(e.target.value)} placeholder="e.g. 16px, 1rem" className="w-full rounded border border-input bg-transparent px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-ring" />
+            </div>
+            <div>
+              <label className="text-xs text-muted-foreground mb-1 block">Preferred Value</label>
+              <input type="text" value={clampPreferred} onChange={e => setClampPreferred(e.target.value)} placeholder="e.g. 4vw, 2.5vw + 1rem" className="w-full rounded border border-input bg-transparent px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-ring" />
+            </div>
+            <div>
+              <label className="text-xs text-muted-foreground mb-1 block">Max Value</label>
+              <input type="text" value={clampMax} onChange={e => setClampMax(e.target.value)} placeholder="e.g. 24px, 1.5rem" className="w-full rounded border border-input bg-transparent px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-ring" />
+            </div>
+          </div>
+          <div className="flex items-center justify-between">
+            <pre className="text-sm font-mono bg-muted rounded px-3 py-2 flex-1 mr-3 overflow-x-auto">{clampValue}</pre>
+            <button
+              onClick={async () => { await navigator.clipboard.writeText(clampValue); setClampCopied(true); setTimeout(() => setClampCopied(false), 2000) }}
+              className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors whitespace-nowrap"
+            >
+              {clampCopied ? 'Copied!' : 'Copy'}
+            </button>
           </div>
         </div>
 

@@ -8,8 +8,9 @@ function generateTerms(data: {
   websiteUrl: string
   jurisdiction: string
   effectiveDate: string
+  ecommerce: boolean
 }): string {
-  const { companyName, websiteUrl, jurisdiction, effectiveDate } = data
+  const { companyName, websiteUrl, jurisdiction, effectiveDate, ecommerce } = data
   const company = companyName || '[Company Name]'
   const url = websiteUrl || '[Website URL]'
   const law = jurisdiction || '[Jurisdiction]'
@@ -94,7 +95,25 @@ By continuing to access or use our Website after those revisions become effectiv
 
 If any provision of these Terms is held to be unenforceable or invalid, such provision will be changed and interpreted to accomplish the objectives of such provision to the greatest extent possible under applicable law, and the remaining provisions will continue in full force and effect.
 
-13. CONTACT US
+${ecommerce ? `13. RETURNS AND REFUNDS
+
+If you are not satisfied with a purchase, you may request a return or refund within 30 days of the purchase date, subject to the following conditions:
+- Items must be in their original condition and packaging
+- Digital products and services may not be eligible for refund once accessed or downloaded
+- Refunds will be processed within 5-10 business days to the original payment method
+- Shipping costs for returns are the responsibility of the customer unless the item is defective
+
+14. SHIPPING AND DELIVERY
+
+${company} strives to process and ship all orders within 3-5 business days. Delivery times may vary based on your location and shipping method selected. ${company} is not responsible for delays caused by third-party shipping carriers or customs processing.
+
+Risk of loss and title for items purchased pass to you upon delivery to the carrier. Any claims for missing or damaged items must be reported within 7 days of the expected delivery date.
+
+15. PAYMENT TERMS
+
+All prices are listed in the applicable currency and are subject to change without notice. Payment must be received in full before orders are processed. We accept major credit cards, debit cards, and other payment methods as displayed at checkout. You agree to provide accurate billing information and authorize us to charge the selected payment method.
+
+16` : '13'}. CONTACT US
 
 If you have any questions about these Terms, please contact us:
 
@@ -107,11 +126,12 @@ export default function TermsGeneratorTool() {
   const [companyName, setCompanyName] = useState('')
   const [websiteUrl, setWebsiteUrl] = useState('')
   const [jurisdiction, setJurisdiction] = useState('')
+  const [ecommerce, setEcommerce] = useState(false)
   const [effectiveDate, setEffectiveDate] = useState(() => new Date().toISOString().split('T')[0])
 
   const output = useMemo(() => {
-    return generateTerms({ companyName, websiteUrl, jurisdiction, effectiveDate })
-  }, [companyName, websiteUrl, jurisdiction, effectiveDate])
+    return generateTerms({ companyName, websiteUrl, jurisdiction, effectiveDate, ecommerce })
+  }, [companyName, websiteUrl, jurisdiction, effectiveDate, ecommerce])
 
   const clear = () => {
     setCompanyName('')
@@ -208,6 +228,11 @@ export default function TermsGeneratorTool() {
               className="w-full h-9 px-3 rounded-md border border-input bg-card text-sm"
             />
           </div>
+
+          <label className="inline-flex items-center gap-2 text-sm cursor-pointer">
+            <input type="checkbox" checked={ecommerce} onChange={e => setEcommerce(e.target.checked)} className="rounded accent-primary" />
+            E-commerce site (add returns, refunds, shipping sections)
+          </label>
         </div>
 
         {/* Output */}

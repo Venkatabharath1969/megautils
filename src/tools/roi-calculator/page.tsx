@@ -7,6 +7,7 @@ export default function ROICalculator() {
   const [initialInvestment, setInitialInvestment] = useState(10000)
   const [finalValue, setFinalValue] = useState(15000)
   const [years, setYears] = useState(3)
+  const [inflationRate, setInflationRate] = useState(3)
 
   const result = useMemo(() => {
     const profitLoss = finalValue - initialInvestment
@@ -16,8 +17,14 @@ export default function ROICalculator() {
       : 0
     const isProfit = profitLoss >= 0
 
-    return { profitLoss, roi, annualizedROI, isProfit }
-  }, [initialInvestment, finalValue, years])
+    // Inflation-adjusted ROI
+    const realROI = ((1 + roi / 100) / Math.pow(1 + inflationRate / 100, years) - 1) * 100
+    const realAnnualizedROI = years > 0
+      ? (Math.pow((1 + annualizedROI / 100) / (1 + inflationRate / 100), 1) - 1) * 100
+      : 0
+
+    return { profitLoss, roi, annualizedROI, isProfit, realROI, realAnnualizedROI }
+  }, [initialInvestment, finalValue, years, inflationRate])
 
   const fmt = (n: number) =>
     new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(n)
@@ -79,6 +86,12 @@ export default function ROICalculator() {
             <input type="number" min={0.5} max={50} step={0.5} value={years} onChange={(e) => setYears(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
             <input type="range" min={0.5} max={30} step={0.5} value={years} onChange={(e) => setYears(Number(e.target.value))} className="w-full mt-2 accent-primary" />
           </div>
+          <div>
+            <label className="block text-sm font-medium mb-1.5">Inflation Rate (%)</label>
+            <input type="number" min={0} max={30} step={0.1} value={inflationRate} onChange={(e) => setInflationRate(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+            <input type="range" min={0} max={15} step={0.1} value={inflationRate} onChange={(e) => setInflationRate(Number(e.target.value))} className="w-full mt-2 accent-primary" />
+            <p className="text-xs text-muted-foreground mt-1">Used to calculate inflation-adjusted (real) returns</p>
+          </div>
         </div>
 
         {/* Results */}
@@ -101,6 +114,17 @@ export default function ROICalculator() {
               {result.isProfit ? '+' : ''}{fmt(result.profitLoss)}
             </div>
           </div>
+          {inflationRate > 0 && (
+            <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+              <div className="text-sm font-medium text-amber-700 dark:text-amber-400 mb-2">Inflation-Adjusted (Real) Returns</div>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div><span className="text-muted-foreground">Real Total ROI</span><div className={`font-bold ${result.realROI >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>{result.realROI >= 0 ? '+' : ''}{result.realROI.toFixed(2)}%</div></div>
+                <div><span className="text-muted-foreground">Real Annual ROI</span><div className={`font-bold ${result.realAnnualizedROI >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>{result.realAnnualizedROI >= 0 ? '+' : ''}{result.realAnnualizedROI.toFixed(2)}%</div></div>
+              </div>
+              <p className="text-xs text-muted-foreground mt-2">Adjusted for {inflationRate}% annual inflation</p>
+            </div>
+          )}
+
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
               <div className="text-sm text-muted-foreground mb-1">Initial Investment</div>

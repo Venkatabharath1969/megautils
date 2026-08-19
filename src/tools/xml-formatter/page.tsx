@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, DownloadButton, ClearButton } from '@/components/tool-page'
 
 function formatXml(xml: string, indentSize: number = 2): string {
@@ -77,6 +77,22 @@ export default function XmlFormatterTool() {
   const [output, setOutput] = useState('')
   const [error, setError] = useState('')
   const [indent, setIndent] = useState(2)
+
+  const xmlWarning = useMemo(() => {
+    if (!input.trim()) return null
+    try {
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(input, 'application/xml')
+      const parseError = doc.querySelector('parsererror')
+      if (parseError) {
+        const msg = parseError.textContent?.split('\n')[0] || 'XML is not well-formed'
+        return msg
+      }
+      return null
+    } catch {
+      return null
+    }
+  }, [input])
 
   const format = () => {
     try {
@@ -158,6 +174,11 @@ export default function XmlFormatterTool() {
           <ToolTextarea value={output} readOnly placeholder="Formatted XML will appear here..." rows={14} />
         </div>
       </div>
+      {xmlWarning && !error && (
+        <div className="mt-3 p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20 text-yellow-700 dark:text-yellow-400 text-sm">
+          <span className="font-medium">Warning:</span> {xmlWarning}
+        </div>
+      )}
       {error && <div className="mt-3 p-3 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 text-sm font-mono">{error}</div>}
       <div className="flex flex-wrap items-center gap-3 mt-4">
         <button onClick={format} className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">

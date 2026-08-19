@@ -9,12 +9,18 @@ export default function HourlyToSalary() {
   const [annualSalary, setAnnualSalary] = useState(52000)
   const [hoursPerWeek, setHoursPerWeek] = useState(40)
   const [weeksPerYear, setWeeksPerYear] = useState(52)
+  const [overtimeHours, setOvertimeHours] = useState(0)
+  const [overtimeMultiplier, setOvertimeMultiplier] = useState(1.5)
 
   const result = useMemo(() => {
     if (mode === 'hourly') {
-      const annual = hourlyRate * hoursPerWeek * weeksPerYear
+      const regularAnnual = hourlyRate * hoursPerWeek * weeksPerYear
+      const overtimeRate = hourlyRate * overtimeMultiplier
+      const weeklyOvertimePay = overtimeHours * overtimeRate
+      const annualOvertimePay = weeklyOvertimePay * weeksPerYear
+      const annual = regularAnnual + annualOvertimePay
       const monthly = annual / 12
-      const weekly = hourlyRate * hoursPerWeek
+      const weekly = hourlyRate * hoursPerWeek + weeklyOvertimePay
       const daily = weekly / 5
       return {
         hourly: hourlyRate,
@@ -23,12 +29,20 @@ export default function HourlyToSalary() {
         biweekly: weekly * 2,
         monthly,
         annual,
+        overtimeRate,
+        weeklyOvertimePay,
+        annualOvertimePay,
+        regularAnnual,
       }
     } else {
       const totalHours = hoursPerWeek * weeksPerYear
       const hourly = totalHours > 0 ? annualSalary / totalHours : 0
-      const monthly = annualSalary / 12
-      const weekly = annualSalary / weeksPerYear
+      const overtimeRate = hourly * overtimeMultiplier
+      const weeklyOvertimePay = overtimeHours * overtimeRate
+      const annualOvertimePay = weeklyOvertimePay * weeksPerYear
+      const totalAnnual = annualSalary + annualOvertimePay
+      const monthly = totalAnnual / 12
+      const weekly = totalAnnual / weeksPerYear
       const daily = weekly / 5
       return {
         hourly,
@@ -36,10 +50,14 @@ export default function HourlyToSalary() {
         weekly,
         biweekly: weekly * 2,
         monthly,
-        annual: annualSalary,
+        annual: totalAnnual,
+        overtimeRate,
+        weeklyOvertimePay,
+        annualOvertimePay,
+        regularAnnual: annualSalary,
       }
     }
-  }, [mode, hourlyRate, annualSalary, hoursPerWeek, weeksPerYear])
+  }, [mode, hourlyRate, annualSalary, hoursPerWeek, weeksPerYear, overtimeHours, overtimeMultiplier])
 
   const fmt = (n: number) =>
     new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 }).format(n)
@@ -132,6 +150,23 @@ export default function HourlyToSalary() {
             <input type="range" min={40} max={52} value={weeksPerYear} onChange={e => setWeeksPerYear(Number(e.target.value))} className="w-full mt-2 accent-primary" />
             <div className="text-xs text-muted-foreground mt-1">Use 50 for 2 weeks vacation, 48 for 4 weeks vacation</div>
           </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Overtime Hours/Week</label>
+              <input type="number" min={0} max={80} value={overtimeHours} onChange={e => setOvertimeHours(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+              <input type="range" min={0} max={40} value={overtimeHours} onChange={e => setOvertimeHours(Number(e.target.value))} className="w-full mt-2 accent-primary" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1.5">OT Multiplier</label>
+              <select value={overtimeMultiplier} onChange={e => setOvertimeMultiplier(Number(e.target.value))} className="w-full h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring">
+                <option value={1.5}>1.5x (Time and a half)</option>
+                <option value={2}>2x (Double time)</option>
+                <option value={1.25}>1.25x</option>
+                <option value={1}>1x (No premium)</option>
+              </select>
+            </div>
+          </div>
         </div>
 
         {/* Results */}
@@ -155,8 +190,21 @@ export default function HourlyToSalary() {
 
           <div className="p-4 rounded-xl bg-purple-500/10 border border-purple-500/20">
             <div className="text-sm text-muted-foreground mb-1">Total Working Hours/Year</div>
-            <div className="text-xl font-bold text-purple-600 dark:text-purple-400">{(hoursPerWeek * weeksPerYear).toLocaleString()} hours</div>
+            <div className="text-xl font-bold text-purple-600 dark:text-purple-400">{((hoursPerWeek + overtimeHours) * weeksPerYear).toLocaleString()} hours</div>
           </div>
+
+          {overtimeHours > 0 && (
+            <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+              <div className="text-sm font-medium text-amber-700 dark:text-amber-400 mb-2">Overtime Breakdown</div>
+              <div className="space-y-1.5 text-sm">
+                <div className="flex justify-between"><span className="text-muted-foreground">OT Rate ({overtimeMultiplier}x)</span><span className="font-medium">{fmt(result.overtimeRate)}/hr</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Weekly OT Pay</span><span className="font-medium">{fmt(result.weeklyOvertimePay)}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Annual OT Pay</span><span className="font-medium text-amber-600 dark:text-amber-400">{fmt(result.annualOvertimePay)}</span></div>
+                <div className="flex justify-between border-t border-border pt-1"><span className="text-muted-foreground">Regular Pay</span><span className="font-medium">{fmt(result.regularAnnual)}</span></div>
+                <div className="flex justify-between"><span className="font-medium">Total Compensation</span><span className="font-bold text-primary">{fmt(result.annual)}</span></div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </ToolPage>

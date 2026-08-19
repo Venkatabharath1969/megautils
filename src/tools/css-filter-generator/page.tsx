@@ -1,7 +1,21 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { ToolPage, CopyButton } from '@/components/tool-page'
+
+interface FilterPreset {
+  name: string
+  values: Record<string, number>
+}
+
+const filterPresets: FilterPreset[] = [
+  { name: 'Vintage', values: { blur: 0, brightness: 110, contrast: 85, grayscale: 20, hueRotate: 0, invert: 0, opacity: 100, saturate: 80, sepia: 40 } },
+  { name: 'B&W', values: { blur: 0, brightness: 100, contrast: 120, grayscale: 100, hueRotate: 0, invert: 0, opacity: 100, saturate: 0, sepia: 0 } },
+  { name: 'Warm', values: { blur: 0, brightness: 105, contrast: 100, grayscale: 0, hueRotate: 10, invert: 0, opacity: 100, saturate: 130, sepia: 20 } },
+  { name: 'Cool', values: { blur: 0, brightness: 100, contrast: 105, grayscale: 0, hueRotate: 190, invert: 0, opacity: 100, saturate: 110, sepia: 0 } },
+  { name: 'High Contrast', values: { blur: 0, brightness: 110, contrast: 200, grayscale: 0, hueRotate: 0, invert: 0, opacity: 100, saturate: 120, sepia: 0 } },
+  { name: 'Faded', values: { blur: 0, brightness: 115, contrast: 85, grayscale: 10, hueRotate: 0, invert: 0, opacity: 90, saturate: 75, sepia: 15 } },
+]
 
 interface FilterConfig {
   key: string
@@ -31,6 +45,8 @@ export default function CSSFilterGeneratorTool() {
     filters.forEach(f => { init[f.key] = f.defaultVal })
     return init
   })
+  const [customImage, setCustomImage] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const updateValue = (key: string, val: number) => {
     setValues(prev => ({ ...prev, [key]: val }))
@@ -40,6 +56,18 @@ export default function CSSFilterGeneratorTool() {
     const init: Record<string, number> = {}
     filters.forEach(f => { init[f.key] = f.defaultVal })
     setValues(init)
+  }
+
+  const applyPreset = (preset: FilterPreset) => {
+    setValues({ ...preset.values })
+  }
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => setCustomImage(reader.result as string)
+    reader.readAsDataURL(file)
   }
 
   const filterCSS = useMemo(() => {
@@ -106,6 +134,15 @@ export default function CSSFilterGeneratorTool() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Controls */}
         <div className="space-y-3">
+          <div>
+            <label className="text-sm font-medium mb-2 block">Filter Presets</label>
+            <div className="flex flex-wrap gap-2">
+              {filterPresets.map(p => (
+                <button key={p.name} onClick={() => applyPreset(p)} className="px-3 py-1.5 rounded-lg text-xs font-medium bg-secondary text-secondary-foreground border border-border hover:bg-muted transition-colors">{p.name}</button>
+              ))}
+            </div>
+          </div>
+
           <div className="flex items-center justify-between mb-1">
             <label className="text-sm font-medium">Filter Controls</label>
             <button onClick={resetAll} className="px-3 py-1.5 rounded-lg text-xs font-medium border border-border bg-card hover:bg-muted transition-colors">
@@ -135,21 +172,34 @@ export default function CSSFilterGeneratorTool() {
         {/* Preview & Code */}
         <div className="space-y-4">
           <div>
-            <label className="text-sm font-medium mb-2 block">Preview</label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-sm font-medium">Preview</label>
+              <div className="flex items-center gap-2">
+                {customImage && (
+                  <button onClick={() => { setCustomImage(null); if (fileInputRef.current) fileInputRef.current.value = '' }} className="px-3 py-1.5 rounded-lg text-xs font-medium border border-border bg-card hover:bg-muted transition-colors">Remove Image</button>
+                )}
+                <button onClick={() => fileInputRef.current?.click()} className="px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors">Upload Image</button>
+                <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+              </div>
+            </div>
             <div className="w-full rounded-lg border border-border overflow-hidden" style={filterStyle}>
-              <div className="w-full h-64" style={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%)',
-              }}>
-                <div className="h-full flex flex-col items-center justify-center text-white p-6">
-                  <div className="text-2xl font-bold mb-2">Sample Content</div>
-                  <p className="text-sm text-center text-white/80">This gradient preview shows how your CSS filters will affect visual content.</p>
-                  <div className="flex gap-3 mt-4">
-                    <div className="w-12 h-12 rounded-full bg-white/30" />
-                    <div className="w-12 h-12 rounded-lg bg-white/20" />
-                    <div className="w-12 h-12 rounded-full bg-white/30" />
+              {customImage ? (
+                <img src={customImage} alt="Custom preview" className="w-full h-64 object-cover" />
+              ) : (
+                <div className="w-full h-64" style={{
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%)',
+                }}>
+                  <div className="h-full flex flex-col items-center justify-center text-white p-6">
+                    <div className="text-2xl font-bold mb-2">Sample Content</div>
+                    <p className="text-sm text-center text-white/80">Upload an image or use this gradient to preview your CSS filters.</p>
+                    <div className="flex gap-3 mt-4">
+                      <div className="w-12 h-12 rounded-full bg-white/30" />
+                      <div className="w-12 h-12 rounded-lg bg-white/20" />
+                      <div className="w-12 h-12 rounded-full bg-white/30" />
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 

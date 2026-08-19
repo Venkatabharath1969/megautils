@@ -103,6 +103,33 @@ export default function RobotsTxtGeneratorTool() {
             <ClearButton onClear={clear} />
           </div>
 
+          <div>
+            <label className="block text-xs font-medium mb-1.5 text-muted-foreground">Quick Presets</label>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { label: 'Allow All', apply: () => { setRules([{ id: '1', userAgent: '*', type: 'Allow' as const, path: '/' }]); setSitemapUrl(''); setCrawlDelay('') } },
+                { label: 'Block All', apply: () => { setRules([{ id: '1', userAgent: '*', type: 'Disallow' as const, path: '/' }]); setSitemapUrl(''); setCrawlDelay('') } },
+                { label: 'Block AI Crawlers', apply: () => { setRules([
+                  { id: '1', userAgent: '*', type: 'Allow' as const, path: '/' },
+                  { id: '2', userAgent: 'GPTBot', type: 'Disallow' as const, path: '/' },
+                  { id: '3', userAgent: 'ChatGPT-User', type: 'Disallow' as const, path: '/' },
+                  { id: '4', userAgent: 'ClaudeBot', type: 'Disallow' as const, path: '/' },
+                  { id: '5', userAgent: 'Bytespider', type: 'Disallow' as const, path: '/' },
+                  { id: '6', userAgent: 'CCBot', type: 'Disallow' as const, path: '/' },
+                ]); setNextId(7) } },
+                { label: 'WordPress Default', apply: () => { setRules([
+                  { id: '1', userAgent: '*', type: 'Disallow' as const, path: '/wp-admin/' },
+                  { id: '2', userAgent: '*', type: 'Allow' as const, path: '/wp-admin/admin-ajax.php' },
+                  { id: '3', userAgent: '*', type: 'Disallow' as const, path: '/wp-includes/' },
+                ]); setNextId(4) } },
+              ].map(preset => (
+                <button key={preset.label} onClick={preset.apply} className="px-3 py-1.5 rounded-md text-xs font-medium bg-secondary text-secondary-foreground border border-border hover:bg-muted transition-colors">
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <div className="space-y-3">
             {rules.map((rule) => (
               <div key={rule.id} className="flex items-end gap-2 p-3 rounded-lg bg-muted">

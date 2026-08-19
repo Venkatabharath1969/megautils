@@ -1,10 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, ClearButton } from '@/components/tool-page'
 
-function csvEscape(str: string): string {
-  const needsQuoting = str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r')
+type Delimiter = ',' | '\t' | ';' | '|'
+
+function csvEscape(str: string, delimiter: string): string {
+  const needsQuoting = str.includes(delimiter) || str.includes('"') || str.includes('\n') || str.includes('\r')
   if (!needsQuoting) return str
   return '"' + str.replace(/"/g, '""') + '"'
 }
@@ -18,8 +20,8 @@ function csvUnescape(str: string): string {
   return s
 }
 
-function csvEscapeMultiline(input: string): string {
-  return input.split('\n').map(line => csvEscape(line)).join('\n')
+function csvEscapeMultiline(input: string, delimiter: string): string {
+  return input.split('\n').map(line => csvEscape(line, delimiter)).join('\n')
 }
 
 function csvUnescapeMultiline(input: string): string {
@@ -28,14 +30,15 @@ function csvUnescapeMultiline(input: string): string {
 
 export default function CsvEscapeTool() {
   const [input, setInput] = useState('')
-  const [output, setOutput] = useState('')
   const [mode, setMode] = useState<'escape' | 'unescape'>('escape')
+  const [delimiter, setDelimiter] = useState<Delimiter>(',')
 
-  const process = () => {
-    setOutput(mode === 'escape' ? csvEscapeMultiline(input) : csvUnescapeMultiline(input))
-  }
+  const output = useMemo(() => {
+    if (!input) return ''
+    return mode === 'escape' ? csvEscapeMultiline(input, delimiter) : csvUnescapeMultiline(input)
+  }, [input, mode, delimiter])
 
-  const clear = () => { setInput(''); setOutput('') }
+  const clear = () => { setInput('') }
 
   return (
     <ToolPage title="CSV Field Escape / Unescape" description="Escape or unescape strings for CSV fields. Handles quote wrapping and double-quote escaping." category="string" categoryLabel="String Utilities"
@@ -73,6 +76,12 @@ export default function CsvEscapeTool() {
       <div className="flex flex-wrap gap-2 mb-4">
         <button onClick={() => setMode('escape')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'escape' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Escape</button>
         <button onClick={() => setMode('unescape')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'unescape' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Unescape</button>
+        <select value={delimiter} onChange={e => setDelimiter(e.target.value as Delimiter)} className="h-9 px-3 rounded-md border border-input bg-card text-sm">
+          <option value=",">Comma (,)</option>
+          <option value={'\t'}>Tab</option>
+          <option value=";">Semicolon (;)</option>
+          <option value="|">Pipe (|)</option>
+        </select>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -92,9 +101,7 @@ export default function CsvEscapeTool() {
         </div>
       </div>
 
-      <button onClick={process} className="mt-4 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
-        {mode === 'escape' ? 'Escape Fields' : 'Unescape Fields'}
-      </button>
+
     </ToolPage>
   )
 }

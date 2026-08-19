@@ -3,7 +3,10 @@
 import { useState, useMemo } from 'react'
 import { ToolPage, CopyButton, ClearButton } from '@/components/tool-page'
 
+const ARTICLE_TYPES = ['Article', 'NewsArticle', 'BlogPosting', 'TechArticle'] as const
+
 export default function SchemaArticleTool() {
+  const [articleType, setArticleType] = useState<string>('Article')
   const [headline, setHeadline] = useState('')
   const [authorName, setAuthorName] = useState('')
   const [authorUrl, setAuthorUrl] = useState('')
@@ -17,7 +20,7 @@ export default function SchemaArticleTool() {
   const output = useMemo(() => {
     const schema: Record<string, unknown> = {
       '@context': 'https://schema.org',
-      '@type': 'Article',
+      '@type': articleType,
     }
     if (headline) schema.headline = headline
     if (description) schema.description = description
@@ -35,10 +38,10 @@ export default function SchemaArticleTool() {
       schema.publisher = publisher
     }
     return `<script type="application/ld+json">\n${JSON.stringify(schema, null, 2)}\n</script>`
-  }, [headline, authorName, authorUrl, datePublished, dateModified, imageUrl, publisherName, publisherLogo, description])
+  }, [articleType, headline, authorName, authorUrl, datePublished, dateModified, imageUrl, publisherName, publisherLogo, description])
 
   const clear = () => {
-    setHeadline(''); setAuthorName(''); setAuthorUrl(''); setDatePublished('')
+    setArticleType('Article'); setHeadline(''); setAuthorName(''); setAuthorUrl(''); setDatePublished('')
     setDateModified(''); setImageUrl(''); setPublisherName(''); setPublisherLogo(''); setDescription('')
   }
 
@@ -88,6 +91,12 @@ export default function SchemaArticleTool() {
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold">Article Details</h2>
             <ClearButton onClear={clear} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Article Type</label>
+            <select value={articleType} onChange={e => setArticleType(e.target.value)} className={inputClass}>
+              {ARTICLE_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+            </select>
           </div>
           <div>
             <label className="block text-sm font-medium mb-1">Headline</label>

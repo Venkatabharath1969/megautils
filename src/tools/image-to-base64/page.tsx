@@ -13,11 +13,10 @@ export default function ImageToBase64Tool() {
   const [base64Input, setBase64Input] = useState('')
   const [previewFromBase64, setPreviewFromBase64] = useState<string | null>(null)
   const [error, setError] = useState('')
+  const [isDragging, setIsDragging] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const handleFile = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+  const processFile = useCallback((file: File) => {
     setFileName(file.name)
     setFileSize(file.size)
     setError('')
@@ -29,6 +28,19 @@ export default function ImageToBase64Tool() {
     }
     reader.readAsDataURL(file)
   }, [])
+
+  const handleFile = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    processFile(file)
+  }, [processFile])
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragging(false)
+    const file = e.dataTransfer.files[0]
+    if (file && file.type.startsWith('image/')) processFile(file)
+  }, [processFile])
 
   const handleBase64ToImage = useCallback(() => {
     setError('')
@@ -126,10 +138,15 @@ export default function ImageToBase64Tool() {
             {imageSrc && <ClearButton onClear={clear} />}
           </div>
 
-          <label className="flex flex-col items-center justify-center h-40 border-2 border-dashed border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+          <label
+            onDragOver={e => { e.preventDefault(); setIsDragging(true) }}
+            onDragLeave={e => { e.preventDefault(); setIsDragging(false) }}
+            onDrop={handleDrop}
+            className={`flex flex-col items-center justify-center h-40 border-2 border-dashed rounded-lg cursor-pointer transition-colors ${isDragging ? 'border-primary bg-primary/10' : 'border-border hover:bg-muted/50'}`}
+          >
             <Upload className="h-8 w-8 text-muted-foreground mb-2" />
             <span className="text-sm text-muted-foreground">
-              {fileName || 'Click to upload an image'}
+              {isDragging ? 'Drop your image here' : fileName || 'Click to upload or drag an image'}
             </span>
             {fileSize > 0 && (
               <span className="text-xs text-muted-foreground mt-1">
@@ -162,8 +179,12 @@ export default function ImageToBase64Tool() {
                   <CopyButton text={base64} />
                 </div>
                 <ToolTextarea value={truncated} readOnly rows={10} placeholder="Base64 will appear here..." />
-                <div className="mt-2 text-xs text-muted-foreground">
-                  Length: {base64.length.toLocaleString()} characters
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <span className="text-xs text-muted-foreground">Length: {base64.length.toLocaleString()} chars</span>
+                  <CopyButton text={`<img src="${base64}" alt="image" />`} />
+                  <span className="text-xs text-muted-foreground">HTML</span>
+                  <CopyButton text={`background-image: url('${base64}');`} />
+                  <span className="text-xs text-muted-foreground">CSS</span>
                 </div>
               </div>
             </div>

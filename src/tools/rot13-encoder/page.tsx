@@ -10,10 +10,29 @@ function rot13(text: string): string {
   })
 }
 
+function rot5(text: string): string {
+  return text.replace(/[0-9]/g, (char) => {
+    return String.fromCharCode(((char.charCodeAt(0) - 48 + 5) % 10) + 48)
+  })
+}
+
+function rot47(text: string): string {
+  return text.replace(/[!-~]/g, (char) => {
+    return String.fromCharCode(((char.charCodeAt(0) - 33 + 47) % 94) + 33)
+  })
+}
+
 export default function Rot13EncoderTool() {
   const [input, setInput] = useState('')
+  const [enableRot5, setEnableRot5] = useState(false)
+  const [enableRot47, setEnableRot47] = useState(false)
 
-  const output = useMemo(() => rot13(input), [input])
+  const output = useMemo(() => {
+    if (enableRot47) return rot47(input)
+    let result = rot13(input)
+    if (enableRot5) result = rot5(result)
+    return result
+  }, [input, enableRot5, enableRot47])
 
   return (
     <ToolPage
@@ -55,6 +74,16 @@ export default function Rot13EncoderTool() {
     >
       <div className="mb-4 p-3 rounded-lg bg-muted text-sm text-muted-foreground">
         ROT13 shifts each letter 13 positions in the alphabet. Applying it twice returns the original text.
+      </div>
+      <div className="flex flex-wrap items-center gap-4 mb-4">
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" checked={enableRot5} onChange={(e) => { setEnableRot5(e.target.checked); if (e.target.checked) setEnableRot47(false) }} className="rounded border-border" />
+          ROT5 for digits (0-9 shifted by 5)
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          <input type="checkbox" checked={enableRot47} onChange={(e) => { setEnableRot47(e.target.checked); if (e.target.checked) setEnableRot5(false) }} className="rounded border-border" />
+          ROT47 (all printable ASCII)
+        </label>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
