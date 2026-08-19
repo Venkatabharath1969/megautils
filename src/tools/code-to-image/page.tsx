@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef } from 'react'
 import { ToolPage, ClearButton } from '@/components/tool-page'
-import { Download } from 'lucide-react'
+import { Download, Clipboard, Check } from 'lucide-react'
 
 const THEMES = {
   dark: {
@@ -64,10 +64,73 @@ type ThemeName = keyof typeof THEMES
 const PADDING_OPTIONS = [16, 32, 48, 64]
 const FONT_SIZES = [12, 14, 16, 18, 20]
 
-// Simple syntax highlighting with regex tokenization
-function tokenize(code: string): { text: string; type: string }[] {
+// Language keyword sets
+const LANGUAGE_KEYWORDS: Record<string, string[]> = {
+  javascript: ['const', 'let', 'var', 'function', 'return', 'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'break', 'continue', 'class', 'extends', 'import', 'export', 'default', 'from', 'async', 'await', 'try', 'catch', 'finally', 'throw', 'new', 'typeof', 'instanceof', 'void', 'delete', 'in', 'of', 'this', 'super', 'yield', 'static', 'get', 'set', 'true', 'false', 'null', 'undefined'],
+  typescript: ['const', 'let', 'var', 'function', 'return', 'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'break', 'continue', 'class', 'extends', 'import', 'export', 'default', 'from', 'async', 'await', 'try', 'catch', 'finally', 'throw', 'new', 'typeof', 'instanceof', 'void', 'delete', 'in', 'of', 'this', 'super', 'yield', 'static', 'get', 'set', 'true', 'false', 'null', 'undefined', 'interface', 'type', 'enum', 'implements', 'public', 'private', 'protected', 'readonly', 'abstract', 'as', 'is', 'keyof', 'never', 'unknown', 'any', 'string', 'number', 'boolean', 'object', 'symbol', 'bigint', 'declare', 'namespace', 'module', 'infer', 'satisfies'],
+  python: ['def', 'class', 'if', 'elif', 'else', 'for', 'while', 'return', 'import', 'from', 'as', 'try', 'except', 'finally', 'raise', 'with', 'pass', 'break', 'continue', 'yield', 'lambda', 'and', 'or', 'not', 'in', 'is', 'None', 'True', 'False', 'self', 'global', 'nonlocal', 'del', 'assert', 'async', 'await', 'print'],
+  go: ['func', 'package', 'import', 'var', 'const', 'type', 'struct', 'interface', 'map', 'chan', 'go', 'select', 'case', 'default', 'if', 'else', 'for', 'range', 'switch', 'return', 'break', 'continue', 'defer', 'fallthrough', 'goto', 'nil', 'true', 'false', 'make', 'new', 'len', 'cap', 'append', 'copy', 'delete', 'error', 'string', 'int', 'bool', 'byte', 'float64', 'float32'],
+  rust: ['fn', 'let', 'mut', 'const', 'static', 'struct', 'enum', 'impl', 'trait', 'pub', 'mod', 'use', 'crate', 'self', 'super', 'if', 'else', 'for', 'while', 'loop', 'match', 'return', 'break', 'continue', 'move', 'ref', 'as', 'in', 'where', 'async', 'await', 'unsafe', 'extern', 'type', 'dyn', 'true', 'false', 'None', 'Some', 'Ok', 'Err', 'Self', 'String', 'Vec', 'Box', 'Option', 'Result', 'println', 'macro_rules'],
+  java: ['public', 'private', 'protected', 'static', 'final', 'abstract', 'class', 'interface', 'extends', 'implements', 'import', 'package', 'new', 'return', 'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'break', 'continue', 'try', 'catch', 'finally', 'throw', 'throws', 'void', 'int', 'long', 'double', 'float', 'boolean', 'char', 'byte', 'short', 'String', 'this', 'super', 'null', 'true', 'false', 'instanceof', 'enum', 'synchronized', 'volatile', 'transient'],
+  'c_cpp': ['int', 'long', 'short', 'float', 'double', 'char', 'void', 'unsigned', 'signed', 'const', 'static', 'extern', 'auto', 'register', 'volatile', 'struct', 'union', 'enum', 'typedef', 'sizeof', 'if', 'else', 'for', 'while', 'do', 'switch', 'case', 'break', 'continue', 'return', 'goto', 'default', 'include', 'define', 'ifdef', 'ifndef', 'endif', 'NULL', 'true', 'false', 'class', 'public', 'private', 'protected', 'virtual', 'override', 'template', 'typename', 'namespace', 'using', 'new', 'delete', 'throw', 'try', 'catch', 'nullptr', 'constexpr', 'auto'],
+  ruby: ['def', 'end', 'class', 'module', 'if', 'elsif', 'else', 'unless', 'while', 'until', 'for', 'do', 'begin', 'rescue', 'ensure', 'raise', 'return', 'yield', 'block_given', 'self', 'super', 'nil', 'true', 'false', 'and', 'or', 'not', 'in', 'then', 'when', 'case', 'require', 'include', 'extend', 'attr_accessor', 'attr_reader', 'attr_writer', 'puts', 'print', 'lambda', 'proc'],
+  php: ['function', 'class', 'public', 'private', 'protected', 'static', 'abstract', 'interface', 'extends', 'implements', 'namespace', 'use', 'new', 'return', 'if', 'else', 'elseif', 'for', 'foreach', 'while', 'do', 'switch', 'case', 'break', 'continue', 'try', 'catch', 'finally', 'throw', 'echo', 'print', 'var', 'const', 'true', 'false', 'null', 'array', 'string', 'int', 'float', 'bool', 'isset', 'empty', 'unset', 'require', 'include'],
+  sql: ['SELECT', 'FROM', 'WHERE', 'INSERT', 'INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE', 'CREATE', 'TABLE', 'ALTER', 'DROP', 'INDEX', 'VIEW', 'JOIN', 'INNER', 'LEFT', 'RIGHT', 'OUTER', 'ON', 'AND', 'OR', 'NOT', 'IN', 'IS', 'NULL', 'AS', 'ORDER', 'BY', 'GROUP', 'HAVING', 'LIMIT', 'OFFSET', 'UNION', 'ALL', 'DISTINCT', 'COUNT', 'SUM', 'AVG', 'MAX', 'MIN', 'BETWEEN', 'LIKE', 'EXISTS', 'CASE', 'WHEN', 'THEN', 'ELSE', 'END', 'PRIMARY', 'KEY', 'FOREIGN', 'REFERENCES', 'DEFAULT', 'INT', 'VARCHAR', 'TEXT', 'BOOLEAN', 'DATE', 'TIMESTAMP',
+    'select', 'from', 'where', 'insert', 'into', 'values', 'update', 'set', 'delete', 'create', 'table', 'alter', 'drop', 'index', 'view', 'join', 'inner', 'left', 'right', 'outer', 'on', 'and', 'or', 'not', 'in', 'is', 'null', 'as', 'order', 'by', 'group', 'having', 'limit', 'offset', 'union', 'all', 'distinct', 'count', 'sum', 'avg', 'max', 'min', 'between', 'like', 'exists', 'case', 'when', 'then', 'else', 'end', 'primary', 'key', 'foreign', 'references', 'default', 'int', 'varchar', 'text', 'boolean', 'date', 'timestamp'],
+  html_css: ['html', 'head', 'body', 'div', 'span', 'p', 'a', 'img', 'ul', 'ol', 'li', 'table', 'tr', 'td', 'th', 'form', 'input', 'button', 'select', 'option', 'textarea', 'label', 'script', 'style', 'link', 'meta', 'title', 'section', 'article', 'nav', 'header', 'footer', 'main', 'aside', 'class', 'id', 'src', 'href', 'display', 'flex', 'grid', 'position', 'margin', 'padding', 'border', 'background', 'color', 'font', 'width', 'height', 'important', 'none', 'block', 'inline', 'relative', 'absolute', 'fixed'],
+  shell: ['if', 'then', 'else', 'elif', 'fi', 'for', 'while', 'do', 'done', 'case', 'esac', 'in', 'function', 'return', 'exit', 'echo', 'printf', 'read', 'export', 'local', 'unset', 'set', 'shift', 'true', 'false', 'test', 'source', 'alias', 'cd', 'ls', 'cp', 'mv', 'rm', 'mkdir', 'chmod', 'chown', 'grep', 'sed', 'awk', 'find', 'cat', 'head', 'tail', 'sort', 'uniq', 'wc', 'xargs', 'pipe', 'sudo', 'apt', 'yum', 'curl', 'wget'],
+}
+
+const LANGUAGE_OPTIONS = [
+  { value: 'javascript', label: 'JavaScript' },
+  { value: 'typescript', label: 'TypeScript' },
+  { value: 'python', label: 'Python' },
+  { value: 'go', label: 'Go' },
+  { value: 'rust', label: 'Rust' },
+  { value: 'java', label: 'Java' },
+  { value: 'c_cpp', label: 'C/C++' },
+  { value: 'ruby', label: 'Ruby' },
+  { value: 'php', label: 'PHP' },
+  { value: 'sql', label: 'SQL' },
+  { value: 'html_css', label: 'HTML/CSS' },
+  { value: 'shell', label: 'Shell/Bash' },
+]
+
+// Build tokenizer regex based on language
+function buildTokenizerRegex(lang: string): RegExp {
+  const keywords = LANGUAGE_KEYWORDS[lang] || LANGUAGE_KEYWORDS['javascript']
+  const kwPattern = keywords.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')
+
+  // Python uses # for comments, SQL uses -- for comments
+  let commentPattern: string
+  if (lang === 'python' || lang === 'shell') {
+    commentPattern = '(#[^\\n]*)'
+  } else if (lang === 'sql') {
+    commentPattern = '(--[^\\n]*|\\/\\*[\\s\\S]*?\\*\\/)'
+  } else if (lang === 'html_css') {
+    commentPattern = '(\\/\\*[\\s\\S]*?\\*\\/|<!--[\\s\\S]*?-->)'
+  } else {
+    commentPattern = '(\\/\\/[^\\n]*|\\/\\*[\\s\\S]*?\\*\\/)'
+  }
+
+  const stringPattern = '("(?:[^"\\\\]|\\\\.)*"|\'(?:[^\'\\\\]|\\\\.)*\'|`(?:[^`\\\\]|\\\\.)*`)'
+  const keywordPattern = `(\\b(?:${kwPattern})\\b)`
+  const numberPattern = '(\\b\\d+\\.?\\d*\\b)'
+  const funcPattern = '(\\b[A-Za-z_]\\w*(?=\\s*\\())'
+  const operatorPattern = '([+\\-*/%=<>!&|^~?:;,{}\\[\\]()])'
+  const newlinePattern = '(\\n)'
+  const wsPattern = '([^\\S\\n]+)'
+  const textPattern = '([^\\s]+)'
+
+  return new RegExp(
+    `${commentPattern}|${stringPattern}|${keywordPattern}|${numberPattern}|${funcPattern}|${operatorPattern}|${newlinePattern}|${wsPattern}|${textPattern}`,
+    'g'
+  )
+}
+
+function tokenize(code: string, lang: string): { text: string; type: string }[] {
   const tokens: { text: string; type: string }[] = []
-  const regex = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`)|(\b(?:const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|class|extends|import|export|default|from|async|await|try|catch|finally|throw|new|typeof|instanceof|void|delete|in|of|this|super|yield|static|get|set|true|false|null|undefined|interface|type|enum|implements|public|private|protected|readonly|abstract|as|is|keyof|never|unknown|any|string|number|boolean|object|symbol|bigint|def|self|print|elif|None|True|False|lambda|with|pass|raise|except|finally)\b)|(\b\d+\.?\d*\b)|(\b[A-Za-z_]\w*(?=\s*\())|([+\-*/%=<>!&|^~?:;,{}[\]()])|(\n)|([^\S\n]+)|([^\s]+)/g
+  const regex = buildTokenizerRegex(lang)
 
   let match
   while ((match = regex.exec(code)) !== null) {
@@ -102,12 +165,14 @@ console.log(results);`)
   const [showLineNumbers, setShowLineNumbers] = useState(true)
   const [showWindowChrome, setShowWindowChrome] = useState(true)
   const [title, setTitle] = useState('code.js')
+  const [language, setLanguage] = useState('javascript')
+  const [copyStatus, setCopyStatus] = useState(false)
   const codeRef = useRef<HTMLDivElement>(null)
 
   const t = THEMES[theme]
 
-  const handleDownload = useCallback(() => {
-    if (!codeRef.current) return
+  const buildCanvas = useCallback(() => {
+    if (!codeRef.current) return null
 
     const el = codeRef.current
     const canvas = document.createElement('canvas')
@@ -170,7 +235,7 @@ console.log(results);`)
       }
 
       // Tokenize line and render
-      const tokens = tokenize(line)
+      const tokens = tokenize(line, language)
       let x = padding + lineNumWidth
       for (const token of tokens) {
         if (token.type === 'newline') continue
@@ -180,11 +245,45 @@ console.log(results);`)
       }
     })
 
+    return canvas
+  }, [code, t, padding, fontSize, showLineNumbers, showWindowChrome, title, language])
+
+  const handleDownload = useCallback(() => {
+    const canvas = buildCanvas()
+    if (!canvas) return
+
     const link = document.createElement('a')
     link.download = `code-${Date.now()}.png`
     link.href = canvas.toDataURL('image/png')
     link.click()
-  }, [code, t, padding, fontSize, showLineNumbers, showWindowChrome, title])
+  }, [buildCanvas])
+
+  const handleCopyImage = useCallback(async () => {
+    try {
+      const canvas = buildCanvas()
+      if (!canvas) return
+
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'))
+      if (!blob) return
+
+      await navigator.clipboard.write([
+        new ClipboardItem({ 'image/png': blob })
+      ])
+      setCopyStatus(true)
+      setTimeout(() => setCopyStatus(false), 2000)
+    } catch {
+      // Fallback: try to at least copy as data URL
+      try {
+        const canvas = buildCanvas()
+        if (!canvas) return
+        await navigator.clipboard.writeText(canvas.toDataURL('image/png'))
+        setCopyStatus(true)
+        setTimeout(() => setCopyStatus(false), 2000)
+      } catch {
+        // Browser doesn't support clipboard API
+      }
+    }
+  }, [buildCanvas])
 
   const clear = () => setCode('')
 
@@ -247,6 +346,18 @@ console.log(results);`)
 
           <div className="grid grid-cols-2 gap-3">
             <div>
+              <label className="text-sm font-medium mb-1 block">Language</label>
+              <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                className="w-full h-9 px-3 rounded-md border border-input bg-card text-sm"
+              >
+                {LANGUAGE_OPTIONS.map((lang) => (
+                  <option key={lang.value} value={lang.value}>{lang.label}</option>
+                ))}
+              </select>
+            </div>
+            <div>
               <label className="text-sm font-medium mb-1 block">Theme</label>
               <select
                 value={theme}
@@ -282,7 +393,7 @@ console.log(results);`)
                 ))}
               </select>
             </div>
-            <div>
+            <div className="col-span-2">
               <label className="text-sm font-medium mb-1 block">Window Title</label>
               <input
                 type="text"
@@ -305,13 +416,23 @@ console.log(results);`)
             </label>
           </div>
 
-          <button
-            onClick={handleDownload}
-            disabled={!code.trim()}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
-          >
-            <Download className="h-4 w-4" /> Download PNG
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={handleDownload}
+              disabled={!code.trim()}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
+            >
+              <Download className="h-4 w-4" /> Download PNG
+            </button>
+            <button
+              onClick={handleCopyImage}
+              disabled={!code.trim()}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-secondary text-secondary-foreground border border-border text-sm font-medium hover:bg-muted transition-colors disabled:opacity-50"
+            >
+              {copyStatus ? <Check className="h-4 w-4 text-green-500" /> : <Clipboard className="h-4 w-4" />}
+              {copyStatus ? 'Copied!' : 'Copy Image'}
+            </button>
+          </div>
         </div>
 
         {/* Preview */}
@@ -372,7 +493,7 @@ console.log(results);`)
                       </span>
                     )}
                     <span className="whitespace-pre">
-                      {tokenize(line).map((token, ti) => (
+                      {tokenize(line, language).map((token, ti) => (
                         <span
                           key={ti}
                           style={{

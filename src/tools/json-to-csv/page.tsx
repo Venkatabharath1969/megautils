@@ -3,50 +3,83 @@
 import { useState } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, DownloadButton, ClearButton } from '@/components/tool-page'
 
-function escapeCsvField(field: string): string {
-  if (field.includes(',') || field.includes('"') || field.includes('\n') || field.includes('\r')) {
+function flatten(obj: Record<string, unknown>, prefix = ''): Record<string, unknown> {
+  const result: Record<string, unknown> = {}
+  for (const [key, val] of Object.entries(obj)) {
+    const newKey = prefix ? `${prefix}.${key}` : key
+    if (val && typeof val === 'object' && !Array.isArray(val)) {
+      Object.assign(result, flatten(val as Record<string, unknown>, newKey))
+    } else {
+      result[newKey] = val
+    }
+  }
+  return result
+}
+
+function escapeCsvField(field: string, delimiter: string): string {
+  if (field.includes(delimiter) || field.includes('"') || field.includes('\n') || field.includes('\r')) {
     return '"' + field.replace(/"/g, '""') + '"'
   }
   return field
 }
 
-function jsonToCsv(jsonStr: string): string {
-  const data = JSON.parse(jsonStr)
-  if (!Array.isArray(data)) throw new Error('Input must be a JSON array of objects')
+function jsonToCsv(jsonStr: string, delimiter: string, flattenNested: boolean): string {
+  let data = JSON.parse(jsonStr)
+
+  // Single-object auto-wrap
+  if (data && typeof data === 'object' && !Array.isArray(data)) {
+    data = [data]
+  }
+
+  if (!Array.isArray(data)) throw new Error('Input must be a JSON object or array of objects')
   if (data.length === 0) return ''
+
+  // Optionally flatten nested objects
+  const processed = data.map((item: unknown) => {
+    if (typeof item !== 'object' || item === null || Array.isArray(item)) {
+      throw new Error('Each item in the array must be an object')
+    }
+    return flattenNested ? flatten(item as Record<string, unknown>) : item as Record<string, unknown>
+  })
 
   // Collect all unique keys
   const keys = new Set<string>()
-  for (const item of data) {
-    if (typeof item !== 'object' || item === null || Array.isArray(item)) {
-      throw new Error('Each item in the array must be a flat object')
-    }
+  for (const item of processed) {
     Object.keys(item).forEach(k => keys.add(k))
   }
 
   const headers = Array.from(keys)
-  const headerRow = headers.map(h => escapeCsvField(h)).join(',')
+  const headerRow = headers.map(h => escapeCsvField(h, delimiter)).join(delimiter)
 
-  const rows = data.map(item => {
+  const rows = processed.map(item => {
     return headers.map(h => {
       const val = item[h]
       if (val === null || val === undefined) return ''
-      if (typeof val === 'object') return escapeCsvField(JSON.stringify(val))
-      return escapeCsvField(String(val))
-    }).join(',')
+      if (typeof val === 'object') return escapeCsvField(JSON.stringify(val), delimiter)
+      return escapeCsvField(String(val), delimiter)
+    }).join(delimiter)
   })
 
   return [headerRow, ...rows].join('\n')
 }
 
+const DELIMITERS = [
+  { label: 'Comma (,)', value: ',' },
+  { label: 'Tab (\\t)', value: '\t' },
+  { label: 'Semicolon (;)', value: ';' },
+  { label: 'Pipe (|)', value: '|' },
+]
+
 export default function JsonToCsvTool() {
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('')
   const [error, setError] = useState('')
+  const [delimiter, setDelimiter] = useState(',')
+  const [flattenNested, setFlattenNested] = useState(false)
 
   const convert = () => {
     try {
-      setOutput(jsonToCsv(input))
+      setOutput(jsonToCsv(input, delimiter, flattenNested))
       setError('')
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Invalid input')
@@ -118,6 +151,29 @@ export default function JsonToCsvTool() {
           </div>
           <ToolTextarea value={output} readOnly placeholder="CSV output will appear here..." rows={14} />
         </div>
+      </div>
+      <div className="flex flex-wrap items-center gap-4 mt-4">
+        <div className="flex items-center gap-2">
+          <label className="text-sm text-muted-foreground">Delimiter:</label>
+          <select
+            value={delimiter}
+            onChange={(e) => setDelimiter(e.target.value)}
+            className="h-9 px-3 rounded-md border border-input bg-card text-sm"
+          >
+            {DELIMITERS.map(d => (
+              <option key={d.value} value={d.value}>{d.label}</option>
+            ))}
+          </select>
+        </div>
+        <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
+          <input
+            type="checkbox"
+            checked={flattenNested}
+            onChange={(e) => setFlattenNested(e.target.checked)}
+            className="rounded border-input"
+          />
+          Flatten nested objects
+        </label>
       </div>
       {error && <div className="mt-3 p-3 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 text-sm font-mono">{error}</div>}
       <button onClick={convert} className="mt-4 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">

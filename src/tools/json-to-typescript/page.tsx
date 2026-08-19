@@ -17,19 +17,60 @@ function sanitizeName(name: string): string {
     .join('')
 }
 
-function inferType(value: unknown, name: string, interfaces: Map<string, string>, depth: number = 0): string {
+function inferType(value: unknown, name: string, interfaces: Map<string, string>, useType: boolean, depth: number = 0): string {
   if (value === null || value === undefined) return 'null'
   if (typeof value === 'string') return 'string'
-  if (typeof value === 'number') return Number.isInteger(value) ? 'number' : 'number'
+  if (typeof value === 'number') return 'number'
   if (typeof value === 'boolean') return 'boolean'
 
   if (Array.isArray(value)) {
     if (value.length === 0) return 'unknown[]'
 
-    // Collect all element types
+    // Check if all elements are objects (for optional field inference)
+    const objectItems = value.filter(
+      (item): item is Record<string, unknown> =>
+        item !== null && typeof item === 'object' && !Array.isArray(item)
+    )
+
+    if (objectItems.length === value.length && objectItems.length > 0) {
+      // All elements are objects — merge keys and detect optional fields
+      const allKeys = new Set<string>()
+      for (const item of objectItems) {
+        Object.keys(item).forEach(k => allKeys.add(k))
+      }
+
+      const interfaceName = sanitizeName(name + 'Item') || 'Item'
+
+      const fields = Array.from(allKeys).map(key => {
+        const presentInAll = objectItems.every(item => key in item)
+        const valuesForKey = objectItems.filter(item => key in item).map(item => item[key])
+        const fieldTypes = new Set<string>()
+        for (const v of valuesForKey) {
+          fieldTypes.add(inferType(v, key, interfaces, useType, depth + 1))
+        }
+        const fieldType = fieldTypes.size === 1
+          ? Array.from(fieldTypes)[0]
+          : Array.from(fieldTypes).join(' | ')
+        const safeKey = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(key) ? key : `'${key}'`
+        const optionalMarker = presentInAll ? '' : '?'
+        return `  ${safeKey}${optionalMarker}: ${fieldType};`
+      })
+
+      let finalName = interfaceName
+      let counter = 1
+      while (interfaces.has(finalName) && interfaces.get(finalName) !== fields.join('\n')) {
+        finalName = interfaceName + counter
+        counter++
+      }
+
+      interfaces.set(finalName, fields.join('\n'))
+      return finalName + '[]'
+    }
+
+    // Collect all element types for non-object arrays
     const elementTypes = new Set<string>()
     for (const item of value) {
-      const itemType = inferType(item, name + 'Item', interfaces, depth + 1)
+      const itemType = inferType(item, name + 'Item', interfaces, useType, depth + 1)
       elementTypes.add(itemType)
     }
 
@@ -48,7 +89,7 @@ function inferType(value: unknown, name: string, interfaces: Map<string, string>
     }
 
     const fields = entries.map(([key, val]) => {
-      const fieldType = inferType(val, key, interfaces, depth + 1)
+      const fieldType = inferType(val, key, interfaces, useType, depth + 1)
       const safeKey = /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(key) ? key : `'${key}'`
       return `  ${safeKey}: ${fieldType};`
     })
@@ -68,16 +109,20 @@ function inferType(value: unknown, name: string, interfaces: Map<string, string>
   return 'unknown'
 }
 
-function jsonToTypescript(jsonStr: string, rootName: string): string {
+function jsonToTypescript(jsonStr: string, rootName: string, useType: boolean): string {
   const parsed = JSON.parse(jsonStr)
   const interfaces = new Map<string, string>()
 
-  const rootType = inferType(parsed, rootName, interfaces)
+  const rootType = inferType(parsed, rootName, interfaces, useType)
 
   const result: string[] = []
 
   interfaces.forEach((fields, name) => {
-    result.push(`export interface ${name} {\n${fields}\n}`)
+    if (useType) {
+      result.push(`export type ${name} = {\n${fields}\n}`)
+    } else {
+      result.push(`export interface ${name} {\n${fields}\n}`)
+    }
   })
 
   // If the root is an array, add a type alias
@@ -93,11 +138,12 @@ export default function JsonToTypescriptTool() {
   const [output, setOutput] = useState('')
   const [error, setError] = useState('')
   const [rootName, setRootName] = useState('Root')
+  const [useType, setUseType] = useState(false)
 
   const convert = () => {
     try {
       if (!input.trim()) throw new Error('Please enter JSON data')
-      setOutput(jsonToTypescript(input, rootName))
+      setOutput(jsonToTypescript(input, rootName, useType))
       setError('')
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Invalid JSON')
@@ -161,9 +207,9 @@ export default function JsonToTypescriptTool() {
         </div>
       </div>
       {error && <div className="mt-3 p-3 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 text-sm font-mono">{error}</div>}
-      <div className="flex flex-wrap items-center gap-3 mt-4">
+      <div className="flex flex-wrap items-center gap-4 mt-4">
         <button onClick={convert} className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
-          Generate Interfaces
+          {useType ? 'Generate Types' : 'Generate Interfaces'}
         </button>
         <div className="flex items-center gap-2">
           <label className="text-sm text-muted-foreground">Root name:</label>
@@ -175,6 +221,15 @@ export default function JsonToTypescriptTool() {
             placeholder="Root"
           />
         </div>
+        <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
+          <input
+            type="checkbox"
+            checked={useType}
+            onChange={(e) => setUseType(e.target.checked)}
+            className="rounded border-input"
+          />
+          Use type instead of interface
+        </label>
       </div>
     </ToolPage>
   )

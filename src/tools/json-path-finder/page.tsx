@@ -31,10 +31,52 @@ function buildTree(value: unknown, key: string, path: string, depth: number): Js
   return node
 }
 
-function TreeNode({ node, selectedPath, onSelect }: { node: JsonNode; selectedPath: string; onSelect: (path: string) => void }) {
-  const [expanded, setExpanded] = useState(node.depth < 2)
+function nodeMatchesSearch(node: JsonNode, search: string): boolean {
+  if (!search) return false
+  const lowerSearch = search.toLowerCase()
+  if (node.key.toLowerCase().includes(lowerSearch)) return true
+  const valStr = node.type === 'object' || node.type === 'array'
+    ? '' : String(node.value).toLowerCase()
+  if (valStr.includes(lowerSearch)) return true
+  return false
+}
+
+function subtreeHasMatch(node: JsonNode, search: string): boolean {
+  if (nodeMatchesSearch(node, search)) return true
+  if (node.children) {
+    return node.children.some(child => subtreeHasMatch(child, search))
+  }
+  return false
+}
+
+function TreeNode({
+  node,
+  selectedPath,
+  onSelect,
+  expandAll,
+  searchTerm,
+}: {
+  node: JsonNode
+  selectedPath: string
+  onSelect: (path: string) => void
+  expandAll: boolean | null
+  searchTerm: string
+}) {
+  const defaultExpanded = expandAll !== null ? expandAll : node.depth < 2
+  const [localExpanded, setLocalExpanded] = useState(defaultExpanded)
+
+  // When expandAll changes, sync
+  const expanded = expandAll !== null ? expandAll : localExpanded
+
   const hasChildren = node.children && node.children.length > 0
   const isSelected = selectedPath === node.path
+  const isMatch = searchTerm ? nodeMatchesSearch(node, searchTerm) : false
+  const hasMatchInSubtree = searchTerm && hasChildren ? subtreeHasMatch(node, searchTerm) : false
+
+  // When searching, hide branches that have no matches
+  if (searchTerm && !isMatch && !hasMatchInSubtree) {
+    return null
+  }
 
   const valuePreview = useMemo(() => {
     if (node.type === 'array') return `Array(${(node.value as unknown[]).length})`
@@ -54,29 +96,38 @@ function TreeNode({ node, selectedPath, onSelect }: { node: JsonNode; selectedPa
     }
   }, [node.type])
 
+  const shouldExpand = expandAll !== null ? expandAll : (searchTerm && hasMatchInSubtree ? true : localExpanded)
+
   return (
     <div>
       <div
-        className={`flex items-center gap-1 py-0.5 px-1 rounded cursor-pointer hover:bg-muted transition-colors ${isSelected ? 'bg-primary/10 ring-1 ring-primary' : ''}`}
+        className={`flex items-center gap-1 py-0.5 px-1 rounded cursor-pointer hover:bg-muted transition-colors ${isSelected ? 'bg-primary/10 ring-1 ring-primary' : ''} ${isMatch ? 'bg-yellow-500/20 ring-1 ring-yellow-500/50' : ''}`}
         style={{ paddingLeft: `${node.depth * 16 + 4}px` }}
         onClick={() => onSelect(node.path)}
       >
         {hasChildren ? (
           <button
-            onClick={(e) => { e.stopPropagation(); setExpanded(!expanded) }}
+            onClick={(e) => { e.stopPropagation(); setLocalExpanded(!expanded) }}
             className="w-4 h-4 flex items-center justify-center text-xs text-muted-foreground shrink-0"
           >
-            {expanded ? '\u25BC' : '\u25B6'}
+            {shouldExpand ? '\u25BC' : '\u25B6'}
           </button>
         ) : (
           <span className="w-4 h-4 shrink-0" />
         )}
-        <span className="text-sm font-medium text-primary shrink-0">{node.key}</span>
+        <span className={`text-sm font-medium shrink-0 ${isMatch ? 'text-yellow-700 dark:text-yellow-300 font-bold' : 'text-primary'}`}>{node.key}</span>
         <span className="text-xs text-muted-foreground shrink-0">:</span>
         <span className={`text-xs font-mono truncate ${typeColor}`}>{valuePreview}</span>
       </div>
-      {expanded && hasChildren && node.children!.map((child, i) => (
-        <TreeNode key={`${child.path}-${i}`} node={child} selectedPath={selectedPath} onSelect={onSelect} />
+      {shouldExpand && hasChildren && node.children!.map((child, i) => (
+        <TreeNode
+          key={`${child.path}-${i}`}
+          node={child}
+          selectedPath={selectedPath}
+          onSelect={onSelect}
+          expandAll={expandAll}
+          searchTerm={searchTerm}
+        />
       ))}
     </div>
   )
@@ -86,6 +137,8 @@ export default function JsonPathFinderTool() {
   const [input, setInput] = useState('')
   const [selectedPath, setSelectedPath] = useState('')
   const [error, setError] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [expandAll, setExpandAll] = useState<boolean | null>(null)
 
   const tree = useMemo(() => {
     if (!input.trim()) return null
@@ -128,7 +181,7 @@ export default function JsonPathFinderTool() {
     setSelectedPath(path)
   }, [])
 
-  const clear = () => { setInput(''); setSelectedPath(''); setError('') }
+  const clear = () => { setInput(''); setSelectedPath(''); setError(''); setSearchTerm(''); setExpandAll(null) }
 
   return (
     <ToolPage title="JSON Path Finder" description="Paste JSON, click on any key to find its JSONPath/dot notation path" category="developer" categoryLabel="Developer Tools"
@@ -174,10 +227,43 @@ export default function JsonPathFinderTool() {
         <div>
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium">JSON Tree</span>
+            {tree && (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setExpandAll(true)}
+                  className="px-2.5 py-1 rounded-lg text-xs font-medium bg-secondary text-secondary-foreground border border-border hover:bg-muted transition-colors"
+                >
+                  Expand All
+                </button>
+                <button
+                  onClick={() => setExpandAll(false)}
+                  className="px-2.5 py-1 rounded-lg text-xs font-medium bg-secondary text-secondary-foreground border border-border hover:bg-muted transition-colors"
+                >
+                  Collapse All
+                </button>
+              </div>
+            )}
           </div>
+          {tree && (
+            <div className="mb-2">
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => { setSearchTerm(e.target.value); if (e.target.value) setExpandAll(null) }}
+                placeholder="Search keys or values..."
+                className="w-full px-3 py-1.5 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
+              />
+            </div>
+          )}
           <div className="rounded-lg border border-input bg-tool-bg p-2 min-h-[280px] max-h-[400px] overflow-auto">
             {tree ? (
-              <TreeNode node={tree} selectedPath={selectedPath} onSelect={handleSelect} />
+              <TreeNode
+                node={tree}
+                selectedPath={selectedPath}
+                onSelect={handleSelect}
+                expandAll={expandAll}
+                searchTerm={searchTerm}
+              />
             ) : (
               <div className="text-sm text-muted-foreground p-4 text-center">
                 {error ? '' : 'Paste valid JSON to see the tree'}

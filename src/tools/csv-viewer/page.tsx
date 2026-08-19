@@ -1,7 +1,11 @@
 'use client'
 
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useMemo, useCallback, useRef } from 'react'
 import { ToolPage, ToolTextarea, ClearButton } from '@/components/tool-page'
+import { ExportButton } from '@/components/export-button'
+import { Upload } from 'lucide-react'
+
+const ROWS_PER_PAGE = 100
 
 function parseCSV(text: string, delimiter: string): string[][] {
   const rows: string[][] = []
@@ -51,12 +55,72 @@ function parseCSV(text: string, delimiter: string): string[][] {
   return rows
 }
 
+interface ColumnStats {
+  type: 'numeric' | 'text'
+  // numeric
+  min?: number
+  max?: number
+  avg?: number
+  sum?: number
+  // text
+  uniqueCount?: number
+  mostCommon?: string
+  mostCommonCount?: number
+}
+
+function computeColumnStats(rows: string[][], colIndex: number): ColumnStats {
+  const values = rows.map((r) => r[colIndex] || '').filter((v) => v.trim() !== '')
+  if (values.length === 0) return { type: 'text', uniqueCount: 0 }
+
+  const nums = values.map((v) => parseFloat(v)).filter((n) => !isNaN(n))
+  const isNumeric = nums.length > values.length * 0.8 && nums.length > 0
+
+  if (isNumeric) {
+    const sum = nums.reduce((a, b) => a + b, 0)
+    return {
+      type: 'numeric',
+      min: Math.min(...nums),
+      max: Math.max(...nums),
+      avg: sum / nums.length,
+      sum,
+    }
+  }
+
+  const freq: Record<string, number> = {}
+  for (const v of values) {
+    freq[v] = (freq[v] || 0) + 1
+  }
+  let mostCommon = ''
+  let mostCommonCount = 0
+  for (const [val, count] of Object.entries(freq)) {
+    if (count > mostCommonCount) {
+      mostCommon = val
+      mostCommonCount = count
+    }
+  }
+
+  return {
+    type: 'text',
+    uniqueCount: Object.keys(freq).length,
+    mostCommon,
+    mostCommonCount,
+  }
+}
+
+function formatNum(n: number): string {
+  if (Number.isInteger(n)) return n.toLocaleString()
+  return n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
+
 export default function CsvViewerTool() {
   const [input, setInput] = useState('')
   const [delimiter, setDelimiter] = useState(',')
   const [sortCol, setSortCol] = useState<number | null>(null)
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
   const [hasHeader, setHasHeader] = useState(true)
+  const [currentPage, setCurrentPage] = useState(0)
+  const [columnFilters, setColumnFilters] = useState<Record<number, string>>({})
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const parsed = useMemo(() => {
     if (!input.trim()) return { headers: [], rows: [] }
@@ -86,6 +150,22 @@ export default function CsvViewerTool() {
     })
   }, [parsed.rows, sortCol, sortDir])
 
+  const filteredRows = useMemo(() => {
+    const activeFilters = Object.entries(columnFilters).filter(([, v]) => v.trim() !== '')
+    if (activeFilters.length === 0) return sortedRows
+    return sortedRows.filter((row) =>
+      activeFilters.every(([colStr, filterVal]) => {
+        const col = parseInt(colStr)
+        const cellVal = (row[col] || '').toLowerCase()
+        return cellVal.includes(filterVal.toLowerCase())
+      })
+    )
+  }, [sortedRows, columnFilters])
+
+  const totalPages = Math.max(1, Math.ceil(filteredRows.length / ROWS_PER_PAGE))
+  const safePage = Math.min(currentPage, totalPages - 1)
+  const paginatedRows = filteredRows.slice(safePage * ROWS_PER_PAGE, (safePage + 1) * ROWS_PER_PAGE)
+
   const handleSort = useCallback((colIdx: number) => {
     if (sortCol === colIdx) {
       setSortDir((d) => d === 'asc' ? 'desc' : 'asc')
@@ -95,7 +175,40 @@ export default function CsvViewerTool() {
     }
   }, [sortCol])
 
-  const clear = () => { setInput(''); setSortCol(null) }
+  const handleFilterChange = useCallback((colIdx: number, value: string) => {
+    setColumnFilters((prev) => ({ ...prev, [colIdx]: value }))
+    setCurrentPage(0)
+  }, [])
+
+  const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (evt) => {
+      const text = evt.target?.result
+      if (typeof text === 'string') {
+        setInput(text)
+        setCurrentPage(0)
+        setColumnFilters({})
+        setSortCol(null)
+      }
+    }
+    reader.readAsText(file)
+    // Reset the file input so the same file can be re-uploaded
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }, [])
+
+  const clear = () => {
+    setInput('')
+    setSortCol(null)
+    setCurrentPage(0)
+    setColumnFilters({})
+  }
+
+  const columnStats = useMemo(() => {
+    if (parsed.headers.length === 0 || filteredRows.length === 0) return []
+    return parsed.headers.map((_, i) => computeColumnStats(filteredRows, i))
+  }, [parsed.headers, filteredRows])
 
   return (
     <ToolPage title="CSV Viewer" description="Paste CSV data and view it as a formatted, sortable table" category="developer" categoryLabel="Developer Tools"
@@ -132,6 +245,19 @@ export default function CsvViewerTool() {
         { question: 'Does the CSV viewer handle quoted fields?', answer: 'Yes, the parser correctly handles quoted fields containing commas, newlines, and escaped double quotes per the CSV standard (RFC 4180).' },
       ]}>
       <div className="space-y-4">
+        {/* File Upload */}
+        <div className="flex items-center gap-3 p-3 rounded-lg border border-dashed border-border bg-muted/30">
+          <Upload className="h-4 w-4 text-muted-foreground shrink-0" />
+          <span className="text-sm text-muted-foreground">Upload a file:</span>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".csv,.tsv,.txt"
+            onChange={handleFileUpload}
+            className="text-sm file:mr-2 file:px-3 file:py-1 file:rounded-md file:border file:border-border file:bg-card file:text-xs file:font-medium file:cursor-pointer hover:file:bg-muted file:transition-colors"
+          />
+        </div>
+
         <div>
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium">CSV Input</span>
@@ -152,45 +278,63 @@ export default function CsvViewerTool() {
           <ToolTextarea value={input} onChange={setInput} placeholder={'name,age,city\nJohn,30,New York\nJane,25,London\nBob,35,Tokyo'} rows={6} />
         </div>
 
-        {/* Stats */}
+        {/* Stats bar */}
         {parsed.rows.length > 0 && (
-          <div className="flex gap-4 text-sm">
+          <div className="flex items-center gap-4 text-sm flex-wrap">
             <span className="px-3 py-1 rounded-full bg-muted text-muted-foreground">
-              {sortedRows.length} rows
+              {filteredRows.length}{filteredRows.length !== parsed.rows.length ? ` / ${parsed.rows.length}` : ''} rows
             </span>
             <span className="px-3 py-1 rounded-full bg-muted text-muted-foreground">
               {parsed.headers.length} columns
             </span>
+            <ExportButton
+              headers={parsed.headers}
+              rows={filteredRows.map((r) => parsed.headers.map((_, ci) => r[ci] || ''))}
+              filename="csv-viewer-export.csv"
+              label="Download CSV"
+            />
           </div>
         )}
 
         {/* Table */}
         {parsed.headers.length > 0 && (
-          <div className="overflow-x-auto rounded-lg border border-border">
+          <div className="overflow-auto rounded-lg border border-border max-h-[600px]">
             <table className="w-full text-sm">
-              <thead>
+              <thead className="sticky top-0 z-10">
                 <tr className="bg-muted">
                   <th className="px-3 py-2 text-left text-xs font-medium text-muted-foreground border-r border-border w-10">#</th>
                   {parsed.headers.map((h, i) => (
                     <th
                       key={i}
-                      onClick={() => handleSort(i)}
-                      className="px-3 py-2 text-left text-xs font-medium cursor-pointer hover:bg-primary/10 transition-colors border-r border-border last:border-r-0 select-none"
+                      className="px-3 py-2 text-left text-xs font-medium border-r border-border last:border-r-0"
                     >
-                      <div className="flex items-center gap-1">
+                      <div
+                        className="flex items-center gap-1 cursor-pointer select-none hover:text-primary transition-colors"
+                        onClick={() => handleSort(i)}
+                      >
                         {h}
                         {sortCol === i && (
                           <span className="text-primary">{sortDir === 'asc' ? '\u2191' : '\u2193'}</span>
                         )}
                       </div>
+                      <input
+                        type="text"
+                        placeholder="Filter..."
+                        value={columnFilters[i] || ''}
+                        onChange={(e) => handleFilterChange(i, e.target.value)}
+                        onClick={(e) => e.stopPropagation()}
+                        className="mt-1 w-full px-1.5 py-0.5 text-xs rounded border border-border bg-card placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-primary"
+                      />
                     </th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {sortedRows.map((row, ri) => (
+                {paginatedRows.map((row, ri) => (
                   <tr key={ri} className="border-t border-border hover:bg-muted/50 transition-colors">
-                    <td className="px-3 py-1.5 text-xs text-muted-foreground border-r border-border">{ri + 1}</td>
+                    <td className="px-3 py-1.5 text-xs text-muted-foreground border-r border-border">
+                      {safePage * ROWS_PER_PAGE + ri + 1}
+                    </td>
                     {parsed.headers.map((_, ci) => (
                       <td key={ci} className="px-3 py-1.5 border-r border-border last:border-r-0 font-mono text-xs">
                         {row[ci] || ''}
@@ -198,8 +342,84 @@ export default function CsvViewerTool() {
                     ))}
                   </tr>
                 ))}
+                {paginatedRows.length === 0 && (
+                  <tr>
+                    <td colSpan={parsed.headers.length + 1} className="px-3 py-6 text-center text-sm text-muted-foreground">
+                      No rows match the current filters.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {/* Pagination */}
+        {filteredRows.length > ROWS_PER_PAGE && (
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(0, p - 1))}
+              disabled={safePage === 0}
+              className="px-3 py-1.5 text-xs font-medium rounded-md border border-border bg-card hover:bg-muted transition-colors disabled:opacity-50 disabled:pointer-events-none"
+            >
+              Previous
+            </button>
+            <span className="text-sm text-muted-foreground">
+              Page {safePage + 1} of {totalPages}
+            </span>
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages - 1, p + 1))}
+              disabled={safePage >= totalPages - 1}
+              className="px-3 py-1.5 text-xs font-medium rounded-md border border-border bg-card hover:bg-muted transition-colors disabled:opacity-50 disabled:pointer-events-none"
+            >
+              Next
+            </button>
+          </div>
+        )}
+
+        {/* Column Statistics */}
+        {columnStats.length > 0 && (
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium">Column Statistics</h3>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {parsed.headers.map((header, i) => {
+                const stats = columnStats[i]
+                if (!stats) return null
+                return (
+                  <div key={i} className="rounded-lg border border-border p-3 bg-card">
+                    <div className="text-xs font-medium mb-1.5 truncate" title={header}>{header}</div>
+                    <span className="inline-block px-1.5 py-0.5 text-[10px] rounded bg-muted text-muted-foreground mb-2">
+                      {stats.type === 'numeric' ? 'Numeric' : 'Text'}
+                    </span>
+                    {stats.type === 'numeric' ? (
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+                        <span className="text-muted-foreground">Min</span>
+                        <span className="font-mono text-right">{formatNum(stats.min!)}</span>
+                        <span className="text-muted-foreground">Max</span>
+                        <span className="font-mono text-right">{formatNum(stats.max!)}</span>
+                        <span className="text-muted-foreground">Average</span>
+                        <span className="font-mono text-right">{formatNum(stats.avg!)}</span>
+                        <span className="text-muted-foreground">Sum</span>
+                        <span className="font-mono text-right">{formatNum(stats.sum!)}</span>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
+                        <span className="text-muted-foreground">Unique values</span>
+                        <span className="font-mono text-right">{stats.uniqueCount?.toLocaleString()}</span>
+                        {stats.mostCommon && (
+                          <>
+                            <span className="text-muted-foreground">Most common</span>
+                            <span className="font-mono text-right truncate" title={`${stats.mostCommon} (${stats.mostCommonCount})`}>
+                              {stats.mostCommon} ({stats.mostCommonCount})
+                            </span>
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
           </div>
         )}
       </div>

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, DownloadButton, ClearButton } from '@/components/tool-page'
 
-function parseCsvLine(line: string): string[] {
+function parseCsvLine(line: string, delimiter: string): string[] {
   const fields: string[] = []
   let current = ''
   let inQuotes = false
@@ -24,7 +24,7 @@ function parseCsvLine(line: string): string[] {
     } else {
       if (ch === '"') {
         inQuotes = true
-      } else if (ch === ',') {
+      } else if (ch === delimiter) {
         fields.push(current)
         current = ''
       } else {
@@ -36,16 +36,32 @@ function parseCsvLine(line: string): string[] {
   return fields
 }
 
-function csvToJson(csv: string): string {
+function csvToJson(csv: string, delimiter: string, firstRowIsHeader: boolean, keepAsStrings: boolean): string {
   const lines = csv.split('\n').filter(l => l.trim() !== '')
-  if (lines.length < 2) throw new Error('CSV must have a header row and at least one data row')
+  if (lines.length === 0) throw new Error('CSV must have at least one row of data')
 
-  const headers = parseCsvLine(lines[0]).map(h => h.trim())
-  const result = lines.slice(1).map(line => {
-    const values = parseCsvLine(line)
+  let headers: string[]
+  let dataLines: string[]
+
+  if (firstRowIsHeader) {
+    if (lines.length < 2) throw new Error('CSV must have a header row and at least one data row')
+    headers = parseCsvLine(lines[0], delimiter).map(h => h.trim())
+    dataLines = lines.slice(1)
+  } else {
+    const columnCount = parseCsvLine(lines[0], delimiter).length
+    headers = Array.from({ length: columnCount }, (_, i) => `Column${i + 1}`)
+    dataLines = lines
+  }
+
+  const result = dataLines.map(line => {
+    const values = parseCsvLine(line, delimiter)
     const obj: Record<string, unknown> = {}
     headers.forEach((header, i) => {
       const val = (values[i] ?? '').trim()
+      if (keepAsStrings) {
+        obj[header] = val
+        return
+      }
       if (val === '') { obj[header] = null; return }
       if (/^-?\d+$/.test(val)) { obj[header] = parseInt(val, 10); return }
       if (/^-?\d+\.\d+$/.test(val)) { obj[header] = parseFloat(val); return }
@@ -59,14 +75,24 @@ function csvToJson(csv: string): string {
   return JSON.stringify(result, null, 2)
 }
 
+const DELIMITERS = [
+  { label: 'Comma (,)', value: ',' },
+  { label: 'Tab (\\t)', value: '\t' },
+  { label: 'Semicolon (;)', value: ';' },
+  { label: 'Pipe (|)', value: '|' },
+]
+
 export default function CsvToJsonTool() {
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('')
   const [error, setError] = useState('')
+  const [delimiter, setDelimiter] = useState(',')
+  const [firstRowIsHeader, setFirstRowIsHeader] = useState(true)
+  const [keepAsStrings, setKeepAsStrings] = useState(false)
 
   const convert = () => {
     try {
-      setOutput(csvToJson(input))
+      setOutput(csvToJson(input, delimiter, firstRowIsHeader, keepAsStrings))
       setError('')
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Invalid CSV')
@@ -133,6 +159,38 @@ export default function CsvToJsonTool() {
           </div>
           <ToolTextarea value={output} readOnly placeholder="JSON output will appear here..." rows={14} />
         </div>
+      </div>
+      <div className="flex flex-wrap items-center gap-4 mt-4">
+        <div className="flex items-center gap-2">
+          <label className="text-sm text-muted-foreground">Delimiter:</label>
+          <select
+            value={delimiter}
+            onChange={(e) => setDelimiter(e.target.value)}
+            className="h-9 px-3 rounded-md border border-input bg-card text-sm"
+          >
+            {DELIMITERS.map(d => (
+              <option key={d.value} value={d.value}>{d.label}</option>
+            ))}
+          </select>
+        </div>
+        <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
+          <input
+            type="checkbox"
+            checked={firstRowIsHeader}
+            onChange={(e) => setFirstRowIsHeader(e.target.checked)}
+            className="rounded border-input"
+          />
+          First row is header
+        </label>
+        <label className="flex items-center gap-2 text-sm text-muted-foreground cursor-pointer">
+          <input
+            type="checkbox"
+            checked={keepAsStrings}
+            onChange={(e) => setKeepAsStrings(e.target.checked)}
+            className="rounded border-input"
+          />
+          Keep as strings
+        </label>
       </div>
       {error && <div className="mt-3 p-3 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 text-sm font-mono">{error}</div>}
       <button onClick={convert} className="mt-4 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">

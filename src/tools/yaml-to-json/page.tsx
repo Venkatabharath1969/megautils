@@ -1,167 +1,37 @@
 'use client'
 
 import { useState } from 'react'
+import * as yaml from 'js-yaml'
 import { ToolPage, ToolTextarea, CopyButton, DownloadButton, ClearButton } from '@/components/tool-page'
-
-interface YamlLine {
-  indent: number
-  key: string
-  value: string
-  raw: string
-}
-
-function parseYamlValue(val: string): unknown {
-  const trimmed = val.trim()
-  if (trimmed === '' || trimmed === 'null' || trimmed === '~') return null
-  if (trimmed === 'true' || trimmed === 'yes') return true
-  if (trimmed === 'false' || trimmed === 'no') return false
-  if (/^-?\d+$/.test(trimmed)) return parseInt(trimmed, 10)
-  if (/^-?\d+\.\d+$/.test(trimmed)) return parseFloat(trimmed)
-  if ((trimmed.startsWith('"') && trimmed.endsWith('"')) || (trimmed.startsWith("'") && trimmed.endsWith("'"))) {
-    return trimmed.slice(1, -1)
-  }
-  if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
-    try { return JSON.parse(trimmed) } catch { return trimmed }
-  }
-  if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
-    try { return JSON.parse(trimmed) } catch { return trimmed }
-  }
-  return trimmed
-}
-
-function parseYaml(input: string): unknown {
-  const rawLines = input.split('\n')
-  const lines: YamlLine[] = []
-
-  for (const raw of rawLines) {
-    if (raw.trim() === '' || raw.trim().startsWith('#')) continue
-    const indent = raw.search(/\S/)
-    const content = raw.trim()
-    const colonIdx = content.indexOf(':')
-
-    if (content.startsWith('- ')) {
-      lines.push({ indent, key: '-', value: content.slice(2).trim(), raw: content })
-    } else if (content === '-') {
-      lines.push({ indent, key: '-', value: '', raw: content })
-    } else if (colonIdx > 0) {
-      const key = content.slice(0, colonIdx).trim()
-      const value = content.slice(colonIdx + 1).trim()
-      lines.push({ indent, key, value, raw: content })
-    } else {
-      lines.push({ indent, key: '', value: content, raw: content })
-    }
-  }
-
-  function buildValue(start: number, end: number, baseIndent: number): unknown {
-    if (start >= end) return null
-
-    // Check if this block is an array (starts with -)
-    if (lines[start].key === '-') {
-      const arr: unknown[] = []
-      let i = start
-      while (i < end) {
-        if (lines[i].key !== '-' || lines[i].indent !== baseIndent) break
-        const itemValue = lines[i].value
-        // Find children of this array item
-        let childEnd = i + 1
-        while (childEnd < end && lines[childEnd].indent > baseIndent) childEnd++
-
-        if (childEnd > i + 1) {
-          // Has children - could be object under array item
-          const childIndent = lines[i + 1].indent
-          if (itemValue && lines[i + 1].key !== '-') {
-            // The dash line has a key:value, treat children as object mixed in
-            const obj = buildValue(i + 1, childEnd, childIndent) as Record<string, unknown>
-            const colonIdx = itemValue.indexOf(':')
-            if (colonIdx > 0) {
-              const k = itemValue.slice(0, colonIdx).trim()
-              const v = itemValue.slice(colonIdx + 1).trim()
-              const baseObj: Record<string, unknown> = {}
-              if (v) {
-                baseObj[k] = parseYamlValue(v)
-              } else {
-                baseObj[k] = buildValue(i + 1, childEnd, childIndent)
-                arr.push(baseObj)
-                i = childEnd
-                continue
-              }
-              arr.push({ ...baseObj, ...(typeof obj === 'object' && obj !== null ? obj : {}) })
-            } else {
-              const result = buildValue(i + 1, childEnd, childIndent)
-              if (typeof result === 'object' && result !== null && !Array.isArray(result)) {
-                const firstKey = itemValue.includes(':') ? itemValue.split(':')[0].trim() : itemValue
-                const firstVal = itemValue.includes(':') ? itemValue.split(':').slice(1).join(':').trim() : undefined
-                if (firstVal !== undefined) {
-                  arr.push({ [firstKey]: parseYamlValue(firstVal), ...result as Record<string, unknown> })
-                } else {
-                  arr.push(result)
-                }
-              } else {
-                arr.push(result)
-              }
-            }
-          } else if (itemValue) {
-            // Dash line has a simple value plus children
-            arr.push(parseYamlValue(itemValue))
-          } else {
-            arr.push(buildValue(i + 1, childEnd, childIndent))
-          }
-        } else if (itemValue) {
-          // Check if inline key: value on the dash line
-          const colonIdx = itemValue.indexOf(':')
-          if (colonIdx > 0 && !itemValue.startsWith('"') && !itemValue.startsWith("'")) {
-            const k = itemValue.slice(0, colonIdx).trim()
-            const v = itemValue.slice(colonIdx + 1).trim()
-            arr.push({ [k]: parseYamlValue(v) })
-          } else {
-            arr.push(parseYamlValue(itemValue))
-          }
-        } else {
-          arr.push(null)
-        }
-        i = childEnd
-      }
-      return arr
-    }
-
-    // Otherwise it's an object
-    const obj: Record<string, unknown> = {}
-    let i = start
-    while (i < end) {
-      if (lines[i].indent !== baseIndent) { i++; continue }
-      const { key, value } = lines[i]
-      if (!key || key === '-') { i++; continue }
-
-      let childEnd = i + 1
-      while (childEnd < end && lines[childEnd].indent > baseIndent) childEnd++
-
-      if (value) {
-        obj[key] = parseYamlValue(value)
-      } else if (childEnd > i + 1) {
-        const childIndent = lines[i + 1].indent
-        obj[key] = buildValue(i + 1, childEnd, childIndent)
-      } else {
-        obj[key] = null
-      }
-      i = childEnd
-    }
-    return obj
-  }
-
-  if (lines.length === 0) return {}
-  const baseIndent = lines[0].indent
-  return buildValue(0, lines.length, baseIndent)
-}
 
 export default function YamlToJsonTool() {
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('')
   const [error, setError] = useState('')
+  const [indent, setIndent] = useState<string | number>(2)
+
+  const getIndentValue = (): string | number | undefined => {
+    if (indent === 'minified') return undefined
+    if (indent === 'tab') return '\t'
+    return indent
+  }
 
   const convert = () => {
     try {
-      const result = parseYaml(input)
-      setOutput(JSON.stringify(result, null, 2))
+      if (!input.trim()) { setOutput(''); setError(''); return }
+
+      const isMultiDoc = /^---\s*$/m.test(input)
+      let result: unknown
+
+      if (isMultiDoc) {
+        const docs: unknown[] = []
+        yaml.loadAll(input, (doc) => { docs.push(doc) })
+        result = docs.length === 1 ? docs[0] : docs
+      } else {
+        result = yaml.load(input)
+      }
+
+      setOutput(JSON.stringify(result, null, getIndentValue()))
       setError('')
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Invalid YAML')
@@ -225,9 +95,17 @@ export default function YamlToJsonTool() {
         </div>
       </div>
       {error && <div className="mt-3 p-3 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 text-sm font-mono">{error}</div>}
-      <button onClick={convert} className="mt-4 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
-        Convert to JSON
-      </button>
+      <div className="flex flex-wrap items-center gap-3 mt-4">
+        <button onClick={convert} className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
+          Convert to JSON
+        </button>
+        <select value={indent} onChange={(e) => { const v = e.target.value; setIndent(v === 'tab' || v === 'minified' ? v : Number(v)) }} className="h-9 px-3 rounded-md border border-input bg-card text-sm">
+          <option value={2}>2 spaces</option>
+          <option value={4}>4 spaces</option>
+          <option value="tab">1 tab (\t)</option>
+          <option value="minified">Minified</option>
+        </select>
+      </div>
     </ToolPage>
   )
 }
