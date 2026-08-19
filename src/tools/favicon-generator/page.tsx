@@ -2,20 +2,44 @@
 
 import { useState, useCallback, useRef } from 'react'
 import { ToolPage, ClearButton } from '@/components/tool-page'
-import { Download, Upload } from 'lucide-react'
+import { Download, Upload, Copy, Check, Type } from 'lucide-react'
 
 const FAVICON_SIZES = [
   { size: 16, label: '16x16', desc: 'Classic favicon' },
   { size: 32, label: '32x32', desc: 'Standard favicon' },
   { size: 48, label: '48x48', desc: 'Windows site icon' },
+  { size: 64, label: '64x64', desc: 'High-res favicon' },
   { size: 180, label: '180x180', desc: 'Apple touch icon' },
+  { size: 192, label: '192x192', desc: 'Android chrome icon' },
+  { size: 512, label: '512x512', desc: 'PWA splash icon' },
 ]
 
+type GenerateMode = 'image' | 'text'
+
+function buildHtmlSnippet(sizes: { size: number }[]): string {
+  return sizes.map(({ size }) => {
+    if (size === 180) {
+      return `<link rel="apple-touch-icon" sizes="${size}x${size}" href="/apple-touch-icon.png">`
+    }
+    if (size === 192 || size === 512) {
+      return `<link rel="icon" type="image/png" sizes="${size}x${size}" href="/android-chrome-${size}x${size}.png">`
+    }
+    return `<link rel="icon" type="image/png" sizes="${size}x${size}" href="/favicon-${size}x${size}.png">`
+  }).join('\n')
+}
+
 export default function FaviconGeneratorTool() {
+  const [mode, setMode] = useState<GenerateMode>('image')
   const [imageSrc, setImageSrc] = useState<string | null>(null)
   const [fileName, setFileName] = useState('')
   const [generated, setGenerated] = useState<{ size: number; url: string }[]>([])
+  const [snippetCopied, setSnippetCopied] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  /* ---- Text-to-favicon state ---- */
+  const [faviconText, setFaviconText] = useState('')
+  const [textBgColor, setTextBgColor] = useState('#3b82f6')
+  const [textFgColor, setTextFgColor] = useState('#ffffff')
 
   const handleFile = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -47,6 +71,30 @@ export default function FaviconGeneratorTool() {
     img.src = imageSrc
   }, [imageSrc])
 
+  const generateFromText = useCallback(() => {
+    if (!faviconText.trim()) return
+    const displayText = faviconText.slice(0, 2)
+    const results: { size: number; url: string }[] = []
+    for (const { size } of FAVICON_SIZES) {
+      const canvas = document.createElement('canvas')
+      canvas.width = size
+      canvas.height = size
+      const ctx = canvas.getContext('2d')!
+      // Background
+      ctx.fillStyle = textBgColor
+      ctx.fillRect(0, 0, size, size)
+      // Text
+      ctx.fillStyle = textFgColor
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'middle'
+      const fontSize = displayText.length === 1 ? size * 0.65 : size * 0.45
+      ctx.font = `bold ${fontSize}px -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`
+      ctx.fillText(displayText, size / 2, size / 2 + size * 0.04)
+      results.push({ size, url: canvas.toDataURL('image/png') })
+    }
+    setGenerated(results)
+  }, [faviconText, textBgColor, textFgColor])
+
   const downloadOne = useCallback((url: string, size: number) => {
     const a = document.createElement('a')
     a.href = url
@@ -65,10 +113,20 @@ export default function FaviconGeneratorTool() {
     })
   }, [generated])
 
+  const copySnippet = useCallback(() => {
+    const snippet = buildHtmlSnippet(FAVICON_SIZES)
+    navigator.clipboard.writeText(snippet).then(() => {
+      setSnippetCopied(true)
+      setTimeout(() => setSnippetCopied(false), 2000)
+    })
+  }, [])
+
   const clear = () => {
     setImageSrc(null)
     setFileName('')
     setGenerated([])
+    setFaviconText('')
+    setSnippetCopied(false)
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
@@ -112,87 +170,194 @@ export default function FaviconGeneratorTool() {
     >
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium">Upload Source Image</span>
-          {imageSrc && <ClearButton onClear={clear} />}
+          <span className="text-sm font-medium">Favicon Generator</span>
+          {(imageSrc || generated.length > 0) && <ClearButton onClear={clear} />}
         </div>
 
-        <label className="flex flex-col items-center justify-center h-44 border-2 border-dashed border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
-          <Upload className="h-8 w-8 text-muted-foreground mb-2" />
-          <span className="text-sm text-muted-foreground">
-            {fileName || 'Click to upload an image (PNG, SVG, JPG recommended)'}
-          </span>
-          <span className="text-xs text-muted-foreground mt-1">Square images work best</span>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleFile}
-            className="hidden"
-          />
-        </label>
+        {/* Mode toggle */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setMode('image')}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border transition-colors ${mode === 'image' ? 'bg-primary text-primary-foreground border-primary' : 'border-border bg-card hover:bg-muted'}`}
+          >
+            <Upload className="h-3.5 w-3.5" /> From Image
+          </button>
+          <button
+            onClick={() => setMode('text')}
+            className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border transition-colors ${mode === 'text' ? 'bg-primary text-primary-foreground border-primary' : 'border-border bg-card hover:bg-muted'}`}
+          >
+            <Type className="h-3.5 w-3.5" /> From Text
+          </button>
+        </div>
 
-        {imageSrc && (
-          <>
-            <div className="flex items-center gap-4">
-              <div className="border border-border rounded-lg p-2 bg-muted/20">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={imageSrc} alt="Source" className="w-24 h-24 object-contain" />
+        {/* Image upload mode */}
+        {mode === 'image' && !imageSrc && (
+          <label className="flex flex-col items-center justify-center h-44 border-2 border-dashed border-border rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+            <Upload className="h-8 w-8 text-muted-foreground mb-2" />
+            <span className="text-sm text-muted-foreground">
+              {fileName || 'Click to upload an image (PNG, SVG, JPG recommended)'}
+            </span>
+            <span className="text-xs text-muted-foreground mt-1">Square images work best</span>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFile}
+              className="hidden"
+            />
+          </label>
+        )}
+
+        {/* Text-to-favicon mode */}
+        {mode === 'text' && (
+          <div className="space-y-4 rounded-lg border border-border p-4 bg-muted/20">
+            <div>
+              <label className="text-xs font-medium mb-1 block">Text (1-2 characters)</label>
+              <input
+                type="text"
+                value={faviconText}
+                onChange={e => setFaviconText(e.target.value.slice(0, 2))}
+                placeholder="AB"
+                maxLength={2}
+                className="w-full h-9 px-3 rounded-md border border-input bg-card text-sm"
+              />
+            </div>
+            <div className="flex flex-wrap items-center gap-6">
+              <div className="flex items-center gap-2">
+                <label className="text-xs font-medium">Background:</label>
+                <input
+                  type="color"
+                  value={textBgColor}
+                  onChange={e => setTextBgColor(e.target.value)}
+                  className="w-9 h-9 rounded border border-input cursor-pointer bg-transparent"
+                />
+                <span className="text-xs font-mono text-muted-foreground">{textBgColor.toUpperCase()}</span>
               </div>
-              <div className="flex flex-wrap gap-2">
-                <button
-                  onClick={generate}
-                  className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
-                >
-                  Generate Favicons
-                </button>
-                {generated.length > 0 && (
-                  <button
-                    onClick={downloadAll}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-border bg-card hover:bg-muted transition-colors"
-                  >
-                    <Download className="h-3.5 w-3.5" /> Download All
-                  </button>
-                )}
+              <div className="flex items-center gap-2">
+                <label className="text-xs font-medium">Text Color:</label>
+                <input
+                  type="color"
+                  value={textFgColor}
+                  onChange={e => setTextFgColor(e.target.value)}
+                  className="w-9 h-9 rounded border border-input cursor-pointer bg-transparent"
+                />
+                <span className="text-xs font-mono text-muted-foreground">{textFgColor.toUpperCase()}</span>
               </div>
             </div>
-
-            {generated.length > 0 && (
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {FAVICON_SIZES.map(({ size, label, desc }) => {
-                  const item = generated.find((g) => g.size === size)
-                  if (!item) return null
-                  return (
-                    <div key={size} className="border border-border rounded-lg p-4 text-center space-y-3">
-                      <div className="flex items-center justify-center h-20">
-                        <div
-                          className="bg-[repeating-conic-gradient(#e5e7eb_0%_25%,transparent_0%_50%)] dark:bg-[repeating-conic-gradient(#374151_0%_25%,transparent_0%_50%)] bg-[length:8px_8px] inline-flex items-center justify-center p-1 rounded"
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={item.url}
-                            alt={label}
-                            width={Math.min(size, 64)}
-                            height={Math.min(size, 64)}
-                            className="image-rendering-pixelated"
-                            style={{ imageRendering: 'pixelated' }}
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <div className="text-sm font-medium">{label}</div>
-                        <div className="text-xs text-muted-foreground">{desc}</div>
-                      </div>
-                      <button
-                        onClick={() => downloadOne(item.url, size)}
-                        className="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-md border border-border hover:bg-muted transition-colors w-full justify-center"
-                      >
-                        <Download className="h-3 w-3" /> Download
-                      </button>
-                    </div>
-                  )
-                })}
+            {/* Preview */}
+            {faviconText.trim() && (
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-medium text-muted-foreground">Preview:</span>
+                <div
+                  className="w-12 h-12 rounded-lg flex items-center justify-center font-bold text-lg"
+                  style={{ backgroundColor: textBgColor, color: textFgColor }}
+                >
+                  {faviconText.slice(0, 2)}
+                </div>
               </div>
             )}
+            <button
+              onClick={generateFromText}
+              disabled={!faviconText.trim()}
+              className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:pointer-events-none"
+            >
+              Generate Favicons from Text
+            </button>
+          </div>
+        )}
+
+        {/* Image source preview + generate */}
+        {mode === 'image' && imageSrc && (
+          <div className="flex items-center gap-4">
+            <div className="border border-border rounded-lg p-2 bg-muted/20">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={imageSrc} alt="Source" className="w-24 h-24 object-contain" />
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={generate}
+                className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+              >
+                Generate Favicons
+              </button>
+              {generated.length > 0 && (
+                <button
+                  onClick={downloadAll}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-border bg-card hover:bg-muted transition-colors"
+                >
+                  <Download className="h-3.5 w-3.5" /> Download All
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Generated favicons grid */}
+        {generated.length > 0 && (
+          <>
+            {mode === 'text' && (
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={downloadAll}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-border bg-card hover:bg-muted transition-colors"
+                >
+                  <Download className="h-3.5 w-3.5" /> Download All
+                </button>
+              </div>
+            )}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {FAVICON_SIZES.map(({ size, label, desc }) => {
+                const item = generated.find((g) => g.size === size)
+                if (!item) return null
+                return (
+                  <div key={size} className="border border-border rounded-lg p-4 text-center space-y-3">
+                    <div className="flex items-center justify-center h-20">
+                      <div
+                        className="bg-[repeating-conic-gradient(#e5e7eb_0%_25%,transparent_0%_50%)] dark:bg-[repeating-conic-gradient(#374151_0%_25%,transparent_0%_50%)] bg-[length:8px_8px] inline-flex items-center justify-center p-1 rounded"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={item.url}
+                          alt={label}
+                          width={Math.min(size, 80)}
+                          height={Math.min(size, 80)}
+                          className="image-rendering-pixelated"
+                          style={{ imageRendering: 'pixelated' }}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium">{label}</div>
+                      <div className="text-xs text-muted-foreground">{desc}</div>
+                    </div>
+                    <button
+                      onClick={() => downloadOne(item.url, size)}
+                      className="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-md border border-border hover:bg-muted transition-colors w-full justify-center"
+                    >
+                      <Download className="h-3 w-3" /> Download
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* HTML Snippet */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium">HTML Link Tags</span>
+                <button
+                  onClick={copySnippet}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-border bg-card hover:bg-muted transition-colors"
+                >
+                  {snippetCopied
+                    ? <><Check className="h-3.5 w-3.5 text-green-500" /> Copied!</>
+                    : <><Copy className="h-3.5 w-3.5" /> Copy Snippet</>}
+                </button>
+              </div>
+              <pre className="w-full rounded-lg border border-input bg-card p-3 text-xs font-mono overflow-x-auto whitespace-pre text-muted-foreground">
+                {buildHtmlSnippet(FAVICON_SIZES)}
+              </pre>
+            </div>
           </>
         )}
       </div>

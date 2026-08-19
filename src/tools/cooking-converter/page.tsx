@@ -3,16 +3,37 @@
 import { useState, useMemo } from 'react'
 import { ToolPage, CopyButton } from '@/components/tool-page'
 
-const units: { value: string; label: string; toMl: number }[] = [
-  { value: 'ml', label: 'Milliliter (mL)', toMl: 1 },
-  { value: 'l', label: 'Liter (L)', toMl: 1000 },
-  { value: 'tsp', label: 'Teaspoon (tsp)', toMl: 4.929 },
-  { value: 'tbsp', label: 'Tablespoon (tbsp)', toMl: 14.787 },
-  { value: 'floz', label: 'Fluid ounce (fl oz)', toMl: 29.574 },
-  { value: 'cup', label: 'Cup', toMl: 236.588 },
-  { value: 'pint', label: 'Pint (pt)', toMl: 473.176 },
-  { value: 'quart', label: 'Quart (qt)', toMl: 946.353 },
-  { value: 'gallon', label: 'Gallon (gal)', toMl: 3785.41 },
+type UnitType = 'volume' | 'weight'
+
+const units: { value: string; label: string; toMl: number; type: UnitType }[] = [
+  // Volume units (base: mL)
+  { value: 'ml', label: 'Milliliter (mL)', toMl: 1, type: 'volume' },
+  { value: 'l', label: 'Liter (L)', toMl: 1000, type: 'volume' },
+  { value: 'tsp', label: 'Teaspoon (tsp)', toMl: 4.929, type: 'volume' },
+  { value: 'tbsp', label: 'Tablespoon (tbsp)', toMl: 14.787, type: 'volume' },
+  { value: 'floz', label: 'Fluid ounce (fl oz)', toMl: 29.574, type: 'volume' },
+  { value: 'cup', label: 'Cup', toMl: 236.588, type: 'volume' },
+  { value: 'pint', label: 'Pint (pt)', toMl: 473.176, type: 'volume' },
+  { value: 'quart', label: 'Quart (qt)', toMl: 946.353, type: 'volume' },
+  { value: 'gallon', label: 'Gallon (gal)', toMl: 3785.41, type: 'volume' },
+  // Weight/mass units (base: grams, using toMl field as toGrams)
+  { value: 'g', label: 'Gram (g)', toMl: 1, type: 'weight' },
+  { value: 'kg', label: 'Kilogram (kg)', toMl: 1000, type: 'weight' },
+  { value: 'oz', label: 'Ounce (oz)', toMl: 28.3495, type: 'weight' },
+  { value: 'lb', label: 'Pound (lb)', toMl: 453.592, type: 'weight' },
+]
+
+const ingredientDensities = [
+  { ingredient: 'All-purpose Flour', cup: '1 cup', grams: '125g' },
+  { ingredient: 'Granulated Sugar', cup: '1 cup', grams: '200g' },
+  { ingredient: 'Butter', cup: '1 cup', grams: '227g' },
+  { ingredient: 'Rice (uncooked)', cup: '1 cup', grams: '185g' },
+  { ingredient: 'Milk', cup: '1 cup', grams: '244g' },
+  { ingredient: 'Brown Sugar (packed)', cup: '1 cup', grams: '220g' },
+  { ingredient: 'Honey', cup: '1 cup', grams: '340g' },
+  { ingredient: 'Cocoa Powder', cup: '1 cup', grams: '85g' },
+  { ingredient: 'Rolled Oats', cup: '1 cup', grams: '90g' },
+  { ingredient: 'Vegetable Oil', cup: '1 cup', grams: '218g' },
 ]
 
 export default function CookingConverterTool() {
@@ -25,8 +46,9 @@ export default function CookingConverterTool() {
     if (isNaN(val)) return ''
     const from = units.find(u => u.value === fromUnit)!
     const to = units.find(u => u.value === toUnit)!
-    const ml = val * from.toMl
-    const converted = ml / to.toMl
+    if (from.type !== to.type) return 'Cannot convert between volume and weight'
+    const base = val * from.toMl
+    const converted = base / to.toMl
     return converted.toLocaleString('en-US', { maximumFractionDigits: 4 })
   }, [input, fromUnit, toUnit])
 
@@ -115,7 +137,7 @@ export default function CookingConverterTool() {
         <div className="mt-8">
           <h3 className="text-sm font-semibold mb-3">All Conversions</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-            {units.map(u => {
+            {units.filter(u => u.type === units.find(x => x.value === fromUnit)!.type).map(u => {
               const from = units.find(x => x.value === fromUnit)!
               const val = parseFloat(input) * from.toMl / u.toMl
               return (
@@ -139,6 +161,34 @@ export default function CookingConverterTool() {
           <div className="p-2.5 rounded-lg bg-muted/50">1 gallon = 4 quarts = 16 cups</div>
           <div className="p-2.5 rounded-lg bg-muted/50">1 pint = 2 cups</div>
           <div className="p-2.5 rounded-lg bg-muted/50">1 quart = 4 cups</div>
+          <div className="p-2.5 rounded-lg bg-muted/50">1 pound = 16 ounces</div>
+          <div className="p-2.5 rounded-lg bg-muted/50">1 kilogram = 2.205 pounds</div>
+        </div>
+      </div>
+
+      {/* Ingredient Density Reference Table */}
+      <div className="mt-8">
+        <h3 className="text-sm font-semibold mb-3">Common Ingredient Densities</h3>
+        <p className="text-xs text-muted-foreground mb-3">Approximate weight of 1 cup of common ingredients (US cup = 236.6 mL)</p>
+        <div className="overflow-x-auto rounded-lg border border-border">
+          <table className="w-full text-sm">
+            <thead className="bg-muted/50">
+              <tr>
+                <th className="px-3 py-2 text-left font-medium">Ingredient</th>
+                <th className="px-3 py-2 text-left font-medium">Volume</th>
+                <th className="px-3 py-2 text-left font-medium">Weight</th>
+              </tr>
+            </thead>
+            <tbody>
+              {ingredientDensities.map((item) => (
+                <tr key={item.ingredient} className="border-t border-border">
+                  <td className="px-3 py-2">{item.ingredient}</td>
+                  <td className="px-3 py-2 text-muted-foreground">{item.cup}</td>
+                  <td className="px-3 py-2 font-mono font-medium">{item.grams}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </ToolPage>

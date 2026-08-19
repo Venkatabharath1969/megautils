@@ -66,8 +66,59 @@ function numberToWords(num: number): string {
   return (isNegative ? 'negative ' : '') + result
 }
 
+function numberToOrdinalWords(num: number): string {
+  if (num <= 0) return numberToWords(num)
+  const irregulars: Record<number, string> = {
+    1: 'first', 2: 'second', 3: 'third', 4: 'fourth', 5: 'fifth',
+    6: 'sixth', 7: 'seventh', 8: 'eighth', 9: 'ninth', 10: 'tenth',
+    11: 'eleventh', 12: 'twelfth', 13: 'thirteenth', 14: 'fourteenth',
+    15: 'fifteenth', 16: 'sixteenth', 17: 'seventeenth', 18: 'eighteenth',
+    19: 'nineteenth', 20: 'twentieth', 30: 'thirtieth', 40: 'fortieth',
+    50: 'fiftieth', 60: 'sixtieth', 70: 'seventieth', 80: 'eightieth', 90: 'ninetieth',
+  }
+  if (irregulars[num]) return irregulars[num]
+
+  const words = numberToWords(num)
+  // For compound numbers like "twenty-one" → "twenty-first"
+  const lastWord = words.split(/[\s-]/).pop() || ''
+  const lastNum = ['one','two','three','four','five','six','seven','eight','nine','ten',
+    'eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen',
+    'twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety']
+  const lastOrd = ['first','second','third','fourth','fifth','sixth','seventh','eighth','ninth','tenth',
+    'eleventh','twelfth','thirteenth','fourteenth','fifteenth','sixteenth','seventeenth','eighteenth','nineteenth',
+    'twentieth','thirtieth','fortieth','fiftieth','sixtieth','seventieth','eightieth','ninetieth']
+
+  const idx = lastNum.indexOf(lastWord)
+  if (idx >= 0) {
+    const prefix = words.substring(0, words.length - lastWord.length)
+    return prefix + lastOrd[idx]
+  }
+
+  // Fallback: add "th" suffix
+  if (words.endsWith('y')) return words.slice(0, -1) + 'ieth'
+  return words + 'th'
+}
+
+function numberToCurrency(numStr: string): string {
+  const parts = numStr.split('.')
+  const dollars = parseInt(parts[0], 10)
+  const centsStr = parts.length > 1 ? parts[1].padEnd(2, '0').substring(0, 2) : '00'
+  const cents = parseInt(centsStr, 10)
+
+  const dollarWords = dollars === 0 ? 'zero' : numberToWords(Math.abs(dollars))
+  const centWords = cents === 0 ? 'zero' : numberToWords(cents)
+
+  const neg = dollars < 0 ? 'negative ' : ''
+  const dollarUnit = Math.abs(dollars) === 1 ? 'dollar' : 'dollars'
+  const centUnit = cents === 1 ? 'cent' : 'cents'
+
+  return `${neg}${dollarWords} ${dollarUnit} and ${centWords} ${centUnit}`
+}
+
 export default function NumberToWordsTool() {
   const [input, setInput] = useState('1234')
+  const [currencyMode, setCurrencyMode] = useState(false)
+  const [ordinalMode, setOrdinalMode] = useState(false)
 
   const words = useMemo(() => {
     const trimmed = input.trim()
@@ -75,8 +126,11 @@ export default function NumberToWordsTool() {
     const num = parseFloat(trimmed)
     if (isNaN(num)) return 'Please enter a valid number'
     if (Math.abs(num) > 999999999999999) return 'Number too large (max: quadrillions)'
+
+    if (currencyMode) return numberToCurrency(trimmed)
+    if (ordinalMode && Number.isInteger(num) && num > 0) return numberToOrdinalWords(num)
     return numberToWords(num)
-  }, [input])
+  }, [input, currencyMode, ordinalMode])
 
   const examples = [
     { num: '42', desc: 'Simple number' },
@@ -137,6 +191,22 @@ export default function NumberToWordsTool() {
             placeholder="e.g. 1234"
             className="w-full h-12 px-4 rounded-lg border border-input bg-tool-bg text-lg font-mono focus:outline-none focus:ring-2 focus:ring-ring"
           />
+        </div>
+
+        {/* Mode toggles */}
+        <div className="flex flex-wrap gap-3">
+          <button
+            onClick={() => { setCurrencyMode(!currencyMode); if (!currencyMode) setOrdinalMode(false) }}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${currencyMode ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}
+          >
+            Currency Mode
+          </button>
+          <button
+            onClick={() => { setOrdinalMode(!ordinalMode); if (!ordinalMode) setCurrencyMode(false) }}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${ordinalMode ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}
+          >
+            Ordinal Mode
+          </button>
         </div>
 
         {/* Result */}

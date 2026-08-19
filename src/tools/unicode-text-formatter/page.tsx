@@ -15,6 +15,22 @@ const BOLD_ITALIC_LOWER = '\u{1D656}\u{1D657}\u{1D658}\u{1D659}\u{1D65A}\u{1D65B
 const MONO_UPPER = '\u{1D670}\u{1D671}\u{1D672}\u{1D673}\u{1D674}\u{1D675}\u{1D676}\u{1D677}\u{1D678}\u{1D679}\u{1D67A}\u{1D67B}\u{1D67C}\u{1D67D}\u{1D67E}\u{1D67F}\u{1D680}\u{1D681}\u{1D682}\u{1D683}\u{1D684}\u{1D685}\u{1D686}\u{1D687}\u{1D688}\u{1D689}'
 const MONO_LOWER = '\u{1D68A}\u{1D68B}\u{1D68C}\u{1D68D}\u{1D68E}\u{1D68F}\u{1D690}\u{1D691}\u{1D692}\u{1D693}\u{1D694}\u{1D695}\u{1D696}\u{1D697}\u{1D698}\u{1D699}\u{1D69A}\u{1D69B}\u{1D69C}\u{1D69D}\u{1D69E}\u{1D69F}\u{1D6A0}\u{1D6A1}\u{1D6A2}\u{1D6A3}'
 
+// Script/Cursive (Mathematical Script Bold U+1D4D0+)
+const SCRIPT_UPPER = '\u{1D4D0}\u{1D4D1}\u{1D4D2}\u{1D4D3}\u{1D4D4}\u{1D4D5}\u{1D4D6}\u{1D4D7}\u{1D4D8}\u{1D4D9}\u{1D4DA}\u{1D4DB}\u{1D4DC}\u{1D4DD}\u{1D4DE}\u{1D4DF}\u{1D4E0}\u{1D4E1}\u{1D4E2}\u{1D4E3}\u{1D4E4}\u{1D4E5}\u{1D4E6}\u{1D4E7}\u{1D4E8}\u{1D4E9}'
+const SCRIPT_LOWER = '\u{1D4EA}\u{1D4EB}\u{1D4EC}\u{1D4ED}\u{1D4EE}\u{1D4EF}\u{1D4F0}\u{1D4F1}\u{1D4F2}\u{1D4F3}\u{1D4F4}\u{1D4F5}\u{1D4F6}\u{1D4F7}\u{1D4F8}\u{1D4F9}\u{1D4FA}\u{1D4FB}\u{1D4FC}\u{1D4FD}\u{1D4FE}\u{1D4FF}\u{1D500}\u{1D501}\u{1D502}\u{1D503}'
+
+// Double-struck (U+1D538+)
+const DOUBLE_UPPER = '\u{1D538}\u{1D539}\u{2102}\u{1D53B}\u{1D53C}\u{1D53D}\u{1D53E}\u{210D}\u{1D540}\u{1D541}\u{1D542}\u{1D543}\u{1D544}\u{2115}\u{1D546}\u{2119}\u{211A}\u{211D}\u{1D54A}\u{1D54B}\u{1D54C}\u{1D54D}\u{1D54E}\u{1D54F}\u{1D550}\u{2124}'
+const DOUBLE_LOWER = '\u{1D552}\u{1D553}\u{1D554}\u{1D555}\u{1D556}\u{1D557}\u{1D558}\u{1D559}\u{1D55A}\u{1D55B}\u{1D55C}\u{1D55D}\u{1D55E}\u{1D55F}\u{1D560}\u{1D561}\u{1D562}\u{1D563}\u{1D564}\u{1D565}\u{1D566}\u{1D567}\u{1D568}\u{1D569}\u{1D56A}\u{1D56B}'
+
+// Fullwidth (U+FF21+ uppercase, U+FF41+ lowercase)
+const FULLWIDTH_UPPER = '\uFF21\uFF22\uFF23\uFF24\uFF25\uFF26\uFF27\uFF28\uFF29\uFF2A\uFF2B\uFF2C\uFF2D\uFF2E\uFF2F\uFF30\uFF31\uFF32\uFF33\uFF34\uFF35\uFF36\uFF37\uFF38\uFF39\uFF3A'
+const FULLWIDTH_LOWER = '\uFF41\uFF42\uFF43\uFF44\uFF45\uFF46\uFF47\uFF48\uFF49\uFF4A\uFF4B\uFF4C\uFF4D\uFF4E\uFF4F\uFF50\uFF51\uFF52\uFF53\uFF54\uFF55\uFF56\uFF57\uFF58\uFF59\uFF5A'
+
+// Circled (U+24B6+ uppercase, U+24D0+ lowercase)
+const CIRCLED_UPPER = '\u24B6\u24B7\u24B8\u24B9\u24BA\u24BB\u24BC\u24BD\u24BE\u24BF\u24C0\u24C1\u24C2\u24C3\u24C4\u24C5\u24C6\u24C7\u24C8\u24C9\u24CA\u24CB\u24CC\u24CD\u24CE\u24CF'
+const CIRCLED_LOWER = '\u24D0\u24D1\u24D2\u24D3\u24D4\u24D5\u24D6\u24D7\u24D8\u24D9\u24DA\u24DB\u24DC\u24DD\u24DE\u24DF\u24E0\u24E1\u24E2\u24E3\u24E4\u24E5\u24E6\u24E7\u24E8\u24E9'
+
 function toArray(str: string): string[] {
   return [...str]
 }
@@ -65,6 +81,14 @@ export default function UnicodeTextFormatterTool() {
   const boldItalicLower = toArray(BOLD_ITALIC_LOWER)
   const monoUpper = toArray(MONO_UPPER)
   const monoLower = toArray(MONO_LOWER)
+  const scriptUpper = toArray(SCRIPT_UPPER)
+  const scriptLower = toArray(SCRIPT_LOWER)
+  const doubleUpper = toArray(DOUBLE_UPPER)
+  const doubleLower = toArray(DOUBLE_LOWER)
+  const fullwidthUpper = toArray(FULLWIDTH_UPPER)
+  const fullwidthLower = toArray(FULLWIDTH_LOWER)
+  const circledUpper = toArray(CIRCLED_UPPER)
+  const circledLower = toArray(CIRCLED_LOWER)
 
   const results = useMemo(() => {
     if (!input) return []
@@ -73,10 +97,14 @@ export default function UnicodeTextFormatterTool() {
       { label: '\u{1D608}\u{1D622}\u{1D62F}\u{1D634} Italic', value: mapChars(input, italicUpper, italicLower) },
       { label: '\u{1D63C}\u{1D656}\u{1D663}\u{1D659} Bold Italic', value: mapChars(input, boldItalicUpper, boldItalicLower) },
       { label: '\u{1D670}\u{1D68A}\u{1D697}\u{1D698} Monospace', value: mapChars(input, monoUpper, monoLower) },
+      { label: '\u{1D4D2}\u{1D4F4}\u{1D4FB}\u{1D4FC}\u{1D4F2}\u{1D4F5}\u{1D4EE} Script/Cursive', value: mapChars(input, scriptUpper, scriptLower) },
+      { label: '\u{1D53B}\u{1D560}\u{1D566}\u{1D553}\u{1D55D}\u{1D556} Double-struck', value: mapChars(input, doubleUpper, doubleLower) },
+      { label: '\uFF26\uFF55\uFF4C\uFF4C\uFF57\uFF49\uFF44\uFF54\uFF48 Fullwidth', value: mapChars(input, fullwidthUpper, fullwidthLower) },
+      { label: '\u24B8\u24D8\u24E1\u24D2\u24DB\u24D4\u24D3 Circled', value: mapChars(input, circledUpper, circledLower) },
       { label: 'S\u0336t\u0336r\u0336i\u0336k\u0336e\u0336 Strikethrough', value: strikethrough(input) },
       { label: '\u0250\u028D\u0279\u01DD Upside Down', value: upsideDown(input) },
     ]
-  }, [input, boldUpper, boldLower, italicUpper, italicLower, boldItalicUpper, boldItalicLower, monoUpper, monoLower])
+  }, [input, boldUpper, boldLower, italicUpper, italicLower, boldItalicUpper, boldItalicLower, monoUpper, monoLower, scriptUpper, scriptLower, doubleUpper, doubleLower, fullwidthUpper, fullwidthLower, circledUpper, circledLower])
 
   return (
     <ToolPage

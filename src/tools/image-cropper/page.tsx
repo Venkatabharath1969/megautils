@@ -4,6 +4,18 @@ import { useState, useCallback, useRef, useEffect } from 'react'
 import { ToolPage, ClearButton } from '@/components/tool-page'
 import { Download, Upload } from 'lucide-react'
 
+type OutputFormat = 'image/png' | 'image/jpeg' | 'image/webp'
+
+const ASPECT_RATIOS = [
+  { label: 'Free', value: null },
+  { label: '1:1', value: 1 },
+  { label: '4:3', value: 4 / 3 },
+  { label: '16:9', value: 16 / 9 },
+  { label: '3:2', value: 3 / 2 },
+  { label: '2:3', value: 2 / 3 },
+  { label: '9:16', value: 9 / 16 },
+] as const
+
 export default function ImageCropperTool() {
   const [imageSrc, setImageSrc] = useState<string | null>(null)
   const [imgWidth, setImgWidth] = useState(0)
@@ -21,6 +33,13 @@ export default function ImageCropperTool() {
   // Drag state
   const [isDragging, setIsDragging] = useState(false)
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
+
+  // Aspect ratio
+  const [aspectRatio, setAspectRatio] = useState<number | null>(null)
+
+  // Output format & quality
+  const [outputFormat, setOutputFormat] = useState<OutputFormat>('image/png')
+  const [quality, setQuality] = useState(92)
 
   const handleFile = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -98,16 +117,32 @@ export default function ImageCropperTool() {
 
     const scale = canvasRef.current.width / imgRef.current.width
 
-    const newX = Math.min(dragStart.x, x) / scale
-    const newY = Math.min(dragStart.y, y) / scale
-    const newW = Math.abs(x - dragStart.x) / scale
-    const newH = Math.abs(y - dragStart.y) / scale
+    let newX = Math.min(dragStart.x, x) / scale
+    let newY = Math.min(dragStart.y, y) / scale
+    let newW = Math.abs(x - dragStart.x) / scale
+    let newH = Math.abs(y - dragStart.y) / scale
 
-    setCropX(Math.max(0, Math.round(newX)))
-    setCropY(Math.max(0, Math.round(newY)))
-    setCropW(Math.min(Math.round(newW), imgRef.current.width - Math.round(newX)))
-    setCropH(Math.min(Math.round(newH), imgRef.current.height - Math.round(newY)))
-  }, [isDragging, dragStart])
+    // Enforce aspect ratio if set
+    if (aspectRatio !== null && newW > 0 && newH > 0) {
+      const currentRatio = newW / newH
+      if (currentRatio > aspectRatio) {
+        newW = newH * aspectRatio
+      } else {
+        newH = newW / aspectRatio
+      }
+    }
+
+    // Clamp to image bounds
+    const clampedX = Math.max(0, Math.round(newX))
+    const clampedY = Math.max(0, Math.round(newY))
+    const clampedW = Math.min(Math.round(newW), imgRef.current.width - clampedX)
+    const clampedH = Math.min(Math.round(newH), imgRef.current.height - clampedY)
+
+    setCropX(clampedX)
+    setCropY(clampedY)
+    setCropW(clampedW)
+    setCropH(clampedH)
+  }, [isDragging, dragStart, aspectRatio])
 
   const handleCanvasMouseUp = useCallback(() => {
     setIsDragging(false)
@@ -120,16 +155,18 @@ export default function ImageCropperTool() {
     canvas.height = cropH
     const ctx = canvas.getContext('2d')!
     ctx.drawImage(imgRef.current, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH)
-    setCroppedUrl(canvas.toDataURL('image/png'))
-  }, [cropX, cropY, cropW, cropH])
+    const q = outputFormat === 'image/png' ? 1 : quality / 100
+    setCroppedUrl(canvas.toDataURL(outputFormat, q))
+  }, [cropX, cropY, cropW, cropH, outputFormat, quality])
 
   const handleDownload = useCallback(() => {
     if (!croppedUrl) return
+    const ext = outputFormat === 'image/png' ? 'png' : outputFormat === 'image/jpeg' ? 'jpg' : 'webp'
     const a = document.createElement('a')
     a.href = croppedUrl
-    a.download = `cropped-${cropW}x${cropH}.png`
+    a.download = `cropped-${cropW}x${cropH}.${ext}`
     a.click()
-  }, [croppedUrl, cropW, cropH])
+  }, [croppedUrl, cropW, cropH, outputFormat])
 
   const clear = () => {
     setImageSrc(null)
@@ -140,6 +177,9 @@ export default function ImageCropperTool() {
     setCropY(0)
     setCropW(0)
     setCropH(0)
+    setAspectRatio(null)
+    setOutputFormat('image/png')
+    setQuality(92)
     imgRef.current = null
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
@@ -248,6 +288,64 @@ export default function ImageCropperTool() {
                   className="w-full h-9 px-3 rounded-md border border-input bg-card text-sm"
                 />
               </div>
+            </div>
+
+            {/* Aspect ratio presets */}
+            <div className="space-y-2">
+              <label className="text-xs font-medium block">Aspect Ratio:</label>
+              <div className="flex flex-wrap gap-1.5">
+                {ASPECT_RATIOS.map(({ label, value }) => (
+                  <button
+                    key={label}
+                    onClick={() => {
+                      setAspectRatio(value)
+                      // If a ratio is selected and we have a crop, adjust height to match
+                      if (value !== null && cropW > 0) {
+                        const newH = Math.round(cropW / value)
+                        const clampedH = Math.min(newH, imgHeight - cropY)
+                        setCropH(clampedH)
+                      }
+                    }}
+                    className={`px-2.5 py-1 text-xs font-medium rounded-md border transition-colors ${
+                      aspectRatio === value
+                        ? 'bg-primary text-primary-foreground border-primary'
+                        : 'border-border bg-card hover:bg-muted'
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Output format & quality */}
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="flex items-center gap-2">
+                <label className="text-xs font-medium">Format:</label>
+                <select
+                  value={outputFormat}
+                  onChange={e => setOutputFormat(e.target.value as OutputFormat)}
+                  className="h-8 px-2 rounded-md border border-input bg-card text-xs"
+                >
+                  <option value="image/png">PNG</option>
+                  <option value="image/jpeg">JPEG</option>
+                  <option value="image/webp">WebP</option>
+                </select>
+              </div>
+              {outputFormat !== 'image/png' && (
+                <div className="flex items-center gap-2">
+                  <label className="text-xs font-medium">Quality: {quality}%</label>
+                  <input
+                    type="range"
+                    min={10}
+                    max={100}
+                    step={1}
+                    value={quality}
+                    onChange={e => setQuality(Number(e.target.value))}
+                    className="w-24 h-1.5 accent-primary"
+                  />
+                </div>
+              )}
             </div>
 
             <div className="text-xs text-muted-foreground">

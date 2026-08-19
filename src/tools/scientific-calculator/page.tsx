@@ -7,6 +7,8 @@ export default function ScientificCalculatorTool() {
   const [expression, setExpression] = useState('')
   const [result, setResult] = useState('')
   const [history, setHistory] = useState<{ expr: string; result: string }[]>([])
+  const [angleMode, setAngleMode] = useState<'RAD' | 'DEG'>('RAD')
+  const [memory, setMemory] = useState(0)
 
   const safeEval = useCallback((expr: string): string => {
     try {
@@ -16,22 +18,37 @@ export default function ScientificCalculatorTool() {
         .replace(/\u00F7/g, '/')
         .replace(/\u03C0/g, `(${Math.PI})`)
         .replace(/\be\b/g, `(${Math.E})`)
-        .replace(/sin\(/g, 'Math.sin(')
-        .replace(/cos\(/g, 'Math.cos(')
-        .replace(/tan\(/g, 'Math.tan(')
-        .replace(/asin\(/g, 'Math.asin(')
-        .replace(/acos\(/g, 'Math.acos(')
-        .replace(/atan\(/g, 'Math.atan(')
-        .replace(/log\(/g, 'Math.log10(')
-        .replace(/ln\(/g, 'Math.log(')
-        .replace(/sqrt\(/g, 'Math.sqrt(')
-        .replace(/abs\(/g, 'Math.abs(')
         .replace(/\^/g, '**')
         .replace(/(\d+)!/g, (_match, n) => {
           let f = 1
           for (let i = 2; i <= parseInt(n); i++) f *= i
           return f.toString()
         })
+
+      // Handle trig functions with degree conversion
+      if (angleMode === 'DEG') {
+        sanitized = sanitized
+          .replace(/sin\(([^)]+)\)/g, (_m, arg) => `Math.sin((${arg})*Math.PI/180)`)
+          .replace(/cos\(([^)]+)\)/g, (_m, arg) => `Math.cos((${arg})*Math.PI/180)`)
+          .replace(/tan\(([^)]+)\)/g, (_m, arg) => `Math.tan((${arg})*Math.PI/180)`)
+          .replace(/asin\(([^)]+)\)/g, (_m, arg) => `(Math.asin(${arg})*180/Math.PI)`)
+          .replace(/acos\(([^)]+)\)/g, (_m, arg) => `(Math.acos(${arg})*180/Math.PI)`)
+          .replace(/atan\(([^)]+)\)/g, (_m, arg) => `(Math.atan(${arg})*180/Math.PI)`)
+      } else {
+        sanitized = sanitized
+          .replace(/sin\(/g, 'Math.sin(')
+          .replace(/cos\(/g, 'Math.cos(')
+          .replace(/tan\(/g, 'Math.tan(')
+          .replace(/asin\(/g, 'Math.asin(')
+          .replace(/acos\(/g, 'Math.acos(')
+          .replace(/atan\(/g, 'Math.atan(')
+      }
+
+      sanitized = sanitized
+        .replace(/log\(/g, 'Math.log10(')
+        .replace(/ln\(/g, 'Math.log(')
+        .replace(/sqrt\(/g, 'Math.sqrt(')
+        .replace(/abs\(/g, 'Math.abs(')
 
       // Security: only allow safe characters
       if (!/^[0-9+\-*/.() ,Mathesincotaglqrbp\s]*$/.test(sanitized)) {
@@ -70,6 +87,22 @@ export default function ScientificCalculatorTool() {
           setExpression((prev) => prev + history[0].result)
         }
         break
+      case 'M+': {
+        const currentVal = parseFloat(result)
+        if (!isNaN(currentVal)) setMemory((prev) => prev + currentVal)
+        break
+      }
+      case 'M-': {
+        const currentVal2 = parseFloat(result)
+        if (!isNaN(currentVal2)) setMemory((prev) => prev - currentVal2)
+        break
+      }
+      case 'MR':
+        setExpression((prev) => prev + memory.toString())
+        break
+      case 'MC':
+        setMemory(0)
+        break
       default:
         setExpression((prev) => prev + val)
         break
@@ -78,6 +111,13 @@ export default function ScientificCalculatorTool() {
 
   // Button grid layout
   const buttons: { label: string; value: string; className?: string }[][] = [
+    [
+      { label: 'M+', value: 'M+', className: 'text-xs bg-violet-500/20 text-violet-600 dark:text-violet-400 hover:bg-violet-500/30' },
+      { label: 'M-', value: 'M-', className: 'text-xs bg-violet-500/20 text-violet-600 dark:text-violet-400 hover:bg-violet-500/30' },
+      { label: 'MR', value: 'MR', className: 'text-xs bg-violet-500/20 text-violet-600 dark:text-violet-400 hover:bg-violet-500/30' },
+      { label: 'MC', value: 'MC', className: 'text-xs bg-violet-500/20 text-violet-600 dark:text-violet-400 hover:bg-violet-500/30' },
+      { label: 'ANS', value: 'ANS', className: 'text-xs bg-muted/80 hover:bg-muted' },
+    ],
     [
       { label: 'sin', value: 'sin(' },
       { label: 'cos', value: 'cos(' },
@@ -104,14 +144,14 @@ export default function ScientificCalculatorTool() {
       { label: '8', value: '8' },
       { label: '9', value: '9' },
       { label: '\u00D7', value: '\u00D7', className: 'bg-primary/20 text-primary hover:bg-primary/30' },
-      { label: 'ANS', value: 'ANS', className: 'text-xs bg-muted/80 hover:bg-muted' },
+      { label: '!', value: '!' },
     ],
     [
       { label: '4', value: '4' },
       { label: '5', value: '5' },
       { label: '6', value: '6' },
       { label: '-', value: '-', className: 'bg-primary/20 text-primary hover:bg-primary/30' },
-      { label: '!', value: '!' },
+      { label: '%', value: '/100' },
     ],
     [
       { label: '1', value: '1' },
@@ -167,6 +207,24 @@ export default function ScientificCalculatorTool() {
       ]}
     >
       <div className="max-w-md mx-auto">
+        {/* DEG/RAD Toggle & Memory */}
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setAngleMode(angleMode === 'RAD' ? 'DEG' : 'RAD')}
+              className="px-3 py-1.5 rounded-lg text-xs font-bold border border-border bg-card hover:bg-muted transition-colors"
+            >
+              {angleMode}
+            </button>
+            {memory !== 0 && (
+              <span className="text-xs text-violet-600 dark:text-violet-400 font-mono">M={memory}</span>
+            )}
+          </div>
+          <span className="text-xs text-muted-foreground">
+            {angleMode === 'DEG' ? 'Degrees' : 'Radians'}
+          </span>
+        </div>
+
         {/* Display */}
         <div className="bg-muted/50 rounded-xl border border-border p-4 mb-4">
           <div className="text-right min-h-[1.5rem] text-sm text-muted-foreground font-mono break-all">

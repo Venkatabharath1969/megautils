@@ -71,6 +71,15 @@ export default function ReadabilityScoreTool() {
       ? 1.0430 * Math.sqrt(polysyllableWords * (30 / sentenceCount)) + 3.1291
       : 1.0430 * Math.sqrt(polysyllableWords) + 3.1291
 
+    // Coleman-Liau Index: CLI = 0.0588 × L - 0.296 × S - 15.8
+    const totalChars = words.reduce((acc, w) => acc + w.replace(/[^a-zA-Z]/g, '').length, 0)
+    const L = (totalChars / wordCount) * 100 // avg letters per 100 words
+    const S = (sentenceCount / wordCount) * 100 // avg sentences per 100 words
+    const colemanLiau = 0.0588 * L - 0.296 * S - 15.8
+
+    // Automated Readability Index: ARI = 4.71 × (chars/words) + 0.5 × (words/sentences) - 21.43
+    const ari = 4.71 * (totalChars / wordCount) + 0.5 * (wordCount / sentenceCount) - 21.43
+
     return {
       wordCount,
       sentenceCount,
@@ -82,6 +91,8 @@ export default function ReadabilityScoreTool() {
       fleschKincaidGrade: clampedFKG,
       gunningFog,
       smog,
+      colemanLiau,
+      ari,
     }
   }, [text])
 
@@ -196,6 +207,28 @@ export default function ReadabilityScoreTool() {
                   </div>
                   <div className="text-xs text-muted-foreground mt-1">
                     Years of education needed: {getGradeLabel(scores.smog)}
+                  </div>
+                </div>
+
+                {/* Coleman-Liau */}
+                <div className="p-4 rounded-lg border border-border">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-semibold">Coleman-Liau Index</span>
+                    <span className="text-2xl font-bold text-primary">{scores.colemanLiau.toFixed(1)}</span>
+                  </div>
+                  <div className="text-xs text-muted-foreground mt-1">
+                    Grade level: {getGradeLabel(scores.colemanLiau)}
+                  </div>
+                </div>
+
+                {/* ARI */}
+                <div className="p-4 rounded-lg border border-border">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-semibold">Automated Readability Index</span>
+                    <span className="text-2xl font-bold text-primary">{scores.ari.toFixed(1)}</span>
+                  </div>
+                  <div className="text-xs text-muted-foreground mt-1">
+                    Grade level: {getGradeLabel(scores.ari)}
                   </div>
                 </div>
               </div>

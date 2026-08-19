@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, ClearButton } from '@/components/tool-page'
 
-type ListMode = 'split' | 'join' | 'dedupe' | 'sort' | 'number'
+type ListMode = 'split' | 'join' | 'dedupe' | 'sort' | 'number' | 'filter' | 'wrap' | 'shuffle'
 
 export default function ListToolsPage() {
   const [input, setInput] = useState('')
@@ -13,9 +13,16 @@ export default function ListToolsPage() {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc')
   const [numberPrefix, setNumberPrefix] = useState('')
   const [numberSuffix, setNumberSuffix] = useState('. ')
+  const [filterTerm, setFilterTerm] = useState('')
+  const [filterMode, setFilterMode] = useState<'include' | 'exclude'>('include')
+  const [wrapPrefix, setWrapPrefix] = useState('"')
+  const [wrapSuffix, setWrapSuffix] = useState('"')
+  const [shuffleKey, setShuffleKey] = useState(0)
 
   const output = useMemo(() => {
     if (!input) return ''
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    shuffleKey // dependency trigger for shuffle
     switch (mode) {
       case 'split': {
         return input.split(delimiter).map(s => s.trim()).filter(Boolean).join('\n')
@@ -37,8 +44,29 @@ export default function ListToolsPage() {
         const lines = input.split('\n').filter(s => s.trim())
         return lines.map((line, i) => `${numberPrefix}${i + 1}${numberSuffix}${line}`).join('\n')
       }
+      case 'filter': {
+        const lines = input.split('\n').filter(s => s.trim())
+        if (!filterTerm) return lines.join('\n')
+        const term = filterTerm.toLowerCase()
+        return lines.filter(line => {
+          const contains = line.toLowerCase().includes(term)
+          return filterMode === 'include' ? contains : !contains
+        }).join('\n')
+      }
+      case 'wrap': {
+        const lines = input.split('\n').filter(s => s.trim())
+        return lines.map(line => `${wrapPrefix}${line.trim()}${wrapSuffix}`).join('\n')
+      }
+      case 'shuffle': {
+        const lines = input.split('\n').map(s => s.trim()).filter(Boolean)
+        for (let i = lines.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [lines[i], lines[j]] = [lines[j], lines[i]]
+        }
+        return lines.join('\n')
+      }
     }
-  }, [input, mode, delimiter, joinDelimiter, sortOrder, numberPrefix, numberSuffix])
+  }, [input, mode, delimiter, joinDelimiter, sortOrder, numberPrefix, numberSuffix, filterTerm, filterMode, wrapPrefix, wrapSuffix, shuffleKey])
 
   const modes: { key: ListMode; label: string }[] = [
     { key: 'split', label: 'Split to Lines' },
@@ -46,6 +74,9 @@ export default function ListToolsPage() {
     { key: 'dedupe', label: 'Remove Duplicates' },
     { key: 'sort', label: 'Sort' },
     { key: 'number', label: 'Number Items' },
+    { key: 'filter', label: 'Filter Lines' },
+    { key: 'wrap', label: 'Wrap Items' },
+    { key: 'shuffle', label: 'Shuffle' },
   ]
 
   return (
@@ -129,6 +160,39 @@ export default function ListToolsPage() {
               <input type="text" value={numberSuffix} onChange={e => setNumberSuffix(e.target.value)} placeholder=". " className="w-16 rounded-lg border border-input bg-tool-bg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
             </div>
           </>
+        )}
+        {mode === 'filter' && (
+          <>
+            <div>
+              <label className="block text-xs font-medium mb-1">Search Term</label>
+              <input type="text" value={filterTerm} onChange={e => setFilterTerm(e.target.value)} placeholder="Filter text..." className="w-40 rounded-lg border border-input bg-tool-bg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium mb-1">Mode</label>
+              <div className="flex gap-1">
+                <button onClick={() => setFilterMode('include')} className={`px-3 py-1.5 rounded-md text-xs font-medium ${filterMode === 'include' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Contains</button>
+                <button onClick={() => setFilterMode('exclude')} className={`px-3 py-1.5 rounded-md text-xs font-medium ${filterMode === 'exclude' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>Not Contains</button>
+              </div>
+            </div>
+          </>
+        )}
+        {mode === 'wrap' && (
+          <>
+            <div>
+              <label className="block text-xs font-medium mb-1">Prefix</label>
+              <input type="text" value={wrapPrefix} onChange={e => setWrapPrefix(e.target.value)} placeholder='"' className="w-20 rounded-lg border border-input bg-tool-bg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium mb-1">Suffix</label>
+              <input type="text" value={wrapSuffix} onChange={e => setWrapSuffix(e.target.value)} placeholder='"' className="w-20 rounded-lg border border-input bg-tool-bg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+            </div>
+          </>
+        )}
+        {mode === 'shuffle' && (
+          <div>
+            <label className="block text-xs font-medium mb-1">&nbsp;</label>
+            <button onClick={() => setShuffleKey(k => k + 1)} className="px-4 py-1.5 rounded-md text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors">Shuffle Again</button>
+          </div>
         )}
       </div>
 

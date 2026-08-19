@@ -104,6 +104,21 @@ export default function CronExpressionBuilderTool() {
   const description = useMemo(() => describeCron(cron), [cron])
   const nextRuns = useMemo(() => getNextExecutions(cron, 5), [cron])
 
+  const [parseInput, setParseInput] = useState('')
+
+  const parseCronExpression = (expr: string) => {
+    const trimmed = expr.trim()
+    const parts = trimmed.split(/\s+/)
+    if (parts.length !== 5) return
+    setMinute(parts[0])
+    setHour(parts[1])
+    setDom(parts[2])
+    setMonth(parts[3])
+    setDow(parts[4])
+    setCustomInput('')
+    setParseInput('')
+  }
+
   const presets = [
     { label: 'Every minute', value: '* * * * *' },
     { label: 'Every hour', value: '0 * * * *' },
@@ -111,6 +126,9 @@ export default function CronExpressionBuilderTool() {
     { label: 'Every Monday at 9 AM', value: '0 9 * * 1' },
     { label: 'Every 1st of month', value: '0 0 1 * *' },
     { label: 'Every weekday at 8 AM', value: '0 8 * * 1-5' },
+    { label: 'Twice daily (9am, 5pm)', value: '0 9,17 * * *' },
+    { label: 'Every weekday at 9 AM', value: '0 9 * * 1-5' },
+    { label: 'First day of month at midnight', value: '0 0 1 * *' },
   ]
 
   return (
@@ -153,6 +171,27 @@ export default function CronExpressionBuilderTool() {
       ]}
     >
       <div className="max-w-3xl mx-auto space-y-6">
+        {/* Reverse Parser */}
+        <div>
+          <label className="block text-sm font-medium mb-1.5">Parse Cron Expression</label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={parseInput}
+              onChange={(e) => setParseInput(e.target.value)}
+              placeholder="Paste a cron expression, e.g. 30 9 * * 1-5"
+              className="flex-1 h-10 px-3 rounded-lg border border-input bg-tool-bg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-ring"
+              onKeyDown={(e) => { if (e.key === 'Enter') parseCronExpression(parseInput) }}
+            />
+            <button
+              onClick={() => parseCronExpression(parseInput)}
+              className="px-4 h-10 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+            >
+              Parse
+            </button>
+          </div>
+        </div>
+
         {/* Presets */}
         <div>
           <label className="block text-sm font-medium mb-2">Presets</label>

@@ -5,6 +5,8 @@ import { ToolPage, ClearButton } from '@/components/tool-page'
 import { Upload, Download, ImageIcon, Loader2, Shield, Wifi } from 'lucide-react'
 
 type Status = 'idle' | 'downloading' | 'processing' | 'done' | 'error'
+type BgOption = 'transparent' | 'solid' | 'white' | 'image'
+type OutputFormat = 'image/png' | 'image/webp'
 
 export default function AIBGRemover() {
   const [status, setStatus] = useState<Status>('idle')
@@ -16,6 +18,16 @@ export default function AIBGRemover() {
   const [originalName, setOriginalName] = useState('')
   const [dragOver, setDragOver] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  /* ---- Background replacement state ---- */
+  const [bgOption, setBgOption] = useState<BgOption>('transparent')
+  const [bgSolidColor, setBgSolidColor] = useState('#00ff00')
+  const [bgImageUrl, setBgImageUrl] = useState<string | null>(null)
+  const [compositeUrl, setCompositeUrl] = useState<string | null>(null)
+  const bgFileInputRef = useRef<HTMLInputElement>(null)
+
+  /* ---- Output format ---- */
+  const [outputFormat, setOutputFormat] = useState<OutputFormat>('image/png')
 
   const processImage = useCallback(async (file: File) => {
     setOriginalName(file.name)
@@ -103,14 +115,84 @@ export default function AIBGRemover() {
     setDragOver(false)
   }, [])
 
+  /* ---- Composite background replacement ---- */
+  const applyBackground = useCallback((option: BgOption) => {
+    setBgOption(option)
+    if (option === 'transparent' || !resultUrl) {
+      setCompositeUrl(null)
+      return
+    }
+
+    const fgImg = new Image()
+    fgImg.onload = () => {
+      const canvas = document.createElement('canvas')
+      canvas.width = fgImg.width
+      canvas.height = fgImg.height
+      const ctx = canvas.getContext('2d')!
+
+      if (option === 'white') {
+        ctx.fillStyle = '#ffffff'
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+        ctx.drawImage(fgImg, 0, 0)
+        setCompositeUrl(canvas.toDataURL(outputFormat))
+      } else if (option === 'solid') {
+        ctx.fillStyle = bgSolidColor
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+        ctx.drawImage(fgImg, 0, 0)
+        setCompositeUrl(canvas.toDataURL(outputFormat))
+      } else if (option === 'image' && bgImageUrl) {
+        const bgImg = new Image()
+        bgImg.onload = () => {
+          ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height)
+          ctx.drawImage(fgImg, 0, 0)
+          setCompositeUrl(canvas.toDataURL(outputFormat))
+        }
+        bgImg.src = bgImageUrl
+      }
+    }
+    fgImg.src = resultUrl
+  }, [resultUrl, bgSolidColor, bgImageUrl, outputFormat])
+
+  const handleBgImageUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      const url = ev.target?.result as string
+      setBgImageUrl(url)
+      // Apply immediately
+      setBgOption('image')
+      if (!resultUrl) return
+      const fgImg = new Image()
+      fgImg.onload = () => {
+        const canvas = document.createElement('canvas')
+        canvas.width = fgImg.width
+        canvas.height = fgImg.height
+        const ctx = canvas.getContext('2d')!
+        const bgImg = new Image()
+        bgImg.onload = () => {
+          ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height)
+          ctx.drawImage(fgImg, 0, 0)
+          setCompositeUrl(canvas.toDataURL(outputFormat))
+        }
+        bgImg.src = url
+      }
+      fgImg.src = resultUrl
+    }
+    reader.readAsDataURL(file)
+  }, [resultUrl, outputFormat])
+
   const handleDownload = useCallback(() => {
-    if (!resultUrl) return
+    const downloadUrl = compositeUrl || resultUrl
+    if (!downloadUrl) return
     const baseName = originalName.replace(/\.[^.]+$/, '')
+    const ext = outputFormat === 'image/webp' ? 'webp' : 'png'
+    const suffix = bgOption === 'transparent' ? 'no-bg' : `bg-${bgOption}`
     const a = document.createElement('a')
-    a.href = resultUrl
-    a.download = `${baseName}-no-bg.png`
+    a.href = downloadUrl
+    a.download = `${baseName}-${suffix}.${ext}`
     a.click()
-  }, [resultUrl, originalName])
+  }, [compositeUrl, resultUrl, originalName, outputFormat, bgOption])
 
   const clear = useCallback(() => {
     setStatus('idle')
@@ -123,7 +205,13 @@ export default function AIBGRemover() {
     setResultUrl(null)
     setOriginalName('')
     setDragOver(false)
+    setBgOption('transparent')
+    setBgSolidColor('#00ff00')
+    setBgImageUrl(null)
+    setCompositeUrl(null)
+    setOutputFormat('image/png')
     if (fileInputRef.current) fileInputRef.current.value = ''
+    if (bgFileInputRef.current) bgFileInputRef.current.value = ''
   }, [originalUrl, resultUrl])
 
   const isProcessing = status === 'downloading' || status === 'processing'
@@ -309,23 +397,97 @@ export default function AIBGRemover() {
 
               {/* Result */}
               <div className="space-y-2">
-                <span className="text-sm font-medium text-muted-foreground">Background Removed</span>
+                <span className="text-sm font-medium text-muted-foreground">
+                  {bgOption === 'transparent' ? 'Background Removed' : 'With New Background'}
+                </span>
                 <div className="border border-border rounded-lg p-2 overflow-hidden"
-                  style={{
+                  style={bgOption === 'transparent' ? {
                     backgroundImage: 'linear-gradient(45deg, #e5e7eb 25%, transparent 25%), linear-gradient(-45deg, #e5e7eb 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #e5e7eb 75%), linear-gradient(-45deg, transparent 75%, #e5e7eb 75%)',
                     backgroundSize: '16px 16px',
                     backgroundPosition: '0 0, 0 8px, 8px -8px, -8px 0px',
-                  }}
+                  } : {}}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={resultUrl}
+                    src={compositeUrl || resultUrl}
                     alt="Background removed"
                     loading="lazy"
                     className="max-w-full h-auto max-h-80 mx-auto object-contain"
                   />
                 </div>
               </div>
+            </div>
+
+            {/* Background replacement options */}
+            <div className="space-y-3 rounded-lg border border-border p-4 bg-muted/20">
+              <span className="text-sm font-medium">Replace Background</span>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  onClick={() => applyBackground('transparent')}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-md border transition-colors ${bgOption === 'transparent' ? 'bg-primary text-primary-foreground border-primary' : 'border-border bg-card hover:bg-muted'}`}
+                >
+                  Transparent
+                </button>
+                <button
+                  onClick={() => applyBackground('white')}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-md border transition-colors ${bgOption === 'white' ? 'bg-primary text-primary-foreground border-primary' : 'border-border bg-card hover:bg-muted'}`}
+                >
+                  White
+                </button>
+                <button
+                  onClick={() => applyBackground('solid')}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-md border transition-colors ${bgOption === 'solid' ? 'bg-primary text-primary-foreground border-primary' : 'border-border bg-card hover:bg-muted'}`}
+                >
+                  Solid Color
+                </button>
+                <label
+                  className={`px-3 py-1.5 text-xs font-medium rounded-md border cursor-pointer transition-colors ${bgOption === 'image' ? 'bg-primary text-primary-foreground border-primary' : 'border-border bg-card hover:bg-muted'}`}
+                >
+                  Custom Image
+                  <input
+                    ref={bgFileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleBgImageUpload}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+              {bgOption === 'solid' && (
+                <div className="flex items-center gap-2">
+                  <label className="text-xs font-medium">Color:</label>
+                  <input
+                    type="color"
+                    value={bgSolidColor}
+                    onChange={e => {
+                      setBgSolidColor(e.target.value)
+                      // Re-apply with new color
+                      setTimeout(() => applyBackground('solid'), 0)
+                    }}
+                    className="w-9 h-9 rounded border border-input cursor-pointer bg-transparent"
+                  />
+                  <span className="text-xs font-mono text-muted-foreground">{bgSolidColor.toUpperCase()}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Output format selector */}
+            <div className="flex flex-wrap items-center gap-3">
+              <label className="text-sm font-medium">Output Format:</label>
+              <select
+                value={outputFormat}
+                onChange={e => {
+                  setOutputFormat(e.target.value as OutputFormat)
+                  // Re-composite if a background is applied
+                  if (bgOption !== 'transparent') {
+                    setTimeout(() => applyBackground(bgOption), 0)
+                  }
+                }}
+                className="h-9 px-3 rounded-md border border-input bg-card text-sm"
+              >
+                <option value="image/png">PNG</option>
+                <option value="image/webp">WebP</option>
+              </select>
             </div>
 
             {/* Download button */}
@@ -335,7 +497,7 @@ export default function AIBGRemover() {
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
               >
                 <Download className="h-4 w-4" />
-                Download PNG
+                Download {outputFormat === 'image/webp' ? 'WebP' : 'PNG'}
               </button>
               <label className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary text-secondary-foreground text-sm font-medium hover:bg-secondary/80 transition-colors border border-border cursor-pointer">
                 <Upload className="h-4 w-4" />

@@ -55,65 +55,143 @@ function encodeCode128B(text: string): number[][] {
   return codes.map((code) => CODE128_PATTERNS[code])
 }
 
+// EAN-13 encoding
+const EAN13_L: string[] = ['0001101','0011001','0010011','0111101','0100011','0110001','0101111','0111011','0110111','0001011']
+const EAN13_G: string[] = ['0100111','0110011','0011011','0100001','0011101','0111001','0000101','0010001','0001001','0010111']
+const EAN13_R: string[] = ['1110010','1100110','1101100','1000010','1011100','1001110','1010000','1000100','1001000','1110100']
+const EAN13_PARITY: string[] = ['LLLLLL','LLGLGG','LLGGLG','LLGGGL','LGLLGG','LGGLLG','LGGGLL','LGLGLG','LGLGGL','LGGLGL']
+
+function calculateEAN13CheckDigit(digits12: string): number {
+  let sum = 0
+  for (let i = 0; i < 12; i++) {
+    sum += parseInt(digits12[i]) * (i % 2 === 0 ? 1 : 3)
+  }
+  return (10 - (sum % 10)) % 10
+}
+
+function encodeEAN13(input: string): { bits: string; displayText: string } {
+  let digits = input.replace(/[^0-9]/g, '')
+  if (digits.length < 12 || digits.length > 13) {
+    throw new Error('EAN-13 requires exactly 12 or 13 digits')
+  }
+  if (digits.length === 12) {
+    digits = digits + calculateEAN13CheckDigit(digits)
+  } else {
+    // Validate check digit
+    const expected = calculateEAN13CheckDigit(digits.substring(0, 12))
+    if (parseInt(digits[12]) !== expected) {
+      throw new Error(`Invalid check digit. Expected ${expected}, got ${digits[12]}`)
+    }
+  }
+
+  const firstDigit = parseInt(digits[0])
+  const parity = EAN13_PARITY[firstDigit]
+
+  // Start guard: 101
+  let bits = '101'
+
+  // Left side (digits 1-6)
+  for (let i = 0; i < 6; i++) {
+    const d = parseInt(digits[i + 1])
+    bits += parity[i] === 'L' ? EAN13_L[d] : EAN13_G[d]
+  }
+
+  // Center guard: 01010
+  bits += '01010'
+
+  // Right side (digits 7-12)
+  for (let i = 0; i < 6; i++) {
+    const d = parseInt(digits[i + 7])
+    bits += EAN13_R[d]
+  }
+
+  // End guard: 101
+  bits += '101'
+
+  return { bits, displayText: digits }
+}
+
 export default function BarcodeGeneratorTool() {
   const [input, setInput] = useState('')
   const [error, setError] = useState('')
   const [barWidth, setBarWidth] = useState(2)
   const [height, setHeight] = useState(100)
+  const [barcodeFormat, setBarcodeFormat] = useState<'code128' | 'ean13'>('code128')
+  const [fgColor, setFgColor] = useState('#000000')
+  const [bgColor, setBgColor] = useState('#ffffff')
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   const generate = useCallback(() => {
     try {
       setError('')
       if (!input.trim()) { setError('Please enter text to encode'); return }
-      const patterns = encodeCode128B(input)
       const canvas = canvasRef.current
       if (!canvas) return
-
       const ctx = canvas.getContext('2d')
       if (!ctx) return
 
-      // Calculate total width
-      let totalUnits = 10 // quiet zone left
-      for (const pattern of patterns) {
-        for (const bar of pattern) {
-          totalUnits += bar
-        }
-      }
-      totalUnits += 10 // quiet zone right
+      if (barcodeFormat === 'ean13') {
+        // EAN-13 rendering
+        const { bits, displayText } = encodeEAN13(input)
+        const totalWidth = (bits.length + 14) * barWidth // 7 quiet zone each side
+        canvas.width = totalWidth
+        canvas.height = height + 30
 
-      canvas.width = totalUnits * barWidth
-      canvas.height = height + 30
+        ctx.fillStyle = bgColor
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-      // White background
-      ctx.fillStyle = '#ffffff'
-      ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-      // Draw bars
-      let x = 10 * barWidth // quiet zone
-      ctx.fillStyle = '#000000'
-
-      for (const pattern of patterns) {
-        for (let i = 0; i < pattern.length; i++) {
-          const w = pattern[i] * barWidth
-          if (i % 2 === 0) {
-            // Even index = bar (black)
-            ctx.fillRect(x, 0, w, height)
+        let x = 7 * barWidth
+        for (let i = 0; i < bits.length; i++) {
+          if (bits[i] === '1') {
+            ctx.fillStyle = fgColor
+            ctx.fillRect(x, 0, barWidth, height)
           }
-          // Odd index = space (white)
-          x += w
+          x += barWidth
         }
-      }
 
-      // Draw text below barcode
-      ctx.fillStyle = '#000000'
-      ctx.font = '14px monospace'
-      ctx.textAlign = 'center'
-      ctx.fillText(input, canvas.width / 2, height + 20)
+        ctx.fillStyle = fgColor
+        ctx.font = '14px monospace'
+        ctx.textAlign = 'center'
+        ctx.fillText(displayText, canvas.width / 2, height + 20)
+      } else {
+        // Code 128 rendering
+        const patterns = encodeCode128B(input)
+
+        let totalUnits = 10
+        for (const pattern of patterns) {
+          for (const bar of pattern) {
+            totalUnits += bar
+          }
+        }
+        totalUnits += 10
+
+        canvas.width = totalUnits * barWidth
+        canvas.height = height + 30
+
+        ctx.fillStyle = bgColor
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+        let x2 = 10 * barWidth
+        for (const pattern of patterns) {
+          for (let i = 0; i < pattern.length; i++) {
+            const w = pattern[i] * barWidth
+            if (i % 2 === 0) {
+              ctx.fillStyle = fgColor
+              ctx.fillRect(x2, 0, w, height)
+            }
+            x2 += w
+          }
+        }
+
+        ctx.fillStyle = fgColor
+        ctx.font = '14px monospace'
+        ctx.textAlign = 'center'
+        ctx.fillText(input, canvas.width / 2, height + 20)
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Error generating barcode')
     }
-  }, [input, barWidth, height])
+  }, [input, barWidth, height, barcodeFormat, fgColor, bgColor])
 
   const download = () => {
     const canvas = canvasRef.current
@@ -162,15 +240,30 @@ export default function BarcodeGeneratorTool() {
       ]}
     >
       <div className="space-y-4">
+        {/* Format selector */}
+        <div>
+          <label className="text-sm font-medium block mb-1.5">Barcode Format</label>
+          <div className="flex gap-2">
+            <button onClick={() => setBarcodeFormat('code128')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${barcodeFormat === 'code128' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>
+              Code 128
+            </button>
+            <button onClick={() => setBarcodeFormat('ean13')} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${barcodeFormat === 'ean13' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>
+              EAN-13
+            </button>
+          </div>
+        </div>
+
         <div className="flex flex-wrap gap-4 items-end">
           <div className="flex-1 min-w-[200px]">
-            <label className="text-sm font-medium block mb-1">Text to Encode</label>
+            <label className="text-sm font-medium block mb-1">
+              {barcodeFormat === 'ean13' ? 'Digits (12 or 13)' : 'Text to Encode'}
+            </label>
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               className="w-full px-3 py-2 rounded-lg border border-input bg-tool-bg text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-              placeholder="Enter text (ASCII 32-126)..."
+              placeholder={barcodeFormat === 'ean13' ? 'Enter 12-13 digits...' : 'Enter text (ASCII 32-126)...'}
             />
           </div>
           <div>
@@ -189,6 +282,14 @@ export default function BarcodeGeneratorTool() {
               <option value={100}>100px</option>
               <option value={150}>150px</option>
             </select>
+          </div>
+          <div>
+            <label className="text-sm font-medium block mb-1">Bar Color</label>
+            <input type="color" value={fgColor} onChange={(e) => setFgColor(e.target.value)} className="w-10 h-10 rounded-lg border border-input cursor-pointer" />
+          </div>
+          <div>
+            <label className="text-sm font-medium block mb-1">Background</label>
+            <input type="color" value={bgColor} onChange={(e) => setBgColor(e.target.value)} className="w-10 h-10 rounded-lg border border-input cursor-pointer" />
           </div>
         </div>
         <div className="flex gap-2">

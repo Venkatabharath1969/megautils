@@ -45,6 +45,10 @@ const COMPANY_WORDS = ['Alpha', 'Beta', 'Global', 'Digital', 'Tech', 'Smart', 'B
 
 const DOMAINS = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'mail.com', 'proton.me', 'icloud.com']
 
+const ADJECTIVES = ['swift', 'bright', 'cool', 'dark', 'epic', 'fast', 'grand', 'happy', 'icy', 'keen', 'loud', 'mega', 'noble', 'odd', 'prime', 'quiet', 'rare', 'super', 'tiny', 'ultra']
+const NOUNS = ['tiger', 'eagle', 'shark', 'wolf', 'bear', 'hawk', 'lion', 'fox', 'dragon', 'phoenix', 'cobra', 'panda', 'falcon', 'raven', 'viper', 'orca', 'lynx', 'mantis', 'jaguar', 'python']
+const URL_WORDS = ['alpha', 'beta', 'delta', 'gamma', 'omega', 'sigma', 'nova', 'apex', 'core', 'flux', 'nexus', 'pulse', 'spark', 'wave', 'zone', 'pixel', 'cloud', 'data', 'sync', 'tech']
+
 function pick<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)]
 }
@@ -61,23 +65,77 @@ function generateZip(): string {
   return String(randInt(10000, 99999))
 }
 
-interface FakeRecord {
-  name: string
-  email: string
-  phone: string
-  address: string
-  company: string
+function generateDOB(): string {
+  const now = new Date()
+  const minAge = 18, maxAge = 80
+  const year = now.getFullYear() - randInt(minAge, maxAge)
+  const month = randInt(1, 12)
+  const day = randInt(1, 28)
+  return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
 }
 
-function generateRecord(): FakeRecord {
+function generateUsername(): string {
+  return `${pick(ADJECTIVES)}${pick(NOUNS)}${randInt(1, 999)}`
+}
+
+function generateUrl(): string {
+  return `https://www.${pick(URL_WORDS)}${pick(URL_WORDS)}.com`
+}
+
+function generateIPv4(): string {
+  return `${randInt(1, 254)}.${randInt(0, 255)}.${randInt(0, 255)}.${randInt(1, 254)}`
+}
+
+function generateUUID(): string {
+  const hex = () => Math.floor(Math.random() * 16).toString(16)
+  const s = (n: number) => Array.from({ length: n }, hex).join('')
+  return `${s(8)}-${s(4)}-4${s(3)}-${['8','9','a','b'][randInt(0,3)]}${s(3)}-${s(12)}`
+}
+
+function generateFakeCreditCard(): string {
+  // Intentionally Luhn-failing fake card with 4111 prefix
+  const digits = '4111' + Array.from({ length: 12 }, () => randInt(0, 9)).join('')
+  return `${digits.slice(0,4)}-${digits.slice(4,8)}-${digits.slice(8,12)}-${digits.slice(12,16)}`
+}
+
+type FieldKey = 'name' | 'email' | 'phone' | 'address' | 'company' | 'dob' | 'username' | 'url' | 'ipv4' | 'uuid' | 'creditCard'
+
+const ALL_FIELDS: { key: FieldKey; label: string }[] = [
+  { key: 'name', label: 'Full Name' },
+  { key: 'email', label: 'Email' },
+  { key: 'phone', label: 'Phone' },
+  { key: 'address', label: 'Address' },
+  { key: 'company', label: 'Company' },
+  { key: 'dob', label: 'Date of Birth' },
+  { key: 'username', label: 'Username' },
+  { key: 'url', label: 'URL' },
+  { key: 'ipv4', label: 'IPv4 Address' },
+  { key: 'uuid', label: 'UUID' },
+  { key: 'creditCard', label: 'Credit Card (fake)' },
+]
+
+type FakeRecord = Record<string, string>
+
+function generateRecord(fields: FieldKey[]): FakeRecord {
   const first = pick(FIRST_NAMES)
   const last = pick(LAST_NAMES)
-  const name = `${first} ${last}`
-  const email = `${first.toLowerCase()}.${last.toLowerCase()}${randInt(1, 99)}@${pick(DOMAINS)}`
-  const phone = generatePhone()
-  const address = `${randInt(1, 9999)} ${pick(STREET_NAMES)}, ${pick(CITIES)}, ${pick(STATES)} ${generateZip()}`
-  const company = `${pick(COMPANY_WORDS)} ${pick(COMPANY_WORDS)} ${pick(COMPANY_SUFFIXES)}`
-  return { name, email, phone, address, company }
+  const record: FakeRecord = {}
+  for (const field of fields) {
+    switch (field) {
+      case 'name': record.name = `${first} ${last}`; break
+      case 'email': record.email = `${first.toLowerCase()}.${last.toLowerCase()}${randInt(1, 99)}@${pick(DOMAINS)}`; break
+      case 'phone': record.phone = generatePhone(); break
+      case 'address': record.address = `${randInt(1, 9999)} ${pick(STREET_NAMES)}, ${pick(CITIES)}, ${pick(STATES)} ${generateZip()}`; break
+      case 'company': record.company = `${pick(COMPANY_WORDS)} ${pick(COMPANY_WORDS)} ${pick(COMPANY_SUFFIXES)}`; break
+      case 'dob': record.dob = generateDOB(); break
+      case 'username': record.username = generateUsername(); break
+      case 'url': record.url = generateUrl(); break
+      case 'ipv4': record.ipv4 = generateIPv4(); break
+      case 'uuid': record.uuid = generateUUID(); break
+      case 'creditCard': record.creditCard = generateFakeCreditCard(); break
+    }
+  }
+  return record
 }
 
 export default function FakeDataGeneratorTool() {
@@ -85,24 +143,32 @@ export default function FakeDataGeneratorTool() {
   const [format, setFormat] = useState<'json' | 'csv'>('json')
   const [output, setOutput] = useState('')
   const [records, setRecords] = useState<FakeRecord[]>([])
+  const [selectedFields, setSelectedFields] = useState<FieldKey[]>(['name', 'email', 'phone', 'address', 'company'])
+
+  const toggleField = (key: FieldKey) => {
+    setSelectedFields(prev =>
+      prev.includes(key) ? prev.filter(f => f !== key) : [...prev, key]
+    )
+  }
 
   const generate = useCallback(() => {
+    if (selectedFields.length === 0) return
     const data: FakeRecord[] = []
     for (let i = 0; i < Math.min(count, 100); i++) {
-      data.push(generateRecord())
+      data.push(generateRecord(selectedFields))
     }
     setRecords(data)
 
     if (format === 'json') {
       setOutput(JSON.stringify(data, null, 2))
     } else {
-      const header = 'Name,Email,Phone,Address,Company'
+      const header = selectedFields.map(f => ALL_FIELDS.find(af => af.key === f)!.label).join(',')
       const rows = data.map(r =>
-        `"${r.name}","${r.email}","${r.phone}","${r.address}","${r.company}"`
+        selectedFields.map(f => `"${r[f] || ''}"`).join(',')
       )
       setOutput([header, ...rows].join('\n'))
     }
-  }, [count, format])
+  }, [count, format, selectedFields])
 
   const clear = () => {
     setOutput('')
@@ -152,6 +218,27 @@ export default function FakeDataGeneratorTool() {
       ]}
     >
       <div className="space-y-4">
+        {/* Field Selector */}
+        <div>
+          <label className="text-sm font-medium mb-2 block">Fields to Generate</label>
+          <div className="flex flex-wrap gap-2">
+            {ALL_FIELDS.map(f => (
+              <label key={f.key} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer transition-colors ${selectedFields.includes(f.key) ? 'bg-primary/15 border border-primary/40 text-primary' : 'bg-secondary border border-border text-secondary-foreground'}`}>
+                <input
+                  type="checkbox"
+                  checked={selectedFields.includes(f.key)}
+                  onChange={() => toggleField(f.key)}
+                  className="sr-only"
+                />
+                <span className={`w-3.5 h-3.5 rounded border flex items-center justify-center text-[10px] ${selectedFields.includes(f.key) ? 'bg-primary border-primary text-primary-foreground' : 'border-muted-foreground'}`}>
+                  {selectedFields.includes(f.key) && '✓'}
+                </span>
+                {f.label}
+              </label>
+            ))}
+          </div>
+        </div>
+
         <div className="flex flex-wrap items-end gap-4">
           <div>
             <label className="text-sm font-medium mb-1 block">Count (1-100)</label>
@@ -196,20 +283,18 @@ export default function FakeDataGeneratorTool() {
               <thead className="bg-muted/50">
                 <tr>
                   <th className="px-3 py-2 text-left font-medium">#</th>
-                  <th className="px-3 py-2 text-left font-medium">Name</th>
-                  <th className="px-3 py-2 text-left font-medium">Email</th>
-                  <th className="px-3 py-2 text-left font-medium">Phone</th>
-                  <th className="px-3 py-2 text-left font-medium">Company</th>
+                  {selectedFields.map(f => (
+                    <th key={f} className="px-3 py-2 text-left font-medium">{ALL_FIELDS.find(af => af.key === f)!.label}</th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
                 {records.slice(0, 20).map((r, i) => (
                   <tr key={i} className="border-t border-border">
                     <td className="px-3 py-1.5 text-muted-foreground">{i + 1}</td>
-                    <td className="px-3 py-1.5">{r.name}</td>
-                    <td className="px-3 py-1.5 font-mono text-xs">{r.email}</td>
-                    <td className="px-3 py-1.5">{r.phone}</td>
-                    <td className="px-3 py-1.5">{r.company}</td>
+                    {selectedFields.map(f => (
+                      <td key={f} className="px-3 py-1.5 font-mono text-xs">{r[f]}</td>
+                    ))}
                   </tr>
                 ))}
               </tbody>

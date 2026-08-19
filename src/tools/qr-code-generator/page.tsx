@@ -23,6 +23,8 @@ declare global {
 /* ------------------------------------------------------------------ */
 /*  Constants                                                          */
 /* ------------------------------------------------------------------ */
+type QRType = 'text' | 'vcard' | 'wifi'
+
 const SIZES = [
   { label: '200 × 200', value: 200 },
   { label: '300 × 300', value: 300 },
@@ -38,10 +40,13 @@ const ERROR_LEVELS: { label: string; value: string; desc: string }[] = [
   { label: 'H — High (30 %)',      value: 'H', desc: '~30 % recovery' },
 ]
 
+const WIFI_ENCRYPTIONS = ['WPA', 'WEP', 'nopass'] as const
+
 /* ------------------------------------------------------------------ */
 /*  Component                                                          */
 /* ------------------------------------------------------------------ */
 export default function QrCodeGeneratorTool() {
+  const [qrType, setQrType] = useState<QRType>('text')
   const [text, setText] = useState('')
   const [size, setSize] = useState(300)
   const [fgColor, setFgColor] = useState('#000000')
@@ -51,6 +56,45 @@ export default function QrCodeGeneratorTool() {
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  /* ---- vCard fields ---- */
+  const [vcFirstName, setVcFirstName] = useState('')
+  const [vcLastName, setVcLastName] = useState('')
+  const [vcPhone, setVcPhone] = useState('')
+  const [vcEmail, setVcEmail] = useState('')
+  const [vcOrg, setVcOrg] = useState('')
+  const [vcAddress, setVcAddress] = useState('')
+
+  /* ---- WiFi fields ---- */
+  const [wifiSSID, setWifiSSID] = useState('')
+  const [wifiPassword, setWifiPassword] = useState('')
+  const [wifiEncryption, setWifiEncryption] = useState<typeof WIFI_ENCRYPTIONS[number]>('WPA')
+
+  /* ---- Build the effective QR data string ---- */
+  const getQRData = useCallback((): string => {
+    if (qrType === 'vcard') {
+      if (!vcFirstName && !vcLastName && !vcPhone && !vcEmail) return ''
+      const lines = [
+        'BEGIN:VCARD',
+        'VERSION:3.0',
+        `N:${vcLastName};${vcFirstName}`,
+        `FN:${vcFirstName} ${vcLastName}`.trim(),
+      ]
+      if (vcPhone) lines.push(`TEL:${vcPhone}`)
+      if (vcEmail) lines.push(`EMAIL:${vcEmail}`)
+      if (vcOrg) lines.push(`ORG:${vcOrg}`)
+      if (vcAddress) lines.push(`ADR:${vcAddress}`)
+      lines.push('END:VCARD')
+      return lines.join('\n')
+    }
+    if (qrType === 'wifi') {
+      if (!wifiSSID) return ''
+      const escSSID = wifiSSID.replace(/([\\;,:".])/g, '\\$1')
+      const escPass = wifiPassword.replace(/([\\;,:".])/g, '\\$1')
+      return `WIFI:T:${wifiEncryption};S:${escSSID};P:${escPass};;`
+    }
+    return text
+  }, [qrType, text, vcFirstName, vcLastName, vcPhone, vcEmail, vcOrg, vcAddress, wifiSSID, wifiPassword, wifiEncryption])
 
   /* ---- Load qrcode-generator from CDN once ---- */
   useEffect(() => {
@@ -68,12 +112,14 @@ export default function QrCodeGeneratorTool() {
   }, [])
 
   /* ---- Render QR on canvas ---- */
+  const qrData = getQRData()
+
   const generateQR = useCallback(() => {
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')!
 
-    if (!text.trim() || !libLoaded) {
+    if (!qrData.trim() || !libLoaded) {
       canvas.width = size
       canvas.height = size
       ctx.fillStyle = bgColor
@@ -84,7 +130,7 @@ export default function QrCodeGeneratorTool() {
 
     try {
       const qr = window.qrcode!(0, errorLevel)
-      qr.addData(text)
+      qr.addData(qrData)
       qr.make()
 
       const moduleCount = qr.getModuleCount()
@@ -116,26 +162,26 @@ export default function QrCodeGeneratorTool() {
     } catch {
       setError('Input too long for the selected error correction level. Try shorter text or a lower level.')
     }
-  }, [text, size, fgColor, bgColor, errorLevel, libLoaded])
+  }, [qrData, size, fgColor, bgColor, errorLevel, libLoaded])
 
   useEffect(() => { generateQR() }, [generateQR])
 
   /* ---- Download PNG ---- */
   const downloadPNG = useCallback(() => {
     const canvas = canvasRef.current
-    if (!canvas || !text.trim()) return
+    if (!canvas || !qrData.trim()) return
     const a = document.createElement('a')
     a.download = `qr-code-${size}x${size}.png`
     a.href = canvas.toDataURL('image/png')
     a.click()
-  }, [size, text])
+  }, [size, qrData])
 
   /* ---- Download SVG ---- */
   const downloadSVG = useCallback(() => {
-    if (!text.trim() || !libLoaded) return
+    if (!qrData.trim() || !libLoaded) return
     try {
       const qr = window.qrcode!(0, errorLevel)
-      qr.addData(text)
+      qr.addData(qrData)
       qr.make()
 
       const moduleCount = qr.getModuleCount()
@@ -165,12 +211,12 @@ export default function QrCodeGeneratorTool() {
       a.click()
       URL.revokeObjectURL(url)
     } catch { /* error already shown via canvas path */ }
-  }, [text, size, fgColor, bgColor, errorLevel, libLoaded])
+  }, [qrData, size, fgColor, bgColor, errorLevel, libLoaded])
 
   /* ---- Copy image to clipboard ---- */
   const copyImage = useCallback(async () => {
     const canvas = canvasRef.current
-    if (!canvas || !text.trim()) return
+    if (!canvas || !qrData.trim()) return
     try {
       const blob = await new Promise<Blob | null>(resolve => canvas.toBlob(resolve, 'image/png'))
       if (!blob) return
@@ -178,15 +224,24 @@ export default function QrCodeGeneratorTool() {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch { /* clipboard API may be blocked */ }
-  }, [text])
+  }, [qrData])
 
   /* ---- Clear ---- */
   const clear = () => {
     setText('')
     setError('')
+    setVcFirstName('')
+    setVcLastName('')
+    setVcPhone('')
+    setVcEmail('')
+    setVcOrg('')
+    setVcAddress('')
+    setWifiSSID('')
+    setWifiPassword('')
+    setWifiEncryption('WPA')
   }
 
-  const hasQR = text.trim().length > 0 && libLoaded && !error
+  const hasQR = qrData.trim().length > 0 && libLoaded && !error
 
   return (
     <ToolPage
@@ -259,18 +314,94 @@ export default function QrCodeGeneratorTool() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* ---- Left: Controls ---- */}
         <div className="space-y-4">
-          {/* Text input */}
+          {/* Header + Clear */}
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">Text or URL</span>
+            <span className="text-sm font-medium">QR Code Data</span>
             <ClearButton onClear={clear} />
           </div>
-          <textarea
-            value={text}
-            onChange={e => setText(e.target.value)}
-            placeholder="Enter text or URL to generate QR code…"
-            rows={4}
-            className="tool-textarea w-full rounded-lg border border-input bg-tool-bg p-3 focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
-          />
+
+          {/* Type selector */}
+          <div className="flex flex-wrap items-center gap-3">
+            <label className="text-sm font-medium">Type:</label>
+            <select
+              value={qrType}
+              onChange={e => setQrType(e.target.value as QRType)}
+              className="h-9 px-3 rounded-md border border-input bg-card text-sm"
+            >
+              <option value="text">Text / URL</option>
+              <option value="vcard">vCard Contact</option>
+              <option value="wifi">WiFi Network</option>
+            </select>
+          </div>
+
+          {/* Text / URL input */}
+          {qrType === 'text' && (
+            <textarea
+              value={text}
+              onChange={e => setText(e.target.value)}
+              placeholder="Enter text or URL to generate QR code…"
+              rows={4}
+              className="tool-textarea w-full rounded-lg border border-input bg-tool-bg p-3 focus:outline-none focus:ring-2 focus:ring-ring placeholder:text-muted-foreground"
+            />
+          )}
+
+          {/* vCard fields */}
+          {qrType === 'vcard' && (
+            <div className="space-y-3 rounded-lg border border-border p-4 bg-muted/20">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-medium mb-1 block">First Name</label>
+                  <input type="text" value={vcFirstName} onChange={e => setVcFirstName(e.target.value)} placeholder="John" className="w-full h-9 px-3 rounded-md border border-input bg-card text-sm" />
+                </div>
+                <div>
+                  <label className="text-xs font-medium mb-1 block">Last Name</label>
+                  <input type="text" value={vcLastName} onChange={e => setVcLastName(e.target.value)} placeholder="Doe" className="w-full h-9 px-3 rounded-md border border-input bg-card text-sm" />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs font-medium mb-1 block">Phone</label>
+                <input type="tel" value={vcPhone} onChange={e => setVcPhone(e.target.value)} placeholder="+1234567890" className="w-full h-9 px-3 rounded-md border border-input bg-card text-sm" />
+              </div>
+              <div>
+                <label className="text-xs font-medium mb-1 block">Email</label>
+                <input type="email" value={vcEmail} onChange={e => setVcEmail(e.target.value)} placeholder="email@example.com" className="w-full h-9 px-3 rounded-md border border-input bg-card text-sm" />
+              </div>
+              <div>
+                <label className="text-xs font-medium mb-1 block">Organization</label>
+                <input type="text" value={vcOrg} onChange={e => setVcOrg(e.target.value)} placeholder="Company Inc." className="w-full h-9 px-3 rounded-md border border-input bg-card text-sm" />
+              </div>
+              <div>
+                <label className="text-xs font-medium mb-1 block">Address</label>
+                <input type="text" value={vcAddress} onChange={e => setVcAddress(e.target.value)} placeholder="123 Main St, City, Country" className="w-full h-9 px-3 rounded-md border border-input bg-card text-sm" />
+              </div>
+            </div>
+          )}
+
+          {/* WiFi fields */}
+          {qrType === 'wifi' && (
+            <div className="space-y-3 rounded-lg border border-border p-4 bg-muted/20">
+              <div>
+                <label className="text-xs font-medium mb-1 block">SSID (Network Name)</label>
+                <input type="text" value={wifiSSID} onChange={e => setWifiSSID(e.target.value)} placeholder="MyNetwork" className="w-full h-9 px-3 rounded-md border border-input bg-card text-sm" />
+              </div>
+              <div>
+                <label className="text-xs font-medium mb-1 block">Password</label>
+                <input type="text" value={wifiPassword} onChange={e => setWifiPassword(e.target.value)} placeholder="MyPassword" className="w-full h-9 px-3 rounded-md border border-input bg-card text-sm" />
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                <label className="text-xs font-medium">Encryption:</label>
+                <select
+                  value={wifiEncryption}
+                  onChange={e => setWifiEncryption(e.target.value as typeof WIFI_ENCRYPTIONS[number])}
+                  className="h-9 px-3 rounded-md border border-input bg-card text-sm"
+                >
+                  <option value="WPA">WPA / WPA2</option>
+                  <option value="WEP">WEP</option>
+                  <option value="nopass">None (Open)</option>
+                </select>
+              </div>
+            </div>
+          )}
 
           {/* Size selector */}
           <div className="flex flex-wrap items-center gap-3">
@@ -375,9 +506,9 @@ export default function QrCodeGeneratorTool() {
               style={{ width: size, height: size, imageRendering: 'pixelated' }}
             />
           </div>
-          {!text.trim() && (
+          {!qrData.trim() && (
             <p className="text-sm text-muted-foreground mt-3">
-              Start typing to see a live preview
+              {qrType === 'text' ? 'Start typing to see a live preview' : qrType === 'vcard' ? 'Fill in contact details to generate QR' : 'Enter WiFi details to generate QR'}
             </p>
           )}
         </div>
