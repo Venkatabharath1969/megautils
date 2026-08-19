@@ -3,32 +3,59 @@
 import { useState, useMemo } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, ClearButton } from '@/components/tool-page'
 
-function textToBinary(text: string): string {
-  return text
-    .split('')
-    .map((char) => char.charCodeAt(0).toString(2).padStart(8, '0'))
-    .join(' ')
+type Separator = 'space' | 'comma' | 'newline' | 'none'
+
+const SEPARATOR_MAP: Record<Separator, string> = {
+  space: ' ',
+  comma: ',',
+  newline: '\n',
+  none: '',
+}
+
+function textToBinary(text: string, separator: Separator): string {
+  const bytes = new TextEncoder().encode(text)
+  const sep = SEPARATOR_MAP[separator]
+  return Array.from(bytes)
+    .map((byte) => byte.toString(2).padStart(8, '0'))
+    .join(sep)
 }
 
 function binaryToText(binary: string): string {
-  const cleaned = binary.replace(/[^01\s]/g, '').trim()
+  const cleaned = binary.replace(/[^01]/g, ' ').trim()
   if (!cleaned) return ''
-  const bytes = cleaned.split(/\s+/)
+
+  // Split on whitespace to get groups, then expand any group longer than 8 bits into 8-bit chunks
+  const groups = cleaned.split(/\s+/)
+  const octets: string[] = []
+  for (const group of groups) {
+    if (group.length <= 8) {
+      octets.push(group.padStart(8, '0'))
+    } else {
+      // Split concatenated binary (no separator) into 8-bit chunks
+      for (let i = 0; i < group.length; i += 8) {
+        const chunk = group.slice(i, i + 8)
+        if (chunk.length > 0) octets.push(chunk.padStart(8, '0'))
+      }
+    }
+  }
+
   try {
-    return bytes.map((b) => String.fromCharCode(parseInt(b, 2))).join('')
+    const byteArray = new Uint8Array(octets.map((b) => parseInt(b, 2)))
+    return new TextDecoder('utf-8', { fatal: true }).decode(byteArray)
   } catch {
-    return 'Error: Invalid binary input'
+    return 'Error: Invalid binary input — could not decode as UTF-8'
   }
 }
 
 export default function TextToBinaryTool() {
   const [input, setInput] = useState('')
   const [mode, setMode] = useState<'encode' | 'decode'>('encode')
+  const [separator, setSeparator] = useState<Separator>('space')
 
   const output = useMemo(() => {
     if (!input) return ''
-    return mode === 'encode' ? textToBinary(input) : binaryToText(input)
-  }, [input, mode])
+    return mode === 'encode' ? textToBinary(input, separator) : binaryToText(input)
+  }, [input, mode, separator])
 
   return (
     <ToolPage
@@ -68,13 +95,21 @@ export default function TextToBinaryTool() {
         { question: 'Can I convert binary back to readable text?', answer: 'Yes, switch to the "Binary to Text" mode and paste space-separated 8-bit binary values to decode them back into the original text characters.' },
       ]}
     >
-      <div className="flex gap-2 mb-4">
+      <div className="flex flex-wrap items-center gap-2 mb-4">
         <button onClick={() => { setMode('encode'); setInput('') }} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'encode' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>
           Text &rarr; Binary
         </button>
         <button onClick={() => { setMode('decode'); setInput('') }} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'decode' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>
           Binary &rarr; Text
         </button>
+        {mode === 'encode' && (
+          <select value={separator} onChange={(e) => setSeparator(e.target.value as Separator)} className="h-9 px-3 rounded-md border border-input bg-card text-sm">
+            <option value="space">Space separator</option>
+            <option value="comma">Comma separator</option>
+            <option value="newline">Newline separator</option>
+            <option value="none">No separator</option>
+          </select>
+        )}
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>

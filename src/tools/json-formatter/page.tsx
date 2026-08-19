@@ -1,37 +1,132 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, DownloadButton, ClearButton } from '@/components/tool-page'
+import { Upload } from 'lucide-react'
+
+function sortKeys(obj: unknown): unknown {
+  if (Array.isArray(obj)) return obj.map(sortKeys)
+  if (obj && typeof obj === 'object') {
+    return Object.keys(obj as Record<string, unknown>).sort().reduce((acc, key) => {
+      acc[key] = sortKeys((obj as Record<string, unknown>)[key])
+      return acc
+    }, {} as Record<string, unknown>)
+  }
+  return obj
+}
+
+function countKeys(obj: unknown): number {
+  if (Array.isArray(obj)) return obj.reduce((sum, item) => sum + countKeys(item), 0)
+  if (obj && typeof obj === 'object') {
+    const entries = Object.entries(obj as Record<string, unknown>)
+    return entries.reduce((sum, [, val]) => sum + 1 + countKeys(val), 0)
+  }
+  return 0
+}
+
+function maxDepth(obj: unknown, depth = 0): number {
+  if (Array.isArray(obj)) {
+    if (obj.length === 0) return depth + 1
+    return Math.max(...obj.map(item => maxDepth(item, depth + 1)))
+  }
+  if (obj && typeof obj === 'object') {
+    const vals = Object.values(obj as Record<string, unknown>)
+    if (vals.length === 0) return depth + 1
+    return Math.max(...vals.map(val => maxDepth(val, depth + 1)))
+  }
+  return depth
+}
+
+function nodeCount(obj: unknown): number {
+  if (Array.isArray(obj)) return 1 + obj.reduce<number>((sum, item) => sum + nodeCount(item), 0)
+  if (obj && typeof obj === 'object') {
+    return 1 + Object.values(obj as Record<string, unknown>).reduce<number>((sum, val) => sum + nodeCount(val), 0)
+  }
+  return 1
+}
+
+interface JsonStats {
+  sizeBytes: number
+  keys: number
+  depth: number
+  nodes: number
+}
 
 export default function JsonFormatterTool() {
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('')
   const [error, setError] = useState('')
-  const [indent, setIndent] = useState(2)
+  const [indent, setIndent] = useState<string | number>(2)
+  const [sortKeysEnabled, setSortKeysEnabled] = useState(false)
+  const [stats, setStats] = useState<JsonStats | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const format = () => {
+  const getIndentValue = useCallback(() => {
+    return indent === 'tab' ? '\t' : indent
+  }, [indent])
+
+  const computeStats = useCallback((parsed: unknown, formatted: string) => {
+    setStats({
+      sizeBytes: new Blob([formatted]).size,
+      keys: countKeys(parsed),
+      depth: maxDepth(parsed),
+      nodes: nodeCount(parsed),
+    })
+  }, [])
+
+  const formatJson = useCallback((jsonStr: string) => {
     try {
-      const parsed = JSON.parse(input)
-      setOutput(JSON.stringify(parsed, null, indent))
+      let parsed = JSON.parse(jsonStr)
+      if (sortKeysEnabled) parsed = sortKeys(parsed)
+      const formatted = JSON.stringify(parsed, null, getIndentValue())
+      setOutput(formatted)
       setError('')
+      computeStats(parsed, formatted)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Invalid JSON')
       setOutput('')
+      setStats(null)
     }
-  }
+  }, [sortKeysEnabled, getIndentValue, computeStats])
+
+  const format = () => formatJson(input)
 
   const minify = () => {
     try {
-      const parsed = JSON.parse(input)
-      setOutput(JSON.stringify(parsed))
+      let parsed = JSON.parse(input)
+      if (sortKeysEnabled) parsed = sortKeys(parsed)
+      const formatted = JSON.stringify(parsed)
+      setOutput(formatted)
       setError('')
+      computeStats(parsed, formatted)
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Invalid JSON')
       setOutput('')
+      setStats(null)
     }
   }
 
-  const clear = () => { setInput(''); setOutput(''); setError('') }
+  const clear = () => { setInput(''); setOutput(''); setError(''); setStats(null) }
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const pasted = e.clipboardData.getData('text')
+    setTimeout(() => {
+      formatJson(pasted)
+    }, 0)
+  }
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      const content = event.target?.result as string
+      setInput(content)
+      formatJson(content)
+    }
+    reader.readAsText(file)
+    e.target.value = ''
+  }
 
   return (
     <ToolPage
@@ -81,9 +176,15 @@ export default function JsonFormatterTool() {
         <div>
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium">Input JSON</span>
-            <ClearButton onClear={clear} />
+            <div className="flex gap-2">
+              <button onClick={() => fileInputRef.current?.click()} className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-border bg-card hover:bg-muted transition-colors">
+                <Upload className="h-3.5 w-3.5" /> Upload JSON
+              </button>
+              <input ref={fileInputRef} type="file" accept=".json,application/json" onChange={handleFileUpload} className="hidden" />
+              <ClearButton onClear={clear} />
+            </div>
           </div>
-          <ToolTextarea value={input} onChange={setInput} placeholder='Paste your JSON here...\n{"key": "value"}' rows={14} />
+          <ToolTextarea value={input} onChange={setInput} onPaste={handlePaste} placeholder='Paste your JSON here...\n{"key": "value"}' rows={14} />
         </div>
         <div>
           <div className="flex items-center justify-between mb-2">
@@ -106,12 +207,25 @@ export default function JsonFormatterTool() {
         <button onClick={minify} className="px-4 py-2 rounded-lg bg-secondary text-secondary-foreground text-sm font-medium hover:bg-secondary/80 transition-colors border border-border">
           Minify
         </button>
-        <select value={indent} onChange={(e) => setIndent(Number(e.target.value))} className="h-9 px-3 rounded-md border border-input bg-card text-sm">
+        <select value={indent} onChange={(e) => { const v = e.target.value; setIndent(v === 'tab' ? 'tab' : Number(v)) }} className="h-9 px-3 rounded-md border border-input bg-card text-sm">
           <option value={2}>2 spaces</option>
           <option value={4}>4 spaces</option>
-          <option value={1}>1 tab (\t)</option>
+          <option value="tab">1 tab (\t)</option>
         </select>
+        <label className="inline-flex items-center gap-2 text-sm cursor-pointer select-none">
+          <input type="checkbox" checked={sortKeysEnabled} onChange={(e) => setSortKeysEnabled(e.target.checked)} className="h-4 w-4 rounded border-border accent-primary" />
+          Sort Keys
+        </label>
       </div>
+
+      {stats && (
+        <div className="mt-3 flex flex-wrap gap-4 p-3 rounded-lg border border-border bg-muted/50 text-sm">
+          <span><span className="font-medium text-muted-foreground">Size:</span> {stats.sizeBytes.toLocaleString()} bytes{stats.sizeBytes >= 1024 && ` (${(stats.sizeBytes / 1024).toFixed(1)} KB)`}</span>
+          <span><span className="font-medium text-muted-foreground">Keys:</span> {stats.keys.toLocaleString()}</span>
+          <span><span className="font-medium text-muted-foreground">Max Depth:</span> {stats.depth}</span>
+          <span><span className="font-medium text-muted-foreground">Nodes:</span> {stats.nodes.toLocaleString()}</span>
+        </div>
+      )}
     </ToolPage>
   )
 }

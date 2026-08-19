@@ -474,8 +474,8 @@ export function ClearButton({ onClear }: { onClear: () => void }) {
 }
 
 /* Standard text area for tool input/output */
-export function ToolTextarea({ value, onChange, placeholder, readOnly = false, rows = 10, label }: {
-  value: string; onChange?: (v: string) => void; placeholder?: string; readOnly?: boolean; rows?: number; label?: string
+export function ToolTextarea({ value, onChange, placeholder, readOnly = false, rows = 10, label, onPaste }: {
+  value: string; onChange?: (v: string) => void; placeholder?: string; readOnly?: boolean; rows?: number; label?: string; onPaste?: (e: React.ClipboardEvent<HTMLTextAreaElement>) => void
 }) {
   return (
     <div className="flex flex-col gap-1.5">
@@ -483,6 +483,7 @@ export function ToolTextarea({ value, onChange, placeholder, readOnly = false, r
       <textarea
         value={value}
         onChange={onChange ? (e) => onChange(e.target.value) : undefined}
+        onPaste={onPaste}
         placeholder={placeholder}
         readOnly={readOnly}
         rows={rows}

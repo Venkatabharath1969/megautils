@@ -3,32 +3,70 @@
 import { useState, useMemo } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, ClearButton } from '@/components/tool-page'
 
-function textToHex(text: string): string {
-  return text
-    .split('')
-    .map((char) => char.charCodeAt(0).toString(16).padStart(2, '0'))
-    .join(' ')
+type HexFormat = 'space' | '0x' | '\\x' | 'colon' | 'none'
+
+function textToHex(text: string, format: HexFormat, uppercase: boolean): string {
+  const bytes = new TextEncoder().encode(text)
+  const hexBytes = Array.from(bytes).map((b) => {
+    const h = b.toString(16).padStart(2, '0')
+    return uppercase ? h.toUpperCase() : h
+  })
+  switch (format) {
+    case 'space': return hexBytes.join(' ')
+    case '0x': return hexBytes.map((h) => `0x${h}`).join(' ')
+    case '\\x': return hexBytes.map((h) => `\\x${h}`).join('')
+    case 'colon': return hexBytes.join(':')
+    case 'none': return hexBytes.join('')
+  }
 }
 
 function hexToText(hex: string): string {
-  const cleaned = hex.replace(/[^0-9a-fA-F\s]/g, '').trim()
+  // Strip common prefixes and separators to extract raw hex pairs
+  const stripped = hex.replace(/0x/gi, '').replace(/\\x/gi, '').replace(/[^0-9a-fA-F\s:,]/g, '')
+  const cleaned = stripped.replace(/[\s:,]+/g, ' ').trim()
   if (!cleaned) return ''
-  const bytes = cleaned.split(/\s+/)
+  // Split into individual hex tokens, then split any token longer than 2 chars into pairs
+  const tokens = cleaned.split(/\s+/)
+  const pairs: string[] = []
+  for (const token of tokens) {
+    if (token.length <= 2) {
+      pairs.push(token)
+    } else {
+      for (let i = 0; i < token.length; i += 2) {
+        pairs.push(token.substring(i, i + 2))
+      }
+    }
+  }
   try {
-    return bytes.map((b) => String.fromCharCode(parseInt(b, 16))).join('')
+    const byteArray = pairs.map((b) => {
+      const val = parseInt(b, 16)
+      if (isNaN(val)) throw new Error('Invalid hex')
+      return val
+    })
+    return new TextDecoder().decode(new Uint8Array(byteArray))
   } catch {
     return 'Error: Invalid hex input'
   }
 }
 
+const FORMAT_OPTIONS: { value: HexFormat; label: string; example: string }[] = [
+  { value: 'space', label: 'Space separated', example: '48 65 6c' },
+  { value: '0x', label: '0x prefix', example: '0x48 0x65 0x6c' },
+  { value: '\\x', label: '\\x prefix', example: '\\x48\\x65\\x6c' },
+  { value: 'colon', label: 'Colon separated', example: '48:65:6c' },
+  { value: 'none', label: 'No separator', example: '48656c' },
+]
+
 export default function TextToHexTool() {
   const [input, setInput] = useState('')
   const [mode, setMode] = useState<'encode' | 'decode'>('encode')
+  const [format, setFormat] = useState<HexFormat>('space')
+  const [uppercase, setUppercase] = useState(false)
 
   const output = useMemo(() => {
     if (!input) return ''
-    return mode === 'encode' ? textToHex(input) : hexToText(input)
-  }, [input, mode])
+    return mode === 'encode' ? textToHex(input, format, uppercase) : hexToText(input)
+  }, [input, mode, format, uppercase])
 
   return (
     <ToolPage
@@ -68,13 +106,32 @@ export default function TextToHexTool() {
         { question: 'What is the difference between hex and binary encoding?', answer: 'Hex uses base-16 (digits 0-9 and letters A-F) while binary uses base-2 (only 0s and 1s). Hex is more compact since one hex digit represents exactly four binary digits.' },
       ]}
     >
-      <div className="flex gap-2 mb-4">
+      <div className="flex flex-wrap items-center gap-2 mb-4">
         <button onClick={() => { setMode('encode'); setInput('') }} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'encode' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>
           Text &rarr; Hex
         </button>
         <button onClick={() => { setMode('decode'); setInput('') }} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${mode === 'decode' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>
           Hex &rarr; Text
         </button>
+        {mode === 'encode' && (
+          <>
+            <select
+              value={format}
+              onChange={(e) => setFormat(e.target.value as HexFormat)}
+              className="px-3 py-2 rounded-lg text-sm font-medium bg-secondary text-secondary-foreground border border-border transition-colors"
+            >
+              {FORMAT_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>{opt.label} ({opt.example})</option>
+              ))}
+            </select>
+            <button
+              onClick={() => setUppercase((v) => !v)}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${uppercase ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}
+            >
+              {uppercase ? 'UPPERCASE' : 'lowercase'}
+            </button>
+          </>
+        )}
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <div>
@@ -82,7 +139,7 @@ export default function TextToHexTool() {
             <span className="text-sm font-medium">{mode === 'encode' ? 'Text Input' : 'Hex Input'}</span>
             <ClearButton onClear={() => setInput('')} />
           </div>
-          <ToolTextarea value={input} onChange={setInput} placeholder={mode === 'encode' ? 'Enter text to convert...' : 'Enter hex values (space-separated)...'} rows={10} />
+          <ToolTextarea value={input} onChange={setInput} placeholder={mode === 'encode' ? 'Enter text to convert...' : 'Enter hex values (any format: space/colon/0x/\\x separated)...'} rows={10} />
         </div>
         <div>
           <div className="flex items-center justify-between mb-2">
