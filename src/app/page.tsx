@@ -3,9 +3,10 @@
 import Link from 'next/link'
 import { Suspense, useMemo, useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Code2, Binary, Shield, Search, Type, Terminal, PenTool, FileText, Palette, Paintbrush, DollarSign, ArrowLeftRight, Calculator, ImageIcon, Clock, Globe, Sparkles, X, Star } from 'lucide-react'
+import { Code2, Binary, Shield, Search, Type, Terminal, PenTool, FileText, Palette, Paintbrush, DollarSign, ArrowLeftRight, Calculator, ImageIcon, Clock, Globe, Sparkles, X, Star, Users, BookOpen, Monitor, ShieldCheck } from 'lucide-react'
 import { useLanguage } from '@/i18n/language-context'
 import { TOOLS, POPULAR_TOOLS, CATEGORIES, getCategoryById } from '@/lib/tool-registry'
+import { TotalUsageCounter } from '@/components/usage-counter'
 
 function getCategoryLabel(categoryId: string): string {
   return getCategoryById(categoryId)?.label || categoryId
@@ -231,6 +232,43 @@ export default function HomePage() {
             <div className="text-xs text-muted-foreground mt-1">{stat.label}</div>
           </div>
         ))}
+      </div>
+
+      {/* Social Proof Section */}
+      <div className="mt-8 rounded-xl border border-border bg-card p-6 sm:p-8">
+        <div className="text-center mb-6">
+          <p className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Trusted by developers worldwide</p>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+          <div className="flex flex-col items-center gap-2">
+            <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-500/10">
+              <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            </div>
+            <TotalUsageCounter />
+            <span className="text-xs text-muted-foreground">Total Tool Uses</span>
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-purple-500/10">
+              <Sparkles className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+            </div>
+            <span className="text-2xl font-bold text-primary">194</span>
+            <span className="text-xs text-muted-foreground">Free Tools</span>
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-green-500/10">
+              <Monitor className="h-5 w-5 text-green-600 dark:text-green-400" />
+            </div>
+            <span className="text-2xl font-bold text-primary">100%</span>
+            <span className="text-xs text-muted-foreground">Browser-Based</span>
+          </div>
+          <div className="flex flex-col items-center gap-2">
+            <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-red-500/10">
+              <ShieldCheck className="h-5 w-5 text-red-600 dark:text-red-400" />
+            </div>
+            <span className="text-2xl font-bold text-primary">Zero</span>
+            <span className="text-xs text-muted-foreground">Data Stored</span>
+          </div>
+        </div>
       </div>
 
       {/* CollectionPage + ItemList Schema */}

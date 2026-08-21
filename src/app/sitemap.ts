@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next'
 import { getVisiblePosts } from '@/lib/blog-data'
 import { UNIT_CATEGORIES, getAllConversionPairs } from '@/lib/conversion-data'
 import { COMPARISONS } from '@/lib/comparison-data'
+import { HOW_TO_GUIDES } from '@/lib/howto-data'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://utilsnow.com'
@@ -123,6 +124,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/compare`, lastModified: siteLastModified, changeFrequency: 'weekly' as const, priority: 0.7 },
     ...COMPARISONS.map(c => ({
       url: `${baseUrl}/compare/${c.slug}`,
+      lastModified: siteLastModified,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    })),
+    // How-to guide pages
+    { url: `${baseUrl}/how-to`, lastModified: siteLastModified, changeFrequency: 'weekly' as const, priority: 0.7 },
+    ...HOW_TO_GUIDES.map(g => ({
+      url: `${baseUrl}/how-to/${g.slug}`,
       lastModified: siteLastModified,
       changeFrequency: 'monthly' as const,
       priority: 0.6,

@@ -11,6 +11,7 @@ import { EmailSubscribe } from './email-subscribe'
 import { EmbedCode } from './embed-code'
 import { ProSuggestion } from './pro-suggestion'
 import { ProUpsellBanner } from './usage-tracker'
+import { UsageCounter } from './usage-counter'
 import { useLanguage } from '@/i18n/language-context'
 
 const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
@@ -283,7 +284,10 @@ export function ToolPage({ title, description, category, categoryLabel, slug, ch
       {/* Title & Privacy Badge */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{title}</h1>
+          <div className="flex items-center gap-2 flex-wrap">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">{title}</h1>
+            {derivedSlug && <UsageCounter slug={derivedSlug} />}
+          </div>
           <p className="text-muted-foreground mt-1">{description}</p>
           <span className="text-xs text-muted-foreground">Last updated: August 2026</span>
         </div>

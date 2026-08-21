@@ -34,7 +34,7 @@ export default function AboutPage() {
           is different:
         </p>
         <ul>
-          <li>Every tool is completely free with no hidden paywalls</li>
+          <li>Every core tool is free to use with no hidden paywalls</li>
           <li>No account or sign-up required</li>
           <li>All data processing happens in your browser - nothing is ever uploaded to our servers</li>
           <li>Clean, fast interface with no distracting pop-ups</li>
@@ -95,7 +95,7 @@ export default function AboutPage() {
         {[
           { icon: Shield, title: '100% Private', description: 'All processing happens in your browser. No data uploaded or stored.' },
           { icon: Zap, title: 'Instant & Fast', description: 'No loading spinners or server round-trips. Tools work instantly.' },
-          { icon: Heart, title: 'Free Forever', description: 'No premium tiers, no feature limits, no sign-up walls.' },
+          { icon: Heart, title: 'Free to Use', description: 'Most tools are completely free. Premium features coming soon for power users.' },
           { icon: Globe, title: 'Works Everywhere', description: 'Responsive design works on desktop, tablet, and mobile.' },
         ].map((value) => (
           <div key={value.title} className="p-5 rounded-xl border border-border bg-card">
