@@ -36,6 +36,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
+        {/* Pinterest domain verification */}
+        <meta name="p:domain_verify" content="8544ca579aa676e78063f374e4d2fadf" />
         {/* Google Consent Mode v2 — MUST be the FIRST script to load */}
         <script dangerouslySetInnerHTML={{ __html: `
           window.dataLayer = window.dataLayer || [];
