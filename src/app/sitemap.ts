@@ -7,15 +7,15 @@ import { HOW_TO_GUIDES } from '@/lib/howto-data'
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://utilsnow.com'
 
-  // All 200 tool slugs (alphabetical)
+  // All 204 tool slugs (alphabetical)
   const tools = [
     'age-calculator', 'ai-bg-remover', 'ai-content-detector', 'ai-depth-map', 'ai-face-blur', 'ai-grammar-checker', 'ai-image-caption', 'ai-image-classifier', 'ai-image-upscaler', 'ai-object-detection', 'ai-ocr', 'ai-object-remover', 'ai-paraphraser', 'ai-photo-colorizer', 'ai-segment', 'ai-sentiment-analysis', 'ai-speech-to-text', 'ai-text-summarizer', 'angle-converter', 'area-converter', 'aspect-ratio-calculator',
     'barcode-generator', 'base32-encoder', 'base64-encoder', 'blank-line-remover',
-    'bmi-calculator', 'braille-converter', 'break-even-calculator', 'caesar-cipher',
+    'bmi-calculator', 'braille-converter', 'break-even-calculator', 'caesar-cipher', 'calorie-calculator',
     'cagr-calculator', 'case-converter', 'chmod-calculator', 'code-to-image',
     'color-converter', 'color-name-finder', 'color-palette-generator', 'color-picker',
     'compound-interest-calculator', 'contrast-checker', 'cooking-converter',
-    'cron-expression-builder', 'crontab-reference', 'css-animation-generator',
+    'cron-expression-builder', 'crontab-reference', 'currency-converter', 'css-animation-generator',
     'css-border-radius-generator', 'css-box-shadow-generator', 'css-columns-generator',
     'css-filter-generator', 'css-flexbox-generator', 'css-formatter',
     'css-gradient-generator', 'css-grid-generator', 'css-text-shadow-generator',
@@ -28,6 +28,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'headline-analyzer', 'hex-to-rgb', 'hourly-to-salary', 'htaccess-generator',
     'html-entity-encoder', 'html-formatter', 'html-tag-stripper', 'html-to-markdown',
     'heic-to-jpg', 'http-status-codes', 'image-compressor', 'image-cropper', 'image-format-converter', 'image-resizer',
+    'exif-viewer', 'image-filters',
     'image-to-base64', 'inflation-calculator', 'ip-address-info', 'irr-calculator',
     'javascript-formatter', 'json-escape', 'json-formatter', 'json-path-finder',
     'json-to-csv', 'json-to-go', 'json-to-python', 'json-to-typescript', 'json-to-xml',
@@ -37,8 +38,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'markdown-table-generator', 'markdown-to-html', 'markdown-to-text',
     'meta-tag-generator', 'morse-code-translator', 'mortgage-calculator', 'nato-alphabet',
     'neumorphism-generator', 'npv-calculator', 'number-base-converter', 'number-to-words',
-    'open-graph-preview', 'password-generator', 'pdf-compress', 'pdf-merge', 'pdf-to-jpg', 'percentage-calculator',
-    'placeholder-image-generator', 'power-converter', 'ppf-calculator',
+    'open-graph-preview', 'password-generator', 'pdf-compress', 'pdf-merge', 'pdf-page-numbers', 'pdf-split', 'pdf-to-jpg', 'pdf-unlock', 'pdf-watermark', 'percentage-calculator',
+    'placeholder-image-generator', 'pomodoro-timer', 'power-converter', 'ppf-calculator',
     'pressure-converter', 'privacy-policy-generator', 'punycode-converter',
     'qr-code-generator', 'random-color-generator', 'rd-calculator', 'readability-score',
     'reading-time-calculator', 'regex-tester', 'robots-txt-generator', 'roi-calculator',
@@ -46,7 +47,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'schema-event', 'schema-faq', 'schema-howto', 'schema-job-posting',
     'schema-local-business', 'schema-organization', 'schema-product', 'schema-recipe',
     'scientific-calculator', 'serp-preview', 'sip-calculator', 'sitemap-generator',
-    'small-text-generator', 'social-media-counter', 'speed-converter', 'sql-escape',
+    'small-text-generator', 'social-media-counter', 'social-media-resizer', 'speed-converter', 'sql-escape',
     'sql-formatter', 'stock-profit-calculator', 'string-length-calculator',
     'svg-optimizer', 'tailwind-color-picker', 'tax-calculator', 'temperature-converter',
     'terms-generator', 'text-diff', 'text-repeater', 'text-reverser', 'text-sorter',
@@ -60,7 +61,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const categories = [
     'developer', 'encoders', 'crypto', 'seo', 'text', 'string', 'content', 'markdown',
-    'color', 'css', 'financial', 'converters', 'math', 'image', 'datetime', 'network', 'generators',
+    'color', 'css', 'financial', 'converters', 'math', 'image', 'datetime', 'network', 'generators', 'pdf',
   ]
 
   const blogPosts = getVisiblePosts()

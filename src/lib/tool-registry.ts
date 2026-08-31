@@ -35,14 +35,14 @@ export const CATEGORIES: Category[] = [
   { id: 'markdown',    label: 'Markdown Tools',         description: 'Markdown editor, converters, and table generator.', count: 4 },
   { id: 'color',       label: 'Color Tools',            description: 'Color picker, converter, palette generator, and contrast checker.', count: 8 },
   { id: 'css',         label: 'CSS Tools',              description: 'Visual CSS generators for gradients, shadows, flexbox, grid, and more.', count: 14 },
-  { id: 'financial',   label: 'Financial Calculators',  description: 'Loan, interest, tax, investment, and business calculators.', count: 23 },
+  { id: 'financial',   label: 'Financial Calculators',  description: 'Loan, interest, tax, investment, and business calculators.', count: 24 },
   { id: 'converters',  label: 'Unit Converters',        description: 'Convert between length, weight, temperature, data storage, speed, area, and volume.', count: 14 },
-  { id: 'math',        label: 'Math & Science',         description: 'Scientific calculators, BMI, statistics, and equations.', count: 4 },
-  { id: 'image',       label: 'Image Tools',            description: 'QR codes, image resizing, format conversion, cropping, and optimization.', count: 19 },
-  { id: 'datetime',    label: 'Date & Time',            description: 'Unix timestamps, date calculations, age calculator, and cron builder.', count: 5 },
+  { id: 'math',        label: 'Math & Science',         description: 'Scientific calculators, BMI, statistics, and equations.', count: 5 },
+  { id: 'image',       label: 'Image Tools',            description: 'QR codes, image resizing, format conversion, cropping, and optimization.', count: 22 },
+  { id: 'datetime',    label: 'Date & Time',            description: 'Unix timestamps, date calculations, age calculator, and cron builder.', count: 6 },
   { id: 'network',     label: 'Network & API',          description: 'HTTP status codes, URL parser, user agent parser, and IP info.', count: 4 },
   { id: 'generators',  label: 'Generators',             description: 'Generate UUIDs, passwords, Lorem Ipsum, hashes, barcodes, and more.', count: 8 },
-  { id: 'pdf',         label: 'PDF Tools',              description: 'Merge, compress, convert, and manipulate PDF files directly in your browser.', count: 4 },
+  { id: 'pdf',         label: 'PDF Tools',              description: 'Merge, split, compress, unlock, watermark, and manipulate PDF files directly in your browser.', count: 8 },
 ]
 
 // Tools that appear on the generators category page but whose primary
@@ -55,7 +55,7 @@ export const GENERATOR_CROSS_REFS: string[] = [
 ]
 
 // ---------------------------------------------------------------------------
-// Tools (197 total)
+// Tools (200 total)
 // ---------------------------------------------------------------------------
 export const TOOLS: Tool[] = [
   // ── Developer Tools (24) ─────────────────────────────────────────────────
@@ -1072,6 +1072,13 @@ export const TOOLS: Tool[] = [
     category: 'financial',
     keywords: ['tax calc', 'income tax', 'federal tax', 'tax bracket', 'us tax', 'tax estimator', 'irs tax', '1040 calculator'],
   },
+  {
+    id: 'currency-converter',
+    name: 'Currency Converter',
+    description: 'Convert between 30+ currencies with live exchange rates',
+    category: 'financial',
+    keywords: ['currency converter', 'exchange rate', 'forex', 'money converter', 'usd to eur', 'usd to inr', 'usd to gbp', 'currency exchange', 'convert currency', 'foreign exchange', 'fx converter', 'dollar to euro', 'dollar to rupee'],
+  },
 
   // ── Unit Converters (14) ─────────────────────────────────────────────────
   {
@@ -1173,7 +1180,14 @@ export const TOOLS: Tool[] = [
     keywords: ['angle', 'degrees', 'radians', 'gradians', 'deg to rad', 'rad to deg', 'convert angle', 'angle units'],
   },
 
-  // ── Math & Science (4) ───────────────────────────────────────────────────
+  // ── Math & Science (5) ───────────────────────────────────────────────────
+  {
+    id: 'calorie-calculator',
+    name: 'Calorie Calculator',
+    description: 'Calculate BMR, TDEE, and daily calorie needs with macros',
+    category: 'math',
+    keywords: ['calorie calculator', 'bmr calculator', 'tdee calculator', 'calorie counter', 'basal metabolic rate', 'daily calories', 'macro calculator', 'mifflin st jeor', 'weight loss calories', 'calorie intake', 'how many calories'],
+  },
   {
     id: 'scientific-calculator',
     name: 'Scientific Calculator',
@@ -1362,6 +1376,27 @@ export const TOOLS: Tool[] = [
     keywords: ['object detection', 'detect objects', 'bounding box', 'yolo', 'image detection', 'find objects', 'ai detect', 'label objects'],
     isAI: true,
   },
+  {
+    id: 'social-media-resizer',
+    name: 'Social Media Image Resizer',
+    description: 'Resize images for every social platform in one click',
+    category: 'image',
+    keywords: ['social media resize', 'instagram resize', 'facebook resize', 'twitter resize', 'linkedin resize', 'youtube thumbnail', 'tiktok resize', 'pinterest resize', 'social image', 'batch resize'],
+  },
+  {
+    id: 'exif-viewer',
+    name: 'Image EXIF Viewer',
+    description: 'View, inspect, and strip EXIF metadata from photos',
+    category: 'image',
+    keywords: ['exif', 'exif viewer', 'exif data', 'photo metadata', 'image metadata', 'gps location', 'camera info', 'strip exif', 'remove metadata', 'photo info'],
+  },
+  {
+    id: 'image-filters',
+    name: 'Image Filters',
+    description: 'Apply photo filters and adjustments with live preview',
+    category: 'image',
+    keywords: ['image filter', 'photo filter', 'instagram filter', 'brightness', 'contrast', 'saturation', 'sepia', 'vintage filter', 'photo edit', 'image adjust'],
+  },
 
   // ── Date & Time (5) ──────────────────────────────────────────────────────
   {
@@ -1398,6 +1433,13 @@ export const TOOLS: Tool[] = [
     description: 'Interactive cron syntax guide with examples',
     category: 'datetime',
     keywords: ['crontab', 'cron syntax', 'cron help', 'cron reference', 'cron guide', 'cron examples', 'cron cheat sheet', 'cron fields'],
+  },
+  {
+    id: 'pomodoro-timer',
+    name: 'Pomodoro Timer',
+    description: 'Focus timer with 25/5 work-break intervals',
+    category: 'datetime',
+    keywords: ['pomodoro timer', 'pomodoro', 'focus timer', 'work timer', 'productivity timer', 'online timer', 'countdown timer', 'study timer', 'tomato timer', '25 minute timer', 'time management'],
   },
 
   // ── Network & API (4) ────────────────────────────────────────────────────
@@ -1474,6 +1516,34 @@ export const TOOLS: Tool[] = [
     description: 'Reduce PDF file size while maintaining quality',
     category: 'pdf',
     keywords: ['compress pdf', 'reduce pdf size', 'pdf compressor', 'shrink pdf', 'pdf optimizer', 'smaller pdf', 'pdf size reducer', 'optimize pdf'],
+  },
+  {
+    id: 'pdf-split',
+    name: 'Split PDF',
+    description: 'Extract pages from a PDF — specific pages, every N pages, or each page separately',
+    category: 'pdf',
+    keywords: ['split pdf', 'extract pdf pages', 'pdf splitter', 'separate pdf pages', 'divide pdf', 'pdf page extractor', 'cut pdf', 'pdf cutter'],
+  },
+  {
+    id: 'pdf-unlock',
+    name: 'Unlock PDF',
+    description: 'Remove password protection from a PDF file',
+    category: 'pdf',
+    keywords: ['unlock pdf', 'remove pdf password', 'pdf unlocker', 'decrypt pdf', 'pdf password remover', 'unprotect pdf', 'open locked pdf', 'crack pdf password'],
+  },
+  {
+    id: 'pdf-page-numbers',
+    name: 'Add Page Numbers to PDF',
+    description: 'Insert page numbers on every page of a PDF with customizable position and format',
+    category: 'pdf',
+    keywords: ['pdf page numbers', 'add page numbers', 'number pdf pages', 'pdf pagination', 'page numbering', 'pdf footer', 'pdf header numbers', 'paginate pdf'],
+  },
+  {
+    id: 'pdf-watermark',
+    name: 'Add Watermark to PDF',
+    description: 'Stamp custom watermark text on PDF pages with adjustable opacity and rotation',
+    category: 'pdf',
+    keywords: ['pdf watermark', 'add watermark', 'stamp pdf', 'confidential pdf', 'draft watermark', 'pdf stamp', 'watermark text', 'pdf branding'],
   },
 ]
 

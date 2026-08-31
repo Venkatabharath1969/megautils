@@ -177,6 +177,7 @@ const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
     { id: 'hourly-to-salary', name: 'Hourly to Salary' },
     { id: 'stock-profit-calculator', name: 'Stock Profit Calculator' },
     { id: 'tax-calculator', name: 'Tax Calculator' },
+    { id: 'currency-converter', name: 'Currency Converter' },
   ],
   converters: [
     { id: 'length-converter', name: 'Length Converter' },
@@ -199,6 +200,7 @@ const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
     { id: 'bmi-calculator', name: 'BMI Calculator' },
     { id: 'number-to-words', name: 'Number to Words' },
     { id: 'aspect-ratio-calculator', name: 'Aspect Ratio Calculator' },
+    { id: 'calorie-calculator', name: 'Calorie Calculator' },
   ],
   image: [
     { id: 'qr-code-generator', name: 'QR Code Generator' },
@@ -220,6 +222,9 @@ const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
     { id: 'ai-object-remover', name: 'AI Object Remover' },
     { id: 'ai-photo-colorizer', name: 'AI Photo Colorizer' },
     { id: 'ai-object-detection', name: 'AI Object Detection' },
+    { id: 'social-media-resizer', name: 'Social Media Image Resizer' },
+    { id: 'exif-viewer', name: 'Image EXIF Viewer' },
+    { id: 'image-filters', name: 'Image Filters' },
   ],
   datetime: [
     { id: 'unix-timestamp-converter', name: 'Unix Timestamp Converter' },
@@ -227,6 +232,7 @@ const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
     { id: 'age-calculator', name: 'Age Calculator' },
     { id: 'cron-expression-builder', name: 'Cron Expression Builder' },
     { id: 'crontab-reference', name: 'Crontab Reference' },
+    { id: 'pomodoro-timer', name: 'Pomodoro Timer' },
   ],
   network: [
     { id: 'http-status-codes', name: 'HTTP Status Codes' },
@@ -247,6 +253,10 @@ const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
   pdf: [
     { id: 'pdf-merge', name: 'Merge PDF' },
     { id: 'pdf-compress', name: 'Compress PDF' },
+    { id: 'pdf-split', name: 'Split PDF' },
+    { id: 'pdf-unlock', name: 'Unlock PDF' },
+    { id: 'pdf-page-numbers', name: 'Add Page Numbers to PDF' },
+    { id: 'pdf-watermark', name: 'Add Watermark to PDF' },
     { id: 'jpg-to-pdf', name: 'JPG to PDF' },
     { id: 'pdf-to-jpg', name: 'PDF to JPG' },
   ],
