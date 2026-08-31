@@ -70,7 +70,7 @@ function SearchResults() {
             <Link
               key={tool.id}
               href={`/tools/${tool.id}`}
-              className="group p-4 rounded-xl border border-border bg-card hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-200"
+              className="group p-4 rounded-xl border border-border bg-card hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300 ease-out"
             >
               <h3 className="font-semibold text-sm group-hover:text-primary transition-colors">{tool.name}</h3>
               <p className="text-xs text-muted-foreground mt-1">{tool.description}</p>
@@ -106,23 +106,37 @@ export default function HomePage() {
   }, [])
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 sm:py-12 hero-glow">
       {/* Search Results */}
       <Suspense>
         <SearchResults />
       </Suspense>
 
       {/* Hero */}
-      <div className="text-center mb-10 sm:mb-14">
-        <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">
-          <span className="text-primary">194+</span> {t('hero.title')}
+      <div className="text-center mb-6 sm:mb-8">
+        <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4 animate-fade-in-up">
+          <span className="gradient-text">220+ Free Tools</span>
+          <br />
+          <span className="text-foreground">{t('hero.title')}</span>
         </h1>
-        <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
+        <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto animate-fade-in-up stagger-1">
           {t('hero.subtitle')}
-          <span className="block mt-1 text-sm font-medium text-green-600 dark:text-green-400">
-            {t('hero.privacy')}
-          </span>
         </p>
+      </div>
+
+      {/* Trust Indicators — Above the fold */}
+      <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mb-10 sm:mb-14 animate-fade-in-up stagger-2">
+        {[
+          { icon: '🔒', label: '100% Private' },
+          { icon: '⚡', label: 'No Sign-up Required' },
+          { icon: '🌐', label: 'Runs in Your Browser' },
+          { icon: '💰', label: 'Completely Free' },
+        ].map((item) => (
+          <div key={item.label} className="flex items-center gap-1.5 text-sm text-muted-foreground">
+            <span>{item.icon}</span>
+            <span>{item.label}</span>
+          </div>
+        ))}
       </div>
 
       {/* Your Favorites */}
@@ -199,7 +213,7 @@ export default function HomePage() {
             <Link
               key={cat.id}
               href={`/category/${cat.id}`}
-              className="group flex flex-col p-5 rounded-xl border border-border bg-card hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 transition-all duration-200"
+              className="group flex flex-col p-5 rounded-xl border border-border bg-card hover:border-primary/40 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1 transition-all duration-300 ease-out"
             >
               <div className={`inline-flex items-center justify-center w-10 h-10 rounded-lg ${cat.color} mb-3`}>
                 <Icon className="h-5 w-5" />

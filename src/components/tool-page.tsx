@@ -233,6 +233,8 @@ const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
     { id: 'image-crop', name: 'Image Crop Tool' },
     { id: 'video-to-gif', name: 'Video to GIF/WebM Converter' },
     { id: 'meme-generator', name: 'Meme Generator' },
+    { id: 'screen-recorder', name: 'Screen Recorder' },
+    { id: 'image-collage', name: 'Image Collage Maker' },
   ],
   datetime: [
     { id: 'unix-timestamp-converter', name: 'Unix Timestamp Converter' },
@@ -272,6 +274,10 @@ const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
     { id: 'jpg-to-pdf', name: 'JPG to PDF' },
     { id: 'pdf-to-jpg', name: 'PDF to JPG' },
     { id: 'pdf-rotate', name: 'Rotate PDF' },
+    { id: 'pdf-sign', name: 'Sign PDF' },
+    { id: 'text-to-pdf', name: 'Text to PDF' },
+    { id: 'pdf-to-text', name: 'PDF to Text' },
+    { id: 'word-to-pdf', name: 'Word to PDF' },
   ],
 }
 
@@ -334,7 +340,8 @@ export function ToolPage({ title, description, category, categoryLabel, slug, ch
       {derivedSlug && <EmbedCode slug={derivedSlug} title={title} />}
 
       {/* Tool Content */}
-      <div className="bg-card rounded-xl border border-border p-4 sm:p-6 mt-3">
+      <div className="relative bg-card rounded-2xl border border-border shadow-sm p-5 sm:p-8 mt-4">
+        <div className="absolute top-0 left-6 right-6 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
         {children}
       </div>
 

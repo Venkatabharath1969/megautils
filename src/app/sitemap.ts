@@ -7,7 +7,7 @@ import { HOW_TO_GUIDES } from '@/lib/howto-data'
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://utilsnow.com'
 
-  // All 206 tool slugs (alphabetical)
+  // All 212 tool slugs (alphabetical)
   const tools = [
     'age-calculator', 'ai-bg-remover', 'ai-content-detector', 'ai-depth-map', 'ai-face-blur', 'ai-grammar-checker', 'ai-humanizer', 'ai-image-caption', 'ai-image-classifier', 'ai-image-upscaler', 'ai-object-detection', 'ai-ocr', 'ai-object-remover', 'ai-paraphraser', 'ai-photo-colorizer', 'ai-segment', 'ai-sentiment-analysis', 'ai-speech-to-text', 'ai-text-summarizer', 'angle-converter', 'area-converter', 'aspect-ratio-calculator',
     'barcode-generator', 'base32-encoder', 'base64-encoder', 'blank-line-remover',
@@ -29,7 +29,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'html-entity-encoder', 'html-formatter', 'html-tag-stripper', 'html-to-markdown',
     'heic-to-jpg', 'http-status-codes', 'image-compressor', 'image-cropper', 'image-format-converter', 'image-resizer',
     'exif-viewer', 'image-filters',
-    'image-to-base64', 'image-crop', 'inflation-calculator', 'invoice-generator', 'ip-address-info', 'irr-calculator',
+    'image-collage', 'image-to-base64', 'image-crop', 'inflation-calculator', 'invoice-generator', 'ip-address-info', 'irr-calculator',
     'javascript-formatter', 'json-escape', 'json-formatter', 'json-path-finder',
     'json-to-csv', 'json-to-go', 'json-to-python', 'json-to-typescript', 'json-to-xml',
     'json-to-yaml', 'json-validator', 'jpg-to-pdf', 'jwt-decoder', 'keyword-density-checker',
@@ -38,7 +38,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'markdown-table-generator', 'markdown-to-html', 'markdown-to-text',
     'meme-generator', 'meta-tag-generator', 'morse-code-translator', 'mortgage-calculator', 'nato-alphabet',
     'neumorphism-generator', 'npv-calculator', 'number-base-converter', 'number-to-words',
-    'ocr-text-extractor', 'open-graph-preview', 'password-generator', 'pdf-compress', 'pdf-merge', 'pdf-page-numbers', 'pdf-rotate', 'pdf-split', 'pdf-to-jpg', 'pdf-unlock', 'pdf-watermark', 'percentage-calculator',
+    'ocr-text-extractor', 'open-graph-preview', 'password-generator', 'pdf-compress', 'pdf-merge', 'pdf-page-numbers', 'pdf-rotate', 'pdf-sign', 'pdf-split', 'pdf-to-jpg', 'pdf-to-text', 'pdf-unlock', 'pdf-watermark', 'percentage-calculator',
     'placeholder-image-generator', 'pomodoro-timer', 'power-converter', 'ppf-calculator',
     'pressure-converter', 'privacy-policy-generator', 'punycode-converter',
     'qr-code-generator', 'random-color-generator', 'rd-calculator', 'readability-score',
@@ -46,16 +46,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'rot13-encoder', 'salary-calculator', 'schema-article', 'schema-breadcrumb',
     'schema-event', 'schema-faq', 'schema-howto', 'schema-job-posting',
     'schema-local-business', 'schema-organization', 'schema-product', 'schema-recipe',
-    'scientific-calculator', 'serp-preview', 'sip-calculator', 'sitemap-generator',
+    'screen-recorder', 'scientific-calculator', 'serp-preview', 'sip-calculator', 'sitemap-generator',
     'small-text-generator', 'social-media-counter', 'social-media-resizer', 'speed-converter', 'sql-escape',
     'sql-formatter', 'stock-profit-calculator', 'string-length-calculator',
     'svg-optimizer', 'tailwind-color-picker', 'tax-calculator', 'temperature-converter',
     'terms-generator', 'text-diff', 'text-gradient-generator', 'text-repeater', 'text-reverser', 'text-sorter',
-    'text-to-ascii-art', 'text-to-binary', 'text-to-hex', 'text-to-slug',
+    'text-to-ascii-art', 'text-to-binary', 'text-to-hex', 'text-to-pdf', 'text-to-slug',
     'text-to-speech', 'tint-shade-generator', 'tip-calculator', 'toml-formatter', 'typing-speed-test',
     'unicode-text-formatter', 'unix-timestamp-converter', 'url-encoder', 'url-parser',
     'user-agent-parser', 'utm-link-builder', 'uuid-generator', 'video-to-gif', 'volume-converter',
-    'weight-converter', 'word-counter', 'xml-escape', 'xml-formatter', 'xml-to-json',
+    'weight-converter', 'word-counter', 'word-to-pdf', 'xml-escape', 'xml-formatter', 'xml-to-json',
     'yaml-formatter', 'yaml-to-json',
   ]
 

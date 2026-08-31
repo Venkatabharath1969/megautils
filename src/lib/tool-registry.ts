@@ -38,11 +38,11 @@ export const CATEGORIES: Category[] = [
   { id: 'financial',   label: 'Financial Calculators',  description: 'Loan, interest, tax, investment, and business calculators.', count: 24 },
   { id: 'converters',  label: 'Unit Converters',        description: 'Convert between length, weight, temperature, data storage, speed, area, and volume.', count: 14 },
   { id: 'math',        label: 'Math & Science',         description: 'Scientific calculators, BMI, statistics, and equations.', count: 5 },
-  { id: 'image',       label: 'Image Tools',            description: 'QR codes, image resizing, format conversion, cropping, and optimization.', count: 24 },
+  { id: 'image',       label: 'Image Tools',            description: 'QR codes, image resizing, format conversion, cropping, screen recording, and optimization.', count: 26 },
   { id: 'datetime',    label: 'Date & Time',            description: 'Unix timestamps, date calculations, age calculator, and cron builder.', count: 6 },
   { id: 'network',     label: 'Network & API',          description: 'HTTP status codes, URL parser, user agent parser, and IP info.', count: 4 },
   { id: 'generators',  label: 'Generators',             description: 'Generate UUIDs, passwords, Lorem Ipsum, hashes, barcodes, and more.', count: 12 },
-  { id: 'pdf',         label: 'PDF Tools',              description: 'Merge, split, compress, unlock, watermark, rotate, and manipulate PDF files directly in your browser.', count: 9 },
+  { id: 'pdf',         label: 'PDF Tools',              description: 'Merge, split, compress, sign, convert, unlock, watermark, rotate, and manipulate PDF files directly in your browser.', count: 13 },
 ]
 
 // Tools that appear on the generators category page but whose primary
@@ -55,7 +55,7 @@ export const GENERATOR_CROSS_REFS: string[] = [
 ]
 
 // ---------------------------------------------------------------------------
-// Tools (202 total)
+// Tools (204 total)
 // ---------------------------------------------------------------------------
 export const TOOLS: Tool[] = [
   // ── Developer Tools (24) ─────────────────────────────────────────────────
@@ -1246,7 +1246,7 @@ export const TOOLS: Tool[] = [
     keywords: ['aspect ratio', 'ratio calc', '16:9', '4:3', 'screen ratio', 'image ratio', 'video ratio', 'resolution calculator'],
   },
 
-  // ── Image Tools (19) ─────────────────────────────────────────────────────
+  // ── Image Tools (20) ─────────────────────────────────────────────────────
   {
     id: 'qr-code-generator',
     name: 'QR Code Generator',
@@ -1454,6 +1454,20 @@ export const TOOLS: Tool[] = [
     category: 'image',
     keywords: ['meme maker', 'meme creator', 'meme generator', 'imgflip alternative', 'meme text', 'impact font', 'meme template', 'create meme', 'funny meme', 'meme editor', 'custom meme'],
   },
+  {
+    id: 'image-collage',
+    name: 'Image Collage Maker',
+    description: 'Combine 2-9 photos into a collage with layout templates, spacing, and background color — free, no watermark',
+    category: 'image',
+    keywords: ['collage maker', 'photo collage', 'image collage', 'photo grid', 'collage generator', 'combine photos', 'merge images', 'photo mosaic', 'grid maker', 'canva alternative', 'fotor alternative', 'instagram collage'],
+  },
+  {
+    id: 'screen-recorder',
+    name: 'Screen Recorder',
+    description: 'Record your screen, window, or tab with optional mic audio — download as WebM, no upload, no watermark',
+    category: 'image',
+    keywords: ['screen recorder', 'screen capture', 'record screen', 'screen recording', 'screencast', 'loom alternative', 'screencastify alternative', 'record tab', 'record window', 'video recorder', 'webcam recorder', 'browser recorder'],
+  },
 
   // ── Date & Time (5) ──────────────────────────────────────────────────────
   {
@@ -1588,7 +1602,7 @@ export const TOOLS: Tool[] = [
     keywords: ['resume builder', 'cv builder', 'resume maker', 'cv maker', 'resume generator', 'resume template', 'curriculum vitae', 'resume pdf', 'free resume', 'canva resume alternative', 'resume.io alternative', 'zety alternative', 'professional resume'],
   },
 
-  // ── PDF Tools (8) ────────────────────────────────────────────────────────
+  // ── PDF Tools (12) ────────────────────────────────────────────────────────
   {
     id: 'jpg-to-pdf',
     name: 'JPG to PDF',
@@ -1651,6 +1665,34 @@ export const TOOLS: Tool[] = [
     description: 'Rotate all or individual PDF pages by 90, 180, or 270 degrees',
     category: 'pdf',
     keywords: ['rotate pdf', 'pdf rotate', 'turn pdf', 'pdf orientation', 'rotate pdf pages', 'flip pdf', 'pdf rotation', 'sideways pdf', 'landscape portrait pdf'],
+  },
+  {
+    id: 'pdf-sign',
+    name: 'Sign PDF',
+    description: 'Add your drawn or typed signature to any PDF — free, no upload, no account',
+    category: 'pdf',
+    keywords: ['sign pdf', 'pdf signature', 'esign pdf', 'e-sign', 'digital signature', 'electronic signature', 'draw signature', 'pdf signer', 'docusign alternative', 'adobe sign alternative', 'sign document', 'handwritten signature'],
+  },
+  {
+    id: 'text-to-pdf',
+    name: 'Text to PDF',
+    description: 'Convert plain text into a formatted PDF with customizable fonts, margins, and page size',
+    category: 'pdf',
+    keywords: ['text to pdf', 'convert text to pdf', 'txt to pdf', 'create pdf', 'text pdf converter', 'notepad to pdf', 'plain text to pdf', 'pdf creator', 'make pdf from text'],
+  },
+  {
+    id: 'pdf-to-text',
+    name: 'PDF to Text',
+    description: 'Extract all text from a PDF file — view, copy, or download as .txt',
+    category: 'pdf',
+    keywords: ['pdf to text', 'extract text from pdf', 'pdf text extractor', 'pdf to txt', 'copy text from pdf', 'pdf reader', 'pdf content extractor', 'convert pdf to text'],
+  },
+  {
+    id: 'word-to-pdf',
+    name: 'Word to PDF Converter',
+    description: 'Convert Word (.docx) documents to PDF — free, private, no upload to servers',
+    category: 'pdf',
+    keywords: ['word to pdf', 'docx to pdf', 'convert word to pdf', 'doc to pdf', 'word pdf converter', 'microsoft word pdf', 'document to pdf', 'office to pdf', 'adobe alternative', 'smallpdf alternative'],
   },
 ]
 
