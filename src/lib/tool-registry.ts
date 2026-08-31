@@ -1495,8 +1495,18 @@ export function searchTools(query: string): Tool[] {
   )
 }
 
-/** List of popular / featured tool IDs for the homepage */
+/** List of popular / featured tool IDs for the homepage (ordered by global search volume) */
 export const POPULAR_TOOLS = [
-  'json-formatter', 'base64-encoder', 'qr-code-generator', 'word-counter',
-  'password-generator', 'color-picker', 'image-resizer', 'ai-bg-remover',
+  'percentage-calculator',   // ~1,600,000 monthly searches
+  'qr-code-generator',      // ~1,220,000 monthly searches
+  'mortgage-calculator',     // ~500,000 monthly searches
+  'password-generator',      // ~300,000 monthly searches
+  'bmi-calculator',          // ~210,000 monthly searches
+  'image-resizer',           // ~200,000 monthly searches
+  'word-counter',            // ~200,000 monthly searches
+  'age-calculator',          // ~184,000 monthly searches
+  'json-formatter',          // ~150,000 monthly searches (developer staple)
+  'color-picker',            // ~150,000 monthly searches (designer staple)
+  'base64-encoder',          // ~100,000 monthly searches
+  'ai-bg-remover',           // AI differentiator, wow factor
 ]
