@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { Suspense, useMemo, useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Code2, Binary, Shield, Search, Type, Terminal, PenTool, FileText, Palette, Paintbrush, DollarSign, ArrowLeftRight, Calculator, ImageIcon, Clock, Globe, Sparkles, X, Star, Users, BookOpen, Monitor, ShieldCheck } from 'lucide-react'
+import { Code2, Binary, Shield, Search, Type, Terminal, PenTool, FileText, Palette, Paintbrush, DollarSign, ArrowLeftRight, Calculator, ImageIcon, Clock, Globe, Sparkles, X, Star, Users, BookOpen, Monitor, ShieldCheck, FileOutput } from 'lucide-react'
 import { useLanguage } from '@/i18n/language-context'
 import { TOOLS, POPULAR_TOOLS, CATEGORIES, getCategoryById } from '@/lib/tool-registry'
 import { TotalUsageCounter } from '@/components/usage-counter'
@@ -23,13 +23,14 @@ const categories = [
   { id: 'markdown', label: 'Markdown Tools', description: '4 tools -- Editor, converters, tables', icon: FileText, count: 4, color: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400' },
   { id: 'color', label: 'Color Tools', description: '8 tools -- Picker, palettes, contrast', icon: Palette, count: 8, color: 'bg-fuchsia-500/10 text-fuchsia-600 dark:text-fuchsia-400' },
   { id: 'css', label: 'CSS Tools', description: '14 tools -- Gradients, shadows, flexbox, grid', icon: Paintbrush, count: 14, color: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400' },
-  { id: 'financial', label: 'Financial Calculators', description: '23 tools -- Loans, interest, tax, ROI', icon: DollarSign, count: 23, color: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' },
+  { id: 'financial', label: 'Financial Calculators', description: '24 tools -- Loans, interest, tax, ROI', icon: DollarSign, count: 24, color: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' },
   { id: 'converters', label: 'Unit Converters', description: '14 tools -- Length, weight, data, temp', icon: ArrowLeftRight, count: 14, color: 'bg-teal-500/10 text-teal-600 dark:text-teal-400' },
-  { id: 'math', label: 'Math & Science', description: '4 tools -- Scientific, statistics, BMI', icon: Calculator, count: 4, color: 'bg-amber-500/10 text-amber-600 dark:text-amber-400' },
-  { id: 'image', label: 'Image Tools', description: '19 tools -- AI + Compress, resize, QR codes', icon: ImageIcon, count: 19, color: 'bg-rose-500/10 text-rose-600 dark:text-rose-400' },
-  { id: 'datetime', label: 'Date & Time', description: '5 tools -- Timestamps, timezones, cron', icon: Clock, count: 5, color: 'bg-sky-500/10 text-sky-600 dark:text-sky-400' },
+  { id: 'math', label: 'Math & Science', description: '5 tools -- Scientific, statistics, BMI, calories', icon: Calculator, count: 5, color: 'bg-amber-500/10 text-amber-600 dark:text-amber-400' },
+  { id: 'image', label: 'Image Tools', description: '25 tools -- AI + Compress, resize, QR, filters', icon: ImageIcon, count: 25, color: 'bg-rose-500/10 text-rose-600 dark:text-rose-400' },
+  { id: 'datetime', label: 'Date & Time', description: '6 tools -- Timestamps, timezones, pomodoro', icon: Clock, count: 6, color: 'bg-sky-500/10 text-sky-600 dark:text-sky-400' },
   { id: 'network', label: 'Network & API', description: '4 tools -- DNS, IP, HTTP codes, cURL', icon: Globe, count: 4, color: 'bg-violet-500/10 text-violet-600 dark:text-violet-400' },
-  { id: 'generators', label: 'Generators', description: '10 tools -- UUID, passwords, fake data', icon: Sparkles, count: 10, color: 'bg-lime-500/10 text-lime-600 dark:text-lime-400' },
+  { id: 'generators', label: 'Generators', description: '11 tools -- UUID, passwords, fake data, policies', icon: Sparkles, count: 11, color: 'bg-lime-500/10 text-lime-600 dark:text-lime-400' },
+  { id: 'pdf', label: 'PDF Tools', description: '8 tools -- Merge, split, compress, convert', icon: FileOutput, count: 8, color: 'bg-red-500/10 text-red-600 dark:text-red-400' },
 ]
 
 function SearchResults() {

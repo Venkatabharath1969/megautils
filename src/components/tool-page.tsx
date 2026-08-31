@@ -249,6 +249,9 @@ const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
     { id: 'fake-data-generator', name: 'Fake Data Generator' },
     { id: 'emoji-picker', name: 'Emoji Picker' },
     { id: 'barcode-generator', name: 'Barcode Generator' },
+    { id: 'htaccess-generator', name: '.htaccess Generator' },
+    { id: 'privacy-policy-generator', name: 'Privacy Policy Generator' },
+    { id: 'terms-generator', name: 'Terms Generator' },
   ],
   pdf: [
     { id: 'pdf-merge', name: 'Merge PDF' },

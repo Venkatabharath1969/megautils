@@ -41,7 +41,7 @@ export const CATEGORIES: Category[] = [
   { id: 'image',       label: 'Image Tools',            description: 'QR codes, image resizing, format conversion, cropping, and optimization.', count: 22 },
   { id: 'datetime',    label: 'Date & Time',            description: 'Unix timestamps, date calculations, age calculator, and cron builder.', count: 6 },
   { id: 'network',     label: 'Network & API',          description: 'HTTP status codes, URL parser, user agent parser, and IP info.', count: 4 },
-  { id: 'generators',  label: 'Generators',             description: 'Generate UUIDs, passwords, Lorem Ipsum, hashes, barcodes, and more.', count: 8 },
+  { id: 'generators',  label: 'Generators',             description: 'Generate UUIDs, passwords, Lorem Ipsum, hashes, barcodes, and more.', count: 11 },
   { id: 'pdf',         label: 'PDF Tools',              description: 'Merge, split, compress, unlock, watermark, and manipulate PDF files directly in your browser.', count: 8 },
 ]
 
@@ -1472,7 +1472,7 @@ export const TOOLS: Tool[] = [
     keywords: ['ip address', 'my ip', 'public ip', 'ip info', 'ip lookup', 'what is my ip', 'ip details', 'ip geolocation'],
   },
 
-  // ── Generators (8) ───────────────────────────────────────────────────────
+  // ── Generators (11) ──────────────────────────────────────────────────────
   {
     id: 'gitignore-generator',
     name: '.gitignore Generator',
@@ -1502,7 +1502,43 @@ export const TOOLS: Tool[] = [
     keywords: ['barcode', 'code 128', 'barcode generator', 'barcode maker', 'product barcode', 'generate barcode', 'barcode image', 'ean barcode'],
   },
 
-  // ── PDF Tools (2) ────────────────────────────────────────────────────────
+  {
+    id: 'htaccess-generator',
+    name: '.htaccess Generator',
+    description: 'Generate Apache .htaccess rules for redirects, security headers, caching, and more',
+    category: 'generators',
+    keywords: ['htaccess', 'htaccess generator', 'apache config', 'redirect', 'rewrite rule', 'security headers', 'gzip compression', 'browser caching', 'hotlink protection'],
+  },
+  {
+    id: 'privacy-policy-generator',
+    name: 'Privacy Policy Generator',
+    description: 'Generate a GDPR and CCPA compliant privacy policy for your website',
+    category: 'generators',
+    keywords: ['privacy policy', 'privacy policy generator', 'gdpr', 'ccpa', 'cookie policy', 'data protection', 'privacy notice', 'compliance'],
+  },
+  {
+    id: 'terms-generator',
+    name: 'Terms & Conditions Generator',
+    description: 'Generate terms of service for your website or app',
+    category: 'generators',
+    keywords: ['terms conditions', 'terms of service', 'tos generator', 'terms generator', 'legal terms', 'website terms', 'user agreement'],
+  },
+
+  // ── PDF Tools (8) ────────────────────────────────────────────────────────
+  {
+    id: 'jpg-to-pdf',
+    name: 'JPG to PDF',
+    description: 'Convert images (JPG, PNG, WebP) to a PDF document with page size and margin options',
+    category: 'pdf',
+    keywords: ['jpg to pdf', 'image to pdf', 'png to pdf', 'convert image to pdf', 'photo to pdf', 'pictures to pdf', 'webp to pdf', 'jpeg to pdf', 'images to pdf', 'create pdf from images'],
+  },
+  {
+    id: 'pdf-to-jpg',
+    name: 'PDF to JPG',
+    description: 'Extract PDF pages as high-quality JPG or PNG images with DPI control',
+    category: 'pdf',
+    keywords: ['pdf to jpg', 'pdf to image', 'pdf to png', 'extract pdf pages', 'pdf to jpeg', 'convert pdf to image', 'pdf page to image', 'pdf screenshot', 'pdf to photo', 'pdf extractor'],
+  },
   {
     id: 'pdf-merge',
     name: 'Merge PDF',
