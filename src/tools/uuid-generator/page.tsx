@@ -101,6 +101,7 @@ export default function UuidGeneratorTool() {
   const [uuidCase, setUuidCase] = useState<'lower' | 'upper'>('lower')
   const [uuidVersion, setUuidVersion] = useState<'v4' | 'v7'>('v4')
   const [removeHyphens, setRemoveHyphens] = useState(false)
+  const [outputFormat, setOutputFormat] = useState<'plain' | 'json' | 'csv' | 'sql'>('plain')
 
   // Parser state
   const [parseInput, setParseInput] = useState('')
@@ -122,7 +123,14 @@ export default function UuidGeneratorTool() {
     setParseResult(parseUUID(parseInput))
   }, [parseInput])
 
-  const allText = uuids.join('\n')
+  const allText = (() => {
+    switch (outputFormat) {
+      case 'json': return JSON.stringify(uuids, null, 2)
+      case 'csv': return uuids.join(',')
+      case 'sql': return uuids.map(u => `'${u}'`).join(',')
+      default: return uuids.join('\n')
+    }
+  })()
 
   return (
     <ToolPage
@@ -209,6 +217,19 @@ export default function UuidGeneratorTool() {
           />
           Remove hyphens
         </label>
+        <div className="flex items-center gap-2">
+          <label className="text-sm font-medium">Format:</label>
+          <select
+            value={outputFormat}
+            onChange={(e) => setOutputFormat(e.target.value as 'plain' | 'json' | 'csv' | 'sql')}
+            className="h-9 px-3 rounded-md border border-input bg-card text-sm"
+          >
+            <option value="plain">Plain</option>
+            <option value="json">JSON Array</option>
+            <option value="csv">CSV</option>
+            <option value="sql">SQL</option>
+          </select>
+        </div>
         <button onClick={generate} className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
           Generate
         </button>

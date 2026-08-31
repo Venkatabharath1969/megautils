@@ -45,11 +45,13 @@ function generateParagraph(minSentences = 3, maxSentences = 7): string {
 }
 
 type GenType = 'paragraphs' | 'sentences' | 'words'
+type OutputFormat = 'plain' | 'html' | 'list'
 
 export default function LoremIpsumGeneratorTool() {
   const [genType, setGenType] = useState<GenType>('paragraphs')
   const [count, setCount] = useState(3)
   const [startClassic, setStartClassic] = useState(true)
+  const [outputFormat, setOutputFormat] = useState<OutputFormat>('plain')
   const [output, setOutput] = useState('')
 
   const generate = () => {
@@ -84,6 +86,30 @@ export default function LoremIpsumGeneratorTool() {
         result = CLASSIC_OPENING + ' ' + result.slice(firstPeriod + 2)
       }
     }
+
+    // Apply output format
+    if (outputFormat === 'html') {
+      if (genType === 'paragraphs') {
+        const paragraphs = result.split('\n\n')
+        result = paragraphs.map(p => `<p>${p}</p>`).join('\n')
+      } else {
+        result = `<p>${result}</p>`
+      }
+    } else if (outputFormat === 'list') {
+      if (genType === 'paragraphs') {
+        const paragraphs = result.split('\n\n')
+        const items = paragraphs.map(p => `  <li>${p}</li>`).join('\n')
+        result = `<ul>\n${items}\n</ul>`
+      } else if (genType === 'sentences') {
+        // Split sentences by '. ' pattern
+        const sentences = result.split(/(?<=\.)\s+/).filter(Boolean)
+        const items = sentences.map(s => `  <li>${s}</li>`).join('\n')
+        result = `<ul>\n${items}\n</ul>`
+      } else {
+        result = `<ul>\n  <li>${result}</li>\n</ul>`
+      }
+    }
+
     setOutput(result)
   }
 
@@ -155,6 +181,18 @@ export default function LoremIpsumGeneratorTool() {
           <input type="checkbox" checked={startClassic} onChange={e => setStartClassic(e.target.checked)} className="rounded border-input" />
           Start with &quot;Lorem ipsum...&quot;
         </label>
+        <div className="flex items-center gap-2">
+          <label className="text-sm font-medium">Format:</label>
+          <select
+            value={outputFormat}
+            onChange={(e) => setOutputFormat(e.target.value as OutputFormat)}
+            className="h-9 px-3 rounded-md border border-input bg-card text-sm"
+          >
+            <option value="plain">Plain Text</option>
+            <option value="html">HTML (&lt;p&gt; tags)</option>
+            <option value="list">List (&lt;ul&gt;&lt;li&gt;)</option>
+          </select>
+        </div>
         <button onClick={generate} className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
           Generate
         </button>

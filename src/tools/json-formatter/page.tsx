@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback, useMemo } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, DownloadButton, ClearButton } from '@/components/tool-page'
-import { Upload } from 'lucide-react'
+import { Upload, ChevronDown, ChevronRight, Copy, Check } from 'lucide-react'
 
 function sortKeys(obj: unknown): unknown {
   if (Array.isArray(obj)) return obj.map(sortKeys)
@@ -52,6 +52,122 @@ interface JsonStats {
   nodes: number
 }
 
+// --- Tree View ---
+
+interface TreeNodeData {
+  key: string
+  value: unknown
+  type: 'string' | 'number' | 'boolean' | 'null' | 'array' | 'object'
+  depth: number
+  children?: TreeNodeData[]
+}
+
+function buildTree(value: unknown, key: string, depth: number): TreeNodeData {
+  if (value === null) return { key, value, type: 'null', depth }
+  if (Array.isArray(value)) {
+    return {
+      key,
+      value,
+      type: 'array',
+      depth,
+      children: value.map((item, i) => buildTree(item, String(i), depth + 1)),
+    }
+  }
+  if (typeof value === 'object') {
+    return {
+      key,
+      value,
+      type: 'object',
+      depth,
+      children: Object.entries(value as Record<string, unknown>).map(([k, v]) => buildTree(v, k, depth + 1)),
+    }
+  }
+  if (typeof value === 'string') return { key, value, type: 'string', depth }
+  if (typeof value === 'number') return { key, value, type: 'number', depth }
+  if (typeof value === 'boolean') return { key, value, type: 'boolean', depth }
+  return { key, value, type: 'null', depth }
+}
+
+const TYPE_BADGES: Record<string, { label: string; className: string }> = {
+  string: { label: 'str', className: 'bg-green-500/15 text-green-700 dark:text-green-400' },
+  number: { label: 'num', className: 'bg-blue-500/15 text-blue-700 dark:text-blue-400' },
+  boolean: { label: 'bool', className: 'bg-orange-500/15 text-orange-700 dark:text-orange-400' },
+  null: { label: 'null', className: 'bg-red-500/15 text-red-700 dark:text-red-400' },
+  array: { label: 'arr', className: 'bg-purple-500/15 text-purple-700 dark:text-purple-400' },
+  object: { label: 'obj', className: 'bg-cyan-500/15 text-cyan-700 dark:text-cyan-400' },
+}
+
+function TreeNodeComponent({ node }: { node: TreeNodeData }) {
+  const [expanded, setExpanded] = useState(node.depth < 2)
+  const [copied, setCopied] = useState(false)
+
+  const hasChildren = node.children && node.children.length > 0
+  const badge = TYPE_BADGES[node.type]
+
+  const valuePreview = useMemo(() => {
+    if (node.type === 'array') return `Array(${(node.value as unknown[]).length})`
+    if (node.type === 'object') return `{${Object.keys(node.value as Record<string, unknown>).length} keys}`
+    if (node.type === 'string') {
+      const s = String(node.value)
+      return `"${s.length > 60 ? s.slice(0, 60) + '...' : s}"`
+    }
+    if (node.type === 'null') return 'null'
+    return String(node.value)
+  }, [node])
+
+  const typeColor = useMemo(() => {
+    switch (node.type) {
+      case 'string': return 'text-green-600 dark:text-green-400'
+      case 'number': return 'text-blue-600 dark:text-blue-400'
+      case 'boolean': return 'text-orange-600 dark:text-orange-400'
+      case 'null': return 'text-red-600 dark:text-red-400'
+      default: return 'text-muted-foreground'
+    }
+  }, [node.type])
+
+  const copyValue = () => {
+    const text = typeof node.value === 'string' ? node.value : JSON.stringify(node.value, null, 2)
+    navigator.clipboard.writeText(String(text)).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    })
+  }
+
+  return (
+    <div>
+      <div
+        className="flex items-center gap-1 py-0.5 px-1 rounded hover:bg-muted transition-colors group"
+        style={{ paddingLeft: `${node.depth * 16 + 4}px` }}
+      >
+        {hasChildren ? (
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="w-4 h-4 flex items-center justify-center text-muted-foreground shrink-0"
+          >
+            {expanded ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
+          </button>
+        ) : (
+          <span className="w-4 h-4 shrink-0" />
+        )}
+        <span className="text-sm font-medium shrink-0 text-primary">{node.key}</span>
+        <span className="text-xs text-muted-foreground shrink-0">:</span>
+        <span className={`inline-block px-1 py-px rounded text-[10px] font-semibold leading-tight ${badge.className}`}>{badge.label}</span>
+        <span className={`text-xs font-mono truncate ${typeColor}`}>{valuePreview}</span>
+        <button
+          onClick={copyValue}
+          className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-muted-foreground/10 shrink-0"
+          title="Copy value"
+        >
+          {copied ? <Check className="h-3 w-3 text-green-500" /> : <Copy className="h-3 w-3 text-muted-foreground" />}
+        </button>
+      </div>
+      {expanded && hasChildren && node.children!.map((child, i) => (
+        <TreeNodeComponent key={`${child.key}-${i}`} node={child} />
+      ))}
+    </div>
+  )
+}
+
 export default function JsonFormatterTool() {
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('')
@@ -59,7 +175,18 @@ export default function JsonFormatterTool() {
   const [indent, setIndent] = useState<string | number>(2)
   const [sortKeysEnabled, setSortKeysEnabled] = useState(false)
   const [stats, setStats] = useState<JsonStats | null>(null)
+  const [viewMode, setViewMode] = useState<'text' | 'tree'>('text')
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const treeData = useMemo(() => {
+    if (!output) return null
+    try {
+      const parsed = JSON.parse(output)
+      return buildTree(parsed, 'root', 0)
+    } catch {
+      return null
+    }
+  }, [output])
 
   const getIndentValue = useCallback(() => {
     return indent === 'tab' ? '\t' : indent
@@ -188,13 +315,41 @@ export default function JsonFormatterTool() {
         </div>
         <div>
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium">Output</span>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium">Output</span>
+              {output && (
+                <div className="flex rounded-md border border-border overflow-hidden">
+                  <button
+                    onClick={() => setViewMode('text')}
+                    className={`px-2.5 py-1 text-xs font-medium transition-colors ${viewMode === 'text' ? 'bg-primary text-primary-foreground' : 'bg-card hover:bg-muted'}`}
+                  >
+                    Text
+                  </button>
+                  <button
+                    onClick={() => setViewMode('tree')}
+                    className={`px-2.5 py-1 text-xs font-medium transition-colors border-l border-border ${viewMode === 'tree' ? 'bg-primary text-primary-foreground' : 'bg-card hover:bg-muted'}`}
+                  >
+                    Tree
+                  </button>
+                </div>
+              )}
+            </div>
             <div className="flex gap-2">
               {output && <CopyButton text={output} />}
               {output && <DownloadButton content={output} filename="formatted.json" mimeType="application/json" />}
             </div>
           </div>
-          <ToolTextarea value={output} readOnly placeholder="Formatted JSON will appear here..." rows={14} />
+          {viewMode === 'text' ? (
+            <ToolTextarea value={output} readOnly placeholder="Formatted JSON will appear here..." rows={14} />
+          ) : (
+            <div className="rounded-lg border border-input bg-tool-bg p-2 font-mono text-sm overflow-auto max-h-[360px] min-h-[360px]">
+              {treeData ? (
+                <TreeNodeComponent node={treeData} />
+              ) : (
+                <p className="text-muted-foreground text-sm p-2">Formatted JSON will appear here...</p>
+              )}
+            </div>
+          )}
         </div>
       </div>
 

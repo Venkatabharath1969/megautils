@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import { ToolPage, CopyButton } from '@/components/tool-page'
+import { Lock, Unlock, Shuffle } from 'lucide-react'
 
 function hexToRgb(hex: string): { r: number; g: number; b: number } {
   const clean = hex.replace('#', '')
@@ -111,9 +112,18 @@ function exportPalette(palette: { hex: string; label: string }[], format: Export
   }
 }
 
+function generateRandomColor(): string {
+  const h = Math.random() * 360
+  const s = 60 + Math.random() * 30
+  const l = 45 + Math.random() * 25
+  return hslToHex(h, s / 100, l / 100)
+}
+
 export default function ColorPaletteGeneratorTool() {
   const [baseColor, setBaseColor] = useState('#3b82f6')
   const [paletteType, setPaletteType] = useState<PaletteType>('complementary')
+  const [locked, setLocked] = useState<boolean[]>([])
+  const [randomOverrides, setRandomOverrides] = useState<(string | null)[]>([])
 
   const paletteTypes: { value: PaletteType; label: string }[] = [
     { value: 'complementary', label: 'Complementary' },
@@ -124,8 +134,55 @@ export default function ColorPaletteGeneratorTool() {
     { value: 'monochromatic', label: 'Monochromatic' },
   ]
 
-  const palette = useMemo(() => generatePalette(baseColor, paletteType), [baseColor, paletteType])
+  const basePalette = useMemo(() => generatePalette(baseColor, paletteType), [baseColor, paletteType])
+
+  // Apply random overrides to non-locked, overridden swatches
+  const palette = useMemo(() => {
+    return basePalette.map((color, i) => {
+      if (randomOverrides[i]) return { ...color, hex: randomOverrides[i]! }
+      return color
+    })
+  }, [basePalette, randomOverrides])
+
+  // Reset locked/overrides when palette type changes (different length)
+  useEffect(() => {
+    setLocked(new Array(basePalette.length).fill(false))
+    setRandomOverrides(new Array(basePalette.length).fill(null))
+  }, [paletteType, basePalette.length])
+
   const paletteHexes = palette.map(p => p.hex.toUpperCase()).join(', ')
+
+  const toggleLock = (index: number) => {
+    setLocked(prev => {
+      const next = [...prev]
+      next[index] = !next[index]
+      return next
+    })
+  }
+
+  const randomize = useCallback(() => {
+    setRandomOverrides(prev => {
+      const next = [...prev]
+      for (let i = 0; i < basePalette.length; i++) {
+        if (!locked[i]) {
+          next[i] = generateRandomColor()
+        }
+      }
+      return next
+    })
+  }, [basePalette.length, locked])
+
+  // Spacebar keyboard shortcut for randomize
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.code === 'Space' && !['INPUT', 'TEXTAREA', 'SELECT'].includes((e.target as HTMLElement).tagName)) {
+        e.preventDefault()
+        randomize()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [randomize])
 
   const exportFormats: { value: ExportFormat; label: string }[] = [
     { value: 'css', label: 'CSS' },
@@ -214,21 +271,45 @@ export default function ColorPaletteGeneratorTool() {
         <div>
           <div className="flex items-center justify-between mb-3">
             <label className="text-sm font-medium">Generated Palette</label>
-            <CopyButton text={paletteHexes} />
+            <div className="flex items-center gap-2">
+              <button
+                onClick={randomize}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-border bg-card hover:bg-muted transition-colors"
+                title="Randomize unlocked colors (Spacebar)"
+              >
+                <Shuffle className="h-3.5 w-3.5" /> Randomize
+              </button>
+              <CopyButton text={paletteHexes} />
+            </div>
           </div>
+          <p className="text-xs text-muted-foreground mb-3">Press <kbd className="px-1.5 py-0.5 rounded bg-muted border border-border text-[10px] font-mono">Space</kbd> to randomize unlocked colors</p>
 
           {/* Color Strip */}
           <div className="flex rounded-lg overflow-hidden border border-border h-24">
             {palette.map((color, i) => (
-              <div key={i} className="flex-1" style={{ backgroundColor: color.hex }} />
+              <div key={i} className="flex-1 relative group" style={{ backgroundColor: color.hex }}>
+                {locked[i] && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Lock className="h-5 w-5 text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]" />
+                  </div>
+                )}
+              </div>
             ))}
           </div>
 
           {/* Individual Colors */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mt-4">
             {palette.map((color, i) => (
-              <div key={i} className="rounded-lg border border-border overflow-hidden">
-                <div className="h-16" style={{ backgroundColor: color.hex }} />
+              <div key={i} className="rounded-lg border border-border overflow-hidden relative">
+                <div className="h-16 relative" style={{ backgroundColor: color.hex }}>
+                  <button
+                    onClick={() => toggleLock(i)}
+                    className="absolute top-1 right-1 p-1 rounded bg-black/30 hover:bg-black/50 transition-colors text-white"
+                    title={locked[i] ? 'Unlock color' : 'Lock color'}
+                  >
+                    {locked[i] ? <Lock className="h-3.5 w-3.5" /> : <Unlock className="h-3.5 w-3.5" />}
+                  </button>
+                </div>
                 <div className="p-2 text-center">
                   <p className="text-xs text-muted-foreground">{color.label}</p>
                   <div className="flex items-center justify-center gap-1 mt-1">

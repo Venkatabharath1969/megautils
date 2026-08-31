@@ -55,7 +55,10 @@ export default function QrCodeGeneratorTool() {
   const [libLoaded, setLibLoaded] = useState(false)
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
+  const [logoFile, setLogoFile] = useState<File | null>(null)
+  const [logoUrl, setLogoUrl] = useState<string | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const logoInputRef = useRef<HTMLInputElement>(null)
 
   /* ---- vCard fields ---- */
   const [vcFirstName, setVcFirstName] = useState('')
@@ -69,6 +72,23 @@ export default function QrCodeGeneratorTool() {
   const [wifiSSID, setWifiSSID] = useState('')
   const [wifiPassword, setWifiPassword] = useState('')
   const [wifiEncryption, setWifiEncryption] = useState<typeof WIFI_ENCRYPTIONS[number]>('WPA')
+
+  /* ---- Logo file handling ---- */
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (logoUrl) URL.revokeObjectURL(logoUrl)
+    setLogoFile(file)
+    setLogoUrl(URL.createObjectURL(file))
+    setErrorLevel('H') // Auto-set to highest error correction for logo overlay
+  }
+
+  const removeLogo = () => {
+    if (logoUrl) URL.revokeObjectURL(logoUrl)
+    setLogoFile(null)
+    setLogoUrl(null)
+    if (logoInputRef.current) logoInputRef.current.value = ''
+  }
 
   /* ---- Build the effective QR data string ---- */
   const getQRData = useCallback((): string => {
@@ -114,7 +134,7 @@ export default function QrCodeGeneratorTool() {
   /* ---- Render QR on canvas ---- */
   const qrData = getQRData()
 
-  const generateQR = useCallback(() => {
+  const generateQR = useCallback(async () => {
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')!
@@ -158,11 +178,26 @@ export default function QrCodeGeneratorTool() {
           }
         }
       }
+
+      // Logo overlay
+      if (logoUrl) {
+        const logoImg = new Image()
+        logoImg.src = logoUrl
+        await new Promise(r => { logoImg.onload = r })
+        const logoSize = size * 0.25 // Logo takes up 25% of QR code
+        const logoX = (size - logoSize) / 2
+        const logoY = (size - logoSize) / 2
+        // Draw white background behind logo for readability
+        ctx.fillStyle = '#ffffff'
+        ctx.fillRect(logoX - 4, logoY - 4, logoSize + 8, logoSize + 8)
+        ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize)
+      }
+
       setError('')
     } catch {
       setError('Input too long for the selected error correction level. Try shorter text or a lower level.')
     }
-  }, [qrData, size, fgColor, bgColor, errorLevel, libLoaded])
+  }, [qrData, size, fgColor, bgColor, errorLevel, libLoaded, logoUrl])
 
   useEffect(() => { generateQR() }, [generateQR])
 
@@ -239,6 +274,7 @@ export default function QrCodeGeneratorTool() {
     setWifiSSID('')
     setWifiPassword('')
     setWifiEncryption('WPA')
+    removeLogo()
   }
 
   const hasQR = qrData.trim().length > 0 && libLoaded && !error
@@ -453,6 +489,33 @@ export default function QrCodeGeneratorTool() {
               />
               <span className="text-xs font-mono text-muted-foreground">{bgColor.toUpperCase()}</span>
             </div>
+          </div>
+
+          {/* Logo overlay */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Logo Overlay</label>
+            <div className="flex items-center gap-2">
+              <input
+                ref={logoInputRef}
+                type="file"
+                accept=".png,.jpg,.jpeg,.svg"
+                onChange={handleLogoChange}
+                className="block w-full text-sm text-muted-foreground file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 file:cursor-pointer file:transition-colors"
+              />
+              {logoFile && (
+                <button
+                  onClick={removeLogo}
+                  className="shrink-0 px-2 py-1.5 text-xs font-medium rounded-md border border-border bg-card hover:bg-muted transition-colors text-red-500"
+                >
+                  Remove Logo
+                </button>
+              )}
+            </div>
+            {logoFile && (
+              <p className="text-xs text-muted-foreground">
+                Logo: {logoFile.name} (error correction auto-set to H)
+              </p>
+            )}
           </div>
 
           {/* Action buttons */}

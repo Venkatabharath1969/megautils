@@ -13,8 +13,9 @@ function generatePolicy(data: {
   effectiveDate: string
   gdprCompliance: boolean
   dpoEmail: string
+  ccpaCompliance: boolean
 }): string {
-  const { companyName, websiteUrl, contactEmail, collectsCookies, usesAnalytics, thirdPartyServices, effectiveDate, gdprCompliance, dpoEmail } = data
+  const { companyName, websiteUrl, contactEmail, collectsCookies, usesAnalytics, thirdPartyServices, effectiveDate, gdprCompliance, dpoEmail, ccpaCompliance } = data
   const company = companyName || '[Company Name]'
   const url = websiteUrl || '[Website URL]'
   const email = contactEmail || '[Contact Email]'
@@ -107,7 +108,21 @@ International Data Transfers: Your information may be transferred to and process
 
 You have the right to lodge a complaint with your local data protection supervisory authority if you believe we have not complied with applicable data protection laws.
 
-` : ''}${gdprCompliance ? (usesAnalytics ? '12' : '11') : (usesAnalytics ? '11' : '10')}. CONTACT US
+` : ''}${ccpaCompliance ? `${gdprCompliance ? (usesAnalytics ? '12' : '11') : (usesAnalytics ? '11' : '10')}. YOUR CALIFORNIA PRIVACY RIGHTS (CCPA/CPRA)
+
+If you are a California resident, you have the following rights under the California Consumer Privacy Act (CCPA) and the California Privacy Rights Act (CPRA):
+
+- Right to Know — You have the right to request information about the categories and specific pieces of personal information we have collected about you.
+- Right to Delete — You have the right to request deletion of your personal information, subject to certain exceptions.
+- Right to Opt-Out — You have the right to opt out of the sale or sharing of your personal information. We do not sell personal information.
+- Right to Non-Discrimination — We will not discriminate against you for exercising your privacy rights.
+- Right to Correct — You have the right to request correction of inaccurate personal information.
+
+To exercise these rights, please contact us at ${email}. We will respond to your request within 45 days.
+
+Do Not Sell or Share My Personal Information: We do not sell or share your personal information as defined by the CCPA/CPRA.
+
+` : ''}${(() => { let n = usesAnalytics ? 10 : 9; if (gdprCompliance) n++; if (ccpaCompliance) n++; return n + 1; })()}. CONTACT US
 
 If you have any questions about this Privacy Policy, please contact us:
 
@@ -124,6 +139,7 @@ export default function PrivacyPolicyGeneratorTool() {
   const [usesAnalytics, setUsesAnalytics] = useState(true)
   const [thirdPartyServices, setThirdPartyServices] = useState('Google Analytics, Google AdSense')
   const [gdprCompliance, setGdprCompliance] = useState(false)
+  const [ccpaCompliance, setCcpaCompliance] = useState(false)
   const [dpoEmail, setDpoEmail] = useState('')
   const [effectiveDate, setEffectiveDate] = useState(() => new Date().toISOString().split('T')[0])
 
@@ -138,8 +154,9 @@ export default function PrivacyPolicyGeneratorTool() {
       effectiveDate,
       gdprCompliance,
       dpoEmail,
+      ccpaCompliance,
     })
-  }, [companyName, websiteUrl, contactEmail, collectsCookies, usesAnalytics, thirdPartyServices, effectiveDate, gdprCompliance, dpoEmail])
+  }, [companyName, websiteUrl, contactEmail, collectsCookies, usesAnalytics, thirdPartyServices, effectiveDate, gdprCompliance, dpoEmail, ccpaCompliance])
 
   const clear = () => {
     setCompanyName('')
@@ -268,6 +285,15 @@ export default function PrivacyPolicyGeneratorTool() {
                 className="rounded accent-primary"
               />
               GDPR compliance (EU users)
+            </label>
+            <label className="inline-flex items-center gap-2 text-sm cursor-pointer">
+              <input
+                type="checkbox"
+                checked={ccpaCompliance}
+                onChange={(e) => setCcpaCompliance(e.target.checked)}
+                className="rounded accent-primary"
+              />
+              CCPA/CPRA Compliance (California)
             </label>
           </div>
 

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import { ToolPage, ToolTextarea, ClearButton } from '@/components/tool-page'
+import { ChevronDown, ChevronRight } from 'lucide-react'
 
 interface MatchInfo {
   fullMatch: string
@@ -26,6 +27,185 @@ const COMMON_PATTERNS = [
   { label: 'IPv6 Address', pattern: '(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}', flags: { g: true, i: false, m: false, s: false, u: false, d: false } },
 ]
 
+const EXPLANATIONS: Record<string, string> = {
+  '.': 'Any character except newline',
+  '\\d': 'Any digit (0-9)',
+  '\\D': 'Any non-digit',
+  '\\w': 'Any word character (a-z, A-Z, 0-9, _)',
+  '\\W': 'Any non-word character',
+  '\\s': 'Any whitespace (space, tab, newline)',
+  '\\S': 'Any non-whitespace',
+  '\\b': 'Word boundary',
+  '\\B': 'Non-word boundary',
+  '^': 'Start of string/line',
+  '$': 'End of string/line',
+  '*': 'Zero or more of the preceding',
+  '+': 'One or more of the preceding',
+  '?': 'Zero or one of the preceding (optional)',
+  '|': 'OR — matches either side',
+  '\\n': 'Newline character',
+  '\\t': 'Tab character',
+  '\\r': 'Carriage return',
+}
+
+interface TokenExplanation {
+  token: string
+  explanation: string
+}
+
+function explainRegex(pattern: string): TokenExplanation[] {
+  const tokens: TokenExplanation[] = []
+  let i = 0
+
+  while (i < pattern.length) {
+    // Named groups: (?<name>...)
+    if (pattern.slice(i).startsWith('(?<') && !pattern.slice(i).startsWith('(?<=')) {
+      const nameEnd = pattern.indexOf('>', i + 3)
+      if (nameEnd !== -1) {
+        const closeParen = findMatchingParen(pattern, i)
+        const name = pattern.slice(i + 3, nameEnd)
+        const token = closeParen !== -1 ? pattern.slice(i, closeParen + 1) : pattern.slice(i, nameEnd + 1)
+        tokens.push({ token, explanation: `Named capture group '${name}'` })
+        i = closeParen !== -1 ? closeParen + 1 : nameEnd + 1
+        continue
+      }
+    }
+
+    // Positive lookahead: (?=...)
+    if (pattern.slice(i).startsWith('(?=')) {
+      const closeParen = findMatchingParen(pattern, i)
+      const token = closeParen !== -1 ? pattern.slice(i, closeParen + 1) : pattern.slice(i)
+      tokens.push({ token, explanation: 'Positive lookahead' })
+      i = closeParen !== -1 ? closeParen + 1 : pattern.length
+      continue
+    }
+
+    // Negative lookahead: (?!...)
+    if (pattern.slice(i).startsWith('(?!')) {
+      const closeParen = findMatchingParen(pattern, i)
+      const token = closeParen !== -1 ? pattern.slice(i, closeParen + 1) : pattern.slice(i)
+      tokens.push({ token, explanation: 'Negative lookahead' })
+      i = closeParen !== -1 ? closeParen + 1 : pattern.length
+      continue
+    }
+
+    // Positive lookbehind: (?<=...)
+    if (pattern.slice(i).startsWith('(?<=')) {
+      const closeParen = findMatchingParen(pattern, i)
+      const token = closeParen !== -1 ? pattern.slice(i, closeParen + 1) : pattern.slice(i)
+      tokens.push({ token, explanation: 'Positive lookbehind' })
+      i = closeParen !== -1 ? closeParen + 1 : pattern.length
+      continue
+    }
+
+    // Negative lookbehind: (?<!...)
+    if (pattern.slice(i).startsWith('(?<!')) {
+      const closeParen = findMatchingParen(pattern, i)
+      const token = closeParen !== -1 ? pattern.slice(i, closeParen + 1) : pattern.slice(i)
+      tokens.push({ token, explanation: 'Negative lookbehind' })
+      i = closeParen !== -1 ? closeParen + 1 : pattern.length
+      continue
+    }
+
+    // Non-capturing group: (?:...)
+    if (pattern.slice(i).startsWith('(?:')) {
+      const closeParen = findMatchingParen(pattern, i)
+      const token = closeParen !== -1 ? pattern.slice(i, closeParen + 1) : pattern.slice(i)
+      tokens.push({ token, explanation: 'Non-capturing group' })
+      i = closeParen !== -1 ? closeParen + 1 : pattern.length
+      continue
+    }
+
+    // Capture group: (...)
+    if (pattern[i] === '(' && pattern[i + 1] !== '?') {
+      const closeParen = findMatchingParen(pattern, i)
+      const token = closeParen !== -1 ? pattern.slice(i, closeParen + 1) : pattern.slice(i)
+      tokens.push({ token, explanation: 'Capture group' })
+      i = closeParen !== -1 ? closeParen + 1 : pattern.length
+      continue
+    }
+
+    // Character class: [...]
+    if (pattern[i] === '[') {
+      const closeIdx = findClosingBracket(pattern, i)
+      const token = closeIdx !== -1 ? pattern.slice(i, closeIdx + 1) : pattern.slice(i)
+      const inner = token.slice(1, -1)
+      const negated = inner.startsWith('^')
+      const chars = negated ? inner.slice(1) : inner
+      tokens.push({
+        token,
+        explanation: negated ? `Any character except: ${chars}` : `Any of: ${chars}`,
+      })
+      i = closeIdx !== -1 ? closeIdx + 1 : pattern.length
+      continue
+    }
+
+    // Quantifiers: {n}, {n,}, {n,m}
+    if (pattern[i] === '{') {
+      const closeIdx = pattern.indexOf('}', i)
+      if (closeIdx !== -1) {
+        const token = pattern.slice(i, closeIdx + 1)
+        const inner = token.slice(1, -1)
+        const parts = inner.split(',')
+        let explanation: string
+        if (parts.length === 1) {
+          explanation = `Exactly ${parts[0]} times`
+        } else if (parts[1] === '') {
+          explanation = `${parts[0]} or more times`
+        } else {
+          explanation = `Between ${parts[0]} and ${parts[1]} times`
+        }
+        tokens.push({ token, explanation })
+        i = closeIdx + 1
+        continue
+      }
+    }
+
+    // Escapes
+    if (pattern[i] === '\\' && i + 1 < pattern.length) {
+      const escaped = pattern.slice(i, i + 2)
+      if (EXPLANATIONS[escaped]) {
+        tokens.push({ token: escaped, explanation: EXPLANATIONS[escaped] })
+      } else {
+        tokens.push({ token: escaped, explanation: `Literal '${pattern[i + 1]}'` })
+      }
+      i += 2
+      continue
+    }
+
+    // Single-character tokens with known explanations
+    if (EXPLANATIONS[pattern[i]]) {
+      tokens.push({ token: pattern[i], explanation: EXPLANATIONS[pattern[i]] })
+      i++
+      continue
+    }
+
+    // Literal characters
+    tokens.push({ token: pattern[i], explanation: `Literal '${pattern[i]}'` })
+    i++
+  }
+
+  return tokens
+}
+
+function findMatchingParen(str: string, openIdx: number): number {
+  let depth = 0
+  for (let i = openIdx; i < str.length; i++) {
+    if (str[i] === '\\') { i++; continue }
+    if (str[i] === '(') depth++
+    if (str[i] === ')') { depth--; if (depth === 0) return i }
+  }
+  return -1
+}
+
+function findClosingBracket(str: string, openIdx: number): number {
+  for (let i = openIdx + 1; i < str.length; i++) {
+    if (str[i] === '\\') { i++; continue }
+    if (str[i] === ']') return i
+  }
+  return -1
+}
+
 export default function RegexTesterTool() {
   const [pattern, setPattern] = useState('')
   const [testString, setTestString] = useState('')
@@ -36,6 +216,12 @@ export default function RegexTesterTool() {
   const [flagS, setFlagS] = useState(false)
   const [flagU, setFlagU] = useState(false)
   const [flagD, setFlagD] = useState(false)
+  const [explanationOpen, setExplanationOpen] = useState(true)
+
+  const explanation = useMemo(() => {
+    if (!pattern) return []
+    return explainRegex(pattern)
+  }, [pattern])
 
   const handlePatternSelect = (index: number) => {
     const preset = COMMON_PATTERNS[index]
@@ -185,6 +371,30 @@ export default function RegexTesterTool() {
           </div>
           {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
         </div>
+
+        {/* Pattern Explanation */}
+        {pattern && explanation.length > 0 && (
+          <div className="rounded-lg border border-border bg-muted/40">
+            <button
+              onClick={() => setExplanationOpen(!explanationOpen)}
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-left hover:bg-muted/60 transition-colors rounded-lg"
+            >
+              {explanationOpen ? <ChevronDown className="h-4 w-4 shrink-0" /> : <ChevronRight className="h-4 w-4 shrink-0" />}
+              Pattern Explanation
+              <span className="text-xs text-muted-foreground font-normal">({explanation.length} token{explanation.length !== 1 ? 's' : ''})</span>
+            </button>
+            {explanationOpen && (
+              <div className="px-3 pb-3 space-y-1">
+                {explanation.map((item, i) => (
+                  <div key={i} className="flex items-baseline gap-3 text-sm">
+                    <code className="shrink-0 px-1.5 py-0.5 rounded bg-primary/10 text-primary font-mono text-xs font-semibold">{item.token}</code>
+                    <span className="text-muted-foreground">{item.explanation}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Flags */}
         <div className="flex flex-wrap gap-3">

@@ -285,6 +285,24 @@ console.log(results);`)
     }
   }, [buildCanvas])
 
+  const handleDownloadSVG = useCallback(() => {
+    const el = codeRef.current
+    if (!el) return
+    const { width, height } = el.getBoundingClientRect()
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">
+    <foreignObject width="100%" height="100%">
+      <div xmlns="http://www.w3.org/1999/xhtml">${el.outerHTML}</div>
+    </foreignObject>
+  </svg>`
+    const blob = new Blob([svg], { type: 'image/svg+xml' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `code-${Date.now()}.svg`
+    a.click()
+    URL.revokeObjectURL(url)
+  }, [])
+
   const clear = () => setCode('')
 
   const lines = code.split('\n')
@@ -416,13 +434,20 @@ console.log(results);`)
             </label>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <button
               onClick={handleDownload}
               disabled={!code.trim()}
               className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
             >
               <Download className="h-4 w-4" /> Download PNG
+            </button>
+            <button
+              onClick={handleDownloadSVG}
+              disabled={!code.trim()}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors disabled:opacity-50"
+            >
+              <Download className="h-4 w-4" /> Download SVG
             </button>
             <button
               onClick={handleCopyImage}

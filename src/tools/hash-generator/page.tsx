@@ -101,12 +101,12 @@ async function hashWithCrypto(algorithm: string, text: string): Promise<string> 
   return hashBufferWithCrypto(algorithm, data.buffer as ArrayBuffer)
 }
 
-async function computeHmacSha256(key: string, text: string): Promise<string> {
+async function computeHmac(algorithm: string, key: string, text: string): Promise<string> {
   const encoder = new TextEncoder()
   const keyData = encoder.encode(key)
   const msgData = encoder.encode(text)
   const cryptoKey = await crypto.subtle.importKey(
-    'raw', keyData, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+    'raw', keyData, { name: 'HMAC', hash: algorithm }, false, ['sign']
   )
   const sig = await crypto.subtle.sign('HMAC', cryptoKey, msgData)
   return Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, '0')).join('')
@@ -204,7 +204,9 @@ export default function HashGeneratorTool() {
   const [hashes, setHashes] = useState<HashResult>(emptyHashes)
   const [uppercase, setUppercase] = useState(false)
   const [hmacKey, setHmacKey] = useState('')
-  const [hmacHash, setHmacHash] = useState('')
+  const [hmacSha1, setHmacSha1] = useState('')
+  const [hmacSha256, setHmacSha256] = useState('')
+  const [hmacSha512, setHmacSha512] = useState('')
   const [compareHash, setCompareHash] = useState('')
   const [fileInfo, setFileInfo] = useState<{ name: string; size: number } | null>(null)
   const [fileHashes, setFileHashes] = useState<HashResult>(emptyHashes)
@@ -232,10 +234,14 @@ export default function HashGeneratorTool() {
   // HMAC computation
   useEffect(() => {
     if (!input || !hmacKey) {
-      setHmacHash('')
+      setHmacSha1('')
+      setHmacSha256('')
+      setHmacSha512('')
       return
     }
-    computeHmacSha256(hmacKey, input).then(setHmacHash)
+    computeHmac('SHA-1', hmacKey, input).then(setHmacSha1)
+    computeHmac('SHA-256', hmacKey, input).then(setHmacSha256)
+    computeHmac('SHA-512', hmacKey, input).then(setHmacSha512)
   }, [input, hmacKey])
 
   // File hashing
@@ -265,7 +271,7 @@ export default function HashGeneratorTool() {
   const allComputedHashes = [
     hashes.md5, hashes.sha1, hashes.sha256, hashes.sha384, hashes.sha512,
     fileHashes.md5, fileHashes.sha1, fileHashes.sha256, fileHashes.sha384, fileHashes.sha512,
-    hmacHash,
+    hmacSha1, hmacSha256, hmacSha512,
   ].filter(Boolean)
 
   const compareResult = compareHash.trim().length > 0
@@ -347,14 +353,14 @@ export default function HashGeneratorTool() {
       {/* Text input */}
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium">Input Text</span>
-        <ClearButton onClear={() => { setInput(''); setHmacKey(''); setHmacHash('') }} />
+        <ClearButton onClear={() => { setInput(''); setHmacKey(''); setHmacSha1(''); setHmacSha256(''); setHmacSha512('') }} />
       </div>
       <ToolTextarea value={input} onChange={setInput} placeholder="Enter text to hash..." rows={5} />
 
       {/* HMAC Key input */}
       <div className="mt-4">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium">HMAC Key <span className="font-normal text-muted-foreground">(optional — computes HMAC-SHA256)</span></span>
+          <span className="text-sm font-medium">HMAC Key <span className="font-normal text-muted-foreground">(optional — computes HMAC-SHA1, HMAC-SHA256, HMAC-SHA512)</span></span>
         </div>
         <input
           type="text"
@@ -379,17 +385,21 @@ export default function HashGeneratorTool() {
               <code className="text-sm font-mono break-all">{h.value ? applyCase(h.value) : 'Computing...'}</code>
             </div>
           ))}
-          {hmacKey && (
-            <div className="p-3 rounded-lg bg-muted border border-border">
+          {hmacKey && [
+            { label: 'HMAC-SHA1', bits: '160-bit', value: hmacSha1 },
+            { label: 'HMAC-SHA256', bits: '256-bit', value: hmacSha256 },
+            { label: 'HMAC-SHA512', bits: '512-bit', value: hmacSha512 },
+          ].map((h) => (
+            <div key={h.label} className="p-3 rounded-lg bg-muted border border-border">
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs font-semibold text-muted-foreground">
-                  HMAC-SHA256 <span className="font-normal">(256-bit)</span>
+                  {h.label} <span className="font-normal">({h.bits})</span>
                 </span>
-                {hmacHash && <CopyButton text={applyCase(hmacHash)} />}
+                {h.value && <CopyButton text={applyCase(h.value)} />}
               </div>
-              <code className="text-sm font-mono break-all">{hmacHash ? applyCase(hmacHash) : 'Computing...'}</code>
+              <code className="text-sm font-mono break-all">{h.value ? applyCase(h.value) : 'Computing...'}</code>
             </div>
-          )}
+          ))}
         </div>
       )}
 

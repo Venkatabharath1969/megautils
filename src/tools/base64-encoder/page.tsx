@@ -39,6 +39,7 @@ export default function Base64EncoderTool() {
   const [input, setInput] = useState('')
   const [mode, setMode] = useState<'encode' | 'decode'>('encode')
   const [urlSafe, setUrlSafe] = useState(false)
+  const [mimeWrap, setMimeWrap] = useState(false)
   const [fileResult, setFileResult] = useState<{ name: string; size: number; dataUri: string; base64: string } | null>(null)
   const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -47,16 +48,18 @@ export default function Base64EncoderTool() {
     if (!input) return ''
     try {
       if (mode === 'encode') {
-        const encoded = btoa(unescape(encodeURIComponent(input)))
-        return urlSafe ? toUrlSafe(encoded) : encoded
+        let encoded = btoa(unescape(encodeURIComponent(input)))
+        if (urlSafe) encoded = toUrlSafe(encoded)
+        if (mimeWrap) encoded = encoded.replace(/(.{76})/g, '$1\n').trimEnd()
+        return encoded
       } else {
-        const toDecode = urlSafe ? fromUrlSafe(input) : input
+        const toDecode = urlSafe ? fromUrlSafe(input.replace(/\s/g, '')) : input.replace(/\s/g, '')
         return decodeURIComponent(escape(atob(toDecode)))
       }
     } catch {
       return 'Error: Invalid input for ' + mode
     }
-  }, [input, mode, urlSafe])
+  }, [input, mode, urlSafe, mimeWrap])
 
   // Detect if decoded content is an image (data URI or raw base64 image)
   const imagePreviewSrc = useMemo(() => {
@@ -167,6 +170,12 @@ export default function Base64EncoderTool() {
           <input type="checkbox" checked={urlSafe} onChange={(e) => setUrlSafe(e.target.checked)} className="rounded border-border" />
           <span className="font-medium">URL-safe Base64</span>
         </label>
+        {mode === 'encode' && (
+          <label className="flex items-center gap-2 text-sm cursor-pointer select-none">
+            <input type="checkbox" checked={mimeWrap} onChange={(e) => setMimeWrap(e.target.checked)} className="rounded border-border" />
+            <span className="font-medium">MIME line wrapping (76 chars)</span>
+          </label>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -183,6 +192,15 @@ export default function Base64EncoderTool() {
             {output && <CopyButton text={output} />}
           </div>
           <ToolTextarea value={output} readOnly placeholder="Result will appear here in real time..." rows={10} />
+          {input && output && !output.startsWith('Error') && (
+            <div className="mt-2 flex flex-wrap gap-3 text-xs text-muted-foreground">
+              <span>Input: {new Blob([input]).size.toLocaleString()} bytes</span>
+              <span>Output: {new Blob([output]).size.toLocaleString()} bytes</span>
+              {mode === 'encode' && (
+                <span>Overhead: {((new Blob([output]).size / new Blob([input]).size - 1) * 100).toFixed(1)}%</span>
+              )}
+            </div>
+          )}
         </div>
       </div>
 

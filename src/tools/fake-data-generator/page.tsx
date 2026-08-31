@@ -43,6 +43,23 @@ const STATES = [
 const COMPANY_SUFFIXES = ['Inc', 'LLC', 'Corp', 'Group', 'Solutions', 'Technologies', 'Systems', 'Services', 'Labs', 'Co']
 const COMPANY_WORDS = ['Alpha', 'Beta', 'Global', 'Digital', 'Tech', 'Smart', 'Blue', 'Green', 'Nova', 'Apex', 'Peak', 'Core', 'Bright', 'Swift', 'Cloud', 'Net', 'Pro', 'Max', 'Zen', 'Quantum']
 
+const COUNTRIES = [
+  'United States', 'United Kingdom', 'Canada', 'Australia', 'Germany', 'France', 'Japan', 'Brazil',
+  'India', 'China', 'Mexico', 'South Korea', 'Italy', 'Spain', 'Netherlands', 'Sweden', 'Norway',
+  'Denmark', 'Finland', 'Switzerland', 'Austria', 'Belgium', 'Poland', 'Portugal', 'Ireland',
+  'New Zealand', 'Singapore', 'South Africa', 'Argentina', 'Chile', 'Colombia', 'Peru', 'Egypt',
+  'Turkey', 'Thailand', 'Vietnam', 'Indonesia', 'Philippines', 'Malaysia', 'Nigeria', 'Kenya',
+  'Czech Republic', 'Romania', 'Greece', 'Hungary', 'Israel', 'UAE', 'Saudi Arabia', 'Ukraine', 'Pakistan',
+]
+
+const LOREM_WORDS = [
+  'lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit',
+  'sed', 'do', 'eiusmod', 'tempor', 'incididunt', 'ut', 'labore', 'et', 'dolore',
+  'magna', 'aliqua', 'enim', 'ad', 'minim', 'veniam', 'quis', 'nostrud',
+  'exercitation', 'ullamco', 'laboris', 'nisi', 'aliquip', 'ex', 'ea', 'commodo',
+  'consequat', 'duis', 'aute', 'irure', 'in', 'reprehenderit', 'voluptate',
+]
+
 const DOMAINS = ['gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com', 'mail.com', 'proton.me', 'icloud.com']
 
 const ADJECTIVES = ['swift', 'bright', 'cool', 'dark', 'epic', 'fast', 'grand', 'happy', 'icy', 'keen', 'loud', 'mega', 'noble', 'odd', 'prime', 'quiet', 'rare', 'super', 'tiny', 'ultra']
@@ -92,13 +109,52 @@ function generateUUID(): string {
   return `${s(8)}-${s(4)}-4${s(3)}-${['8','9','a','b'][randInt(0,3)]}${s(3)}-${s(12)}`
 }
 
+function generateColor(): string {
+  return `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`
+}
+
+function generateBoolean(): string {
+  return Math.random() < 0.5 ? 'true' : 'false'
+}
+
+function generateLatitude(): string {
+  return (Math.random() * 180 - 90).toFixed(6)
+}
+
+function generateLongitude(): string {
+  return (Math.random() * 360 - 180).toFixed(6)
+}
+
+function generateParagraph(): string {
+  const sentenceCount = randInt(2, 3)
+  const sentences: string[] = []
+  for (let s = 0; s < sentenceCount; s++) {
+    const wordCount = randInt(6, 12)
+    const words: string[] = []
+    for (let w = 0; w < wordCount; w++) words.push(pick(LOREM_WORDS))
+    words[0] = words[0].charAt(0).toUpperCase() + words[0].slice(1)
+    sentences.push(words.join(' ') + '.')
+  }
+  return sentences.join(' ')
+}
+
+function generateInteger(): string {
+  return String(randInt(1, 10000))
+}
+
+function generateMacAddress(): string {
+  return Array.from({ length: 6 }, () =>
+    Math.floor(Math.random() * 256).toString(16).padStart(2, '0').toUpperCase()
+  ).join(':')
+}
+
 function generateFakeCreditCard(): string {
   // Intentionally Luhn-failing fake card with 4111 prefix
   const digits = '4111' + Array.from({ length: 12 }, () => randInt(0, 9)).join('')
   return `${digits.slice(0,4)}-${digits.slice(4,8)}-${digits.slice(8,12)}-${digits.slice(12,16)}`
 }
 
-type FieldKey = 'name' | 'email' | 'phone' | 'address' | 'company' | 'dob' | 'username' | 'url' | 'ipv4' | 'uuid' | 'creditCard'
+type FieldKey = 'name' | 'email' | 'phone' | 'address' | 'company' | 'dob' | 'username' | 'url' | 'ipv4' | 'uuid' | 'creditCard' | 'color' | 'boolean' | 'latitude' | 'longitude' | 'country' | 'paragraph' | 'integer' | 'mac_address'
 
 const ALL_FIELDS: { key: FieldKey; label: string }[] = [
   { key: 'name', label: 'Full Name' },
@@ -112,6 +168,14 @@ const ALL_FIELDS: { key: FieldKey; label: string }[] = [
   { key: 'ipv4', label: 'IPv4 Address' },
   { key: 'uuid', label: 'UUID' },
   { key: 'creditCard', label: 'Credit Card (fake)' },
+  { key: 'color', label: 'Color' },
+  { key: 'boolean', label: 'Boolean' },
+  { key: 'latitude', label: 'Latitude' },
+  { key: 'longitude', label: 'Longitude' },
+  { key: 'country', label: 'Country' },
+  { key: 'paragraph', label: 'Paragraph' },
+  { key: 'integer', label: 'Integer' },
+  { key: 'mac_address', label: 'MAC Address' },
 ]
 
 type FakeRecord = Record<string, string>
@@ -133,6 +197,14 @@ function generateRecord(fields: FieldKey[]): FakeRecord {
       case 'ipv4': record.ipv4 = generateIPv4(); break
       case 'uuid': record.uuid = generateUUID(); break
       case 'creditCard': record.creditCard = generateFakeCreditCard(); break
+      case 'color': record.color = generateColor(); break
+      case 'boolean': record.boolean = generateBoolean(); break
+      case 'latitude': record.latitude = generateLatitude(); break
+      case 'longitude': record.longitude = generateLongitude(); break
+      case 'country': record.country = pick(COUNTRIES); break
+      case 'paragraph': record.paragraph = generateParagraph(); break
+      case 'integer': record.integer = generateInteger(); break
+      case 'mac_address': record.mac_address = generateMacAddress(); break
     }
   }
   return record

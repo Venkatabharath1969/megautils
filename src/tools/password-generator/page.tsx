@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo } from 'react'
 import { Shield } from 'lucide-react'
-import { ToolPage, CopyButton, ClearButton } from '@/components/tool-page'
+import { ToolPage, CopyButton, ClearButton, DownloadButton } from '@/components/tool-page'
 
 const CHARSETS = {
   uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
@@ -277,10 +277,24 @@ function generatePassword(
   return result.join('')
 }
 
-function generatePassphrase(wordCount: number, separator: string): string {
+function generatePassphrase(wordCount: number, separator: string, capitalize: boolean, includeNumber: boolean): string {
   const array = new Uint32Array(wordCount)
   crypto.getRandomValues(array)
-  return Array.from(array, (v) => WORDLIST[v % WORDLIST.length]).join(separator)
+  const words = Array.from(array, (v) => WORDLIST[v % WORDLIST.length])
+  if (capitalize) {
+    for (let i = 0; i < words.length; i++) {
+      words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1)
+    }
+  }
+  if (includeNumber) {
+    const posArr = new Uint32Array(1)
+    crypto.getRandomValues(posArr)
+    const pos = posArr[0] % words.length
+    const digitArr = new Uint32Array(1)
+    crypto.getRandomValues(digitArr)
+    words[pos] = words[pos] + (digitArr[0] % 10)
+  }
+  return words.join(separator)
 }
 
 function getStrength(password: string): { label: string; percent: number; color: string } {
@@ -361,6 +375,8 @@ export default function PasswordGeneratorTool() {
   // Passphrase options
   const [wordCount, setWordCount] = useState(4)
   const [separator, setSeparator] = useState('-')
+  const [capitalizeWords, setCapitalizeWords] = useState(false)
+  const [includeNumber, setIncludeNumber] = useState(false)
 
   const entropy = useMemo(() => {
     if (mode === 'passphrase') {
@@ -375,14 +391,14 @@ export default function PasswordGeneratorTool() {
     const result: string[] = []
     for (let i = 0; i < quantity; i++) {
       if (mode === 'passphrase') {
-        result.push(generatePassphrase(wordCount, separator))
+        result.push(generatePassphrase(wordCount, separator, capitalizeWords, includeNumber))
       } else {
         const opts = { uppercase, lowercase, numbers, symbols }
         result.push(generatePassword(length, opts, excludeAmbiguous))
       }
     }
     setPasswords(result)
-  }, [mode, length, uppercase, lowercase, numbers, symbols, excludeAmbiguous, quantity, wordCount, separator])
+  }, [mode, length, uppercase, lowercase, numbers, symbols, excludeAmbiguous, quantity, wordCount, separator, capitalizeWords, includeNumber])
 
   const allText = passwords.join('\n')
 
@@ -538,6 +554,18 @@ export default function PasswordGeneratorTool() {
                   ))}
                 </div>
               </div>
+
+              {/* Capitalize passphrase */}
+              <label className="flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={capitalizeWords} onChange={(e) => setCapitalizeWords(e.target.checked)} className="rounded border-border" />
+                Capitalize words
+              </label>
+
+              {/* Include number */}
+              <label className="flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={includeNumber} onChange={(e) => setIncludeNumber(e.target.checked)} className="rounded border-border" />
+                Include number
+              </label>
             </>
           )}
 
@@ -581,6 +609,7 @@ export default function PasswordGeneratorTool() {
             <span className="text-sm font-medium">Generated {mode === 'passphrase' ? 'Passphrases' : 'Passwords'}</span>
             <div className="flex gap-1.5">
               {passwords.length > 0 && <CopyButton text={allText} />}
+              {passwords.length > 1 && <DownloadButton content={allText} filename="passwords.txt" />}
               {passwords.length > 0 && <ClearButton onClear={() => setPasswords([])} />}
             </div>
           </div>
