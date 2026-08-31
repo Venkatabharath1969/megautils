@@ -240,7 +240,7 @@ export default function HomePage() {
           { label: t('trust.free'), value: t('trust.free.value') },
           { label: t('trust.login'), value: t('trust.login.value') },
           { label: t('trust.data'), value: t('trust.data.value') },
-          { label: t('trust.tools'), value: '194+' },
+          { label: t('trust.tools'), value: '220+' },
         ].map((stat) => (
           <div key={stat.label} className="p-4 rounded-lg bg-card border border-border">
             <div className="text-2xl font-bold text-primary">{stat.value}</div>
@@ -266,7 +266,7 @@ export default function HomePage() {
             <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-purple-500/10">
               <Sparkles className="h-5 w-5 text-purple-600 dark:text-purple-400" />
             </div>
-            <span className="text-2xl font-bold text-primary">194</span>
+            <span className="text-2xl font-bold text-primary">220+</span>
             <span className="text-xs text-muted-foreground">Free Tools</span>
           </div>
           <div className="flex flex-col items-center gap-2">
@@ -291,7 +291,7 @@ export default function HomePage() {
         '@context': 'https://schema.org',
         '@type': 'CollectionPage',
         'name': 'UtilsNow - Free Online Tools',
-        'description': '194+ free browser-based tools for developers, designers, and everyone. No signup required.',
+        'description': '220+ free browser-based tools for developers, designers, and everyone. No signup required.',
         'url': 'https://utilsnow.com',
         'mainEntity': {
           '@type': 'ItemList',

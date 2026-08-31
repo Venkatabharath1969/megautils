@@ -59,7 +59,7 @@ export default function ProPage() {
       <div className="mt-12 text-center">
         <h2 className="text-xl font-semibold mb-4">What&apos;s included in Free?</h2>
         <div className="inline-flex flex-col items-start gap-2 text-sm text-muted-foreground">
-          {['All 194 tools accessible', '10 uses per day', 'All AI tools included', '100% browser-based processing', 'No signup required'].map(item => (
+          {['All 220+ tools accessible', '10 uses per day', 'All AI tools included', '100% browser-based processing', 'No signup required'].map(item => (
             <div key={item} className="flex items-center gap-2">
               <Check className="h-4 w-4 text-green-500" />
               <span>{item}</span>

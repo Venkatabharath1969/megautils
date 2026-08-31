@@ -1,9 +1,9 @@
 # UtilsNow — Free Online Tools
 
-> https://utilsnow.com — 194 free browser-based utility tools. No signup. No data uploaded. Runs entirely in your browser.
+> https://utilsnow.com — 220+ free browser-based utility tools. No signup. No data uploaded. Runs entirely in your browser.
 
 ## About
-UtilsNow is a free online tools website with 194 utilities across 17 categories for developers, designers, students, and professionals. Every tool runs entirely in your browser — no data leaves your device. No login required.
+UtilsNow is a free online tools website with 220+ utilities across 17 categories for developers, designers, students, and professionals. Every tool runs entirely in your browser — no data leaves your device. No login required.
 
 ## Categories & Tools
 

@@ -13,21 +13,21 @@ const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin']
 
 export const metadata: Metadata = {
   title: {
-    default: 'UtilsNow - 194+ Free Online Tools for Developers & Everyone',
+    default: 'UtilsNow - 220+ Free Online Tools for Developers & Everyone',
     template: '%s | UtilsNow',
   },
   description: 'Free online developer tools, financial calculators, SEO tools, converters, and more. All processing happens in your browser. No login required. No data stored.',
   keywords: ['online tools', 'developer tools', 'json formatter', 'base64 encoder', 'calculator', 'converter', 'seo tools', 'css generator'],
   metadataBase: new URL('https://utilsnow.com'),
   openGraph: {
-    title: 'UtilsNow - 194+ Free Online Tools',
+    title: 'UtilsNow - 220+ Free Online Tools',
     description: 'Free online developer tools, calculators, converters, and more. No login. No data stored.',
     url: 'https://utilsnow.com',
     siteName: 'UtilsNow',
     type: 'website',
-    images: [{ url: '/opengraph-image.png', width: 1200, height: 630, alt: 'UtilsNow - 194+ Free Online Tools' }],
+    images: [{ url: '/opengraph-image.png', width: 1200, height: 630, alt: 'UtilsNow - 220+ Free Online Tools' }],
   },
-  twitter: { card: 'summary_large_image', title: 'UtilsNow - 194+ Free Online Tools', description: 'Free online developer tools, calculators, converters, and more.', images: ['/opengraph-image.png'] },
+  twitter: { card: 'summary_large_image', title: 'UtilsNow - 220+ Free Online Tools', description: 'Free online developer tools, calculators, converters, and more.', images: ['/opengraph-image.png'] },
   robots: { index: true, follow: true, 'max-image-preview': 'large' as const, 'max-snippet': -1, 'max-video-preview': -1 },
   alternates: { canonical: 'https://utilsnow.com' },
 }
@@ -63,7 +63,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               '@type': 'Organization',
               name: 'UtilsNow',
               url: 'https://utilsnow.com',
-              description: '194+ free browser-based utility tools for developers, designers, and everyone.',
+              description: '220+ free browser-based utility tools for developers, designers, and everyone.',
               sameAs: [
                 'https://github.com/Venkatabharath1969/megautils',
                 'https://linkedin.com/company/techie-boy',

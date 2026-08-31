@@ -32,6 +32,7 @@ const categoryData: Record<string, { label: string; description: string; tools: 
       { id: 'chmod-calculator', name: 'chmod Calculator', description: 'Unix file permissions calculator' },
       { id: 'json-path-finder', name: 'JSON Path Finder', description: 'Find JSONPath for any element' },
       { id: 'csv-viewer', name: 'CSV Viewer', description: 'View CSV as sortable table' },
+      { id: 'api-request-builder', name: 'API Request Builder', description: 'Build API requests visually and generate code in cURL, JavaScript, Python, Node.js, PHP, and Go' },
     ],
   },
   encoders: {
@@ -308,7 +309,24 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   const { id } = await params
   const cat = categoryData[id]
   if (!cat) return { title: 'Category Not Found' }
-  return { title: `${cat.label} - Free Online Tools`, description: cat.description, alternates: { canonical: `https://utilsnow.com/category/${id}` } }
+  return {
+    title: `${cat.label} - Free Online Tools`,
+    description: cat.description,
+    openGraph: {
+      title: `${cat.label} | UtilsNow`,
+      description: cat.description,
+      url: `https://utilsnow.com/category/${id}`,
+      type: 'website',
+      images: [{ url: '/opengraph-image.png', width: 1200, height: 630, alt: cat.label }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${cat.label} | UtilsNow`,
+      description: cat.description,
+      images: ['/opengraph-image.png'],
+    },
+    alternates: { canonical: `https://utilsnow.com/category/${id}` },
+  }
 }
 
 export default async function CategoryPage({ params }: { params: Promise<{ id: string }> }) {

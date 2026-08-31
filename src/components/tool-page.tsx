@@ -40,6 +40,7 @@ const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
     { id: 'xml-to-json', name: 'XML to JSON' },
     { id: 'json-to-go', name: 'JSON to Go Struct' },
     { id: 'json-to-python', name: 'JSON to Python' },
+    { id: 'api-request-builder', name: 'API Request Builder' },
   ],
   encoders: [
     { id: 'base64-encoder', name: 'Base64 Encoder/Decoder' },
@@ -109,6 +110,7 @@ const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
     { id: 'ai-paraphraser', name: 'AI Paraphrasing Tool' },
     { id: 'ai-humanizer', name: 'AI Text Humanizer' },
     { id: 'typing-speed-test', name: 'Typing Speed Test' },
+    { id: 'citation-generator', name: 'Citation Generator' },
   ],
   string: [
     { id: 'regex-tester', name: 'Regex Tester' },
@@ -263,6 +265,8 @@ const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
     { id: 'privacy-policy-generator', name: 'Privacy Policy Generator' },
     { id: 'terms-generator', name: 'Terms Generator' },
     { id: 'resume-builder', name: 'Resume / CV Builder' },
+    { id: 'logo-maker', name: 'Logo Maker' },
+    { id: 'whiteboard', name: 'Whiteboard / Drawing Pad' },
   ],
   pdf: [
     { id: 'pdf-merge', name: 'Merge PDF' },
@@ -428,7 +432,7 @@ export function ToolPage({ title, description, category, categoryLabel, slug, ch
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             '@context': 'https://schema.org',
-            '@type': 'SoftwareApplication',
+            '@type': 'WebApplication',
             name: title,
             url: `https://utilsnow.com/tools/${derivedSlug || category}`,
             description: description,

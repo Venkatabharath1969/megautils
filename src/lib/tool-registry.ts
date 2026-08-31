@@ -25,11 +25,11 @@ export interface Category {
 // Categories (17 total)
 // ---------------------------------------------------------------------------
 export const CATEGORIES: Category[] = [
-  { id: 'developer',   label: 'Developer Tools',        description: 'Code formatters, data converters, validators, and diff tools for developers.', count: 24 },
+  { id: 'developer',   label: 'Developer Tools',        description: 'Code formatters, data converters, validators, and diff tools for developers.', count: 25 },
   { id: 'encoders',    label: 'Encoders & Decoders',    description: 'Encode and decode data in Base64, URL, HTML, JWT, binary, hex, and more.', count: 14 },
   { id: 'crypto',      label: 'Crypto & Hash',          description: 'Hashing, encryption, passwords, and security tools.', count: 3 },
   { id: 'seo',         label: 'SEO Tools',              description: 'Meta tags, schema markup, sitemaps, and SEO analysis tools.', count: 18 },
-  { id: 'text',        label: 'Text Tools',             description: 'Count, convert, clean, sort, and transform text.', count: 26 },
+  { id: 'text',        label: 'Text Tools',             description: 'Count, convert, clean, sort, and transform text.', count: 27 },
   { id: 'string',      label: 'String Utilities',       description: 'Regex testing, encoding, generators, and string tools.', count: 6 },
   { id: 'content',     label: 'Content & Writing',      description: 'Headlines, readability analysis, and social media tools.', count: 3 },
   { id: 'markdown',    label: 'Markdown Tools',         description: 'Markdown editor, converters, and table generator.', count: 4 },
@@ -41,7 +41,7 @@ export const CATEGORIES: Category[] = [
   { id: 'image',       label: 'Image Tools',            description: 'QR codes, image resizing, format conversion, cropping, screen recording, and optimization.', count: 26 },
   { id: 'datetime',    label: 'Date & Time',            description: 'Unix timestamps, date calculations, age calculator, and cron builder.', count: 6 },
   { id: 'network',     label: 'Network & API',          description: 'HTTP status codes, URL parser, user agent parser, and IP info.', count: 4 },
-  { id: 'generators',  label: 'Generators',             description: 'Generate UUIDs, passwords, Lorem Ipsum, hashes, barcodes, and more.', count: 12 },
+  { id: 'generators',  label: 'Generators',             description: 'Generate UUIDs, passwords, Lorem Ipsum, hashes, barcodes, and more.', count: 14 },
   { id: 'pdf',         label: 'PDF Tools',              description: 'Merge, split, compress, sign, convert, unlock, watermark, rotate, and manipulate PDF files directly in your browser.', count: 13 },
 ]
 
@@ -226,6 +226,13 @@ export const TOOLS: Tool[] = [
     description: 'View CSV as sortable table',
     category: 'developer',
     keywords: ['csv table', 'csv reader', 'csv preview', 'csv display', 'spreadsheet viewer', 'csv browser', 'tsv viewer'],
+  },
+  {
+    id: 'api-request-builder',
+    name: 'API Request Builder',
+    description: 'Build API requests visually and generate code in cURL, JavaScript, Python, Node.js, PHP, and Go',
+    category: 'developer',
+    keywords: ['api builder', 'request builder', 'http client', 'curl generator', 'fetch generator', 'postman alternative', 'api tester', 'rest client', 'http request', 'api code generator', 'curl import'],
   },
 
   // ── Encoders & Decoders (14) ─────────────────────────────────────────────
@@ -668,6 +675,13 @@ export const TOOLS: Tool[] = [
     description: 'Test your typing speed with real-time WPM, accuracy, and error tracking',
     category: 'text',
     keywords: ['typing test', 'typing speed', 'wpm test', 'words per minute', 'typing practice', 'typing game', 'keyboard speed', 'typing accuracy', 'type test', 'speed typing'],
+  },
+  {
+    id: 'citation-generator',
+    name: 'Citation Generator',
+    description: 'Generate APA, MLA, Chicago, Harvard, and IEEE citations for websites, books, journals, and newspapers',
+    category: 'text',
+    keywords: ['citation generator', 'apa citation', 'mla citation', 'chicago citation', 'harvard citation', 'ieee citation', 'bibliography generator', 'reference generator', 'cite website', 'cite book', 'cite journal', 'in-text citation', 'works cited', 'easybib alternative', 'bibme alternative'],
   },
 
   // ── String Utilities (6) ─────────────────────────────────────────────────
@@ -1600,6 +1614,20 @@ export const TOOLS: Tool[] = [
     description: 'Build a professional resume with live preview and download as PDF — free, no sign-up',
     category: 'generators',
     keywords: ['resume builder', 'cv builder', 'resume maker', 'cv maker', 'resume generator', 'resume template', 'curriculum vitae', 'resume pdf', 'free resume', 'canva resume alternative', 'resume.io alternative', 'zety alternative', 'professional resume'],
+  },
+  {
+    id: 'logo-maker',
+    name: 'Logo Maker',
+    description: 'Create a simple logo with icons, text, and custom colors — download as PNG for free',
+    category: 'generators',
+    keywords: ['logo maker', 'logo generator', 'logo creator', 'logo design', 'brand logo', 'free logo', 'logo builder', 'company logo', 'favicon maker', 'canva alternative', 'looka alternative', 'hatchful alternative', 'simple logo'],
+  },
+  {
+    id: 'whiteboard',
+    name: 'Whiteboard / Drawing Pad',
+    description: 'Free online drawing canvas with pen, shapes, colors, undo/redo, and PNG export',
+    category: 'generators',
+    keywords: ['whiteboard', 'drawing pad', 'online drawing', 'sketch pad', 'canvas drawing', 'paint tool', 'drawing tool', 'free whiteboard', 'draw online', 'simple paint', 'digital whiteboard', 'collaborative whiteboard'],
   },
 
   // ── PDF Tools (12) ────────────────────────────────────────────────────────
