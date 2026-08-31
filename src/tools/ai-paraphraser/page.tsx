@@ -2,11 +2,11 @@
 
 import { useState, useMemo, useCallback } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, ClearButton } from '@/components/tool-page'
-import { FileText, RefreshCw } from 'lucide-react'
+import { FileText, RefreshCw, ArrowLeftRight } from 'lucide-react'
 
 /* ---- Types ---- */
 
-type ParaphraseMode = 'standard' | 'formal' | 'simple' | 'creative'
+type ParaphraseMode = 'standard' | 'fluency' | 'formal' | 'simple' | 'academic' | 'creative' | 'shorten' | 'expand'
 
 interface ChangedWord {
   original: string
@@ -368,6 +368,132 @@ const SIMPLE_MAP: Record<string, string> = {
   efficacious: 'effective', superfluous: 'extra', rudimentary: 'basic',
 }
 
+/* ---- Fluency word map (fix awkward phrasing, improve flow) ---- */
+
+const FLUENCY_MAP: Record<string, string> = {
+  gonna: 'going to', wanna: 'want to', gotta: 'have to', kinda: 'kind of',
+  sorta: 'sort of', alot: 'a lot', alright: 'all right', anyways: 'anyway',
+  irregardless: 'regardless', supposably: 'supposedly', prolly: 'probably',
+  thru: 'through', tho: 'though', cuz: 'because', til: 'until',
+  shoulda: 'should have', coulda: 'could have', woulda: 'would have',
+  dunno: "don't know", lemme: 'let me', gimme: 'give me',
+  outta: 'out of', lotsa: 'lots of', nope: 'no', yep: 'yes',
+  yeah: 'yes', ur: 'your',
+  utilize: 'use', facilitate: 'help', commence: 'start', endeavor: 'try',
+  ascertain: 'find out', elucidate: 'explain', ameliorate: 'improve',
+  fabricate: 'make up', inaugurate: 'begin', implement: 'carry out',
+  disseminate: 'share', formulate: 'create', perpetuate: 'continue',
+  scrutinize: 'examine', transmit: 'send', validate: 'confirm',
+  prioritize: 'focus on', proliferate: 'spread', leverage: 'use',
+  optimize: 'improve', mitigate: 'reduce', exacerbate: 'worsen',
+  notwithstanding: 'despite', superfluous: 'unnecessary',
+  furthermore: 'also', moreover: 'also', nevertheless: 'still',
+  consequently: 'so', subsequently: 'then', approximately: 'about',
+  sufficient: 'enough', substantial: 'large', minimal: 'small',
+  exemplary: 'great', inadequate: 'poor', expeditious: 'fast',
+  comprehend: 'understand', numerous: 'many', accomplish: 'do',
+  regarding: 'about', exceedingly: 'very', genuinely: 'really',
+}
+
+/* ---- Academic word map (hedging, transitions) ---- */
+
+const ACADEMIC_MAP: Record<string, string> = {
+  shows: 'suggests', prove: 'provide evidence for', proves: 'provides evidence for',
+  think: 'postulate', say: 'assert', says: 'asserts', find: 'observe',
+  finds: 'observes', cause: 'contribute to', causes: 'contributes to',
+  get: 'obtain', use: 'employ', help: 'facilitate', need: 'necessitate',
+  try: 'endeavor', start: 'commence', end: 'conclude', give: 'provide',
+  ask: 'inquire', tell: 'inform', make: 'construct', keep: 'maintain',
+  build: 'establish', buy: 'procure', fix: 'rectify', check: 'examine',
+  show: 'demonstrate', big: 'substantial', small: 'minimal',
+  good: 'favorable', bad: 'unfavorable', important: 'significant',
+  hard: 'challenging', easy: 'straightforward', fast: 'rapid',
+  enough: 'sufficient', about: 'approximately', but: 'however',
+  so: 'consequently', also: 'additionally', very: 'considerably',
+  really: 'notably', many: 'numerous',
+  few: 'limited number of', always: 'consistently', never: 'under no circumstances',
+  often: 'frequently', maybe: 'perhaps', sure: 'certain',
+  seems: 'appears', seem: 'appear', look: 'examine', work: 'function',
+  change: 'modify', grow: 'expand', move: 'transition', run: 'operate',
+}
+
+const ACADEMIC_TRANSITIONS = ['However, ', 'Furthermore, ', 'Consequently, ', 'Moreover, ', 'Additionally, ', 'Nevertheless, ', 'In contrast, ', 'Similarly, ', 'Notably, ', 'Specifically, ']
+
+/* ---- Expand helpers (clarifying phrases, descriptive modifiers) ---- */
+
+const EXPAND_MODIFIERS: Record<string, string> = {
+  important: 'particularly important', significant: 'highly significant',
+  clear: 'abundantly clear', different: 'fundamentally different',
+  good: 'remarkably good', bad: 'considerably bad', large: 'exceptionally large',
+  small: 'notably small', fast: 'remarkably fast', slow: 'considerably slow',
+  strong: 'particularly strong', weak: 'considerably weak',
+  new: 'entirely new', old: 'considerably old', complex: 'inherently complex',
+  simple: 'relatively simple', common: 'particularly common', rare: 'exceedingly rare',
+  difficult: 'inherently difficult', easy: 'relatively easy',
+  effective: 'highly effective', useful: 'particularly useful',
+  interesting: 'particularly interesting', obvious: 'immediately obvious',
+  likely: 'highly likely', unlikely: 'highly unlikely',
+  successful: 'remarkably successful', popular: 'increasingly popular',
+  critical: 'absolutely critical', essential: 'absolutely essential',
+  necessary: 'fundamentally necessary', possible: 'entirely possible',
+  certain: 'virtually certain', similar: 'remarkably similar',
+  serious: 'exceptionally serious', basic: 'fundamentally basic',
+  valuable: 'immensely valuable', powerful: 'exceptionally powerful',
+  dangerous: 'potentially dangerous', safe: 'perfectly safe',
+  unique: 'truly unique', perfect: 'absolutely perfect',
+  beautiful: 'truly beautiful', strange: 'particularly strange',
+  helpful: 'extremely helpful', relevant: 'directly relevant',
+  accurate: 'remarkably accurate', impressive: 'truly impressive',
+  challenging: 'particularly challenging', surprising: 'genuinely surprising',
+  concerning: 'deeply concerning', promising: 'genuinely promising',
+  beneficial: 'tremendously beneficial', problematic: 'fundamentally problematic',
+}
+
+const EXPAND_TRANSITIONS = [
+  'In other words, ', 'To put it another way, ', 'That is to say, ',
+  'More specifically, ', 'To elaborate, ', 'In particular, ',
+  'It is worth noting that ', 'This means that ', 'As a result, ',
+  'With this in mind, ', 'To further illustrate, ', 'Building on this, ',
+]
+
+/* ---- Shorten filler removal list ---- */
+
+const SHORTEN_FILLERS = [
+  'actually', 'basically', 'literally', 'very', 'really', 'just',
+  'quite', 'rather', 'somewhat', 'perhaps', 'simply', 'merely',
+  'certainly', 'definitely', 'absolutely', 'totally', 'completely',
+  'entirely', 'essentially', 'practically', 'virtually', 'obviously',
+  'clearly', 'honestly', 'frankly', 'truly', 'indeed', 'surely',
+]
+
+const SHORTEN_REDUNDANT: Record<string, string> = {
+  'absolutely essential': 'essential', 'added bonus': 'bonus',
+  'advance planning': 'planning', 'basic fundamentals': 'fundamentals',
+  'close proximity': 'proximity', 'completely eliminate': 'eliminate',
+  'consensus of opinion': 'consensus', 'each and every': 'every',
+  'end result': 'result', 'exact same': 'same',
+  'final outcome': 'outcome', 'free gift': 'gift',
+  'future plans': 'plans', 'general public': 'public',
+  'in order to': 'to', 'join together': 'join',
+  'just exactly': 'exactly', 'main focus': 'focus',
+  'mutual cooperation': 'cooperation', 'new innovation': 'innovation',
+  'null and void': 'void', 'past history': 'history',
+  'period of time': 'period', 'personal opinion': 'opinion',
+  'plan ahead': 'plan', 'reason why': 'reason',
+  'repeat again': 'repeat', 'revert back': 'revert',
+  'still remains': 'remains', 'sum total': 'total',
+  'true fact': 'fact', 'unexpected surprise': 'surprise',
+  'whether or not': 'whether', 'due to the fact that': 'because',
+  'at this point in time': 'now', 'in spite of the fact that': 'although',
+  'a large number of': 'many', 'the vast majority of': 'most',
+  'at the present time': 'now', 'for the purpose of': 'to',
+  'has the ability to': 'can', 'is able to': 'can',
+  'it is important to note that': '', 'it should be noted that': '',
+  'in the event that': 'if', 'on a daily basis': 'daily',
+  'as a matter of fact': 'in fact', 'in the near future': 'soon',
+  'take into consideration': 'consider', 'make a decision': 'decide',
+}
+
 /* ---- Core paraphrasing engine ---- */
 
 function seededRandom(seed: number): () => number {
@@ -490,7 +616,16 @@ function paraphrase(text: string, mode: ParaphraseMode, preserveTerms: Set<strin
   let doRestructure = false
   let doVoiceToggle = false
 
+  let doAcademicTransitions = false
+  let doShorten = false
+  let doExpand = false
+
   switch (mode) {
+    case 'fluency':
+      replacementRate = 0.5
+      wordMap = FLUENCY_MAP
+      useSynonyms = true
+      break
     case 'formal':
       replacementRate = 0.5
       wordMap = FORMAL_MAP
@@ -501,11 +636,28 @@ function paraphrase(text: string, mode: ParaphraseMode, preserveTerms: Set<strin
       wordMap = SIMPLE_MAP
       useSynonyms = true
       break
+    case 'academic':
+      replacementRate = 0.5
+      wordMap = ACADEMIC_MAP
+      useSynonyms = true
+      doAcademicTransitions = true
+      break
     case 'creative':
       replacementRate = 0.7
       useSynonyms = true
       doRestructure = true
       doVoiceToggle = true
+      break
+    case 'shorten':
+      replacementRate = 0.3
+      useSynonyms = false
+      doShorten = true
+      break
+    case 'expand':
+      replacementRate = 0.3
+      wordMap = EXPAND_MODIFIERS
+      useSynonyms = true
+      doExpand = true
       break
     case 'standard':
     default:
@@ -514,8 +666,85 @@ function paraphrase(text: string, mode: ParaphraseMode, preserveTerms: Set<strin
       break
   }
 
+  // ── Shorten mode: pre-process the text ──
+  if (doShorten) {
+    let shortened = text
+    // Remove redundant phrases
+    for (const [phrase, replacement] of Object.entries(SHORTEN_REDUNDANT)) {
+      const regex = new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')
+      shortened = shortened.replace(regex, replacement)
+    }
+    // Remove filler words (as standalone words)
+    for (const filler of SHORTEN_FILLERS) {
+      const regex = new RegExp(`\\b${filler}\\b\\s*`, 'gi')
+      shortened = shortened.replace(regex, '')
+    }
+    // Clean up extra spaces
+    shortened = shortened.replace(/\s{2,}/g, ' ').replace(/\s+([,.])/g, '$1').trim()
+    const outputWordCount = countWords(shortened)
+    return { text: shortened, changes: [{ original: 'shortened', replacement: 'text', index: 0 }], outputWordCount, inputWordCount }
+  }
+
   // Split into sentences preserving whitespace
-  const sentences = text.match(/[^.!?]*[.!?]+[\s]?|[^.!?]+$/g) || [text]
+  let sentences: string[] = Array.from(text.match(/[^.!?]*[.!?]+[\s]?|[^.!?]+$/g) || [text])
+
+  // ── Expand mode: add transitions between sentences ──
+  if (doExpand && sentences.length > 1) {
+    const expandedSentences: string[] = []
+    for (let i = 0; i < sentences.length; i++) {
+      let s = sentences[i]
+      if (i > 0 && rng() < 0.4) {
+        const transition = EXPAND_TRANSITIONS[Math.floor(rng() * EXPAND_TRANSITIONS.length)]
+        const trimmed = s.trimStart()
+        if (trimmed.length > 0) {
+          s = transition + trimmed.charAt(0).toLowerCase() + trimmed.slice(1)
+        }
+      }
+      expandedSentences.push(s)
+    }
+    sentences = expandedSentences
+  }
+
+  // ── Academic mode: add transitions ──
+  if (doAcademicTransitions && sentences.length > 1) {
+    const academicSentences: string[] = []
+    for (let i = 0; i < sentences.length; i++) {
+      let s = sentences[i]
+      if (i > 0 && rng() < 0.35) {
+        const transition = ACADEMIC_TRANSITIONS[Math.floor(rng() * ACADEMIC_TRANSITIONS.length)]
+        const trimmed = s.trimStart()
+        if (trimmed.length > 0) {
+          s = transition + trimmed.charAt(0).toLowerCase() + trimmed.slice(1)
+        }
+      }
+      academicSentences.push(s)
+    }
+    sentences = academicSentences
+  }
+
+  // ── Simple mode: split long sentences at conjunctions ──
+  if (mode === 'simple') {
+    const splitSentences: string[] = []
+    for (const s of sentences) {
+      const wordCount = s.split(/\s+/).filter(Boolean).length
+      if (wordCount > 20) {
+        const parts = s.split(/,\s*(and|but|or|so|because|although|while|however)\s+/i)
+        if (parts.length >= 3) {
+          for (let i = 0; i < parts.length; i += 2) {
+            let part = parts[i].trim()
+            if (part && !part.match(/[.!?]$/)) part += '.'
+            if (part.length > 2) {
+              part = part.charAt(0).toUpperCase() + part.slice(1)
+              splitSentences.push(part + ' ')
+            }
+          }
+          continue
+        }
+      }
+      splitSentences.push(s)
+    }
+    sentences = splitSentences
+  }
   const changes: ChangedWord[] = []
   let globalWordIndex = 0
 
@@ -607,15 +836,20 @@ function paraphrase(text: string, mode: ParaphraseMode, preserveTerms: Set<strin
 
 const MODE_OPTIONS: { key: ParaphraseMode; label: string; desc: string }[] = [
   { key: 'standard', label: 'Standard', desc: 'Balanced synonym replacement' },
+  { key: 'fluency', label: 'Fluency', desc: 'Fix awkward phrasing, improve flow' },
   { key: 'formal', label: 'Formal', desc: 'Professional & academic tone' },
   { key: 'simple', label: 'Simple', desc: 'Easier, clearer language' },
+  { key: 'academic', label: 'Academic', desc: 'Hedging language & transitions' },
   { key: 'creative', label: 'Creative', desc: 'More variation & restructuring' },
+  { key: 'shorten', label: 'Shorten', desc: 'Remove filler, cut 20-40%' },
+  { key: 'expand', label: 'Expand', desc: 'Add detail, grow 30-50%' },
 ]
 
 export default function AIParaphraser() {
   const [input, setInput] = useState('')
   const [mode, setMode] = useState<ParaphraseMode>('standard')
   const [preserveTermsInput, setPreserveTermsInput] = useState('')
+  const [showCompare, setShowCompare] = useState(false)
 
   const result = useMemo(() => {
     if (!input.trim()) return null
@@ -739,7 +973,7 @@ export default function AIParaphraser() {
         {/* Mode selector */}
         <div className="space-y-3">
           <span className="text-sm font-medium">Paraphrasing Mode</span>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-2">
             {MODE_OPTIONS.map((opt) => (
               <button
                 key={opt.key}
@@ -771,12 +1005,49 @@ export default function AIParaphraser() {
               <span>
                 Rewritten: <strong>{formatNumber(result.outputWordCount)}</strong> words
               </span>
+              {result.inputWordCount > 0 && (
+                <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
+                  result.outputWordCount > result.inputWordCount
+                    ? 'bg-green-500/10 text-green-600 dark:text-green-400'
+                    : result.outputWordCount < result.inputWordCount
+                      ? 'bg-red-500/10 text-red-600 dark:text-red-400'
+                      : 'bg-muted text-muted-foreground'
+                }`}>
+                  {result.outputWordCount > result.inputWordCount ? '+' : ''}
+                  {Math.round(((result.outputWordCount - result.inputWordCount) / result.inputWordCount) * 100)}% words
+                </span>
+              )}
               {result.changes.length > 0 && (
                 <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-semibold">
                   {result.changes.length} {result.changes.length === 1 ? 'change' : 'changes'} made
                 </span>
               )}
+              <button
+                onClick={() => setShowCompare(!showCompare)}
+                className="ml-auto inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-md bg-secondary text-secondary-foreground hover:bg-muted transition-colors border border-border"
+              >
+                <ArrowLeftRight className="h-3.5 w-3.5" />
+                {showCompare ? 'Hide' : 'Compare'}
+              </button>
             </div>
+
+            {/* Compare view */}
+            {showCompare && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div>
+                  <span className="text-xs font-medium text-muted-foreground mb-1 block">Original</span>
+                  <div className="w-full rounded-lg border border-input bg-muted/30 p-3 min-h-[120px] text-sm leading-relaxed whitespace-pre-wrap">
+                    {input}
+                  </div>
+                </div>
+                <div>
+                  <span className="text-xs font-medium text-muted-foreground mb-1 block">Paraphrased</span>
+                  <div className="w-full rounded-lg border border-input bg-tool-bg p-3 min-h-[120px] text-sm leading-relaxed whitespace-pre-wrap">
+                    {result.text}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Output with highlighted changes */}
             <div>

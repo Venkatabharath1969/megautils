@@ -107,6 +107,8 @@ const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
     { id: 'ai-sentiment-analysis', name: 'AI Sentiment Analysis' },
     { id: 'ai-grammar-checker', name: 'AI Grammar Checker' },
     { id: 'ai-paraphraser', name: 'AI Paraphrasing Tool' },
+    { id: 'ai-humanizer', name: 'AI Text Humanizer' },
+    { id: 'typing-speed-test', name: 'Typing Speed Test' },
   ],
   string: [
     { id: 'regex-tester', name: 'Regex Tester' },
@@ -152,6 +154,7 @@ const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
     { id: 'css-transform-generator', name: 'Transform Generator' },
     { id: 'tailwind-color-picker', name: 'Tailwind Color Picker' },
     { id: 'css-columns-generator', name: 'Columns Generator' },
+    { id: 'text-gradient-generator', name: 'Text Gradient Generator' },
   ],
   financial: [
     { id: 'compound-interest-calculator', name: 'Compound Interest' },
@@ -178,6 +181,7 @@ const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
     { id: 'stock-profit-calculator', name: 'Stock Profit Calculator' },
     { id: 'tax-calculator', name: 'Tax Calculator' },
     { id: 'currency-converter', name: 'Currency Converter' },
+    { id: 'invoice-generator', name: 'Invoice Generator' },
   ],
   converters: [
     { id: 'length-converter', name: 'Length Converter' },
@@ -225,6 +229,10 @@ const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
     { id: 'social-media-resizer', name: 'Social Media Image Resizer' },
     { id: 'exif-viewer', name: 'Image EXIF Viewer' },
     { id: 'image-filters', name: 'Image Filters' },
+    { id: 'ocr-text-extractor', name: 'OCR Text Extractor' },
+    { id: 'image-crop', name: 'Image Crop Tool' },
+    { id: 'video-to-gif', name: 'Video to GIF/WebM Converter' },
+    { id: 'meme-generator', name: 'Meme Generator' },
   ],
   datetime: [
     { id: 'unix-timestamp-converter', name: 'Unix Timestamp Converter' },
@@ -252,6 +260,7 @@ const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
     { id: 'htaccess-generator', name: '.htaccess Generator' },
     { id: 'privacy-policy-generator', name: 'Privacy Policy Generator' },
     { id: 'terms-generator', name: 'Terms Generator' },
+    { id: 'resume-builder', name: 'Resume / CV Builder' },
   ],
   pdf: [
     { id: 'pdf-merge', name: 'Merge PDF' },
@@ -262,6 +271,7 @@ const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
     { id: 'pdf-watermark', name: 'Add Watermark to PDF' },
     { id: 'jpg-to-pdf', name: 'JPG to PDF' },
     { id: 'pdf-to-jpg', name: 'PDF to JPG' },
+    { id: 'pdf-rotate', name: 'Rotate PDF' },
   ],
 }
 

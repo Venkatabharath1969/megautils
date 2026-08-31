@@ -2,8 +2,34 @@
 
 import { useState, useMemo, useCallback } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, DownloadButton, ClearButton } from '@/components/tool-page'
+import { Upload } from 'lucide-react'
 
 type Alignment = 'left' | 'center' | 'right'
+
+function parseCSV(text: string): string[][] {
+  const rows: string[][] = []
+  const lines = text.trim().split(/\r?\n/)
+  for (const line of lines) {
+    const cells: string[] = []
+    let current = ''
+    let inQuotes = false
+    for (let i = 0; i < line.length; i++) {
+      const ch = line[i]
+      if (inQuotes) {
+        if (ch === '"' && line[i + 1] === '"') { current += '"'; i++ }
+        else if (ch === '"') inQuotes = false
+        else current += ch
+      } else {
+        if (ch === '"') inQuotes = true
+        else if (ch === ',') { cells.push(current.trim()); current = '' }
+        else current += ch
+      }
+    }
+    cells.push(current.trim())
+    if (cells.some(c => c.length > 0)) rows.push(cells)
+  }
+  return rows
+}
 
 export default function MarkdownTableGeneratorTool() {
   const [rows, setRows] = useState(3)
@@ -14,6 +40,8 @@ export default function MarkdownTableGeneratorTool() {
   const [alignments, setAlignments] = useState<Alignment[]>(() =>
     Array.from({ length: 3 }, () => 'left' as Alignment)
   )
+  const [csvInput, setCsvInput] = useState('')
+  const [showCsvImport, setShowCsvImport] = useState(false)
 
   const adjustGrid = useCallback((newRows: number, newCols: number) => {
     const totalRows = newRows + 1 // +1 for header
@@ -89,7 +117,30 @@ export default function MarkdownTableGeneratorTool() {
     setAlignments(Array.from({ length: 3 }, () => 'left' as Alignment))
     setRows(3)
     setCols(3)
+    setCsvInput('')
+    setShowCsvImport(false)
   }
+
+  const importCSV = useCallback(() => {
+    if (!csvInput.trim()) return
+    const parsed = parseCSV(csvInput)
+    if (parsed.length === 0) return
+    const maxCols = Math.max(...parsed.map(r => r.length))
+    // Normalize all rows to same column count
+    const normalized = parsed.map(r => {
+      const row = [...r]
+      while (row.length < maxCols) row.push('')
+      return row
+    })
+    // First row = header, rest = data. Ensure at least 1 data row
+    const dataRows = normalized.length > 1 ? normalized.slice(1) : [Array.from({ length: maxCols }, () => '')]
+    setCells([normalized[0], ...dataRows])
+    setRows(dataRows.length)
+    setCols(maxCols)
+    setAlignments(Array.from({ length: maxCols }, () => 'left' as Alignment))
+    setShowCsvImport(false)
+    setCsvInput('')
+  }, [csvInput])
 
   return (
     <ToolPage title="Markdown Table Generator" description="Build Markdown tables visually with a grid editor. Set alignment, copy, or download." category="markdown" categoryLabel="Markdown Tools"
@@ -123,6 +174,7 @@ export default function MarkdownTableGeneratorTool() {
         { question: 'How do you create a table in Markdown?', answer: 'Markdown tables use pipes (|) to separate columns and hyphens (-) to create the header separator row. This tool generates the correct syntax automatically from your grid input.' },
         { question: 'Can I align columns in Markdown tables?', answer: 'Yes, use colons in the separator row: left-aligned (---), center-aligned (:---:), or right-aligned (---:). This tool lets you set alignment per column with simple buttons.' },
         { question: 'What is the maximum size for a Markdown table?', answer: 'There is no hard limit on Markdown table size, but very large tables become hard to read in plain text. This tool supports up to 20 rows and 10 columns for practical use.' },
+        { question: 'Can I import data from a CSV file?', answer: 'Yes. Click the "Import CSV" button and paste your comma-separated data. The first row will be treated as the header, and the remaining rows as data. The table will be auto-generated from your CSV input.' },
       ]}>
       <div className="space-y-4">
         <div className="flex items-center justify-between flex-wrap gap-2">
@@ -144,8 +196,45 @@ export default function MarkdownTableGeneratorTool() {
               />
             </div>
           </div>
-          <ClearButton onClear={clear} />
+          <div className="flex gap-2">
+            <button
+              onClick={() => setShowCsvImport(prev => !prev)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-border bg-card hover:bg-muted transition-colors"
+            >
+              <Upload className="h-3.5 w-3.5" /> Import CSV
+            </button>
+            <ClearButton onClear={clear} />
+          </div>
         </div>
+
+        {/* CSV Import */}
+        {showCsvImport && (
+          <div className="p-4 rounded-lg border border-border bg-muted/30 space-y-3">
+            <label className="text-sm font-medium">Paste CSV data</label>
+            <textarea
+              value={csvInput}
+              onChange={e => setCsvInput(e.target.value)}
+              placeholder={'Name, Age, City\nAlice, 30, New York\nBob, 25, London'}
+              rows={5}
+              className="w-full rounded-md border border-input bg-tool-bg p-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+            />
+            <div className="flex gap-2">
+              <button
+                onClick={importCSV}
+                disabled={!csvInput.trim()}
+                className="px-3 py-1.5 text-xs font-medium rounded-md bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-50"
+              >
+                Import
+              </button>
+              <button
+                onClick={() => { setShowCsvImport(false); setCsvInput('') }}
+                className="px-3 py-1.5 text-xs font-medium rounded-md border border-border bg-card hover:bg-muted transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Alignment controls */}
         <div className="flex gap-2 flex-wrap">

@@ -114,7 +114,8 @@ const categoryData: Record<string, { label: string; description: string; tools: 
       { id: 'ai-speech-to-text', name: 'AI Speech to Text', description: 'Convert speech to text in real-time using your microphone' },
       { id: 'ai-sentiment-analysis', name: 'AI Sentiment Analysis', description: 'Analyze the emotional tone of any text instantly' },
       { id: 'ai-grammar-checker', name: 'AI Grammar Checker', description: 'Check text for grammar, spelling, and punctuation errors instantly' },
-      { id: 'ai-paraphraser', name: 'AI Paraphrasing Tool', description: 'Rewrite text in different styles — formal, simple, or creative modes' },
+      { id: 'ai-paraphraser', name: 'AI Paraphrasing Tool', description: 'Rewrite text in 8 styles — standard, fluency, formal, simple, academic, creative, shorten, expand' },
+      { id: 'ai-humanizer', name: 'AI Text Humanizer', description: 'Make AI-generated text sound more natural and human-written' },
     ],
   },
   string: {

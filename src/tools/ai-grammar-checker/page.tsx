@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, ClearButton } from '@/components/tool-page'
-import { CheckCircle2, AlertTriangle, Sparkles, MousePointerClick } from 'lucide-react'
+import { CheckCircle2, AlertTriangle, Sparkles, MousePointerClick, BarChart3 } from 'lucide-react'
 
 /* ────────────────────────────────────────────────────────────────────
    Types
@@ -444,6 +444,186 @@ const CONFUSED_WORDS: ConfusedWordRule[] = [
 const PASSIVE_REGEX = /\b(was|were|is|are|been|be|being)\s+(being\s+)?(given|taken|made|done|seen|known|found|told|shown|left|held|brought|set|kept|turned|sent|called|used|asked|needed|expected|allowed|considered|believed|required|reported|supposed|said|thought|written|built|sold|bought|paid|taught|hit|cut|put|read|run|shut|let|hurt|felt|met|sat|stood|understood|broken|chosen|driven|eaten|fallen|forgotten|frozen|gotten|gone|grown|hidden|ridden|risen|shaken|spoken|stolen|sworn|thrown|woken|worn|accepted|achieved|added|admitted|affected|agreed|aimed|announced|appeared|applied|approved|arrived|attacked|attempted|avoided|based|beaten|become|begun|blamed|blocked|borrowed|caused|changed|charged|checked|claimed|cleaned|closed|collected|combined|compared|completed|concerned|confirmed|connected|contacted|contained|continued|controlled|convinced|corrected|covered|created|crossed|damaged|dealt|decided|declared|delivered|demanded|denied|described|designed|desired|destroyed|developed|directed|discovered|discussed|divided|earned|encouraged|enjoyed|entered|established|examined|exchanged|excited|excused|exercised|existed|expanded|experienced|explained|expressed|extended|faced|failed|forced|formed|gained|generated|grabbed|guaranteed|guided|handled|headed|helped|identified|ignored|imagined|improved|included|increased|indicated|influenced|informed|intended|interested|introduced|invited|involved|joined|judged|killed|landed|laughed|led|lifted|liked|limited|linked|listened|lived|loaded|locked|looked|loved|maintained|managed|marked|measured|mentioned|minded|missed|mixed|monitored|moved|named|noticed|obtained|occurred|offered|opened|operated|ordered|organized|owned|passed|performed|permitted|picked|placed|planned|played|pointed|prepared|presented|pressed|prevented|produced|promoted|proposed|protected|proved|provided|published|pulled|pushed|raised|reached|realized|received|recognized|recorded|reduced|referred|reflected|refused|regarded|related|released|remained|remembered|removed|repeated|replaced|represented|requested|resolved|respected|resulted|returned|revealed|reviewed|saved|searched|secured|selected|separated|served|settled|shared|signed|smiled|solved|sorted|spread|started|stated|stopped|stored|studied|submitted|succeeded|suffered|suggested|supplied|supported|survived|suspected|tested|threatened|touched|tracked|traded|trained|transferred|treated|tried|trusted|turned|visited|voted|waited|walked|warned|watched|wished|wondered|worked|worried)\b/gi
 
 /* ────────────────────────────────────────────────────────────────────
+   Writing Style Report — Wordiness, Clichés, Fillers
+   ──────────────────────────────────────────────────────────────────── */
+
+const WORDY_PHRASES: Record<string, string> = {
+  'in order to': 'to',
+  'due to the fact that': 'because',
+  'at this point in time': 'now',
+  'in the event that': 'if',
+  'for the purpose of': 'to',
+  'on a daily basis': 'daily',
+  'in spite of the fact that': 'although',
+  'a large number of': 'many',
+  'the vast majority of': 'most',
+  'at the present time': 'currently',
+  'has the ability to': 'can',
+  'is able to': 'can',
+  'take into consideration': 'consider',
+  'make a decision': 'decide',
+  'give consideration to': 'consider',
+  'it is important to note that': '',
+  'it should be noted that': '',
+  'it is worth mentioning that': '',
+  'as a matter of fact': 'in fact',
+  'in the near future': 'soon',
+}
+
+const PASSIVE_VOICE_REGEX = /(was|were|is|are|am|been|being|be)\s+(\w+ed|written|spoken|taken|given|made|done|seen|known|found|told|thought|felt|left|brought|begun|shown|heard|run|held|kept|set|put|read|paid|drawn|built|sent|spent|meant)\b/gi
+
+const CLICHES = [
+  'at the end of the day', 'think outside the box', 'low-hanging fruit',
+  'move the needle', 'deep dive', 'paradigm shift', 'synergy', 'leverage',
+  'best practices', 'circle back', 'touch base', 'game changer', 'value add',
+  'take it to the next level', 'on the same page', 'win-win', 'bandwidth',
+  'drill down', 'action items', 'stakeholders', 'bring to the table',
+  'back to the drawing board', 'hit the ground running', 'bite the bullet',
+  'break the ice', 'cutting edge', 'easy as pie', 'food for thought',
+  'get the ball rolling', 'go the extra mile', 'in a nutshell',
+  'it goes without saying', 'no brainer', 'on the same wavelength',
+  'raise the bar', 'read between the lines', 'take one for the team',
+  'the bottom line', 'tip of the iceberg', 'up to speed',
+]
+
+const FILLER_WORDS = [
+  'actually', 'basically', 'literally', 'very', 'really', 'just',
+  'quite', 'rather', 'somewhat', 'perhaps',
+]
+
+type StyleIssueType = 'wordiness' | 'passive' | 'cliche' | 'filler'
+
+interface StyleIssue {
+  type: StyleIssueType
+  start: number
+  end: number
+  text: string
+  suggestion: string
+}
+
+const STYLE_ISSUE_META: Record<StyleIssueType, { label: string; color: string; bgColor: string }> = {
+  wordiness: { label: 'Wordiness', color: 'text-purple-600 dark:text-purple-400', bgColor: 'bg-purple-500/10' },
+  passive:   { label: 'Passive Voice', color: 'text-amber-600 dark:text-amber-400', bgColor: 'bg-amber-500/10' },
+  cliche:    { label: 'Cliché', color: 'text-pink-600 dark:text-pink-400', bgColor: 'bg-pink-500/10' },
+  filler:    { label: 'Filler Word', color: 'text-teal-600 dark:text-teal-400', bgColor: 'bg-teal-500/10' },
+}
+
+interface WritingStats {
+  totalIssues: number
+  wordiness: number
+  passive: number
+  cliche: number
+  filler: number
+  passivePercentage: number
+  avgSentenceLength: number
+  vocabularyDiversity: number
+  fillerWordCount: number
+  totalSentences: number
+  totalWords: number
+}
+
+function analyzeWritingStyle(text: string): { issues: StyleIssue[]; stats: WritingStats } {
+  if (!text.trim()) {
+    return {
+      issues: [],
+      stats: { totalIssues: 0, wordiness: 0, passive: 0, cliche: 0, filler: 0, passivePercentage: 0, avgSentenceLength: 0, vocabularyDiversity: 0, fillerWordCount: 0, totalSentences: 0, totalWords: 0 },
+    }
+  }
+
+  const issues: StyleIssue[] = []
+  const lowerText = text.toLowerCase()
+
+  // 1. Wordiness detector
+  for (const [phrase, replacement] of Object.entries(WORDY_PHRASES)) {
+    let idx = lowerText.indexOf(phrase)
+    while (idx !== -1) {
+      issues.push({
+        type: 'wordiness',
+        start: idx,
+        end: idx + phrase.length,
+        text: text.slice(idx, idx + phrase.length),
+        suggestion: replacement || '(remove)',
+      })
+      idx = lowerText.indexOf(phrase, idx + phrase.length)
+    }
+  }
+
+  // 2. Passive voice detector
+  const pvRegex = new RegExp(PASSIVE_VOICE_REGEX.source, PASSIVE_VOICE_REGEX.flags)
+  let pvMatch: RegExpExecArray | null
+  while ((pvMatch = pvRegex.exec(text)) !== null) {
+    issues.push({
+      type: 'passive',
+      start: pvMatch.index,
+      end: pvMatch.index + pvMatch[0].length,
+      text: pvMatch[0],
+      suggestion: 'Consider rewriting in active voice',
+    })
+  }
+
+  // 3. Cliché detector
+  for (const cliche of CLICHES) {
+    let idx = lowerText.indexOf(cliche)
+    while (idx !== -1) {
+      issues.push({
+        type: 'cliche',
+        start: idx,
+        end: idx + cliche.length,
+        text: text.slice(idx, idx + cliche.length),
+        suggestion: 'Consider a more original expression',
+      })
+      idx = lowerText.indexOf(cliche, idx + cliche.length)
+    }
+  }
+
+  // 4. Filler word highlighter
+  for (const filler of FILLER_WORDS) {
+    const fillerRegex = new RegExp(`\\b${filler}\\b`, 'gi')
+    let fm: RegExpExecArray | null
+    while ((fm = fillerRegex.exec(text)) !== null) {
+      issues.push({
+        type: 'filler',
+        start: fm.index,
+        end: fm.index + fm[0].length,
+        text: fm[0],
+        suggestion: 'Consider removing this filler word',
+      })
+    }
+  }
+
+  // Sort by position
+  issues.sort((a, b) => a.start - b.start)
+
+  // Calculate stats
+  const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0)
+  const words = text.split(/\s+/).filter(w => w.length > 0)
+  const totalWords = words.length
+  const totalSentences = sentences.length
+  const uniqueWords = new Set(words.map(w => w.toLowerCase().replace(/[^a-z']/g, '')).filter(Boolean))
+  const avgSentenceLength = totalSentences > 0 ? Math.round(totalWords / totalSentences) : 0
+  const vocabularyDiversity = totalWords > 0 ? Math.round((uniqueWords.size / totalWords) * 100) / 100 : 0
+
+  const countByType = { wordiness: 0, passive: 0, cliche: 0, filler: 0 }
+  for (const issue of issues) countByType[issue.type]++
+
+  const passivePercentage = totalSentences > 0 ? Math.round((countByType.passive / totalSentences) * 100) : 0
+
+  return {
+    issues,
+    stats: {
+      totalIssues: issues.length,
+      ...countByType,
+      passivePercentage,
+      avgSentenceLength,
+      vocabularyDiversity,
+      fillerWordCount: countByType.filler,
+      totalSentences,
+      totalWords,
+    },
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────────
    The main checker function
    ──────────────────────────────────────────────────────────────────── */
 
@@ -728,6 +908,7 @@ const CATEGORY_META: Record<ErrorCategory, { label: string; color: string; bgCol
 export default function AIGrammarChecker() {
   const [input, setInput] = useState('')
   const [selectedError, setSelectedError] = useState<GrammarError | null>(null)
+  const [activeTab, setActiveTab] = useState<'errors' | 'report'>('errors')
 
   const errors = useMemo(() => checkGrammar(input), [input])
 
@@ -741,6 +922,8 @@ export default function AIGrammarChecker() {
     for (const e of errors) c[e.category]++
     return c
   }, [errors])
+
+  const styleReport = useMemo(() => analyzeWritingStyle(input), [input])
 
   const totalErrors = errors.length
 
@@ -1018,6 +1201,106 @@ export default function AIGrammarChecker() {
             )
           })}
         </div>
+
+        {/* Writing Style Report */}
+        {input.trim() && (
+          <div className="space-y-4 pt-4 border-t border-border">
+            {/* Tab toggle */}
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setActiveTab('errors')}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                  activeTab === 'errors'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-secondary text-secondary-foreground hover:bg-muted'
+                }`}
+              >
+                <AlertTriangle className="h-3.5 w-3.5" />
+                Grammar Issues ({totalErrors})
+              </button>
+              <button
+                onClick={() => setActiveTab('report')}
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                  activeTab === 'report'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-secondary text-secondary-foreground hover:bg-muted'
+                }`}
+              >
+                <BarChart3 className="h-3.5 w-3.5" />
+                Writing Report ({styleReport.stats.totalIssues})
+              </button>
+            </div>
+
+            {activeTab === 'report' && (
+              <div className="space-y-4">
+                {/* Stats Panel */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                  <div className="p-3 rounded-lg bg-muted/50 border border-border text-center">
+                    <div className="text-2xl font-bold text-foreground">{styleReport.stats.totalIssues}</div>
+                    <div className="text-xs text-muted-foreground mt-1">Total Style Issues</div>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted/50 border border-border text-center">
+                    <div className="text-2xl font-bold text-foreground">{styleReport.stats.passivePercentage}%</div>
+                    <div className="text-xs text-muted-foreground mt-1">Passive Voice</div>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted/50 border border-border text-center">
+                    <div className="text-2xl font-bold text-foreground">{styleReport.stats.avgSentenceLength}</div>
+                    <div className="text-xs text-muted-foreground mt-1">Avg Sentence Length</div>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted/50 border border-border text-center">
+                    <div className="text-2xl font-bold text-foreground">{(styleReport.stats.vocabularyDiversity * 100).toFixed(0)}%</div>
+                    <div className="text-xs text-muted-foreground mt-1">Vocabulary Diversity</div>
+                  </div>
+                  <div className="p-3 rounded-lg bg-muted/50 border border-border text-center">
+                    <div className="text-2xl font-bold text-foreground">{styleReport.stats.fillerWordCount}</div>
+                    <div className="text-xs text-muted-foreground mt-1">Filler Words</div>
+                  </div>
+                </div>
+
+                {/* Issue category badges */}
+                <div className="flex flex-wrap gap-2">
+                  {(Object.keys(STYLE_ISSUE_META) as StyleIssueType[]).map(type => {
+                    const meta = STYLE_ISSUE_META[type]
+                    const count = styleReport.issues.filter(i => i.type === type).length
+                    if (count === 0) return null
+                    return (
+                      <span key={type} className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium ${meta.bgColor} ${meta.color}`}>
+                        {count} {meta.label}{count !== 1 ? (type === 'wordiness' ? '' : 's') : ''}
+                      </span>
+                    )
+                  })}
+                </div>
+
+                {/* Issue list */}
+                {styleReport.issues.length > 0 ? (
+                  <div className="space-y-2 max-h-96 overflow-y-auto">
+                    {styleReport.issues.map((issue, i) => {
+                      const meta = STYLE_ISSUE_META[issue.type]
+                      return (
+                        <div key={`${issue.start}-${issue.end}-${i}`} className={`p-3 rounded-lg border border-border ${meta.bgColor}`}>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className={`text-xs font-semibold uppercase tracking-wider ${meta.color}`}>{meta.label}</span>
+                          </div>
+                          <div className="text-sm">
+                            <span className="font-medium">&quot;{issue.text.length > 60 ? issue.text.slice(0, 60) + '...' : issue.text}&quot;</span>
+                            {issue.suggestion && (
+                              <span className="text-muted-foreground ml-2">→ {issue.suggestion}</span>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-sm text-muted-foreground">
+                    <CheckCircle2 className="h-8 w-8 mx-auto mb-2 text-green-500" />
+                    No writing style issues detected. Your text looks clean!
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </ToolPage>
   )

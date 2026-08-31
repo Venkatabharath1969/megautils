@@ -29,20 +29,20 @@ export const CATEGORIES: Category[] = [
   { id: 'encoders',    label: 'Encoders & Decoders',    description: 'Encode and decode data in Base64, URL, HTML, JWT, binary, hex, and more.', count: 14 },
   { id: 'crypto',      label: 'Crypto & Hash',          description: 'Hashing, encryption, passwords, and security tools.', count: 3 },
   { id: 'seo',         label: 'SEO Tools',              description: 'Meta tags, schema markup, sitemaps, and SEO analysis tools.', count: 18 },
-  { id: 'text',        label: 'Text Tools',             description: 'Count, convert, clean, sort, and transform text.', count: 24 },
+  { id: 'text',        label: 'Text Tools',             description: 'Count, convert, clean, sort, and transform text.', count: 26 },
   { id: 'string',      label: 'String Utilities',       description: 'Regex testing, encoding, generators, and string tools.', count: 6 },
   { id: 'content',     label: 'Content & Writing',      description: 'Headlines, readability analysis, and social media tools.', count: 3 },
   { id: 'markdown',    label: 'Markdown Tools',         description: 'Markdown editor, converters, and table generator.', count: 4 },
   { id: 'color',       label: 'Color Tools',            description: 'Color picker, converter, palette generator, and contrast checker.', count: 8 },
-  { id: 'css',         label: 'CSS Tools',              description: 'Visual CSS generators for gradients, shadows, flexbox, grid, and more.', count: 14 },
+  { id: 'css',         label: 'CSS Tools',              description: 'Visual CSS generators for gradients, shadows, flexbox, grid, and more.', count: 15 },
   { id: 'financial',   label: 'Financial Calculators',  description: 'Loan, interest, tax, investment, and business calculators.', count: 24 },
   { id: 'converters',  label: 'Unit Converters',        description: 'Convert between length, weight, temperature, data storage, speed, area, and volume.', count: 14 },
   { id: 'math',        label: 'Math & Science',         description: 'Scientific calculators, BMI, statistics, and equations.', count: 5 },
-  { id: 'image',       label: 'Image Tools',            description: 'QR codes, image resizing, format conversion, cropping, and optimization.', count: 22 },
+  { id: 'image',       label: 'Image Tools',            description: 'QR codes, image resizing, format conversion, cropping, and optimization.', count: 24 },
   { id: 'datetime',    label: 'Date & Time',            description: 'Unix timestamps, date calculations, age calculator, and cron builder.', count: 6 },
   { id: 'network',     label: 'Network & API',          description: 'HTTP status codes, URL parser, user agent parser, and IP info.', count: 4 },
-  { id: 'generators',  label: 'Generators',             description: 'Generate UUIDs, passwords, Lorem Ipsum, hashes, barcodes, and more.', count: 11 },
-  { id: 'pdf',         label: 'PDF Tools',              description: 'Merge, split, compress, unlock, watermark, and manipulate PDF files directly in your browser.', count: 8 },
+  { id: 'generators',  label: 'Generators',             description: 'Generate UUIDs, passwords, Lorem Ipsum, hashes, barcodes, and more.', count: 12 },
+  { id: 'pdf',         label: 'PDF Tools',              description: 'Merge, split, compress, unlock, watermark, rotate, and manipulate PDF files directly in your browser.', count: 9 },
 ]
 
 // Tools that appear on the generators category page but whose primary
@@ -55,7 +55,7 @@ export const GENERATOR_CROSS_REFS: string[] = [
 ]
 
 // ---------------------------------------------------------------------------
-// Tools (200 total)
+// Tools (202 total)
 // ---------------------------------------------------------------------------
 export const TOOLS: Tool[] = [
   // ── Developer Tools (24) ─────────────────────────────────────────────────
@@ -649,10 +649,25 @@ export const TOOLS: Tool[] = [
   {
     id: 'ai-paraphraser',
     name: 'AI Paraphrasing Tool',
-    description: 'Rewrite text in different styles — formal, simple, or creative modes',
+    description: 'Rewrite text in 8 styles — standard, fluency, formal, simple, academic, creative, shorten, expand',
     category: 'text',
-    keywords: ['paraphrase', 'rewrite', 'rephrase', 'reword', 'text rewriter', 'paraphrasing tool', 'sentence rewriter', 'ai rewrite'],
+    keywords: ['paraphrase', 'rewrite', 'rephrase', 'reword', 'text rewriter', 'paraphrasing tool', 'sentence rewriter', 'ai rewrite', 'quillbot alternative'],
     isAI: true,
+  },
+  {
+    id: 'ai-humanizer',
+    name: 'AI Text Humanizer',
+    description: 'Make AI-generated text sound more natural and human-written',
+    category: 'text',
+    keywords: ['ai humanizer', 'humanize text', 'ai bypass', 'ai detector bypass', 'make ai text human', 'undetectable ai', 'ai rewriter', 'human text'],
+    isAI: true,
+  },
+  {
+    id: 'typing-speed-test',
+    name: 'Typing Speed Test',
+    description: 'Test your typing speed with real-time WPM, accuracy, and error tracking',
+    category: 'text',
+    keywords: ['typing test', 'typing speed', 'wpm test', 'words per minute', 'typing practice', 'typing game', 'keyboard speed', 'typing accuracy', 'type test', 'speed typing'],
   },
 
   // ── String Utilities (6) ─────────────────────────────────────────────────
@@ -909,6 +924,13 @@ export const TOOLS: Tool[] = [
     category: 'css',
     keywords: ['css columns', 'multi column', 'column layout', 'column count', 'column gap', 'newspaper layout', 'css column-count'],
   },
+  {
+    id: 'text-gradient-generator',
+    name: 'Text Gradient Generator',
+    description: 'Create beautiful CSS gradient text with live preview, copy CSS, and download as PNG',
+    category: 'css',
+    keywords: ['gradient text', 'text gradient', 'css gradient text', 'gradient heading', 'gradient font', 'colorful text', 'text effect', 'background clip text', 'gradient title', 'rainbow text'],
+  },
 
   // ── Financial Calculators (23) ───────────────────────────────────────────
   {
@@ -1078,6 +1100,13 @@ export const TOOLS: Tool[] = [
     description: 'Convert between 30+ currencies with live exchange rates',
     category: 'financial',
     keywords: ['currency converter', 'exchange rate', 'forex', 'money converter', 'usd to eur', 'usd to inr', 'usd to gbp', 'currency exchange', 'convert currency', 'foreign exchange', 'fx converter', 'dollar to euro', 'dollar to rupee'],
+  },
+  {
+    id: 'invoice-generator',
+    name: 'Invoice Generator',
+    description: 'Create professional invoices with line items, tax, discounts, and download as PDF',
+    category: 'financial',
+    keywords: ['invoice generator', 'create invoice', 'invoice maker', 'free invoice', 'invoice template', 'pdf invoice', 'billing', 'invoice pdf', 'freelance invoice', 'business invoice', 'freshbooks alternative', 'invoice ninja alternative'],
   },
 
   // ── Unit Converters (14) ─────────────────────────────────────────────────
@@ -1397,6 +1426,34 @@ export const TOOLS: Tool[] = [
     category: 'image',
     keywords: ['image filter', 'photo filter', 'instagram filter', 'brightness', 'contrast', 'saturation', 'sepia', 'vintage filter', 'photo edit', 'image adjust'],
   },
+  {
+    id: 'ocr-text-extractor',
+    name: 'OCR Text Extractor',
+    description: 'Extract text from images using browser-based OCR with 12 language support',
+    category: 'image',
+    keywords: ['ocr', 'text extractor', 'image to text', 'extract text', 'optical character recognition', 'scan text', 'tesseract', 'ocr free', 'photo to text', 'screenshot text', 'digitize text', 'scan document'],
+  },
+  {
+    id: 'image-crop',
+    name: 'Image Crop Tool',
+    description: 'Crop images with interactive drag handles, aspect ratio presets, and format options',
+    category: 'image',
+    keywords: ['crop image', 'image crop', 'photo crop', 'crop tool', 'image cutter', 'resize crop', 'aspect ratio crop', 'passport crop', 'square crop', 'drag crop', 'interactive crop'],
+  },
+  {
+    id: 'video-to-gif',
+    name: 'Video to GIF/WebM Converter',
+    description: 'Convert video clips to animated WebM or extract frames — free, no upload',
+    category: 'image',
+    keywords: ['video to gif', 'gif maker', 'video converter', 'mp4 to gif', 'webm converter', 'video clip', 'animated gif', 'gif creator', 'video to animation', 'cloudconvert alternative', 'convertio alternative'],
+  },
+  {
+    id: 'meme-generator',
+    name: 'Meme Generator',
+    description: 'Create memes with custom text, fonts, and styles — free, no watermark',
+    category: 'image',
+    keywords: ['meme maker', 'meme creator', 'meme generator', 'imgflip alternative', 'meme text', 'impact font', 'meme template', 'create meme', 'funny meme', 'meme editor', 'custom meme'],
+  },
 
   // ── Date & Time (5) ──────────────────────────────────────────────────────
   {
@@ -1523,6 +1580,13 @@ export const TOOLS: Tool[] = [
     category: 'generators',
     keywords: ['terms conditions', 'terms of service', 'tos generator', 'terms generator', 'legal terms', 'website terms', 'user agreement'],
   },
+  {
+    id: 'resume-builder',
+    name: 'Resume / CV Builder',
+    description: 'Build a professional resume with live preview and download as PDF — free, no sign-up',
+    category: 'generators',
+    keywords: ['resume builder', 'cv builder', 'resume maker', 'cv maker', 'resume generator', 'resume template', 'curriculum vitae', 'resume pdf', 'free resume', 'canva resume alternative', 'resume.io alternative', 'zety alternative', 'professional resume'],
+  },
 
   // ── PDF Tools (8) ────────────────────────────────────────────────────────
   {
@@ -1580,6 +1644,13 @@ export const TOOLS: Tool[] = [
     description: 'Stamp custom watermark text on PDF pages with adjustable opacity and rotation',
     category: 'pdf',
     keywords: ['pdf watermark', 'add watermark', 'stamp pdf', 'confidential pdf', 'draft watermark', 'pdf stamp', 'watermark text', 'pdf branding'],
+  },
+  {
+    id: 'pdf-rotate',
+    name: 'Rotate PDF',
+    description: 'Rotate all or individual PDF pages by 90, 180, or 270 degrees',
+    category: 'pdf',
+    keywords: ['rotate pdf', 'pdf rotate', 'turn pdf', 'pdf orientation', 'rotate pdf pages', 'flip pdf', 'pdf rotation', 'sideways pdf', 'landscape portrait pdf'],
   },
 ]
 
