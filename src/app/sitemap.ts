@@ -7,7 +7,7 @@ import { HOW_TO_GUIDES } from '@/lib/howto-data'
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://utilsnow.com'
 
-  // All 194 tool slugs (alphabetical)
+  // All 200 tool slugs (alphabetical)
   const tools = [
     'age-calculator', 'ai-bg-remover', 'ai-content-detector', 'ai-depth-map', 'ai-face-blur', 'ai-grammar-checker', 'ai-image-caption', 'ai-image-classifier', 'ai-image-upscaler', 'ai-object-detection', 'ai-ocr', 'ai-object-remover', 'ai-paraphraser', 'ai-photo-colorizer', 'ai-segment', 'ai-sentiment-analysis', 'ai-speech-to-text', 'ai-text-summarizer', 'angle-converter', 'area-converter', 'aspect-ratio-calculator',
     'barcode-generator', 'base32-encoder', 'base64-encoder', 'blank-line-remover',
@@ -27,17 +27,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'gitignore-generator', 'glassmorphism-generator', 'gst-calculator', 'hash-generator',
     'headline-analyzer', 'hex-to-rgb', 'hourly-to-salary', 'htaccess-generator',
     'html-entity-encoder', 'html-formatter', 'html-tag-stripper', 'html-to-markdown',
-    'http-status-codes', 'image-cropper', 'image-format-converter', 'image-resizer',
+    'heic-to-jpg', 'http-status-codes', 'image-compressor', 'image-cropper', 'image-format-converter', 'image-resizer',
     'image-to-base64', 'inflation-calculator', 'ip-address-info', 'irr-calculator',
     'javascript-formatter', 'json-escape', 'json-formatter', 'json-path-finder',
     'json-to-csv', 'json-to-go', 'json-to-python', 'json-to-typescript', 'json-to-xml',
-    'json-to-yaml', 'json-validator', 'jwt-decoder', 'keyword-density-checker',
+    'json-to-yaml', 'json-validator', 'jpg-to-pdf', 'jwt-decoder', 'keyword-density-checker',
     'length-converter', 'line-number-adder', 'list-tools', 'loan-comparison-calculator',
     'lorem-ipsum-generator', 'margin-calculator', 'markdown-editor',
     'markdown-table-generator', 'markdown-to-html', 'markdown-to-text',
     'meta-tag-generator', 'morse-code-translator', 'mortgage-calculator', 'nato-alphabet',
     'neumorphism-generator', 'npv-calculator', 'number-base-converter', 'number-to-words',
-    'open-graph-preview', 'password-generator', 'percentage-calculator',
+    'open-graph-preview', 'password-generator', 'pdf-compress', 'pdf-merge', 'pdf-to-jpg', 'percentage-calculator',
     'placeholder-image-generator', 'power-converter', 'ppf-calculator',
     'pressure-converter', 'privacy-policy-generator', 'punycode-converter',
     'qr-code-generator', 'random-color-generator', 'rd-calculator', 'readability-score',

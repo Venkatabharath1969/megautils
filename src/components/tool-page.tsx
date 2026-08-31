@@ -244,6 +244,12 @@ const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
     { id: 'emoji-picker', name: 'Emoji Picker' },
     { id: 'barcode-generator', name: 'Barcode Generator' },
   ],
+  pdf: [
+    { id: 'pdf-merge', name: 'Merge PDF' },
+    { id: 'pdf-compress', name: 'Compress PDF' },
+    { id: 'jpg-to-pdf', name: 'JPG to PDF' },
+    { id: 'pdf-to-jpg', name: 'PDF to JPG' },
+  ],
 }
 
 interface FAQItem {

@@ -42,6 +42,7 @@ export const CATEGORIES: Category[] = [
   { id: 'datetime',    label: 'Date & Time',            description: 'Unix timestamps, date calculations, age calculator, and cron builder.', count: 5 },
   { id: 'network',     label: 'Network & API',          description: 'HTTP status codes, URL parser, user agent parser, and IP info.', count: 4 },
   { id: 'generators',  label: 'Generators',             description: 'Generate UUIDs, passwords, Lorem Ipsum, hashes, barcodes, and more.', count: 8 },
+  { id: 'pdf',         label: 'PDF Tools',              description: 'Merge, compress, convert, and manipulate PDF files directly in your browser.', count: 4 },
 ]
 
 // Tools that appear on the generators category page but whose primary
@@ -1246,6 +1247,20 @@ export const TOOLS: Tool[] = [
     keywords: ['crop image', 'image crop', 'photo crop', 'trim image', 'cut image', 'crop photo', 'image cutter', 'crop picture'],
   },
   {
+    id: 'image-compressor',
+    name: 'Image Compressor',
+    description: 'Compress JPG, PNG, WebP images to reduce file size',
+    category: 'image',
+    keywords: ['compress image', 'reduce image size', 'image optimizer', 'compress jpg', 'compress png', 'tinypng alternative', 'image compression', 'optimize image', 'shrink image', 'reduce file size', 'squoosh', 'compressor'],
+  },
+  {
+    id: 'heic-to-jpg',
+    name: 'HEIC to JPG Converter',
+    description: 'Convert iPhone HEIC/HEIF photos to JPG, PNG, or WebP',
+    category: 'image',
+    keywords: ['heic converter', 'heif to jpg', 'iphone photo converter', 'heic to png', 'convert heic', 'heic to jpeg', 'heif converter', 'apple photo convert', 'heic to webp', 'iphone heic'],
+  },
+  {
     id: 'placeholder-image-generator',
     name: 'Placeholder Image',
     description: 'Generate placeholder images',
@@ -1443,6 +1458,22 @@ export const TOOLS: Tool[] = [
     description: 'Generate Code 128 barcodes',
     category: 'generators',
     keywords: ['barcode', 'code 128', 'barcode generator', 'barcode maker', 'product barcode', 'generate barcode', 'barcode image', 'ean barcode'],
+  },
+
+  // ── PDF Tools (2) ────────────────────────────────────────────────────────
+  {
+    id: 'pdf-merge',
+    name: 'Merge PDF',
+    description: 'Combine multiple PDF files into one document',
+    category: 'pdf',
+    keywords: ['merge pdf', 'combine pdf', 'join pdf', 'pdf merger', 'pdf combiner', 'concatenate pdf', 'pdf joiner', 'merge pdfs online'],
+  },
+  {
+    id: 'pdf-compress',
+    name: 'Compress PDF',
+    description: 'Reduce PDF file size while maintaining quality',
+    category: 'pdf',
+    keywords: ['compress pdf', 'reduce pdf size', 'pdf compressor', 'shrink pdf', 'pdf optimizer', 'smaller pdf', 'pdf size reducer', 'optimize pdf'],
   },
 ]
 
