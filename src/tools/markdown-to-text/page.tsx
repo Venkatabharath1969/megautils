@@ -2,6 +2,8 @@
 
 import { useState, useMemo, useRef, useCallback } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, DownloadButton, ClearButton } from '@/components/tool-page'
+import { PdfDownloadButton } from '@/components/pdf-download-button'
+import { CopyRichTextButton } from '@/components/copy-rich-text-button'
 import { ClipboardPaste, Upload, FileText, ChevronDown } from 'lucide-react'
 
 // ─── Unicode character maps ───────────────────────────────────────────────────
@@ -782,6 +784,7 @@ export default function MarkdownToTextTool() {
             </div>
             <div className="flex gap-1.5">
               {current && <CopyButton text={current} />}
+              {outputs.html && <CopyRichTextButton html={outputs.html} />}
               {current && <DownloadButton content={current} filename={downloadFilename} mimeType={downloadMime} />}
             </div>
           </div>
@@ -818,7 +821,9 @@ export default function MarkdownToTextTool() {
       {/* ── Bottom Action Bar ── */}
       <div className="mt-4 flex flex-wrap items-center gap-2">
         {current && <CopyButton text={current} />}
+        {outputs.html && <CopyRichTextButton html={outputs.html} />}
         {current && <DownloadButton content={current} filename={downloadFilename} mimeType={downloadMime} />}
+        {current && mode === 'html' && <PdfDownloadButton contentHtml={current} filename="markdown-converted.pdf" />}
         {input && <ClearButton onClear={handleClear} />}
       </div>
     </ToolPage>

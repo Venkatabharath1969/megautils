@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ToolPage, ToolTextarea, CopyButton, ClearButton } from '@/components/tool-page'
+import { ToolPage, ToolTextarea, CopyButton, ClearButton, DownloadButton } from '@/components/tool-page'
 
 const LOREM_WORDS = [
   'lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit',
@@ -163,6 +163,7 @@ export default function LoremIpsumGeneratorTool() {
         <span className="text-sm font-medium">Generated Text</span>
         <div className="flex gap-1.5">
           {output && <CopyButton text={output} />}
+          {output && <DownloadButton content={output} filename="lorem-ipsum.txt" />}
           {output && <ClearButton onClear={() => setOutput('')} />}
         </div>
       </div>

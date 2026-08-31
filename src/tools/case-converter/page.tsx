@@ -81,6 +81,14 @@ function toDotCase(str: string): string {
     .join('.')
 }
 
+function toAlternatingCase(str: string): string {
+  return [...str].map((c, i) => i % 2 === 0 ? c.toLowerCase() : c.toUpperCase()).join('')
+}
+
+function removeAccents(str: string): string {
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+}
+
 export default function CaseConverterTool() {
   const [input, setInput] = useState('')
 
@@ -98,6 +106,8 @@ export default function CaseConverterTool() {
       { label: 'CONSTANT_CASE', value: toConstantCase(input) },
       { label: 'sWAP cASE', value: toSwapCase(input) },
       { label: 'dot.case', value: toDotCase(input) },
+      { label: 'aLtErNaTiNg CaSe', value: toAlternatingCase(input) },
+      { label: 'No Accents', value: removeAccents(input) },
     ]
   }, [input])
 

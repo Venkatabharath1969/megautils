@@ -1,7 +1,10 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, DownloadButton, ClearButton } from '@/components/tool-page'
+import { PdfDownloadButton } from '@/components/pdf-download-button'
+import { CopyRichTextButton } from '@/components/copy-rich-text-button'
+import { FileUpload } from '@/components/file-upload'
 
 function markdownToHtml(md: string): string {
   let html = md
@@ -111,6 +114,8 @@ function markdownToHtml(md: string): string {
 export default function MarkdownToHtmlTool() {
   const [input, setInput] = useState('')
 
+  const handleFileContent = useCallback((content: string) => setInput(content), [])
+
   const output = useMemo(() => {
     if (!input.trim()) return ''
     return markdownToHtml(input)
@@ -171,6 +176,9 @@ export default function MarkdownToHtmlTool() {
             <span className="text-sm font-semibold">Markdown Input</span>
             <ClearButton onClear={() => setInput('')} />
           </div>
+          <div className="mb-3">
+            <FileUpload accept=".md,.txt,.markdown" onFileContent={handleFileContent} label="Upload Markdown File" />
+          </div>
           <ToolTextarea value={input} onChange={setInput} placeholder="Paste your Markdown here..." rows={18} />
         </div>
         <div>
@@ -178,7 +186,9 @@ export default function MarkdownToHtmlTool() {
             <span className="text-sm font-semibold">HTML Output</span>
             <div className="flex gap-2">
               {output && <CopyButton text={output} />}
+              {output && <CopyRichTextButton html={output} />}
               {output && <DownloadButton content={fullHtml} filename="document.html" mimeType="text/html" />}
+              {output && <PdfDownloadButton contentHtml={output} filename="markdown-to-html.pdf" />}
             </div>
           </div>
           <ToolTextarea value={output} readOnly rows={18} placeholder="HTML output will appear here..." />

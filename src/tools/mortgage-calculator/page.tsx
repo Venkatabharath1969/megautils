@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import { ToolPage } from '@/components/tool-page'
 import { ExportButton } from '@/components/export-button'
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
 
 export default function MortgageCalculator() {
   const [homePrice, setHomePrice] = useState(400000)
@@ -263,6 +264,41 @@ export default function MortgageCalculator() {
           </div>
         </div>
       </div>
+
+      {/* Monthly Payment Pie Chart */}
+      {result.totalMonthlyPayment > 0 && (
+        <div className="mt-8 p-4 rounded-xl border border-border">
+          <h3 className="text-sm font-medium mb-3">Monthly Payment Breakdown</h3>
+          <ResponsiveContainer width="100%" height={250}>
+            <PieChart>
+              <Pie
+                data={[
+                  { name: 'Principal & Interest', value: result.monthlyPayment },
+                  ...(result.propertyTaxMonthly > 0 ? [{ name: 'Property Tax', value: result.propertyTaxMonthly }] : []),
+                  ...(result.homeInsuranceMonthly > 0 ? [{ name: 'Insurance', value: result.homeInsuranceMonthly }] : []),
+                ]}
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
+                outerRadius={100}
+                paddingAngle={2}
+                dataKey="value"
+                label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(1)}%`}
+              >
+                <Cell fill="#3b82f6" />
+                {result.propertyTaxMonthly > 0 && <Cell fill="#f97316" />}
+                {result.homeInsuranceMonthly > 0 && <Cell fill="#22c55e" />}
+              </Pie>
+              <Tooltip formatter={(value) => fmt(Number(value))} />
+            </PieChart>
+          </ResponsiveContainer>
+          <div className="flex justify-center gap-6 mt-2 text-xs text-muted-foreground flex-wrap">
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" /> P&I: {fmt(result.monthlyPayment)}</span>
+            {result.propertyTaxMonthly > 0 && <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-orange-500 inline-block" /> Tax: {fmt(result.propertyTaxMonthly)}</span>}
+            {result.homeInsuranceMonthly > 0 && <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block" /> Insurance: {fmt(result.homeInsuranceMonthly)}</span>}
+          </div>
+        </div>
+      )}
 
       {/* Amortization Schedule */}
       <div className="mt-8">

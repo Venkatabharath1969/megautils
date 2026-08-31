@@ -11,6 +11,8 @@ export default function TextToSpeechTool() {
   const [pitch, setPitch] = useState(1)
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
+  const [highlightStart, setHighlightStart] = useState<number | null>(null)
+  const [highlightEnd, setHighlightEnd] = useState<number | null>(null)
 
   useEffect(() => {
     const loadVoices = () => {
@@ -50,14 +52,26 @@ export default function TextToSpeechTool() {
     utterance.onstart = () => {
       setIsSpeaking(true)
       setIsPaused(false)
+      setHighlightStart(null)
+      setHighlightEnd(null)
     }
     utterance.onend = () => {
       setIsSpeaking(false)
       setIsPaused(false)
+      setHighlightStart(null)
+      setHighlightEnd(null)
     }
     utterance.onerror = () => {
       setIsSpeaking(false)
       setIsPaused(false)
+      setHighlightStart(null)
+      setHighlightEnd(null)
+    }
+    utterance.onboundary = (event) => {
+      if (event.name === 'word') {
+        setHighlightStart(event.charIndex)
+        setHighlightEnd(event.charIndex + event.charLength)
+      }
     }
 
     window.speechSynthesis.speak(utterance)
@@ -72,6 +86,8 @@ export default function TextToSpeechTool() {
     window.speechSynthesis.cancel()
     setIsSpeaking(false)
     setIsPaused(false)
+    setHighlightStart(null)
+    setHighlightEnd(null)
   }, [])
 
   const clear = () => {
@@ -133,7 +149,21 @@ export default function TextToSpeechTool() {
             <span className="text-sm font-semibold">Text to Speak</span>
             <ClearButton onClear={clear} />
           </div>
-          <ToolTextarea value={text} onChange={setText} placeholder="Enter the text you want to convert to speech..." rows={12} />
+          {isSpeaking || isPaused ? (
+            <div className="w-full rounded-lg border border-input bg-tool-bg p-3 min-h-[288px] max-h-[288px] overflow-y-auto whitespace-pre-wrap text-sm leading-relaxed">
+              {highlightStart !== null && highlightEnd !== null ? (
+                <>
+                  {text.slice(0, highlightStart)}
+                  <mark className="bg-primary/30 text-foreground rounded px-0.5">{text.slice(highlightStart, highlightEnd)}</mark>
+                  {text.slice(highlightEnd)}
+                </>
+              ) : (
+                text
+              )}
+            </div>
+          ) : (
+            <ToolTextarea value={text} onChange={setText} placeholder="Enter the text you want to convert to speech..." rows={12} />
+          )}
 
           <div className="text-xs text-muted-foreground">
             {text.length} characters | {text.split(/\s+/).filter(Boolean).length} words

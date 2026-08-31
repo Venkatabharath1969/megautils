@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, DownloadButton, ClearButton } from '@/components/tool-page'
+import { FileUpload } from '@/components/file-upload'
 
 function htmlToMarkdown(html: string): string {
   let md = html
@@ -134,6 +135,8 @@ function htmlToMarkdown(html: string): string {
 export default function HtmlToMarkdownTool() {
   const [input, setInput] = useState('')
 
+  const handleFileContent = useCallback((content: string) => setInput(content), [])
+
   const output = useMemo(() => {
     if (!input.trim()) return ''
     return htmlToMarkdown(input)
@@ -178,6 +181,9 @@ export default function HtmlToMarkdownTool() {
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-semibold">HTML Input</span>
             <ClearButton onClear={() => setInput('')} />
+          </div>
+          <div className="mb-3">
+            <FileUpload accept=".html,.htm,.txt" onFileContent={handleFileContent} label="Upload HTML File" />
           </div>
           <ToolTextarea value={input} onChange={setInput} placeholder="Paste your HTML here..." rows={18} />
         </div>

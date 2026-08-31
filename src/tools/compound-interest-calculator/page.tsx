@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import { ToolPage } from '@/components/tool-page'
 import { ExportButton } from '@/components/export-button'
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 
 type Frequency = 1 | 2 | 4 | 12 | 365 | 'continuous'
 
@@ -274,6 +275,30 @@ export default function CompoundInterestCalculator() {
           </div>
         </div>
       </div>
+
+      {/* Balance Growth Area Chart */}
+      {result.breakdown.length > 0 && (
+        <div className="mt-8 p-4 rounded-xl border border-border">
+          <h3 className="text-sm font-medium mb-3">Balance Growth Over Time</h3>
+          <ResponsiveContainer width="100%" height={250}>
+            <AreaChart data={result.breakdown.map(row => ({
+              year: `Year ${row.year}`,
+              Contributions: row.contributions,
+              Interest: row.interest,
+            }))}>
+              <XAxis dataKey="year" tick={{ fontSize: 12 }} />
+              <YAxis tick={{ fontSize: 12 }} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
+              <Tooltip formatter={(value) => fmt(Number(value))} />
+              <Area type="monotone" dataKey="Contributions" stackId="1" stroke="#3b82f6" fill="#3b82f6" fillOpacity={0.6} />
+              <Area type="monotone" dataKey="Interest" stackId="1" stroke="#22c55e" fill="#22c55e" fillOpacity={0.6} />
+            </AreaChart>
+          </ResponsiveContainer>
+          <div className="flex justify-center gap-6 mt-2 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" /> Contributions</span>
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block" /> Interest</span>
+          </div>
+        </div>
+      )}
 
       {/* Year-by-Year Breakdown Table */}
       <div className="mt-8">

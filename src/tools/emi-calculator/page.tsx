@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import { ToolPage } from '@/components/tool-page'
 import { ExportButton } from '@/components/export-button'
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
 
 export default function EMICalculator() {
   const [loanAmount, setLoanAmount] = useState(2500000)
@@ -194,6 +195,38 @@ export default function EMICalculator() {
           </div>
         </div>
       </div>
+
+      {/* Principal vs Interest Pie Chart */}
+      {result.totalPayment > 0 && (
+        <div className="mt-8 p-4 rounded-xl border border-border">
+          <h3 className="text-sm font-medium mb-3">Principal vs Interest</h3>
+          <ResponsiveContainer width="100%" height={250}>
+            <PieChart>
+              <Pie
+                data={[
+                  { name: 'Principal', value: loanAmount },
+                  { name: 'Interest', value: result.totalInterest },
+                ]}
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
+                outerRadius={100}
+                paddingAngle={2}
+                dataKey="value"
+                label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(1)}%`}
+              >
+                <Cell fill="#3b82f6" />
+                <Cell fill="#f97316" />
+              </Pie>
+              <Tooltip formatter={(value) => fmt(Number(value))} />
+            </PieChart>
+          </ResponsiveContainer>
+          <div className="flex justify-center gap-6 mt-2 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" /> Principal: {fmt(loanAmount)}</span>
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-orange-500 inline-block" /> Interest: {fmt(result.totalInterest)}</span>
+          </div>
+        </div>
+      )}
 
       {/* Amortization Schedule */}
       <div className="mt-8">

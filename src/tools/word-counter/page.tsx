@@ -1,14 +1,38 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import Link from 'next/link'
 import { ToolPage, ToolTextarea, ClearButton } from '@/components/tool-page'
+
+function countSyllables(word: string): number {
+  const w = word.toLowerCase().replace(/[^a-z]/g, '')
+  if (w.length <= 2) return w.length > 0 ? 1 : 0
+  // Count groups of consecutive vowels
+  const vowelGroups = w.match(/[aeiouy]+/g)
+  if (!vowelGroups) return 1
+  let count = vowelGroups.length
+  // Subtract silent-e at end
+  if (w.endsWith('e') && count > 1) count--
+  // Handle -le endings (e.g. "table")
+  if (w.endsWith('le') && w.length > 2 && !/[aeiouy]/.test(w[w.length - 3])) count++
+  return Math.max(1, count)
+}
+
+function getFleschLabel(score: number): { label: string; color: string } {
+  if (score >= 90) return { label: 'Very Easy', color: 'text-green-600 dark:text-green-400' }
+  if (score >= 80) return { label: 'Easy', color: 'text-green-600 dark:text-green-400' }
+  if (score >= 60) return { label: 'Standard', color: 'text-blue-600 dark:text-blue-400' }
+  if (score >= 30) return { label: 'Difficult', color: 'text-orange-600 dark:text-orange-400' }
+  return { label: 'Very Difficult', color: 'text-red-600 dark:text-red-400' }
+}
 
 export default function WordCounterTool() {
   const [text, setText] = useState('')
 
   const stats = useMemo(() => {
     const trimmed = text.trim()
-    const words = trimmed ? trimmed.split(/\s+/).length : 0
+    const wordList = trimmed ? trimmed.split(/\s+/) : []
+    const words = wordList.length
     const chars = text.length
     const charsNoSpaces = text.replace(/\s/g, '').length
     const sentences = trimmed ? (trimmed.match(/[.!?]+/g) || []).length || (trimmed.length > 0 ? 1 : 0) : 0
@@ -16,7 +40,14 @@ export default function WordCounterTool() {
     const lines = trimmed ? trimmed.split('\n').length : 0
     const readingTime = Math.ceil(words / 200)
     const speakingTime = Math.ceil(words / 130)
-    return { words, chars, charsNoSpaces, sentences, paragraphs, lines, readingTime, speakingTime }
+    const uniqueWords = trimmed ? new Set(wordList.map(w => w.toLowerCase().replace(/[^a-z0-9'-]/g, '')).filter(Boolean)).size : 0
+    const avgWordLength = words > 0 ? (charsNoSpaces / words) : 0
+    const pageCount = Math.ceil(words / 250)
+    const syllableCount = trimmed ? wordList.reduce((sum, w) => sum + countSyllables(w), 0) : 0
+    const fleschScore = words > 0 && sentences > 0
+      ? 206.835 - 1.015 * (words / sentences) - 84.6 * (syllableCount / words)
+      : 0
+    return { words, chars, charsNoSpaces, sentences, paragraphs, lines, readingTime, speakingTime, uniqueWords, avgWordLength, pageCount, syllableCount, fleschScore }
   }, [text])
 
   const topWords = useMemo(() => {
@@ -85,6 +116,10 @@ export default function WordCounterTool() {
           { label: 'Lines', value: stats.lines },
           { label: 'Reading Time', value: `${stats.readingTime} min` },
           { label: 'Speaking Time', value: `${stats.speakingTime} min` },
+          { label: 'Unique Words', value: stats.uniqueWords },
+          { label: 'Avg Word Length', value: stats.avgWordLength > 0 ? stats.avgWordLength.toFixed(1) : '0' },
+          { label: 'Pages', value: stats.pageCount },
+          { label: 'Syllables', value: stats.syllableCount },
         ].map((s) => (
           <div key={s.label} className="p-3 rounded-lg bg-muted text-center">
             <div className="text-xl font-bold text-primary">{s.value}</div>
@@ -92,6 +127,38 @@ export default function WordCounterTool() {
           </div>
         ))}
       </div>
+
+      {/* Flesch Reading Ease */}
+      {stats.words > 0 && stats.sentences > 0 && (
+        <div className="mb-4 p-4 rounded-lg bg-muted">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-semibold">Flesch Reading Ease</span>
+            <Link
+              href="/tools/readability-score"
+              className="text-xs font-medium text-primary hover:underline"
+            >
+              Full Readability Analysis →
+            </Link>
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="text-2xl font-bold text-primary">{Math.round(stats.fleschScore)}</div>
+            <div>
+              <div className={`text-sm font-semibold ${getFleschLabel(stats.fleschScore).color}`}>
+                {getFleschLabel(stats.fleschScore).label}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                Score range: 0 (very difficult) to 100 (very easy)
+              </div>
+            </div>
+          </div>
+          <div className="mt-2 h-2 rounded-full bg-muted-foreground/20 overflow-hidden">
+            <div
+              className="h-full rounded-full bg-primary transition-all"
+              style={{ width: `${Math.max(0, Math.min(100, stats.fleschScore))}%` }}
+            />
+          </div>
+        </div>
+      )}
       <div className="flex items-center justify-between mb-2">
         <span className="text-sm font-medium">Your Text</span>
         <ClearButton onClear={() => setText('')} />

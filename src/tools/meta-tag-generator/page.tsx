@@ -3,6 +3,8 @@
 import { useState, useMemo } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, ClearButton } from '@/components/tool-page'
 
+type PreviewTab = 'google' | 'facebook' | 'twitter'
+
 export default function MetaTagGeneratorTool() {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -15,6 +17,23 @@ export default function MetaTagGeneratorTool() {
   const [ogImage, setOgImage] = useState('')
   const [twitterCard, setTwitterCard] = useState<'summary' | 'summary_large_image'>('summary_large_image')
   const [twitterSite, setTwitterSite] = useState('')
+  const [previewTab, setPreviewTab] = useState<PreviewTab>('google')
+
+  const displayDomain = (() => {
+    try {
+      if (!canonicalUrl) return 'example.com'
+      const u = new URL(canonicalUrl.startsWith('http') ? canonicalUrl : `https://${canonicalUrl}`)
+      return u.hostname
+    } catch {
+      return 'example.com'
+    }
+  })()
+
+  const serpTitle = title ? (title.length > 60 ? title.slice(0, 60) + '...' : title) : 'Page Title'
+  const serpDescription = description ? (description.length > 160 ? description.slice(0, 160) + '...' : description) : 'Meta description will appear here. Fill in the form to see a live preview of how your page will look in search results and social media.'
+  const serpUrl = canonicalUrl || 'https://example.com/page'
+  const previewTitle = title || 'Open Graph Title'
+  const previewDesc = description || 'This is a preview of how your link will appear when shared on social media platforms.'
 
   const output = useMemo(() => {
     const lines: string[] = ['<!-- Primary Meta Tags -->']
@@ -183,6 +202,72 @@ export default function MetaTagGeneratorTool() {
           </div>
           <ToolTextarea value={output} readOnly rows={24} placeholder="Fill in the form to generate meta tags..." />
         </div>
+      </div>
+
+      {/* Live SERP + Social Preview */}
+      <div className="mt-6">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm font-semibold">Live Preview</span>
+          <div className="flex gap-1">
+            {(['google', 'facebook', 'twitter'] as const).map(tab => (
+              <button key={tab} onClick={() => setPreviewTab(tab)} className={`px-3 py-1 rounded-md text-xs font-medium transition-colors capitalize ${previewTab === tab ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}>
+                {tab === 'twitter' ? 'Twitter/X' : tab === 'google' ? 'Google' : 'Facebook'}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Google SERP Preview */}
+        {previewTab === 'google' && (
+          <div className="rounded-lg border border-border bg-white dark:bg-gray-950 p-4 max-w-[600px]">
+            <div className="text-xs text-green-700 dark:text-green-400 mb-1 truncate">{serpUrl}</div>
+            <div className="text-lg font-medium text-blue-700 dark:text-blue-400 leading-snug mb-1 cursor-pointer hover:underline" style={{ display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+              {serpTitle}
+            </div>
+            <div className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+              {serpDescription}
+            </div>
+          </div>
+        )}
+
+        {/* Facebook Card Preview */}
+        {previewTab === 'facebook' && (
+          <div className="rounded-lg border border-gray-300 overflow-hidden bg-white max-w-[500px]">
+            <div className="aspect-[1.91/1] bg-gray-100 flex items-center justify-center overflow-hidden">
+              {ogImage ? (
+                <img src={ogImage} alt="OG Preview" className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />
+              ) : (
+                <div className="text-gray-400 text-sm">No image provided</div>
+              )}
+            </div>
+            <div className="p-3 bg-gray-50 border-t border-gray-200">
+              <div className="text-xs text-gray-500 uppercase tracking-wide">{displayDomain}</div>
+              <div className="text-base font-semibold text-gray-900 mt-0.5 leading-tight line-clamp-2">{previewTitle}</div>
+              <div className="text-sm text-gray-500 mt-0.5 line-clamp-2">{previewDesc}</div>
+            </div>
+          </div>
+        )}
+
+        {/* Twitter/X Card Preview */}
+        {previewTab === 'twitter' && (
+          <div className="rounded-2xl border border-gray-200 overflow-hidden bg-white max-w-[500px]">
+            <div className="aspect-[2/1] bg-gray-100 flex items-center justify-center overflow-hidden">
+              {ogImage ? (
+                <img src={ogImage} alt="OG Preview" className="w-full h-full object-cover" onError={e => { (e.target as HTMLImageElement).style.display = 'none' }} />
+              ) : (
+                <div className="text-gray-400 text-sm">No image provided</div>
+              )}
+            </div>
+            <div className="p-3 border-t border-gray-200">
+              <div className="text-sm font-bold text-gray-900 leading-tight line-clamp-2">{previewTitle}</div>
+              <div className="text-sm text-gray-500 mt-0.5 line-clamp-2">{previewDesc}</div>
+              <div className="text-xs text-gray-400 mt-1 flex items-center gap-1">
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.172 13.828a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.102 1.101" /></svg>
+                {displayDomain}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </ToolPage>
   )

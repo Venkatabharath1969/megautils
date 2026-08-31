@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback, useMemo } from 'react'
+import { Shield } from 'lucide-react'
 import { ToolPage, CopyButton, ClearButton } from '@/components/tool-page'
 
 const CHARSETS = {
@@ -328,6 +329,24 @@ function calcEntropy(mode: 'password' | 'passphrase', opts: {
   return Math.floor((opts.length || 16) * Math.log2(charsetSize))
 }
 
+function crackTime(entropyBits: number): { label: string; color: string } {
+  if (entropyBits <= 0) return { label: 'Instantly', color: 'text-red-500' }
+  // 10 billion guesses/second, average case = half the keyspace
+  const seconds = Math.pow(2, entropyBits) / 1e10 / 2
+  if (seconds < 1) return { label: 'Instantly', color: 'text-red-500' }
+  if (seconds < 60) return { label: `${Math.round(seconds)} seconds`, color: 'text-red-500' }
+  const minutes = seconds / 60
+  if (minutes < 60) return { label: `${Math.round(minutes)} minutes`, color: 'text-orange-500' }
+  const hours = minutes / 60
+  if (hours < 24) return { label: `${Math.round(hours)} hours`, color: 'text-orange-500' }
+  const days = hours / 24
+  if (days < 365) return { label: `${Math.round(days)} days`, color: 'text-yellow-500' }
+  const years = days / 365
+  if (years < 100) return { label: `${Math.round(years)} years`, color: 'text-blue-500' }
+  if (years < 1_000_000) return { label: `${Math.round(years).toLocaleString()} years`, color: 'text-green-500' }
+  return { label: 'Millions of years+', color: 'text-green-500' }
+}
+
 export default function PasswordGeneratorTool() {
   const [mode, setMode] = useState<'password' | 'passphrase'>('password')
   const [length, setLength] = useState(16)
@@ -349,6 +368,8 @@ export default function PasswordGeneratorTool() {
     }
     return calcEntropy('password', { length, uppercase, lowercase, numbers, symbols, excludeAmbiguous })
   }, [mode, length, uppercase, lowercase, numbers, symbols, excludeAmbiguous, wordCount])
+
+  const crack = useMemo(() => crackTime(entropy), [entropy])
 
   const generate = useCallback(() => {
     const result: string[] = []
@@ -524,6 +545,17 @@ export default function PasswordGeneratorTool() {
           <div className="p-3 rounded-lg bg-muted flex items-center justify-between">
             <span className="text-sm font-medium">Entropy</span>
             <span className="text-sm font-mono text-muted-foreground">{entropy} bits</span>
+          </div>
+
+          {/* Crack Time Estimate */}
+          <div className="p-3 rounded-lg bg-muted flex items-center justify-between">
+            <span className="text-sm font-medium flex items-center gap-1.5">
+              <Shield className="h-4 w-4 text-muted-foreground" />
+              Crack Time
+            </span>
+            <span className={`text-sm font-semibold ${crack.color}`}>
+              {crack.label}
+            </span>
           </div>
 
           <div className="flex items-center gap-2">

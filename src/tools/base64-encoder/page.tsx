@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useRef } from 'react'
+import { useState, useMemo, useRef, useCallback } from 'react'
 import { ToolPage, ToolTextarea, CopyButton, ClearButton } from '@/components/tool-page'
 
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
@@ -40,6 +40,7 @@ export default function Base64EncoderTool() {
   const [mode, setMode] = useState<'encode' | 'decode'>('encode')
   const [urlSafe, setUrlSafe] = useState(false)
   const [fileResult, setFileResult] = useState<{ name: string; size: number; dataUri: string; base64: string } | null>(null)
+  const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const output = useMemo(() => {
@@ -56,6 +57,42 @@ export default function Base64EncoderTool() {
       return 'Error: Invalid input for ' + mode
     }
   }, [input, mode, urlSafe])
+
+  // Detect if decoded content is an image (data URI or raw base64 image)
+  const imagePreviewSrc = useMemo(() => {
+    if (mode !== 'decode' || !input.trim()) return null
+    // Check if input is a data URI for an image
+    if (input.trim().startsWith('data:image/')) {
+      return input.trim()
+    }
+    // Check if the raw base64 decodes to image magic bytes
+    try {
+      const cleaned = urlSafe ? fromUrlSafe(input.trim()) : input.trim()
+      const binary = atob(cleaned)
+      const bytes = new Uint8Array(binary.length)
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i)
+      // PNG: 137 80 78 71
+      const isPng = bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4E && bytes[3] === 0x47
+      // JPEG: 255 216 255
+      const isJpeg = bytes[0] === 0xFF && bytes[1] === 0xD8 && bytes[2] === 0xFF
+      // GIF: 47 49 46 38
+      const isGif = bytes[0] === 0x47 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x38
+      // WebP: RIFF...WEBP
+      const isWebP = bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46 && bytes[8] === 0x57 && bytes[9] === 0x45 && bytes[10] === 0x42 && bytes[11] === 0x50
+      if (isPng) return `data:image/png;base64,${cleaned}`
+      if (isJpeg) return `data:image/jpeg;base64,${cleaned}`
+      if (isGif) return `data:image/gif;base64,${cleaned}`
+      if (isWebP) return `data:image/webp;base64,${cleaned}`
+    } catch {
+      // Not valid base64 or not an image
+    }
+    return null
+  }, [input, mode, urlSafe])
+
+  const handleImageLoad = useCallback((e: React.SyntheticEvent<HTMLImageElement>) => {
+    const img = e.currentTarget
+    setImageDimensions({ width: img.naturalWidth, height: img.naturalHeight })
+  }, [])
 
   const clear = () => {
     setInput('')
@@ -148,6 +185,29 @@ export default function Base64EncoderTool() {
           <ToolTextarea value={output} readOnly placeholder="Result will appear here in real time..." rows={10} />
         </div>
       </div>
+
+      {/* Image Preview (decode mode) */}
+      {imagePreviewSrc && (
+        <div className="mt-4 p-4 rounded-lg border border-border bg-muted/30">
+          <div className="flex items-center gap-2 mb-3">
+            <h3 className="text-sm font-semibold">Image Preview</h3>
+            {imageDimensions && (
+              <span className="text-xs text-muted-foreground">
+                {imageDimensions.width} × {imageDimensions.height} px
+              </span>
+            )}
+          </div>
+          <div className="flex justify-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={imagePreviewSrc}
+              alt="Decoded image preview"
+              onLoad={handleImageLoad}
+              className="max-w-full max-h-96 rounded-lg border border-border object-contain"
+            />
+          </div>
+        </div>
+      )}
 
       {/* File-to-Base64 Section */}
       <div className="mt-6 p-4 rounded-lg border border-border bg-muted/30">

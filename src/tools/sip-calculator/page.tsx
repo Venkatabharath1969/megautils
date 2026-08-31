@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import { ToolPage } from '@/components/tool-page'
 import { ExportButton } from '@/components/export-button'
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
 
 export default function SIPCalculator() {
   const [monthlyInvestment, setMonthlyInvestment] = useState(10000)
@@ -209,6 +210,38 @@ export default function SIPCalculator() {
           </div>
         </div>
       </div>
+
+      {/* Invested vs Returns Doughnut Chart */}
+      {result.totalValue > 0 && (
+        <div className="mt-8 p-4 rounded-xl border border-border">
+          <h3 className="text-sm font-medium mb-3">Invested Amount vs Estimated Returns</h3>
+          <ResponsiveContainer width="100%" height={250}>
+            <PieChart>
+              <Pie
+                data={[
+                  { name: 'Invested', value: result.investedAmount },
+                  { name: 'Returns', value: result.estimatedReturns },
+                ]}
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
+                outerRadius={100}
+                paddingAngle={2}
+                dataKey="value"
+                label={({ name, percent }) => `${name} ${((percent ?? 0) * 100).toFixed(1)}%`}
+              >
+                <Cell fill="#3b82f6" />
+                <Cell fill="#22c55e" />
+              </Pie>
+              <Tooltip formatter={(value) => fmt(Number(value))} />
+            </PieChart>
+          </ResponsiveContainer>
+          <div className="flex justify-center gap-6 mt-2 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block" /> Invested: {fmt(result.investedAmount)}</span>
+            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-green-500 inline-block" /> Returns: {fmt(result.estimatedReturns)}</span>
+          </div>
+        </div>
+      )}
 
       {/* Yearly Breakdown */}
       <div className="mt-8">

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import { ToolPage, CopyButton, ClearButton } from '@/components/tool-page'
+import { ToolPage, CopyButton, ClearButton, DownloadButton } from '@/components/tool-page'
 
 function generateUUIDv4(): string {
   const bytes = new Uint8Array(16)
@@ -107,7 +107,7 @@ export default function UuidGeneratorTool() {
   const [parseResult, setParseResult] = useState<ReturnType<typeof parseUUID> | null>(null)
 
   const generate = useCallback(() => {
-    const clamped = Math.max(1, Math.min(100, quantity))
+    const clamped = Math.max(1, Math.min(500, quantity))
     const result: string[] = []
     for (let i = 0; i < clamped; i++) {
       let uuid = uuidVersion === 'v7' ? generateUUIDv7() : generateUUIDv4()
@@ -127,7 +127,7 @@ export default function UuidGeneratorTool() {
   return (
     <ToolPage
       title="UUID Generator"
-      description="Generate random UUID v4 identifiers. Bulk generate up to 100 at once."
+      description="Generate random UUID v4 identifiers. Bulk generate up to 500 at once."
       category="generators"
       categoryLabel="Generators"
       helpContent={
@@ -186,9 +186,9 @@ export default function UuidGeneratorTool() {
           <input
             type="number"
             min={1}
-            max={100}
+            max={500}
             value={quantity}
-            onChange={(e) => setQuantity(Math.max(1, Math.min(100, parseInt(e.target.value) || 1)))}
+            onChange={(e) => setQuantity(Math.max(1, Math.min(500, parseInt(e.target.value) || 1)))}
             className="w-20 px-3 py-1.5 text-sm rounded-md border border-input bg-tool-bg focus:outline-none focus:ring-2 focus:ring-ring"
           />
         </div>
@@ -219,6 +219,7 @@ export default function UuidGeneratorTool() {
         <span className="text-sm font-medium">Generated UUIDs</span>
         <div className="flex gap-1.5">
           {uuids.length > 0 && <CopyButton text={allText} />}
+          {uuids.length > 0 && <DownloadButton content={allText} filename="uuids.txt" />}
           {uuids.length > 0 && <ClearButton onClear={() => setUuids([])} />}
         </div>
       </div>

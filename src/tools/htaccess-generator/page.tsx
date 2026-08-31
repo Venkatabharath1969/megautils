@@ -21,6 +21,7 @@ export default function HtaccessGeneratorTool() {
   const [enableGzip, setEnableGzip] = useState(false)
   const [enableCaching, setEnableCaching] = useState(false)
   const [blockHotlinking, setBlockHotlinking] = useState(false)
+  const [hotlinkDomain, setHotlinkDomain] = useState('')
   const [securityHeaders, setSecurityHeaders] = useState(false)
   const [nextId, setNextId] = useState(1)
 
@@ -115,10 +116,13 @@ export default function HtaccessGeneratorTool() {
     }
 
     if (blockHotlinking) {
+      const escapedDomain = hotlinkDomain
+        ? hotlinkDomain.replace(/\./g, '\\.')
+        : 'yourdomain\\.com'
       lines.push('# Block Hotlinking')
       lines.push('RewriteEngine On')
       lines.push('RewriteCond %{HTTP_REFERER} !^$')
-      lines.push('RewriteCond %{HTTP_REFERER} !^https?://(www\\.)?yourdomain\\.com [NC]')
+      lines.push(`RewriteCond %{HTTP_REFERER} !^https?://(www\\.)?${escapedDomain} [NC]`)
       lines.push('RewriteRule \\.(jpg|jpeg|png|gif|svg|webp)$ - [F,NC,L]')
       lines.push('')
     }
@@ -137,7 +141,7 @@ export default function HtaccessGeneratorTool() {
     }
 
     return lines.join('\n').trim()
-  }, [forceHttps, wwwMode, redirects, error404, error403, error500, enableGzip, enableCaching, blockHotlinking, securityHeaders])
+  }, [forceHttps, wwwMode, redirects, error404, error403, error500, enableGzip, enableCaching, blockHotlinking, hotlinkDomain, securityHeaders])
 
   const clear = () => {
     setForceHttps(false)
@@ -149,6 +153,7 @@ export default function HtaccessGeneratorTool() {
     setEnableGzip(false)
     setEnableCaching(false)
     setBlockHotlinking(false)
+    setHotlinkDomain('')
     setSecurityHeaders(false)
   }
 
@@ -220,6 +225,18 @@ export default function HtaccessGeneratorTool() {
               <input type="checkbox" checked={blockHotlinking} onChange={(e) => setBlockHotlinking(e.target.checked)} className="rounded accent-primary" />
               Block Image Hotlinking
             </label>
+            {blockHotlinking && (
+              <div className="ml-6 mt-1 mb-1">
+                <input
+                  type="text"
+                  value={hotlinkDomain}
+                  onChange={(e) => setHotlinkDomain(e.target.value)}
+                  placeholder="yourdomain.com"
+                  className="w-full h-8 px-2 rounded-md border border-input bg-card text-xs"
+                />
+                <p className="text-xs text-muted-foreground mt-0.5">Enter your domain (e.g. example.com)</p>
+              </div>
+            )}
             <br />
             <label className="inline-flex items-center gap-2 text-sm cursor-pointer">
               <input type="checkbox" checked={securityHeaders} onChange={(e) => setSecurityHeaders(e.target.checked)} className="rounded accent-primary" />

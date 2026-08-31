@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect, useCallback, type KeyboardEvent, type DragEvent, type ChangeEvent } from 'react'
 import { ToolPage, CopyButton, DownloadButton, ClearButton } from '@/components/tool-page'
+import { PdfDownloadButton } from '@/components/pdf-download-button'
 import {
   Bold, Italic, Strikethrough, Heading1, Heading2, Heading3,
   Link2, ImageIcon, Code, CodeSquare, Quote, List, ListOrdered,
@@ -568,6 +569,7 @@ export default function MarkdownEditorTool() {
         <button onClick={downloadHtml} className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-border bg-card hover:bg-muted transition-colors">
           <FileText className="h-3.5 w-3.5" /> Download .html
         </button>
+        {renderedHtml && <PdfDownloadButton contentHtml={renderedHtml} filename="markdown-document.pdf" />}
         <button onClick={copyMarkdown} className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-md border border-border bg-card hover:bg-muted transition-colors">
           {copiedMd ? <><Check className="h-3.5 w-3.5 text-green-500" /> Copied!</> : <><Copy className="h-3.5 w-3.5" /> Copy Markdown</>}
         </button>

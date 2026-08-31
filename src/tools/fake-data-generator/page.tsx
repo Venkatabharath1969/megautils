@@ -138,12 +138,17 @@ function generateRecord(fields: FieldKey[]): FakeRecord {
   return record
 }
 
+function escapeSqlValue(value: string): string {
+  return value.replace(/'/g, "''")
+}
+
 export default function FakeDataGeneratorTool() {
   const [count, setCount] = useState(10)
-  const [format, setFormat] = useState<'json' | 'csv'>('json')
+  const [format, setFormat] = useState<'json' | 'csv' | 'sql'>('json')
   const [output, setOutput] = useState('')
   const [records, setRecords] = useState<FakeRecord[]>([])
   const [selectedFields, setSelectedFields] = useState<FieldKey[]>(['name', 'email', 'phone', 'address', 'company'])
+  const [tableName, setTableName] = useState('users')
 
   const toggleField = (key: FieldKey) => {
     setSelectedFields(prev =>
@@ -161,22 +166,31 @@ export default function FakeDataGeneratorTool() {
 
     if (format === 'json') {
       setOutput(JSON.stringify(data, null, 2))
-    } else {
+    } else if (format === 'csv') {
       const header = selectedFields.map(f => ALL_FIELDS.find(af => af.key === f)!.label).join(',')
       const rows = data.map(r =>
         selectedFields.map(f => `"${r[f] || ''}"`).join(',')
       )
       setOutput([header, ...rows].join('\n'))
+    } else {
+      // SQL INSERT format
+      const columns = selectedFields.join(', ')
+      const tbl = tableName.trim() || 'users'
+      const statements = data.map(r => {
+        const values = selectedFields.map(f => `'${escapeSqlValue(r[f] || '')}'`).join(', ')
+        return `INSERT INTO ${tbl} (${columns}) VALUES (${values});`
+      })
+      setOutput(statements.join('\n'))
     }
-  }, [count, format, selectedFields])
+  }, [count, format, selectedFields, tableName])
 
   const clear = () => {
     setOutput('')
     setRecords([])
   }
 
-  const mimeType = format === 'json' ? 'application/json' : 'text/csv'
-  const filename = format === 'json' ? 'fake-data.json' : 'fake-data.csv'
+  const mimeType = format === 'json' ? 'application/json' : format === 'csv' ? 'text/csv' : 'text/sql'
+  const filename = format === 'json' ? 'fake-data.json' : format === 'csv' ? 'fake-data.csv' : 'fake-data.sql'
 
   return (
     <ToolPage
@@ -254,20 +268,29 @@ export default function FakeDataGeneratorTool() {
           <div>
             <label className="text-sm font-medium mb-1 block">Format</label>
             <div className="flex gap-2">
-              <button
-                onClick={() => setFormat('json')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${format === 'json' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}
-              >
-                JSON
-              </button>
-              <button
-                onClick={() => setFormat('csv')}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${format === 'csv' ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}
-              >
-                CSV
-              </button>
+              {(['json', 'csv', 'sql'] as const).map(f => (
+                <button
+                  key={f}
+                  onClick={() => setFormat(f)}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${format === f ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground border border-border'}`}
+                >
+                  {f.toUpperCase()}
+                </button>
+              ))}
             </div>
           </div>
+          {format === 'sql' && (
+            <div>
+              <label className="text-sm font-medium mb-1 block">Table Name</label>
+              <input
+                type="text"
+                value={tableName}
+                onChange={(e) => setTableName(e.target.value)}
+                placeholder="users"
+                className="w-36 h-9 px-3 rounded-md border border-input bg-card text-sm"
+              />
+            </div>
+          )}
           <button
             onClick={generate}
             className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
