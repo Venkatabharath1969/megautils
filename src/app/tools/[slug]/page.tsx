@@ -20,7 +20,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const toolDesc = tool?.description || `${title.toLowerCase()} tool`
 
   // SEO-optimized title: action-oriented with "Free Online" for CTR
-  const seoTitle = `${title} — Free Online Tool | No Signup | UtilsNow`
+  // Note: layout.tsx appends " | UtilsNow" via template, so don't include it here
+  const seoTitle = `${title} — Free Online Tool`
   const seoDesc = `${toolDesc.charAt(0).toUpperCase() + toolDesc.slice(1)}. Free, instant, no signup — 100% private, your data never leaves your browser.`
 
   return {
