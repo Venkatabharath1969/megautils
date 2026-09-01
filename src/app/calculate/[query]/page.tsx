@@ -27,12 +27,19 @@ function pct(x: number, y: number): number {
 // Related percentages to show in table
 const RELATED_PCTS = [5, 10, 15, 20, 25, 30, 40, 50, 60, 75, 80, 90, 100]
 
-// Pre-generation combos
-const PERCENTAGES = [5, 10, 15, 20, 25, 30, 40, 50, 60, 75, 80, 90]
-const BASES = [50, 100, 150, 200, 250, 300, 400, 500, 750, 1000]
+// Pre-generation combos — expanded based on GSC data showing /calculate/ pages
+// have the BEST avg position (21) vs tools (72) and convert (67).
+// More combinations = more pages ranking near page 1.
+const PERCENTAGES = [
+  1, 2, 3, 5, 8, 10, 12, 15, 18, 20, 25, 30, 33, 35, 40, 45, 50, 60, 70, 75, 80, 85, 90, 95, 100,
+]
+const BASES = [
+  10, 20, 25, 30, 40, 50, 60, 70, 75, 80, 90, 100, 120, 125, 150, 175, 200, 250, 300, 350, 400, 450,
+  500, 600, 700, 750, 800, 900, 1000, 1200, 1500, 2000, 2500, 3000, 5000, 10000,
+]
 
 // ---------------------------------------------------------------------------
-// Static params (120 pages)
+// Static params (900 pages — expanded from 120 for SEO coverage)
 // ---------------------------------------------------------------------------
 
 export function generateStaticParams() {

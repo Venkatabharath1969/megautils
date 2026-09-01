@@ -19,21 +19,25 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const title = tool?.name || formatTitle(slug)
   const toolDesc = tool?.description || `${title.toLowerCase()} tool`
 
+  // SEO-optimized title: action-oriented with "Free Online" for CTR
+  const seoTitle = `${title} — Free Online Tool | No Signup | UtilsNow`
+  const seoDesc = `${toolDesc.charAt(0).toUpperCase() + toolDesc.slice(1)}. Free, instant, no signup — 100% private, your data never leaves your browser.`
+
   return {
-    title,
-    description: `${toolDesc}. Free, browser-based — no signup, no data uploaded to servers.`,
+    title: seoTitle,
+    description: seoDesc,
     keywords: tool?.keywords || [],
     openGraph: {
-      title: `${title} — Free Online Tool | UtilsNow`,
-      description: `${toolDesc}. 100% private, runs in your browser.`,
+      title: seoTitle,
+      description: seoDesc,
       url: `https://utilsnow.com/tools/${slug}`,
       type: 'website',
       images: [{ url: '/opengraph-image.png', width: 1200, height: 630, alt: title }],
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${title} | UtilsNow`,
-      description: `${toolDesc}. Free, private, browser-based.`,
+      title: seoTitle,
+      description: seoDesc,
       images: ['/opengraph-image.png'],
     },
     alternates: {

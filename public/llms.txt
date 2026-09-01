@@ -1,86 +1,286 @@
-# UtilsNow — Free Online Tools
-
-> https://utilsnow.com — 220+ free browser-based utility tools. No signup. No data uploaded. Runs entirely in your browser.
+# UtilsNow
+> 235+ free browser-based utility tools. No signup required. 100% private — files never leave your device.
 
 ## About
-UtilsNow is a free online tools website with 220+ utilities across 17 categories for developers, designers, students, and professionals. Every tool runs entirely in your browser — no data leaves your device. No login required.
-
-## Categories & Tools
-
-### Developer Tools (24)
-JSON Formatter, JSON Validator, JSON to TypeScript, JSON to Go, JSON to Python, JSON to CSV, JSON to XML, JSON to YAML, JSON Escape, JSON Path Finder, JavaScript Formatter, HTML Formatter, CSS Formatter, SQL Formatter, YAML Formatter, YAML to JSON, XML Formatter, XML to JSON, TOML Formatter, Diff Checker, Regex Tester, CSV Viewer, CSV to JSON, Code to Image
-
-### Encoders & Decoders (14)
-Base64 Encoder, Base32 Encoder, URL Encoder, HTML Entity Encoder, JWT Decoder, Punycode Converter, ROT13 Encoder, Text to Binary, Text to Hex, Morse Code Translator, Caesar Cipher, CSV Escape, SQL Escape, XML Escape
-
-### Crypto & Hash (3)
-Hash Generator (MD5/SHA-1/SHA-256/SHA-512), UUID Generator, Password Generator
-
-### SEO Tools (18)
-Meta Tag Generator, SERP Preview, Open Graph Preview, Robots.txt Generator, Sitemap Generator, Schema generators (FAQ, Article, Product, Recipe, Event, HowTo, Organization, Local Business, Breadcrumb, Job Posting), Keyword Density Checker, Headline Analyzer, HTAccess Generator, Privacy Policy Generator, Terms Generator
-
-### Text Tools (18)
-Word Counter, Case Converter, Text Sorter, Text Reverser, Find and Replace, Text Diff, Blank Line Remover, Duplicate Line Remover, Line Number Adder, Text Repeater, Small Text Generator, Text to Slug, Text to ASCII Art, Text to Speech, String Length Calculator, Social Media Counter, Lorem Ipsum Generator, Reading Time Calculator
-
-### String Utilities (6)
-Number to Words, Number Base Converter, Unicode Text Formatter, NATO Alphabet, Braille Converter, Emoji Picker
-
-### Color Tools (8)
-Color Picker, Color Converter, Hex to RGB, Color Palette Generator, Color Name Finder, Random Color Generator, Contrast Checker, Tint Shade Generator
-
-### CSS Tools (14)
-CSS Gradient Generator, CSS Box Shadow Generator, CSS Border Radius Generator, CSS Flexbox Generator, CSS Grid Generator, CSS Animation Generator, CSS Text Shadow Generator, CSS Transform Generator, CSS Filter Generator, CSS Columns Generator, CSS Unit Converter, Glassmorphism Generator, Neumorphism Generator, Tailwind Color Picker
-
-### Financial Calculators (23)
-Mortgage Calculator, EMI Calculator, Compound Interest Calculator, SIP Calculator, PPF Calculator, FD Calculator, RD Calculator, Loan Comparison Calculator, ROI Calculator, NPV Calculator, IRR Calculator, CAGR Calculator, Salary Calculator, Hourly to Salary, Tax Calculator, GST Calculator, Discount Calculator, Margin Calculator, Tip Calculator, Break Even Calculator, Stock Profit Calculator, Inflation Calculator, Percentage Calculator
-
-### Unit Converters (14)
-Length, Weight, Temperature, Area, Volume, Speed, Data Storage, Energy, Power, Pressure, Angle, Frequency, Fuel Economy, Cooking Converter
-
-### Math & Science (4)
-Scientific Calculator, BMI Calculator, Age Calculator, Aspect Ratio Calculator
-
-### Image Tools (8)
-Image Resizer, Image Cropper, Image Format Converter, Image to Base64, Favicon Generator, Placeholder Image Generator, SVG Optimizer, Barcode Generator
-
-### Date & Time (5)
-Unix Timestamp Converter, Date Calculator, Cron Expression Builder, Crontab Reference, QR Code Generator
-
-### Network & API (4)
-IP Address Info, HTTP Status Codes, User Agent Parser, URL Parser
-
-### Content & Writing (3)
-Markdown Editor, Readability Score, List Tools
-
-### Markdown Tools (4)
-Markdown to HTML, Markdown to Text, HTML to Markdown, Markdown Table Generator
-
-### Generators (8)
-Fake Data Generator, .gitignore Generator, UTM Link Builder, Placeholder Image Generator, Code to Image, Privacy Policy Generator, Terms Generator, Robots.txt Generator
-
-### AI-Powered Tools (17)
-AI Background Remover, AI Content Detector, AI Grammar Checker, AI Paraphrasing Tool, AI Text Summarizer, AI Speech to Text, AI Sentiment Analysis, AI Image Upscaler, AI OCR (Image to Text), AI Face Blur, AI Image Segmentation, AI Depth Map Generator, AI Image Classifier, AI Object Detection, AI Object Remover, AI Photo Colorizer, AI Image Caption Generator
+UtilsNow (https://utilsnow.com) provides 235+ free online tools for developers, designers, writers, students, and everyone. Every tool runs 100% in your browser — no file uploads, no server processing, no account needed. Categories include PDF tools, image tools, AI writing tools, developer tools, financial calculators, and more.
 
 ## Key Pages
-- https://utilsnow.com/tools/ai-bg-remover — Remove image backgrounds using AI
-- https://utilsnow.com/tools/ai-content-detector — Detect AI-generated text
-- https://utilsnow.com/tools/ai-grammar-checker — Check grammar and spelling
-- https://utilsnow.com/ — Homepage with all 17 category cards
-- https://utilsnow.com/tools/json-formatter — Format, validate, and beautify JSON
-- https://utilsnow.com/tools/base64-encoder — Encode and decode Base64 strings
-- https://utilsnow.com/tools/mortgage-calculator — Calculate mortgage payments and amortization
-- https://utilsnow.com/tools/color-picker — Pick colors with HEX/RGB/HSL values
-- https://utilsnow.com/tools/regex-tester — Test regular expressions with live highlighting
-- https://utilsnow.com/tools/css-gradient-generator — Build CSS gradients visually
-- https://utilsnow.com/tools/word-counter — Count words, characters, sentences, paragraphs
-- https://utilsnow.com/tools/password-generator — Generate secure random passwords
-- https://utilsnow.com/blog — How-to guides, tutorials, and tool comparisons
+- Homepage: https://utilsnow.com
+- All Tools: https://utilsnow.com/#categories
+- PDF Tools: https://utilsnow.com/category/pdf
+- Image Tools: https://utilsnow.com/category/image
+- Developer Tools: https://utilsnow.com/category/developer
+- Text Tools: https://utilsnow.com/category/text
+- Financial Calculators: https://utilsnow.com/category/financial
+- Blog: https://utilsnow.com/blog
 
-## Privacy & Security
-All tool processing happens 100% client-side in the user's browser. No data is uploaded, stored, or transmitted to any server. No cookies for tracking. No login or account required. HTTPS enforced.
+## Developer Tools (25 tools)
+- [JSON Formatter & Validator](https://utilsnow.com/tools/developer): Format, validate, and beautify JSON data
+- [JSON Validator](https://utilsnow.com/tools/json-validator): Validate JSON with detailed error messages and stats
+- [JSON to YAML](https://utilsnow.com/tools/json-to-yaml): Convert JSON to YAML format
+- [YAML to JSON](https://utilsnow.com/tools/yaml-to-json): Convert YAML to JSON format
+- [JSON to CSV](https://utilsnow.com/tools/json-to-csv): Convert JSON arrays to CSV
+- [CSV to JSON](https://utilsnow.com/tools/csv-to-json): Convert CSV data to JSON
+- [JSON to TypeScript](https://utilsnow.com/tools/json-to-typescript): Generate TypeScript interfaces from JSON
+- [JSON to XML](https://utilsnow.com/tools/json-to-xml): Convert JSON to XML format
+- [XML to JSON](https://utilsnow.com/tools/xml-to-json): Convert XML to JSON format
+- [JSON to Go Struct](https://utilsnow.com/tools/json-to-go): Generate Go structs from JSON
+- [JSON to Python](https://utilsnow.com/tools/json-to-python): Generate Python dataclasses from JSON
+- [XML Formatter](https://utilsnow.com/tools/xml-formatter): Format and beautify XML data
+- [HTML Formatter](https://utilsnow.com/tools/html-formatter): Format and beautify HTML code
+- [CSS Formatter](https://utilsnow.com/tools/css-formatter): Format, beautify, and minify CSS
+- [SQL Formatter](https://utilsnow.com/tools/sql-formatter): Format SQL queries with keyword capitalization
+- [JavaScript Formatter](https://utilsnow.com/tools/javascript-formatter): Format and beautify JavaScript code
+- [YAML Formatter](https://utilsnow.com/tools/yaml-formatter): Format and beautify YAML
+- [TOML Formatter](https://utilsnow.com/tools/toml-formatter): Format TOML configuration files
+- [Text Diff](https://utilsnow.com/tools/text-diff): Compare two texts with highlighted differences
+- [Diff Checker](https://utilsnow.com/tools/diff-checker): Compare texts with unified or side-by-side diff
+- [Code to Image](https://utilsnow.com/tools/code-to-image): Convert code snippets to beautiful images
+- [chmod Calculator](https://utilsnow.com/tools/chmod-calculator): Unix file permissions calculator
+- [JSON Path Finder](https://utilsnow.com/tools/json-path-finder): Find JSONPath for any element
+- [CSV Viewer](https://utilsnow.com/tools/csv-viewer): View CSV as sortable table
+- [API Request Builder](https://utilsnow.com/tools/api-request-builder): Build API requests visually and generate code in cURL, JavaScript, Python, Node.js, PHP, and Go
 
-## Technical Details
-- Framework: Next.js 16 (Turbopack, App Router)
-- Language: TypeScript
-- Styling: Tailwind CSS v4
-- 10 UI languages: English, German, French, Spanish, Japanese, Korean, Portuguese, Italian, Dutch, Turkish
+## Encoders & Decoders (14 tools)
+- [Base64 Encoder/Decoder](https://utilsnow.com/tools/base64-encoder): Encode and decode Base64 with UTF-8 support
+- [URL Encoder/Decoder](https://utilsnow.com/tools/url-encoder): Encode and decode URL strings
+- [HTML Entity Encoder/Decoder](https://utilsnow.com/tools/html-entity-encoder): Encode and decode HTML entities
+- [JWT Decoder](https://utilsnow.com/tools/jwt-decoder): Decode and inspect JSON Web Tokens
+- [Text to Binary](https://utilsnow.com/tools/text-to-binary): Convert text to binary and back
+- [Text to Hex](https://utilsnow.com/tools/text-to-hex): Convert text to hexadecimal and back
+- [Morse Code Translator](https://utilsnow.com/tools/morse-code-translator): Convert text to Morse code and back
+- [ROT13 Encoder](https://utilsnow.com/tools/rot13-encoder): ROT13 cipher encoder/decoder
+- [Number Base Converter](https://utilsnow.com/tools/number-base-converter): Convert between binary, octal, decimal, hex
+- [Base32 Encoder/Decoder](https://utilsnow.com/tools/base32-encoder): RFC 4648 Base32 encoding
+- [Punycode Converter](https://utilsnow.com/tools/punycode-converter): Convert international domains to Punycode
+- [NATO Phonetic Alphabet](https://utilsnow.com/tools/nato-alphabet): Convert text to NATO alphabet
+- [Caesar Cipher](https://utilsnow.com/tools/caesar-cipher): Caesar cipher with configurable shift
+- [Braille Converter](https://utilsnow.com/tools/braille-converter): Convert text to Unicode Braille
+
+## Crypto & Hash (3 tools)
+- [Hash Generator](https://utilsnow.com/tools/hash-generator): Generate MD5, SHA-1, SHA-256, SHA-512 hashes
+- [Password Generator](https://utilsnow.com/tools/password-generator): Generate secure passwords with strength meter
+- [UUID Generator](https://utilsnow.com/tools/uuid-generator): Generate UUID v4 with bulk option
+
+## SEO Tools (18 tools)
+- [Meta Tag Generator](https://utilsnow.com/tools/meta-tag-generator): Generate SEO meta tags with OG and Twitter cards
+- [Robots.txt Generator](https://utilsnow.com/tools/robots-txt-generator): Build robots.txt with rules and sitemap
+- [XML Sitemap Generator](https://utilsnow.com/tools/sitemap-generator): Generate XML sitemaps from URL lists
+- [SERP Preview](https://utilsnow.com/tools/serp-preview): Preview how your page looks in Google search results
+- [Keyword Density Checker](https://utilsnow.com/tools/keyword-density-checker): Analyze keyword frequency and n-gram density
+- [Readability Score](https://utilsnow.com/tools/readability-score): Calculate Flesch-Kincaid, Gunning Fog, SMOG scores
+- [Open Graph Preview](https://utilsnow.com/tools/open-graph-preview): Preview social media sharing cards
+- [UTM Link Builder](https://utilsnow.com/tools/utm-link-builder): Create campaign-tracked URLs with UTM parameters
+- [Article Schema Generator](https://utilsnow.com/tools/schema-article): Generate Article JSON-LD structured data
+- [FAQ Schema Generator](https://utilsnow.com/tools/schema-faq): Generate FAQPage JSON-LD
+- [Product Schema Generator](https://utilsnow.com/tools/schema-product): Generate Product JSON-LD
+- [HowTo Schema Generator](https://utilsnow.com/tools/schema-howto): Generate HowTo JSON-LD
+- [LocalBusiness Schema](https://utilsnow.com/tools/schema-local-business): Generate LocalBusiness JSON-LD
+- [Organization Schema](https://utilsnow.com/tools/schema-organization): Generate Organization JSON-LD
+- [Event Schema Generator](https://utilsnow.com/tools/schema-event): Generate Event JSON-LD
+- [JobPosting Schema](https://utilsnow.com/tools/schema-job-posting): Generate JobPosting JSON-LD
+- [Breadcrumb Schema](https://utilsnow.com/tools/schema-breadcrumb): Generate BreadcrumbList JSON-LD
+- [Recipe Schema Generator](https://utilsnow.com/tools/schema-recipe): Generate Recipe JSON-LD
+
+## Text Tools (27 tools)
+- [Word Counter](https://utilsnow.com/tools/word-counter): Count words, characters, sentences, and reading time
+- [Case Converter](https://utilsnow.com/tools/case-converter): UPPER, lower, Title, camelCase, snake_case, and more
+- [Markdown to Text](https://utilsnow.com/tools/markdown-to-text): Convert Markdown to plain text, rich text, or HTML
+- [Duplicate Line Remover](https://utilsnow.com/tools/duplicate-line-remover): Remove duplicate lines from text
+- [Text Sorter](https://utilsnow.com/tools/text-sorter): Sort lines A-Z, Z-A, by length, random, reverse
+- [Text Reverser](https://utilsnow.com/tools/text-reverser): Reverse text by characters, words, or lines
+- [Text to Slug](https://utilsnow.com/tools/text-to-slug): Convert text to URL-friendly slugs
+- [Find & Replace](https://utilsnow.com/tools/find-and-replace): Bulk find and replace with regex support
+- [Blank Line Remover](https://utilsnow.com/tools/blank-line-remover): Remove blank and empty lines
+- [Line Number Adder](https://utilsnow.com/tools/line-number-adder): Add line numbers to text
+- [Reading Time Calculator](https://utilsnow.com/tools/reading-time-calculator): Estimate reading and speaking time
+- [String Length Calculator](https://utilsnow.com/tools/string-length-calculator): Character, byte, and UTF-8/16 length
+- [HTML Tag Stripper](https://utilsnow.com/tools/html-tag-stripper): Strip HTML tags keeping text content
+- [Text Repeater](https://utilsnow.com/tools/text-repeater): Repeat text N times with separator
+- [List Tools](https://utilsnow.com/tools/list-tools): Split, join, sort, deduplicate lists
+- [Unicode Text Formatter](https://utilsnow.com/tools/unicode-text-formatter): Bold, italic, strikethrough Unicode text
+- [Text to ASCII Art](https://utilsnow.com/tools/text-to-ascii-art): Convert text to ASCII block art
+- [Small Text Generator](https://utilsnow.com/tools/small-text-generator): Superscript, subscript, small caps
+- [AI Text Summarizer](https://utilsnow.com/tools/ai-text-summarizer): Summarize long text into key points instantly
+- [AI Content Detector](https://utilsnow.com/tools/ai-content-detector): Detect whether text was written by AI or a human
+- [AI Speech to Text](https://utilsnow.com/tools/ai-speech-to-text): Convert speech to text in real-time using your microphone
+- [AI Sentiment Analysis](https://utilsnow.com/tools/ai-sentiment-analysis): Analyze the emotional tone of any text instantly
+- [AI Grammar Checker](https://utilsnow.com/tools/ai-grammar-checker): Check text for grammar, spelling, and punctuation errors instantly
+- [AI Paraphrasing Tool](https://utilsnow.com/tools/ai-paraphraser): Rewrite text in 8 styles — standard, fluency, formal, simple, academic, creative, shorten, expand
+- [AI Text Humanizer](https://utilsnow.com/tools/ai-humanizer): Make AI-generated text sound more natural and human-written
+- [Typing Speed Test](https://utilsnow.com/tools/typing-speed-test): Test your typing speed with real-time WPM, accuracy, and error tracking
+- [Citation Generator](https://utilsnow.com/tools/citation-generator): Generate APA, MLA, Chicago, Harvard, and IEEE citations for websites, books, journals, and newspapers
+
+## String Utilities (6 tools)
+- [Regex Tester](https://utilsnow.com/tools/regex-tester): Test regex with match highlighting and capture groups
+- [Lorem Ipsum Generator](https://utilsnow.com/tools/lorem-ipsum-generator): Generate placeholder text
+- [JSON Escape/Unescape](https://utilsnow.com/tools/json-escape): Escape strings for JSON
+- [XML Escape/Unescape](https://utilsnow.com/tools/xml-escape): Escape XML special characters
+- [SQL Escape/Unescape](https://utilsnow.com/tools/sql-escape): Escape strings for SQL queries
+- [CSV Escape/Unescape](https://utilsnow.com/tools/csv-escape): Escape fields for CSV
+
+## Content & Writing (3 tools)
+- [Headline Analyzer](https://utilsnow.com/tools/headline-analyzer): Score headlines for emotional impact and SEO
+- [Social Media Counter](https://utilsnow.com/tools/social-media-counter): Character count for Twitter, LinkedIn, Instagram, etc.
+- [Text to Speech](https://utilsnow.com/tools/text-to-speech): Convert text to spoken audio in your browser
+
+## Markdown Tools (4 tools)
+- [Markdown Editor](https://utilsnow.com/tools/markdown-editor): Live markdown editor with side-by-side preview
+- [Markdown to HTML](https://utilsnow.com/tools/markdown-to-html): Convert Markdown to clean HTML
+- [HTML to Markdown](https://utilsnow.com/tools/html-to-markdown): Convert HTML to Markdown syntax
+- [Markdown Table Generator](https://utilsnow.com/tools/markdown-table-generator): Visual table builder for GFM tables
+
+## Color Tools (8 tools)
+- [Color Picker](https://utilsnow.com/tools/color-picker): Pick colors with HEX, RGB, HSL output
+- [Color Converter](https://utilsnow.com/tools/color-converter): Convert between HEX, RGB, HSL, HSV
+- [HEX to RGB](https://utilsnow.com/tools/hex-to-rgb): Dedicated HEX and RGB converter
+- [WCAG Contrast Checker](https://utilsnow.com/tools/contrast-checker): Check color contrast for accessibility
+- [Color Palette Generator](https://utilsnow.com/tools/color-palette-generator): Generate harmonious color palettes
+- [Random Color Generator](https://utilsnow.com/tools/random-color-generator): Generate random colors with all formats
+- [Tint & Shade Generator](https://utilsnow.com/tools/tint-shade-generator): Generate tints and shades from a base color
+- [Color Name Finder](https://utilsnow.com/tools/color-name-finder): Find nearest CSS named color
+
+## CSS Tools (15 tools)
+- [CSS Gradient Generator](https://utilsnow.com/tools/css-gradient-generator): Build linear and radial CSS gradients
+- [Box Shadow Generator](https://utilsnow.com/tools/css-box-shadow-generator): Multi-layer CSS box shadow builder
+- [Border Radius Generator](https://utilsnow.com/tools/css-border-radius-generator): Visual border radius builder
+- [Text Shadow Generator](https://utilsnow.com/tools/css-text-shadow-generator): CSS text shadow with live preview
+- [Flexbox Generator](https://utilsnow.com/tools/css-flexbox-generator): Visual CSS flexbox layout builder
+- [Grid Generator](https://utilsnow.com/tools/css-grid-generator): Visual CSS grid layout builder
+- [Glassmorphism Generator](https://utilsnow.com/tools/glassmorphism-generator): Frosted glass effect CSS generator
+- [CSS Unit Converter](https://utilsnow.com/tools/css-unit-converter): Convert between px, rem, em, %, pt, vw, vh
+- [Animation Generator](https://utilsnow.com/tools/css-animation-generator): CSS keyframe animation builder
+- [Neumorphism Generator](https://utilsnow.com/tools/neumorphism-generator): Soft UI / Neumorphism CSS
+- [Filter Generator](https://utilsnow.com/tools/css-filter-generator): CSS filter effects builder
+- [Transform Generator](https://utilsnow.com/tools/css-transform-generator): CSS transform builder
+- [Tailwind Color Picker](https://utilsnow.com/tools/tailwind-color-picker): Browse all Tailwind CSS colors
+- [Columns Generator](https://utilsnow.com/tools/css-columns-generator): Multi-column layout CSS
+- [Text Gradient Generator](https://utilsnow.com/tools/text-gradient-generator): Create beautiful CSS gradient text with live preview, copy CSS, and download as PNG
+
+## Financial Calculators (25 tools)
+- [Compound Interest](https://utilsnow.com/tools/compound-interest-calculator): Calculate compound interest with breakdown
+- [EMI Calculator](https://utilsnow.com/tools/emi-calculator): Calculate monthly loan EMI
+- [Mortgage Calculator](https://utilsnow.com/tools/mortgage-calculator): Home loan payments and amortization
+- [SIP Calculator](https://utilsnow.com/tools/sip-calculator): Systematic Investment Plan calculator
+- [Salary Calculator](https://utilsnow.com/tools/salary-calculator): Gross to net salary converter
+- [ROI Calculator](https://utilsnow.com/tools/roi-calculator): Return on Investment calculator
+- [Discount Calculator](https://utilsnow.com/tools/discount-calculator): Calculate discounts and original prices
+- [Tip Calculator](https://utilsnow.com/tools/tip-calculator): Calculate tips and split bills
+- [Percentage Calculator](https://utilsnow.com/tools/percentage-calculator): Calculate percentages in multiple modes
+- [GST Calculator](https://utilsnow.com/tools/gst-calculator): Indian GST calculator with CGST/SGST/IGST
+- [Inflation Calculator](https://utilsnow.com/tools/inflation-calculator): Calculate future value and purchasing power
+- [CAGR Calculator](https://utilsnow.com/tools/cagr-calculator): Compound Annual Growth Rate calculator
+- [Loan Comparison](https://utilsnow.com/tools/loan-comparison-calculator): Compare two loans side by side
+- [Break-Even Calculator](https://utilsnow.com/tools/break-even-calculator): Calculate break-even point for business
+- [Margin Calculator](https://utilsnow.com/tools/margin-calculator): Calculate profit margin and markup
+- [NPV Calculator](https://utilsnow.com/tools/npv-calculator): Net Present Value calculator
+- [IRR Calculator](https://utilsnow.com/tools/irr-calculator): Internal Rate of Return calculator
+- [FD Calculator](https://utilsnow.com/tools/fd-calculator): Fixed Deposit maturity calculator
+- [RD Calculator](https://utilsnow.com/tools/rd-calculator): Recurring Deposit calculator
+- [PPF Calculator](https://utilsnow.com/tools/ppf-calculator): Public Provident Fund calculator
+- [Hourly to Salary](https://utilsnow.com/tools/hourly-to-salary): Convert hourly rate to annual salary
+- [Stock Profit Calculator](https://utilsnow.com/tools/stock-profit-calculator): Calculate stock trading profit/loss
+- [Tax Calculator](https://utilsnow.com/tools/tax-calculator): US federal income tax calculator
+- [Currency Converter](https://utilsnow.com/tools/currency-converter): Convert between 30+ currencies with live exchange rates
+- [Invoice Generator](https://utilsnow.com/tools/invoice-generator): Create professional invoices with line items, tax, discounts, and download as PDF
+
+## Unit Converters (14 tools)
+- [Length Converter](https://utilsnow.com/tools/length-converter): Meters, km, miles, feet, inches, and more
+- [Weight Converter](https://utilsnow.com/tools/weight-converter): Kilograms, pounds, ounces, grams, and more
+- [Temperature Converter](https://utilsnow.com/tools/temperature-converter): Celsius, Fahrenheit, and Kelvin
+- [Data Storage Converter](https://utilsnow.com/tools/data-storage-converter): Bytes, KB, MB, GB, TB (SI and binary)
+- [Speed Converter](https://utilsnow.com/tools/speed-converter): km/h, mph, m/s, knots, Mach
+- [Area Converter](https://utilsnow.com/tools/area-converter): sq meters, sq feet, acres, hectares
+- [Volume Converter](https://utilsnow.com/tools/volume-converter): Liters, gallons, cups, tablespoons
+- [Pressure Converter](https://utilsnow.com/tools/pressure-converter): Pa, bar, PSI, atm, mmHg, torr
+- [Energy Converter](https://utilsnow.com/tools/energy-converter): Joule, calorie, kWh, BTU, eV
+- [Power Converter](https://utilsnow.com/tools/power-converter): Watt, kilowatt, horsepower
+- [Frequency Converter](https://utilsnow.com/tools/frequency-converter): Hz, kHz, MHz, GHz, RPM
+- [Fuel Economy](https://utilsnow.com/tools/fuel-economy-converter): km/L, mpg, L/100km
+- [Cooking Converter](https://utilsnow.com/tools/cooking-converter): Cups, tablespoons, ml, fl oz
+- [Angle Converter](https://utilsnow.com/tools/angle-converter): Degrees, radians, gradians
+
+## Math & Science (5 tools)
+- [Calorie Calculator](https://utilsnow.com/tools/calorie-calculator): Calculate BMR, TDEE, and daily calorie needs with macros
+- [Scientific Calculator](https://utilsnow.com/tools/scientific-calculator): Advanced calculator with scientific functions
+- [BMI Calculator](https://utilsnow.com/tools/bmi-calculator): Body Mass Index with category display
+- [Number to Words](https://utilsnow.com/tools/number-to-words): Convert numbers to English words
+- [Aspect Ratio Calculator](https://utilsnow.com/tools/aspect-ratio-calculator): Calculate aspect ratios from dimensions
+
+## Image Tools (31 tools)
+- [QR Code Generator](https://utilsnow.com/tools/qr-code-generator): Generate QR codes from text/URLs
+- [Image Resizer](https://utilsnow.com/tools/image-resizer): Resize images with aspect ratio lock
+- [Image to Base64](https://utilsnow.com/tools/image-to-base64): Convert images to/from Base64
+- [Favicon Generator](https://utilsnow.com/tools/favicon-generator): Generate favicons in all sizes
+- [Image Format Converter](https://utilsnow.com/tools/image-format-converter): Convert PNG, JPG, WebP
+- [Image Cropper](https://utilsnow.com/tools/image-cropper): Crop images visually
+- [Image Compressor](https://utilsnow.com/tools/image-compressor): Compress JPG, PNG, WebP images to reduce file size
+- [HEIC to JPG Converter](https://utilsnow.com/tools/heic-to-jpg): Convert iPhone HEIC/HEIF photos to JPG, PNG, or WebP
+- [Placeholder Image](https://utilsnow.com/tools/placeholder-image-generator): Generate placeholder images
+- [SVG Optimizer](https://utilsnow.com/tools/svg-optimizer): Optimize and minify SVG code
+- [AI Background Remover](https://utilsnow.com/tools/ai-bg-remover): Remove image backgrounds instantly using AI
+- [AI Face Blur](https://utilsnow.com/tools/ai-face-blur): Automatically detect and blur faces for privacy
+- [AI Image to Text (OCR)](https://utilsnow.com/tools/ai-ocr): Extract text from images using AI-powered OCR
+- [AI Image Upscaler](https://utilsnow.com/tools/ai-image-upscaler): Enlarge images 2x using AI super-resolution
+- [AI Image Segmentation](https://utilsnow.com/tools/ai-segment): Click on any object to cut it out using AI
+- [AI Depth Map Generator](https://utilsnow.com/tools/ai-depth-map): Generate 3D depth maps from any photo using AI
+- [AI Image Classifier](https://utilsnow.com/tools/ai-image-classifier): Identify objects, animals, and scenes in photos using AI
+- [AI Image Caption Generator](https://utilsnow.com/tools/ai-image-caption): Generate natural language descriptions and alt text for images using AI
+- [AI Object Remover](https://utilsnow.com/tools/ai-object-remover): Paint over unwanted objects and remove them from photos
+- [AI Photo Colorizer](https://utilsnow.com/tools/ai-photo-colorizer): Add color to black & white photos instantly with style presets
+- [AI Object Detection](https://utilsnow.com/tools/ai-object-detection): Detect and label objects in images with bounding boxes using AI
+- [Social Media Image Resizer](https://utilsnow.com/tools/social-media-resizer): Resize images for every social platform in one click
+- [Image EXIF Viewer](https://utilsnow.com/tools/exif-viewer): View, inspect, and strip EXIF metadata from photos
+- [Image Filters](https://utilsnow.com/tools/image-filters): Apply photo filters and adjustments with live preview
+- [OCR Text Extractor](https://utilsnow.com/tools/ocr-text-extractor): Extract text from images using browser-based OCR with 12 language support
+- [Image Crop Tool](https://utilsnow.com/tools/image-crop): Crop images with interactive drag handles, aspect ratio presets, and format options
+- [Video to GIF/WebM Converter](https://utilsnow.com/tools/video-to-gif): Convert video clips to animated WebM or extract frames — free, no upload
+- [Meme Generator](https://utilsnow.com/tools/meme-generator): Create memes with custom text, fonts, and styles — free, no watermark
+- [Image Collage Maker](https://utilsnow.com/tools/image-collage): Combine 2-9 photos into a collage with layout templates, spacing, and background color — free, no watermark
+- [Screen Recorder](https://utilsnow.com/tools/screen-recorder): Record your screen, window, or tab with optional mic audio — download as WebM, no upload, no watermark
+- [Image Watermark](https://utilsnow.com/tools/image-watermark): Add text or image watermarks to photos with opacity, rotation, tiling, and live preview
+
+## Date & Time (6 tools)
+- [Unix Timestamp Converter](https://utilsnow.com/tools/unix-timestamp-converter): Convert timestamps to dates and back
+- [Date Calculator](https://utilsnow.com/tools/date-calculator): Add/subtract dates and find differences
+- [Age Calculator](https://utilsnow.com/tools/age-calculator): Calculate exact age with birthday countdown
+- [Cron Expression Builder](https://utilsnow.com/tools/cron-expression-builder): Visual cron schedule builder
+- [Crontab Reference](https://utilsnow.com/tools/crontab-reference): Interactive cron syntax guide with examples
+- [Pomodoro Timer](https://utilsnow.com/tools/pomodoro-timer): Focus timer with 25/5 work-break intervals
+
+## Network & API (4 tools)
+- [HTTP Status Codes](https://utilsnow.com/tools/http-status-codes): Searchable reference of all HTTP status codes
+- [URL Parser](https://utilsnow.com/tools/url-parser): Parse URLs into components
+- [User Agent Parser](https://utilsnow.com/tools/user-agent-parser): Detect browser, OS, and device from UA string
+- [IP Address Info](https://utilsnow.com/tools/ip-address-info): Show your public IP address and details
+
+## Generators (10 tools)
+- [.gitignore Generator](https://utilsnow.com/tools/gitignore-generator): Generate .gitignore from presets
+- [Fake Data Generator](https://utilsnow.com/tools/fake-data-generator): Generate random names, emails, addresses
+- [Emoji Picker](https://utilsnow.com/tools/emoji-picker): Search and copy emojis
+- [Barcode Generator](https://utilsnow.com/tools/barcode-generator): Generate Code 128 barcodes
+- [.htaccess Generator](https://utilsnow.com/tools/htaccess-generator): Generate Apache .htaccess rules for redirects, security headers, caching, and more
+- [Privacy Policy Generator](https://utilsnow.com/tools/privacy-policy-generator): Generate a GDPR and CCPA compliant privacy policy for your website
+- [Terms & Conditions Generator](https://utilsnow.com/tools/terms-generator): Generate terms of service for your website or app
+- [Resume / CV Builder](https://utilsnow.com/tools/resume-builder): Build a professional resume with live preview and download as PDF — free, no sign-up
+- [Logo Maker](https://utilsnow.com/tools/logo-maker): Create a simple logo with icons, text, and custom colors — download as PNG for free
+- [Whiteboard / Drawing Pad](https://utilsnow.com/tools/whiteboard): Free online drawing canvas with pen, shapes, colors, undo/redo, and PNG export
+
+## PDF Tools (17 tools)
+- [JPG to PDF](https://utilsnow.com/tools/jpg-to-pdf): Convert images (JPG, PNG, WebP) to a PDF document with page size and margin options
+- [PDF to JPG](https://utilsnow.com/tools/pdf-to-jpg): Extract PDF pages as high-quality JPG or PNG images with DPI control
+- [Merge PDF](https://utilsnow.com/tools/pdf-merge): Combine multiple PDF files into one document
+- [Compress PDF](https://utilsnow.com/tools/pdf-compress): Reduce PDF file size while maintaining quality
+- [Split PDF](https://utilsnow.com/tools/pdf-split): Extract pages from a PDF — specific pages, every N pages, or each page separately
+- [Unlock PDF](https://utilsnow.com/tools/pdf-unlock): Remove password protection from a PDF file
+- [Add Page Numbers to PDF](https://utilsnow.com/tools/pdf-page-numbers): Insert page numbers on every page of a PDF with customizable position and format
+- [Add Watermark to PDF](https://utilsnow.com/tools/pdf-watermark): Stamp custom watermark text on PDF pages with adjustable opacity and rotation
+- [Rotate PDF](https://utilsnow.com/tools/pdf-rotate): Rotate all or individual PDF pages by 90, 180, or 270 degrees
+- [Sign PDF](https://utilsnow.com/tools/pdf-sign): Add your drawn or typed signature to any PDF — free, no upload, no account
+- [Text to PDF](https://utilsnow.com/tools/text-to-pdf): Convert plain text into a formatted PDF with customizable fonts, margins, and page size
+- [PDF to Text](https://utilsnow.com/tools/pdf-to-text): Extract all text from a PDF file — view, copy, or download as .txt
+- [Word to PDF Converter](https://utilsnow.com/tools/word-to-pdf): Convert Word (.docx) documents to PDF — free, private, no upload to servers
+- [Protect PDF](https://utilsnow.com/tools/pdf-protect): Set a password on your PDF to restrict access — free, no upload, browser-based
+- [Crop PDF](https://utilsnow.com/tools/pdf-crop): Visually crop PDF pages with an interactive drag rectangle — trim margins and whitespace
+- [Reorder PDF Pages](https://utilsnow.com/tools/pdf-reorder): Drag-and-drop to rearrange, reorder, or delete pages in a PDF — free, browser-based
+- [HTML to PDF](https://utilsnow.com/tools/html-to-pdf): Convert HTML code with CSS styling to a downloadable PDF document — free, browser-based
