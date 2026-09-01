@@ -48,6 +48,12 @@ export default function LineNumberAdderTool() {
             <li>Combine multiple text operations by copying the output of one tool into the input of another.</li>
             <li>No text is stored or transmitted — all processing runs locally in your browser.</li>
           </ul>
+
+          <h2>When to Add Line Numbers</h2>
+          <p>Line numbers are essential in many professional workflows. During <strong>code review</strong>, numbered lines let reviewers reference specific locations in pull request comments — saying "see line 42" is far clearer than quoting surrounding code. In <strong>technical documentation</strong>, numbered code examples help readers follow along and match explanations to exact lines. <strong>Legal documents</strong> such as contracts, depositions, and court filings frequently require line numbering so that attorneys, judges, and witnesses can reference specific passages precisely. When analyzing <strong>log files</strong> from servers or applications, adding line numbers makes it easy to correlate error messages with timestamps and cross-reference with monitoring tools. Educators also use line-numbered text for <strong>literary analysis</strong> so students can cite specific lines in poems, plays, or prose passages.</p>
+
+          <h2>Line Numbering Formats</h2>
+          <p>Different contexts call for different numbering styles. The <strong>standard format</strong> (1, 2, 3...) is the most common and works well for most purposes — this tool uses right-aligned padding by default so that numbers stay neatly aligned regardless of the total line count. <strong>Zero-padded numbering</strong> (001, 002, 003...) is popular in programming and data processing because it maintains consistent string lengths, which simplifies sorting and parsing. You can achieve this by adjusting the start number in this tool. A <strong>prefix-style format</strong> uses a custom separator like a colon, tab, or pipe character between the number and the text — for example, <code>1: function main()</code> or <code>1 | function main()</code>. This tool lets you set any separator string, giving you full control over the output format. For programming contexts, a tab separator often works best since it aligns cleanly in monospaced fonts.</p>
         </>
       }
       faqs={[

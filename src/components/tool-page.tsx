@@ -498,6 +498,8 @@ export function ToolPage({ title, description, category, categoryLabel, slug, ch
             browserRequirements: 'Requires JavaScript',
             permissions: 'none',
             isAccessibleForFree: true,
+            'datePublished': '2026-08-15',
+            'dateModified': new Date().toISOString().split('T')[0],
             creator: {
               '@type': 'Organization',
               name: 'UtilsNow',

@@ -54,6 +54,12 @@ export default function TextRepeaterTool() {
             <li>Combine multiple text operations by copying the output of one tool into the input of another.</li>
             <li>No text is stored or transmitted — all processing runs locally in your browser.</li>
           </ul>
+
+          <h2>Use Cases for Text Repetition</h2>
+          <p>Text repetition is a surprisingly common need across software development and content creation. <strong>Software testing</strong> frequently requires repeated strings to verify input field limits, test buffer overflow handling, and validate maximum length constraints in forms and APIs. <strong>Load testing</strong> tools often need large payloads — repeating a realistic text block thousands of times creates test data that simulates real-world usage patterns. Designers use repeated <strong>placeholder content</strong> to fill layouts and preview how text wraps across different screen sizes, particularly when "Lorem ipsum" does not match the character profile of the final content. In <strong>CSS and web design</strong>, repeated characters like dots, dashes, or decorative symbols create visual patterns for separators, borders, and background textures. Database administrators also use repeated text to populate test tables with realistic data volumes for performance benchmarking.</p>
+
+          <h2>Text Repeater in Programming</h2>
+          <p>Most programming languages offer built-in ways to repeat strings, but this tool is faster for one-off tasks. In <strong>JavaScript</strong>, use <code>&apos;hello&apos;.repeat(3)</code> to get <code>&apos;hellohellohello&apos;</code> — note that the built-in method does not add separators between repetitions, so you would need <code>Array(3).fill(&apos;hello&apos;).join(&apos;\n&apos;)</code> for separated output. In <strong>Python</strong>, string multiplication works with the <code>*</code> operator: <code>&apos;hello&apos; * 3</code> produces <code>&apos;hellohellohello&apos;</code>, and for separated repetition you can use <code>&apos;\n&apos;.join([&apos;hello&apos;] * 3)</code>. This online tool handles both approaches — repetition with and without separators — without writing any code, making it ideal for quick tasks, non-developers, and situations where you need the result in your clipboard rather than in a script.</p>
         </>
       }
       faqs={[

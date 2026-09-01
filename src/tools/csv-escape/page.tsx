@@ -66,6 +66,12 @@ export default function CsvEscapeTool() {
             <li>The tool handles edge cases like nested quotes, backslashes, and null bytes correctly.</li>
             <li>All processing is client-side — safe to use with database queries containing sensitive data.</li>
           </ul>
+
+          <h2>Why CSV Escaping Matters</h2>
+          <p>CSV (Comma-Separated Values) files look simple, but improper escaping is one of the most common causes of <strong>data corruption</strong> in data pipelines. When a field value contains a <strong>comma</strong>, it gets misinterpreted as a field delimiter, splitting one value into two columns and shifting every subsequent column in the row. <strong>Double quotes</strong> inside field values cause even worse problems — an unescaped quote can prematurely close a quoted field, corrupting the rest of the file. <strong>Newline characters</strong> embedded within a field (common in addresses, descriptions, and comments) break row boundaries entirely, causing parsers to treat one record as multiple rows. These issues cascade through data imports, breaking database loads, analytics dashboards, and spreadsheet formulas. Proper escaping prevents all of these problems by wrapping affected fields in quotes and doubling any internal quote characters.</p>
+
+          <h2>CSV Escape Rules (RFC 4180)</h2>
+          <p>The <strong>RFC 4180</strong> standard defines the official rules for CSV formatting, and this tool follows them precisely. The rules are straightforward: if a field contains a comma, a double quote, or a newline character, the entire field must be <strong>wrapped in double quotes</strong>. Any double quote characters within the field must be <strong>escaped by doubling them</strong> — so a single <code>&quot;</code> becomes <code>&quot;&quot;</code>. For example, the value <code>She said &quot;hello&quot;</code> becomes <code>&quot;She said &quot;&quot;hello&quot;&quot;&quot;</code> in properly escaped CSV. Fields that contain no special characters can be left unquoted. While some applications use backslash escaping instead, RFC 4180 quote-doubling is the universally accepted standard supported by Excel, Google Sheets, Python&apos;s csv module, and virtually every data processing tool. This tool also supports alternative delimiters — tabs, semicolons, and pipes — since European locales commonly use semicolons as CSV delimiters because commas serve as decimal separators.</p>
         </>
       }
  faqs={[

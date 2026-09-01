@@ -64,6 +64,15 @@ export default function Rot13EncoderTool() {
             <li>Check for unwanted whitespace or line breaks that may have been introduced during copy-paste operations.</li>
             <li>Processing is entirely local — your data never leaves your browser.</li>
           </ul>
+
+          <h2>What is ROT13?</h2>
+          <p>ROT13 is a specific type of <strong>Caesar cipher</strong> — one of the oldest and simplest substitution ciphers in history. It works by replacing each letter in the English alphabet with the letter exactly 13 positions after it. Since the English alphabet has 26 letters, applying ROT13 twice returns the original text, making it a perfectly symmetrical cipher. The letter A becomes N, B becomes O, C becomes P, and so on. Lowercase letters follow the same pattern: a becomes n, b becomes o, etc. Numbers, punctuation, spaces, and non-Latin characters are left completely unchanged.</p>
+
+          <h2>History of ROT13</h2>
+          <p>ROT13 gained widespread popularity in the early days of the internet, particularly on <strong>Usenet newsgroups</strong> in the 1980s and 1990s. Users applied ROT13 to hide <strong>spoilers</strong> for movies, books, and TV shows so that readers would only see the content if they deliberately chose to decode it. It was also commonly used to obscure the punchlines of jokes and answers to puzzles. Many Usenet newsreaders built in one-click ROT13 decoding for this reason. The convention was so widespread that "ROT13" became internet shorthand for any lightly obscured text. Today, ROT13 is still used in programming challenges, geocaching puzzles, and as a teaching example for basic cryptography concepts.</p>
+
+          <h2>Is ROT13 Secure?</h2>
+          <p>Absolutely not. ROT13 provides <strong>zero cryptographic security</strong>. It is trivially reversible — anyone who recognizes ROT13 text can decode it instantly, and automated tools can crack it in microseconds. ROT13 should never be used to protect passwords, personal data, confidential information, or any sensitive content. Its only legitimate purpose is <strong>casual obfuscation</strong>: hiding text from someone who is not actively trying to read it, like spoilers or puzzle answers. For actual security, use modern encryption algorithms such as AES-256 or RSA. Think of ROT13 as putting text behind a curtain, not behind a locked door.</p>
         </>
       }
       faqs={[
