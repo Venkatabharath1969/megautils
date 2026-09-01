@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { ToolPage } from '@/components/tool-page'
+import { ToolPage, CopyButton } from '@/components/tool-page'
 import { ExportButton } from '@/components/export-button'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 
@@ -242,7 +242,10 @@ export default function CompoundInterestCalculator() {
         <div className="space-y-4">
           <div className="p-5 rounded-xl bg-primary/10 border border-primary/20">
             <div className="text-sm text-muted-foreground mb-1">Final Amount</div>
-            <div className="text-3xl font-bold text-primary">{fmt(result.amount)}</div>
+            <div className="flex items-center gap-3">
+              <div className="text-3xl font-bold text-primary">{fmt(result.amount)}</div>
+              <CopyButton text={`Final Amount: ${fmt(result.amount)}`} />
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 rounded-xl bg-green-500/10 border border-green-500/20">

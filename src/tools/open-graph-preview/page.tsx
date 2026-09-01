@@ -126,6 +126,7 @@ export default function OpenGraphPreviewTool() {
 
           {/* Facebook Preview */}
           {preview === 'facebook' && (
+            /* bg-white intentional: simulates real Facebook card appearance */
             <div className="rounded-lg border border-gray-300 overflow-hidden bg-white max-w-[500px]">
               <div className="aspect-[1.91/1] bg-gray-100 flex items-center justify-center overflow-hidden">
                 {ogImage ? (
@@ -144,6 +145,7 @@ export default function OpenGraphPreviewTool() {
 
           {/* LinkedIn Preview */}
           {preview === 'linkedin' && (
+            /* bg-white intentional: simulates real LinkedIn card appearance */
             <div className="rounded-lg border border-gray-300 overflow-hidden bg-white max-w-[500px]">
               <div className="aspect-[1.91/1] bg-gray-100 flex items-center justify-center overflow-hidden">
                 {ogImage ? (
@@ -152,6 +154,7 @@ export default function OpenGraphPreviewTool() {
                   <div className="text-gray-400 text-sm">No image provided</div>
                 )}
               </div>
+              {/* bg-white intentional: simulates real LinkedIn card appearance */}
               <div className="p-3 bg-white border-t border-gray-200">
                 <div className="text-sm font-semibold text-gray-900 leading-tight line-clamp-2">{titleText}</div>
                 <div className="text-xs text-gray-500 mt-1">{displayDomain}</div>
@@ -161,6 +164,7 @@ export default function OpenGraphPreviewTool() {
 
           {/* Twitter Preview */}
           {preview === 'twitter' && (
+            /* bg-white intentional: simulates real Twitter/X card appearance */
             <div className="rounded-2xl border border-gray-200 overflow-hidden bg-white max-w-[500px]">
               <div className="aspect-[2/1] bg-gray-100 flex items-center justify-center overflow-hidden">
                 {ogImage ? (

@@ -174,3 +174,20 @@ details[open] summary .chevron-icon { transform: rotate(90deg); }
   background: linear-gradient(to right, transparent, var(--border), transparent);
   margin: 2rem 0;
 }
+
+/* ─── Print styles ─── */
+@media print {
+  header, footer, nav, .adsbygoogle, [data-ad-slot],
+  .cookie-consent, .pro-upsell, .share-buttons,
+  .embed-code, .email-subscribe, .related-tools,
+  .favorite-button, button { display: none !important; }
+  
+  body { background: white !important; color: black !important; }
+  
+  .bg-card { background: white !important; border: 1px solid #ddd !important; }
+  
+  a { color: inherit !important; text-decoration: none !important; }
+  a[href]::after { content: " (" attr(href) ")"; font-size: 0.8em; color: #666; }
+  
+  @page { margin: 2cm; }
+}

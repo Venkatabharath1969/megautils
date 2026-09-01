@@ -516,6 +516,7 @@ export default function ResumeBuilderTool() {
         {showPreview && (
           <div className="space-y-2">
             <span className="text-sm font-medium">Resume Preview</span>
+            {/* bg-white intentional: simulates printed resume/paper appearance */}
             <div className="border border-border rounded-lg p-4 bg-white overflow-auto max-h-[600px]" ref={previewRef}>
               <div dangerouslySetInnerHTML={{ __html: previewHtml }} />
             </div>

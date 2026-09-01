@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { ToolPage } from '@/components/tool-page'
+import { ToolPage, CopyButton } from '@/components/tool-page'
 import { ExportButton } from '@/components/export-button'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
 
@@ -200,7 +200,10 @@ export default function MortgageCalculator() {
         <div className="space-y-4">
           <div className="p-5 rounded-xl bg-primary/10 border border-primary/20">
             <div className="text-sm text-muted-foreground mb-1">Total Monthly Payment</div>
-            <div className="text-3xl font-bold text-primary">{fmt(result.totalMonthlyPayment)}</div>
+            <div className="flex items-center gap-3">
+              <div className="text-3xl font-bold text-primary">{fmt(result.totalMonthlyPayment)}</div>
+              <CopyButton text={`Monthly Payment: ${fmt(result.totalMonthlyPayment)}`} />
+            </div>
             <div className="mt-2 space-y-0.5 text-sm text-muted-foreground">
               <div className="flex justify-between"><span>Principal & Interest</span><span>{fmt(result.monthlyPayment)}</span></div>
               {result.propertyTaxMonthly > 0 && <div className="flex justify-between"><span>+ Property Tax/mo</span><span>{fmt(result.propertyTaxMonthly)}</span></div>}

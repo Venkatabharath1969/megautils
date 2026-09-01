@@ -13,6 +13,28 @@ import { ProSuggestion } from './pro-suggestion'
 import { ProUpsellBanner } from './usage-tracker'
 import { UsageCounter } from './usage-counter'
 import { useLanguage } from '@/i18n/language-context'
+import { TOOLS } from '@/lib/tool-registry'
+
+const CROSS_CATEGORY_MAP: Record<string, string[]> = {
+  developer: ['base64-encoder', 'hash-generator', 'url-encoder', 'regex-tester'],
+  encoders: ['json-formatter', 'hash-generator', 'password-generator', 'text-to-binary'],
+  crypto: ['password-generator', 'base64-encoder', 'uuid-generator', 'hash-generator'],
+  seo: ['word-counter', 'readability-score', 'json-formatter', 'qr-code-generator'],
+  text: ['markdown-editor', 'json-formatter', 'readability-score', 'citation-generator'],
+  string: ['case-converter', 'word-counter', 'base64-encoder', 'text-to-binary'],
+  content: ['word-counter', 'ai-grammar-checker', 'ai-paraphraser', 'readability-score'],
+  markdown: ['word-counter', 'html-formatter', 'code-to-image', 'text-to-pdf'],
+  color: ['css-gradient-generator', 'tailwind-color-picker', 'image-format-converter', 'favicon-generator'],
+  css: ['color-picker', 'color-palette-generator', 'code-to-image', 'tailwind-color-picker'],
+  financial: ['percentage-calculator', 'currency-converter', 'gst-calculator', 'invoice-generator'],
+  converters: ['percentage-calculator', 'currency-converter', 'number-base-converter', 'scientific-calculator'],
+  math: ['percentage-calculator', 'number-base-converter', 'scientific-calculator', 'bmi-calculator'],
+  image: ['pdf-to-jpg', 'jpg-to-pdf', 'favicon-generator', 'qr-code-generator'],
+  datetime: ['age-calculator', 'scientific-calculator', 'percentage-calculator', 'word-counter'],
+  network: ['json-formatter', 'base64-encoder', 'url-encoder', 'jwt-decoder'],
+  generators: ['qr-code-generator', 'password-generator', 'uuid-generator', 'hash-generator'],
+  pdf: ['image-compressor', 'word-counter', 'jpg-to-pdf', 'text-to-pdf'],
+}
 
 const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
   developer: [
@@ -237,6 +259,7 @@ const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
     { id: 'meme-generator', name: 'Meme Generator' },
     { id: 'screen-recorder', name: 'Screen Recorder' },
     { id: 'image-collage', name: 'Image Collage Maker' },
+    { id: 'image-watermark', name: 'Image Watermark' },
   ],
   datetime: [
     { id: 'unix-timestamp-converter', name: 'Unix Timestamp Converter' },
@@ -282,6 +305,10 @@ const CATEGORY_TOOLS: Record<string, { id: string; name: string }[]> = {
     { id: 'text-to-pdf', name: 'Text to PDF' },
     { id: 'pdf-to-text', name: 'PDF to Text' },
     { id: 'word-to-pdf', name: 'Word to PDF' },
+    { id: 'pdf-protect', name: 'Protect PDF' },
+    { id: 'pdf-crop', name: 'Crop PDF' },
+    { id: 'pdf-reorder', name: 'Reorder PDF Pages' },
+    { id: 'html-to-pdf', name: 'HTML to PDF' },
   ],
 }
 
@@ -328,7 +355,7 @@ export function ToolPage({ title, description, category, categoryLabel, slug, ch
             {derivedSlug && <UsageCounter slug={derivedSlug} />}
           </div>
           <p className="text-muted-foreground mt-1">{description}</p>
-          <span className="text-xs text-muted-foreground">Last updated: August 2026</span>
+          <span className="text-xs text-muted-foreground">Last updated: September 2026</span>
         </div>
         <div className="flex items-center gap-3 shrink-0">
           <FavoriteButton toolId={derivedSlug} />
@@ -363,6 +390,9 @@ export function ToolPage({ title, description, category, categoryLabel, slug, ch
           {helpContent}
         </div>
       )}
+
+      {/* Mid-content Ad */}
+      <AdSlot slot="mid-content" className="my-6" />
 
       {/* FAQ Section */}
       {faqs && faqs.length > 0 && (
@@ -417,6 +447,28 @@ export function ToolPage({ title, description, category, categoryLabel, slug, ch
                   {tool.name}
                 </Link>
               ))}
+          </div>
+        </div>
+      )}
+
+      {/* Cross-Category Suggestions */}
+      {category && CROSS_CATEGORY_MAP[category] && (
+        <div className="mt-6">
+          <h2 className="text-lg font-semibold mb-3">You Might Also Like</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {CROSS_CATEGORY_MAP[category]
+              .filter(id => id !== derivedSlug)
+              .slice(0, 4)
+              .map(toolId => {
+                const tool = TOOLS.find(t => t.id === toolId)
+                if (!tool) return null
+                return (
+                  <Link key={toolId} href={`/tools/${toolId}`}
+                    className="p-3 rounded-lg border border-border bg-card hover:bg-muted hover:-translate-y-0.5 transition-all text-sm font-medium text-center">
+                    {tool.name}
+                  </Link>
+                )
+              })}
           </div>
         </div>
       )}

@@ -35,14 +35,14 @@ export const CATEGORIES: Category[] = [
   { id: 'markdown',    label: 'Markdown Tools',         description: 'Markdown editor, converters, and table generator.', count: 4 },
   { id: 'color',       label: 'Color Tools',            description: 'Color picker, converter, palette generator, and contrast checker.', count: 8 },
   { id: 'css',         label: 'CSS Tools',              description: 'Visual CSS generators for gradients, shadows, flexbox, grid, and more.', count: 15 },
-  { id: 'financial',   label: 'Financial Calculators',  description: 'Loan, interest, tax, investment, and business calculators.', count: 24 },
+  { id: 'financial',   label: 'Financial Calculators',  description: 'Loan, interest, tax, investment, and business calculators.', count: 25 },
   { id: 'converters',  label: 'Unit Converters',        description: 'Convert between length, weight, temperature, data storage, speed, area, and volume.', count: 14 },
   { id: 'math',        label: 'Math & Science',         description: 'Scientific calculators, BMI, statistics, and equations.', count: 5 },
-  { id: 'image',       label: 'Image Tools',            description: 'QR codes, image resizing, format conversion, cropping, screen recording, and optimization.', count: 26 },
+  { id: 'image',       label: 'Image Tools',            description: 'QR codes, image resizing, format conversion, cropping, screen recording, and optimization.', count: 31 },
   { id: 'datetime',    label: 'Date & Time',            description: 'Unix timestamps, date calculations, age calculator, and cron builder.', count: 6 },
   { id: 'network',     label: 'Network & API',          description: 'HTTP status codes, URL parser, user agent parser, and IP info.', count: 4 },
-  { id: 'generators',  label: 'Generators',             description: 'Generate UUIDs, passwords, Lorem Ipsum, hashes, barcodes, and more.', count: 14 },
-  { id: 'pdf',         label: 'PDF Tools',              description: 'Merge, split, compress, sign, convert, unlock, watermark, rotate, and manipulate PDF files directly in your browser.', count: 13 },
+  { id: 'generators',  label: 'Generators',             description: 'Generate UUIDs, passwords, Lorem Ipsum, hashes, barcodes, and more.', count: 10 },
+  { id: 'pdf',         label: 'PDF Tools',              description: 'Merge, split, compress, sign, convert, unlock, watermark, rotate, crop, protect, reorder, and manipulate PDF files directly in your browser.', count: 17 },
 ]
 
 // Tools that appear on the generators category page but whose primary
@@ -55,10 +55,10 @@ export const GENERATOR_CROSS_REFS: string[] = [
 ]
 
 // ---------------------------------------------------------------------------
-// Tools (204 total)
+// Tools (235 total)
 // ---------------------------------------------------------------------------
 export const TOOLS: Tool[] = [
-  // ── Developer Tools (24) ─────────────────────────────────────────────────
+  // ── Developer Tools (25) ─────────────────────────────────────────────────
   {
     id: 'json-formatter',
     name: 'JSON Formatter & Validator',
@@ -486,7 +486,7 @@ export const TOOLS: Tool[] = [
     keywords: ['recipe schema', 'json-ld recipe', 'structured data recipe', 'schema.org recipe', 'recipe markup', 'cooking schema', 'food schema'],
   },
 
-  // ── Text Tools (24) ──────────────────────────────────────────────────────
+  // ── Text Tools (27) ──────────────────────────────────────────────────────
   {
     id: 'word-counter',
     name: 'Word Counter',
@@ -839,7 +839,7 @@ export const TOOLS: Tool[] = [
     keywords: ['color name', 'colour name', 'css color name', 'named color', 'color identifier', 'what color is this', 'color lookup'],
   },
 
-  // ── CSS Tools (14) ───────────────────────────────────────────────────────
+  // ── CSS Tools (15) ───────────────────────────────────────────────────────
   {
     id: 'css-gradient-generator',
     name: 'CSS Gradient Generator',
@@ -946,7 +946,7 @@ export const TOOLS: Tool[] = [
     keywords: ['gradient text', 'text gradient', 'css gradient text', 'gradient heading', 'gradient font', 'colorful text', 'text effect', 'background clip text', 'gradient title', 'rainbow text'],
   },
 
-  // ── Financial Calculators (23) ───────────────────────────────────────────
+  // ── Financial Calculators (25) ───────────────────────────────────────────
   {
     id: 'compound-interest-calculator',
     name: 'Compound Interest',
@@ -1260,7 +1260,7 @@ export const TOOLS: Tool[] = [
     keywords: ['aspect ratio', 'ratio calc', '16:9', '4:3', 'screen ratio', 'image ratio', 'video ratio', 'resolution calculator'],
   },
 
-  // ── Image Tools (20) ─────────────────────────────────────────────────────
+  // ── Image Tools (30) ─────────────────────────────────────────────────────
   {
     id: 'qr-code-generator',
     name: 'QR Code Generator',
@@ -1482,8 +1482,15 @@ export const TOOLS: Tool[] = [
     category: 'image',
     keywords: ['screen recorder', 'screen capture', 'record screen', 'screen recording', 'screencast', 'loom alternative', 'screencastify alternative', 'record tab', 'record window', 'video recorder', 'webcam recorder', 'browser recorder'],
   },
+  {
+    id: 'image-watermark',
+    name: 'Image Watermark',
+    description: 'Add text or image watermarks to photos with opacity, rotation, tiling, and live preview',
+    category: 'image',
+    keywords: ['watermark image', 'add watermark', 'photo watermark', 'image stamp', 'logo watermark', 'text watermark', 'tile watermark', 'protect image', 'watermark maker', 'watermark generator', 'copyright image', 'brand image'],
+  },
 
-  // ── Date & Time (5) ──────────────────────────────────────────────────────
+  // ── Date & Time (6) ──────────────────────────────────────────────────────
   {
     id: 'unix-timestamp-converter',
     name: 'Unix Timestamp Converter',
@@ -1557,7 +1564,7 @@ export const TOOLS: Tool[] = [
     keywords: ['ip address', 'my ip', 'public ip', 'ip info', 'ip lookup', 'what is my ip', 'ip details', 'ip geolocation'],
   },
 
-  // ── Generators (11) ──────────────────────────────────────────────────────
+  // ── Generators (10) ──────────────────────────────────────────────────────
   {
     id: 'gitignore-generator',
     name: '.gitignore Generator',
@@ -1630,7 +1637,7 @@ export const TOOLS: Tool[] = [
     keywords: ['whiteboard', 'drawing pad', 'online drawing', 'sketch pad', 'canvas drawing', 'paint tool', 'drawing tool', 'free whiteboard', 'draw online', 'simple paint', 'digital whiteboard', 'collaborative whiteboard'],
   },
 
-  // ── PDF Tools (12) ────────────────────────────────────────────────────────
+  // ── PDF Tools (17) ────────────────────────────────────────────────────────
   {
     id: 'jpg-to-pdf',
     name: 'JPG to PDF',
@@ -1721,6 +1728,34 @@ export const TOOLS: Tool[] = [
     description: 'Convert Word (.docx) documents to PDF — free, private, no upload to servers',
     category: 'pdf',
     keywords: ['word to pdf', 'docx to pdf', 'convert word to pdf', 'doc to pdf', 'word pdf converter', 'microsoft word pdf', 'document to pdf', 'office to pdf', 'adobe alternative', 'smallpdf alternative'],
+  },
+  {
+    id: 'pdf-protect',
+    name: 'Protect PDF',
+    description: 'Set a password on your PDF to restrict access — free, no upload, browser-based',
+    category: 'pdf',
+    keywords: ['protect pdf', 'encrypt pdf', 'pdf password', 'lock pdf', 'secure pdf', 'pdf encryption', 'password protect pdf', 'pdf security', 'restrict pdf', 'pdf locker', 'ilovepdf alternative'],
+  },
+  {
+    id: 'pdf-crop',
+    name: 'Crop PDF',
+    description: 'Visually crop PDF pages with an interactive drag rectangle — trim margins and whitespace',
+    category: 'pdf',
+    keywords: ['crop pdf', 'pdf crop', 'trim pdf', 'cut pdf margins', 'remove pdf margins', 'pdf trimmer', 'pdf margin remover', 'resize pdf pages', 'pdf page crop', 'pdf cutter'],
+  },
+  {
+    id: 'pdf-reorder',
+    name: 'Reorder PDF Pages',
+    description: 'Drag-and-drop to rearrange, reorder, or delete pages in a PDF — free, browser-based',
+    category: 'pdf',
+    keywords: ['reorder pdf', 'rearrange pdf pages', 'pdf page order', 'sort pdf pages', 'move pdf pages', 'pdf organizer', 'pdf page manager', 'swap pdf pages', 'delete pdf pages', 'remove pdf page'],
+  },
+  {
+    id: 'html-to-pdf',
+    name: 'HTML to PDF',
+    description: 'Convert HTML code with CSS styling to a downloadable PDF document — free, browser-based',
+    category: 'pdf',
+    keywords: ['html to pdf', 'convert html to pdf', 'html pdf', 'webpage to pdf', 'html2pdf', 'html converter', 'web to pdf', 'code to pdf', 'html export pdf', 'html document pdf'],
   },
 ]
 

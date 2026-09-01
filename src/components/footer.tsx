@@ -24,6 +24,10 @@ export function Footer() {
               <Shield className="h-3.5 w-3.5 text-green-500" />
               <span>{t('footer.privacy.badge')}</span>
             </div>
+            <a href="https://ko-fi.com/utilsnow" target="_blank" rel="noopener noreferrer"
+               className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#FF5E5B] text-white rounded-lg hover:bg-[#e54e4b] text-xs font-medium transition-colors mt-3">
+              <span>☕</span> Support UtilsNow
+            </a>
             <div className="mt-4">
               <EmailSubscribe />
             </div>

@@ -22,7 +22,7 @@ export default function AboutPage() {
 
       <div className="prose prose-sm dark:prose-invert max-w-none mb-12">
         <p className="text-lg text-muted-foreground">
-          UtilsNow is a free collection of 220+ online utility tools built for developers, designers,
+          UtilsNow is a free collection of 230+ online utility tools built for developers, designers,
           content creators, and anyone who needs quick, reliable tools without the hassle of signing up
           or installing software.
         </p>
@@ -74,7 +74,7 @@ export default function AboutPage() {
         </p>
         <blockquote>
           &ldquo;I was frustrated with online tools that require signups, show excessive ads, or upload
-          your data to servers. So I built UtilsNow — 220+ tools that run entirely in your browser.
+          your data to servers. So I built UtilsNow — 230+ tools that run entirely in your browser.
           Your data never leaves your device.&rdquo;
         </blockquote>
         <p>

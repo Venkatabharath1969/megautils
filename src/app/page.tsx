@@ -13,24 +13,24 @@ function getCategoryLabel(categoryId: string): string {
 }
 
 const categories = [
-  { id: 'developer', label: 'Developer Tools', description: '24 tools -- Formatters, converters, validators', icon: Code2, count: 24, color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400' },
+  { id: 'developer', label: 'Developer Tools', description: '25 tools -- Formatters, converters, validators', icon: Code2, count: 25, color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400' },
   { id: 'encoders', label: 'Encoders & Decoders', description: '14 tools -- Base64, URL, JWT, Binary, Hex', icon: Binary, count: 14, color: 'bg-purple-500/10 text-purple-600 dark:text-purple-400' },
   { id: 'crypto', label: 'Crypto & Hash', description: '3 tools -- MD5, SHA, AES, bcrypt, passwords', icon: Shield, count: 3, color: 'bg-red-500/10 text-red-600 dark:text-red-400' },
   { id: 'seo', label: 'SEO Tools', description: '18 tools -- Meta tags, schema, sitemaps', icon: Search, count: 18, color: 'bg-green-500/10 text-green-600 dark:text-green-400' },
-  { id: 'text', label: 'Text Tools', description: '24 tools -- Counters, case converters, cleaning', icon: Type, count: 24, color: 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400' },
+  { id: 'text', label: 'Text Tools', description: '27 tools -- Counters, case converters, cleaning', icon: Type, count: 27, color: 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-400' },
   { id: 'string', label: 'String Utilities', description: '6 tools -- Escape, regex, Lorem Ipsum', icon: Terminal, count: 6, color: 'bg-orange-500/10 text-orange-600 dark:text-orange-400' },
   { id: 'content', label: 'Content & Writing', description: '3 tools -- Headlines, readability, social', icon: PenTool, count: 3, color: 'bg-pink-500/10 text-pink-600 dark:text-pink-400' },
   { id: 'markdown', label: 'Markdown Tools', description: '4 tools -- Editor, converters, tables', icon: FileText, count: 4, color: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400' },
   { id: 'color', label: 'Color Tools', description: '8 tools -- Picker, palettes, contrast', icon: Palette, count: 8, color: 'bg-fuchsia-500/10 text-fuchsia-600 dark:text-fuchsia-400' },
-  { id: 'css', label: 'CSS Tools', description: '14 tools -- Gradients, shadows, flexbox, grid', icon: Paintbrush, count: 14, color: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400' },
-  { id: 'financial', label: 'Financial Calculators', description: '24 tools -- Loans, interest, tax, ROI', icon: DollarSign, count: 24, color: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' },
+  { id: 'css', label: 'CSS Tools', description: '15 tools -- Gradients, shadows, flexbox, grid', icon: Paintbrush, count: 15, color: 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400' },
+  { id: 'financial', label: 'Financial Calculators', description: '25 tools -- Loans, interest, tax, ROI', icon: DollarSign, count: 25, color: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' },
   { id: 'converters', label: 'Unit Converters', description: '14 tools -- Length, weight, data, temp', icon: ArrowLeftRight, count: 14, color: 'bg-teal-500/10 text-teal-600 dark:text-teal-400' },
   { id: 'math', label: 'Math & Science', description: '5 tools -- Scientific, statistics, BMI, calories', icon: Calculator, count: 5, color: 'bg-amber-500/10 text-amber-600 dark:text-amber-400' },
-  { id: 'image', label: 'Image Tools', description: '25 tools -- AI + Compress, resize, QR, filters', icon: ImageIcon, count: 25, color: 'bg-rose-500/10 text-rose-600 dark:text-rose-400' },
+  { id: 'image', label: 'Image Tools', description: '30 tools -- AI + Compress, resize, QR, filters', icon: ImageIcon, count: 30, color: 'bg-rose-500/10 text-rose-600 dark:text-rose-400' },
   { id: 'datetime', label: 'Date & Time', description: '6 tools -- Timestamps, timezones, pomodoro', icon: Clock, count: 6, color: 'bg-sky-500/10 text-sky-600 dark:text-sky-400' },
   { id: 'network', label: 'Network & API', description: '4 tools -- DNS, IP, HTTP codes, cURL', icon: Globe, count: 4, color: 'bg-violet-500/10 text-violet-600 dark:text-violet-400' },
-  { id: 'generators', label: 'Generators', description: '11 tools -- UUID, passwords, fake data, policies', icon: Sparkles, count: 11, color: 'bg-lime-500/10 text-lime-600 dark:text-lime-400' },
-  { id: 'pdf', label: 'PDF Tools', description: '8 tools -- Merge, split, compress, convert', icon: FileOutput, count: 8, color: 'bg-red-500/10 text-red-600 dark:text-red-400' },
+  { id: 'generators', label: 'Generators', description: '10 tools -- UUID, passwords, fake data, policies', icon: Sparkles, count: 10, color: 'bg-lime-500/10 text-lime-600 dark:text-lime-400' },
+  { id: 'pdf', label: 'PDF Tools', description: '13 tools -- Merge, split, compress, convert', icon: FileOutput, count: 13, color: 'bg-red-500/10 text-red-600 dark:text-red-400' },
 ]
 
 function SearchResults() {
@@ -115,7 +115,7 @@ export default function HomePage() {
       {/* Hero */}
       <div className="text-center mb-6 sm:mb-8">
         <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4 animate-fade-in-up">
-          <span className="gradient-text">220+ Free Tools</span>
+          <span className="gradient-text">230+ Free Tools</span>
           <br />
           <span className="text-foreground">{t('hero.title')}</span>
         </h1>
@@ -240,7 +240,7 @@ export default function HomePage() {
           { label: t('trust.free'), value: t('trust.free.value') },
           { label: t('trust.login'), value: t('trust.login.value') },
           { label: t('trust.data'), value: t('trust.data.value') },
-          { label: t('trust.tools'), value: '220+' },
+          { label: t('trust.tools'), value: '230+' },
         ].map((stat) => (
           <div key={stat.label} className="p-4 rounded-lg bg-card border border-border">
             <div className="text-2xl font-bold text-primary">{stat.value}</div>
@@ -266,7 +266,7 @@ export default function HomePage() {
             <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-purple-500/10">
               <Sparkles className="h-5 w-5 text-purple-600 dark:text-purple-400" />
             </div>
-            <span className="text-2xl font-bold text-primary">220+</span>
+            <span className="text-2xl font-bold text-primary">230+</span>
             <span className="text-xs text-muted-foreground">Free Tools</span>
           </div>
           <div className="flex flex-col items-center gap-2">
@@ -291,11 +291,11 @@ export default function HomePage() {
         '@context': 'https://schema.org',
         '@type': 'CollectionPage',
         'name': 'UtilsNow - Free Online Tools',
-        'description': '220+ free browser-based tools for developers, designers, and everyone. No signup required.',
+        'description': '230+ free browser-based tools for developers, designers, and everyone. No signup required.',
         'url': 'https://utilsnow.com',
         'mainEntity': {
           '@type': 'ItemList',
-          'numberOfItems': 17,
+          'numberOfItems': 18,
           'itemListElement': categories.map((cat, i) => ({
             '@type': 'ListItem',
             'position': i + 1,

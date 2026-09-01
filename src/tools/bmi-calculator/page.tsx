@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { ToolPage } from '@/components/tool-page'
+import { ToolPage, CopyButton } from '@/components/tool-page'
 
 type HeightUnit = 'cm' | 'ftin'
 type WeightUnit = 'kg' | 'lb'
@@ -177,8 +177,11 @@ export default function BMICalculatorTool() {
             <>
               <div className={`p-5 rounded-xl border ${result.category.bgColor}`}>
                 <div className="text-sm text-muted-foreground mb-1">Your BMI</div>
-                <div className={`text-4xl font-bold ${result.category.color}`}>
-                  {result.bmi.toFixed(1)}
+                <div className="flex items-center gap-3">
+                  <div className={`text-4xl font-bold ${result.category.color}`}>
+                    {result.bmi.toFixed(1)}
+                  </div>
+                  <CopyButton text={`BMI: ${result.bmi.toFixed(1)} (${result.category.label})`} />
                 </div>
                 <div className={`text-lg font-semibold mt-1 ${result.category.color}`}>
                   {result.category.label}

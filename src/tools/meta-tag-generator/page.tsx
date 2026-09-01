@@ -219,6 +219,7 @@ export default function MetaTagGeneratorTool() {
 
         {/* Google SERP Preview */}
         {previewTab === 'google' && (
+          /* bg-white intentional: simulates real Google SERP appearance */
           <div className="rounded-lg border border-border bg-white dark:bg-gray-950 p-4 max-w-[600px]">
             <div className="text-xs text-green-700 dark:text-green-400 mb-1 truncate">{serpUrl}</div>
             <div className="text-lg font-medium text-blue-700 dark:text-blue-400 leading-snug mb-1 cursor-pointer hover:underline" style={{ display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
@@ -232,6 +233,7 @@ export default function MetaTagGeneratorTool() {
 
         {/* Facebook Card Preview */}
         {previewTab === 'facebook' && (
+          /* bg-white intentional: simulates real Facebook card appearance */
           <div className="rounded-lg border border-gray-300 overflow-hidden bg-white max-w-[500px]">
             <div className="aspect-[1.91/1] bg-gray-100 flex items-center justify-center overflow-hidden">
               {ogImage ? (
@@ -248,7 +250,7 @@ export default function MetaTagGeneratorTool() {
           </div>
         )}
 
-        {/* Twitter/X Card Preview */}
+        {/* Twitter/X Card Preview — bg-white intentional: simulates real Twitter/X card appearance */}
         {previewTab === 'twitter' && (
           <div className="rounded-2xl border border-gray-200 overflow-hidden bg-white max-w-[500px]">
             <div className="aspect-[2/1] bg-gray-100 flex items-center justify-center overflow-hidden">

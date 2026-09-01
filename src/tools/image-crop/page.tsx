@@ -436,7 +436,7 @@ export default function ImageCropTool() {
                     pointerEvents: 'none',
                   }}
                 >
-                  {/* Semi-transparent overlay covering non-crop areas */}
+                  {/* Semi-transparent overlay covering non-crop areas — bg-black/50 intentional for crop dimming */}
                   <div className="absolute inset-0 pointer-events-none">
                     {/* Top */}
                     <div
@@ -501,7 +501,7 @@ export default function ImageCropTool() {
                     <div className="absolute left-2/3 top-0 bottom-0 border-l border-white/30" />
                   </div>
 
-                  {/* Corner handles */}
+                  {/* Corner handles — bg-white intentional: handles must contrast against any image */}
                   {(['nw', 'ne', 'sw', 'se'] as const).map((pos) => {
                     const isTop = pos.includes('n')
                     const isLeft = pos.includes('w')
@@ -524,7 +524,7 @@ export default function ImageCropTool() {
                     )
                   })}
 
-                  {/* Edge handles */}
+                  {/* Edge handles — bg-white intentional: handles must contrast against any image */}
                   {(['n', 's', 'e', 'w'] as const).map((pos) => {
                     const isHorizontal = pos === 'n' || pos === 's'
                     return (

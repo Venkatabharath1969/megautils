@@ -458,6 +458,7 @@ export default function PDFSignTool() {
                     ref={canvasRef}
                     width={400}
                     height={120}
+                    /* bg-white intentional: signature pad needs white background for clean PNG export */
                     className="w-full border border-border rounded-lg bg-white cursor-crosshair touch-none"
                     style={{ maxWidth: 400 }}
                     onMouseDown={startDraw}
@@ -487,6 +488,7 @@ export default function PDFSignTool() {
                     placeholder="Type your name..."
                     className="w-full px-3 py-2 text-sm border border-border rounded-lg bg-card focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none"
                   />
+                  {/* bg-white intentional: typed signature preview needs white background to match document */}
                   {typedText && (
                     <div className="p-4 border border-border rounded-lg bg-white">
                       <span style={{ fontFamily: '"Dancing Script", cursive', fontSize: '2rem', color: signatureColor }}>

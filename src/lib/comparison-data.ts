@@ -9,6 +9,21 @@ export interface Comparison {
   useCaseA: string[]    // when to use A
   useCaseB: string[]    // when to use B
   relatedTool: string   // tool slug to link to
+  // SaaS/tool comparison extensions (optional — format comparisons don't need these)
+  type?: 'format' | 'tool'       // default 'format' for backward compat
+  category?: string               // e.g. 'seo', 'hosting', 'design', 'ai', 'dev-tools'
+  pricingA?: { free?: string; starter?: string; pro?: string }
+  pricingB?: { free?: string; starter?: string; pro?: string }
+  websiteA?: string               // "https://semrush.com"
+  websiteB?: string               // "https://ahrefs.com"
+  affiliateUrlA?: string          // affiliate link for tool A
+  affiliateUrlB?: string          // affiliate link for tool B
+  prosA?: string[]                // pros for tool A
+  consA?: string[]                // cons for tool A
+  prosB?: string[]                // pros for tool B
+  consB?: string[]                // cons for tool B
+  bestFor?: string                // "Use Semrush if you need content marketing. Use Ahrefs for backlink analysis."
+  lastUpdated?: string            // "2026-09" for freshness signal
 }
 
 export const COMPARISONS: Comparison[] = [
@@ -128,6 +143,26 @@ export const COMPARISONS: Comparison[] = [
   },
 ]
 
+// ---------------------------------------------------------------------------
+// SaaS / Tool comparisons (loaded from separate file for maintainability)
+// ---------------------------------------------------------------------------
+import { SAAS_COMPARISONS } from './saas-comparison-data'
+
+// Merge format comparisons + SaaS comparisons into one array
+export const ALL_COMPARISONS: Comparison[] = [...COMPARISONS, ...SAAS_COMPARISONS]
+
 export function getComparisonBySlug(slug: string): Comparison | undefined {
-  return COMPARISONS.find((c) => c.slug === slug)
+  return ALL_COMPARISONS.find((c) => c.slug === slug)
+}
+
+export function getComparisonsByCategory(category: string): Comparison[] {
+  return ALL_COMPARISONS.filter((c) => c.category === category)
+}
+
+export function getSaaSComparisons(): Comparison[] {
+  return ALL_COMPARISONS.filter((c) => c.type === 'tool')
+}
+
+export function getFormatComparisons(): Comparison[] {
+  return ALL_COMPARISONS.filter((c) => !c.type || c.type === 'format')
 }

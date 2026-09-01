@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { ToolPage } from '@/components/tool-page'
+import { ToolPage, CopyButton } from '@/components/tool-page'
 import { ExportButton } from '@/components/export-button'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
 
@@ -156,7 +156,10 @@ export default function EMICalculator() {
         <div className="space-y-4">
           <div className="p-5 rounded-xl bg-primary/10 border border-primary/20">
             <div className="text-sm text-muted-foreground mb-1">Monthly EMI</div>
-            <div className="text-3xl font-bold text-primary">{fmt(result.emi)}</div>
+            <div className="flex items-center gap-3">
+              <div className="text-3xl font-bold text-primary">{fmt(result.emi)}</div>
+              <CopyButton text={`Monthly EMI: ${fmt(result.emi)}`} />
+            </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20">
