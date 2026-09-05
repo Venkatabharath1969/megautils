@@ -42,8 +42,38 @@ cd /opt/automation/video-pipeline && source .venv/bin/activate && python3 /opt/a
 - **15+ cron jobs** running automation
 - **Domain age:** ~1 month (Aug 8, 2026)
 
+## Prompt Processing Rule
+The owner uses voice-to-text which produces long, conversational prompts. When receiving such input:
+1. **Extract the core requests** — identify the numbered points or action items
+2. **Ignore filler** — phrases like "think harder think deeper" are emphasis, not separate tasks
+3. **Structure the response** — organize by the extracted points, not by prompt order
+4. **Be concise** — the owner values results over lengthy explanations
+5. **Parallelize** — launch sub-agents for independent tasks simultaneously
+
+## AdSense Review Timing
+- **Do NOT apply while impressions are near zero** (spam update recovery in progress)
+- **Apply when:** Daily impressions recover to 500+ consistently for 7 days
+- **Check via GSC:** Run fetch script and verify impression trend is upward
+- **Best days to apply:** Tuesday through Thursday (faster review)
+
+## Session End Checklist
+At the END of every session, ALWAYS:
+1. Update `utilsnow_context.md` with changes made
+2. Commit and push to GitHub
+3. Run `npm run build` to verify zero errors
+4. Restart PM2: `pm2 restart utilsnow`
+5. Run watchdog: `bash /opt/automation/watchdog.sh`
+
 ## Key Files
 - **Context:** `/root/megautils/utilsnow_context.md` — Single source of truth, update at END of every session
 - **Revenue Plan:** `/root/megautils/REVENUE-ACTION-PLAN-SEP2026.md`
+- **Social Media Guide:** `/root/megautils/SOCIAL-MEDIA-SETUP-GUIDE.md`
 - **Tool Registry:** `/root/megautils/src/lib/tool-registry.ts`
 - **Watchdog:** `/opt/automation/watchdog.sh`
+
+## API Credentials (Owner provides, stored securely)
+- **Facebook App ID:** `166207262859490` (Standard access granted)
+- **Reddit App:** Created (awaiting Client ID + Secret from owner)
+- **Pinterest:** Domain verification tag deployed, awaiting claim
+- **YouTube:** Token at `/opt/automation/youtube-uploader/token.json`
+- **GSC:** Token at `/opt/automation/gsc-api/gsc_token.json`
